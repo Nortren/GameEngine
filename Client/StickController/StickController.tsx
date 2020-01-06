@@ -16,20 +16,9 @@ export default class StickController extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(() => {
-            this.createCanvas()
-        }, 10)
-    }
-
-    createCanvas() {
-
-        let countTest = this.state.countMove;
-        let canvas = document.getElementById('canvas');
-        let ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillRect(this.state.moveX, this.state.moveY, 10, 10);
 
     }
+
 
 
     render() {
