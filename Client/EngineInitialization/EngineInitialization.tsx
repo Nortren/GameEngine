@@ -76,6 +76,8 @@ export default class EngineInitialization extends React.Component {
         let countTest = this.state.countMove;
         let canvas = document.getElementById('canvas');
         let ctx = canvas.getContext("2d");
+        canvas.width="800";
+        canvas.height="600";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillRect(this.state.moveX, this.state.moveY, 10, 10);
@@ -86,7 +88,7 @@ export default class EngineInitialization extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="canvasWindows">
                 <canvas id="canvas"></canvas>
             </div>
         );

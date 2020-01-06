@@ -1,0 +1,28 @@
+.MainPage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-around;
+}
+canvas {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+}
+.canvasWindows {
+  display: flex;
+}
+.Sticks {
+  display: flex;
+  justify-content: space-between;
+}
+.Sticks .leftStick {
+  height: 100px;
+  width: 100px;
+  background-color: grey;
+}
+.Sticks .rightStick {
+  height: 100px;
+  width: 100px;
+  background-color: grey;
+}
