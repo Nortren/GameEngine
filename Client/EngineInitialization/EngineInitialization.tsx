@@ -38,9 +38,13 @@ export default class EngineInitialization extends React.Component {
         }, 10)
 
     }
+    componentDidUpdate() {
+        console.log(this.props.moveX,this.props.moveY,'TUT');
+    }
 
     handleStart(evt) {
-        console.log(evt);
+
+        // console.log(evt.changedTouches[0]);
         if (evt.type === "touchmove") {
             this.setState({moveX: evt.changedTouches[0].clientX, moveY: evt.changedTouches[0].clientY});
         }
@@ -75,10 +79,11 @@ export default class EngineInitialization extends React.Component {
 
         let countTest = this.state.countMove;
         let canvas = document.getElementById('canvas');
+        canvas.height = 120;
         let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillRect(this.state.moveX, this.state.moveY, 10, 10);
+        ctx.fillRect(this.props.moveX, this.props.moveY-250 , 10, 10);
 
 
     }
@@ -86,10 +91,7 @@ export default class EngineInitialization extends React.Component {
 
     render() {
         return (
-            <div className="canvasWindows">
-                <canvas id="canvas"></canvas>
-            </div>
-
+                <canvas className="col-12" id="canvas"></canvas>
         );
     }
 }
