@@ -20,10 +20,10 @@ class GameEngineContainer extends React.Component {
                     <EngineInitialization moveX={this.props.moveX}
                                           moveY={this.props.moveY}/>
                 </div>
-                <div className="row">
-                    <StickController className=".container-fluid" changeX={this.props.changeX}
-                                     changeY={this.props.changeY}/>
-                </div>
+                {/*<div className="row">*/}
+                    {/*<StickController className=".container-fluid" changeX={this.props.changeX}*/}
+                                     {/*changeY={this.props.changeY}/>*/}
+                {/*</div>*/}
             </div>
 
         )
