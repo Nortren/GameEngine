@@ -25,10 +25,10 @@ export default class EngineInitialization extends React.Component {
 
         let context = canvas.getContext("2d");
         let img = new Image();
-        img.src = "../Client/image/map.jpg";
+        img.src = "./Client/image/map.jpg";
 
         let imgHero = new Image();
-        imgHero.src = "../Client/image/hero.png";
+        imgHero.src = "./Client/image/hero.png";
 
         img.onload = () => {
             this.resize(canvas, img);
@@ -123,16 +123,16 @@ export default class EngineInitialization extends React.Component {
         spriteOffsetsA.push({x: 240, y: 85, width: 55, height: 40});
 
         let rect = spriteOffsetsS[this._count];
-        if (this._pressKey === "A" || this.props.directionX === true) {
+        if (this._pressKey === "A" || this.props.direction === "LEFT") {
             rect = spriteOffsetsA[this._count];
         }
-        if (this._pressKey === "D" || this.props.directionX === false) {
+        if (this._pressKey === "D" || this.props.direction === "RIGHT") {
             rect = spriteOffsetsD[this._count];
         }
-        if (this._pressKey === "W" || this.props.directionY === true) {
+        if (this._pressKey === "W" || this.props.direction === "UP") {
             rect = spriteOffsetsW[this._count];
         }
-        if (this._pressKey === "S" ) {
+        if (this._pressKey === "S" || this.props.direction === "DOWN") {
             rect = spriteOffsetsS[this._count];
         }
         //рисуем героя по центру картинки

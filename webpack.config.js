@@ -1,33 +1,57 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const {ImageminWebpackPlugin} = require("imagemin-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+// import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+// import ImageMinPlugin from 'imagemin-webpack-plugin';
+// import CopyWebpackPlugin from 'copy-webpack-plugin';
 module.exports = {
-    entry: "./Client/App.js",
-    output: {
-        path: path.join(__dirname, "/dist"),
-        filename: "index-bundle.js"
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.(jpg|jpeg|gif|png)$/,
-                include: path.resolve(__dirname, 'src/images'),
-                loader: 'url-loader?limit=1024&name=images/[name].[ext]'
-            },
-        ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: "./Client/index.html"
-        })
-    ]
+	entry: "./Client/App.js",
+	output: {
+		path: path.join(__dirname, "/dist"),
+		filename: "index-bundle.js"
+	},
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /node_modules/,
+				use: ['babel-loader']
+			},
+			{
+				test: /\.css$/,
+				use: ['style-loader', 'css-loader']
+			},
+			{
+				test: /\.(png|gif|jpe?g)$/,
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							name: '[path][name].[ext]',
+						},
+					},
+					'img-loader',
+				],
+			},
+		]
+	},
+	plugins: [
+		new CopyWebpackPlugin([
+			{ from: 'Client/image', to: 'Client/image' },
+		]),
+		new HtmlWebpackPlugin({
+			template: "./Client/index.html"
+		})
+	],
+	optimization: {
+		minimizer: [
+			new UglifyJSPlugin({ sourceMap: true }),
+			// new ImageminWebpackPlugin({
+			// 	test: /\.(png|jpe?g|gif|svg)$/,
+			// })
+		],
+	},
+
 };
