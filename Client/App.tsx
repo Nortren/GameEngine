@@ -18,9 +18,6 @@ export default class App extends React.Component {
     }
 
     render() {
-        const dispatch = this.props.dispatch;
-        //Диструктор
-        const {firstName, secondName, changeFirstName, changeSecondName} = this.props;
         return (
             <Provider store={store}>
                     <GameEngineContainer/>

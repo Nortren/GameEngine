@@ -20,20 +20,6 @@ export default class EngineInitialization extends React.Component {
         document.addEventListener('keydown', (e) => {
             this.setKey(e, true);
         });
-        /*
-         let el = document.getElementById("canvas");
-         el.addEventListener("touchstart", (e) => {
-         this.handleStart(e, true);
-         }, false);
-         el.addEventListener("touchend", (e) => {
-         this.handleStart(e, true);
-         }, false);
-         el.addEventListener("touchcancel", (e) => {
-         this.handleStart(e, true);
-         }, false);
-         el.addEventListener("touchmove", (e) => {
-         this.handleStart(e, true);
-         }, false);*/
 
         let canvas = document.getElementById('canvas');
 
@@ -54,6 +40,10 @@ export default class EngineInitialization extends React.Component {
 
     }
 
+    componentDidUpdate(){
+        this._animate = this.props.animations;
+    }
+
     drawCanvas(context, canvas, img, imgHero) {
         setInterval(() => {
             this.updateMap(context, canvas, img);
@@ -70,18 +60,9 @@ export default class EngineInitialization extends React.Component {
         }, 1000 / 10);
     }
 
-    handleStart(evt) {
-
-        // console.log(evt.changedTouches[0]);
-        if (evt.type === "touchmove") {
-            this.setState({moveX: evt.changedTouches[0].clientX, moveY: evt.changedTouches[0].clientY});
-        }
-    }
 
     setKey(e) {
         let code = e.keyCode;
-        console.log(code);
-
         this._animate = true;
         if (code === 87) {
             let move = this.state.moveY;
@@ -142,16 +123,16 @@ export default class EngineInitialization extends React.Component {
         spriteOffsetsA.push({x: 240, y: 85, width: 55, height: 40});
 
         let rect = spriteOffsetsS[this._count];
-        if (this._pressKey === "A") {
+        if (this._pressKey === "A" || this.props.directionX === true) {
             rect = spriteOffsetsA[this._count];
         }
-        if (this._pressKey === "D") {
+        if (this._pressKey === "D" || this.props.directionX === false) {
             rect = spriteOffsetsD[this._count];
         }
-        if (this._pressKey === "W") {
+        if (this._pressKey === "W" || this.props.directionY === true) {
             rect = spriteOffsetsW[this._count];
         }
-        if (this._pressKey === "S") {
+        if (this._pressKey === "S" ) {
             rect = spriteOffsetsS[this._count];
         }
         //рисуем героя по центру картинки
@@ -168,7 +149,7 @@ export default class EngineInitialization extends React.Component {
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         //Двигаем картинку перемещая персоонажаs
-        context.drawImage(img, this.state.moveX - startPosition, this.state.moveY);
+        context.drawImage(img, this.props.moveX - startPosition, this.props.moveY);
 
 
     }
