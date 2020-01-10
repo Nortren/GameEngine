@@ -26,10 +26,11 @@ export default class StickController extends React.Component {
 
         this.thisXUp = 0;
         this.thisYUp = 0;
+        let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.movePosition(event);
         });
-        document.addEventListener("touchstart", (event) => {
+        evenObject.addEventListener("touchstart", (event) => {
             this.touchStartPositionX = event.changedTouches[0].clientX;
             this.touchStartPositionY = event.changedTouches[0].clientY;
             this._startAnimationTouch = true;
@@ -39,10 +40,10 @@ export default class StickController extends React.Component {
             }, 10);
 
         }, false);
-        document.addEventListener("touchend", (event) => {
+        evenObject.addEventListener("touchend", (event) => {
             clearInterval(this._startAnimationTouch);
         }, false);
-        document.addEventListener("touchmove", (event) => {
+        evenObject.addEventListener("touchmove", (event) => {
             this.touchMovePositionX = event.changedTouches[0].clientX;
             this.touchMovePositionY = event.changedTouches[0].clientY;
         }, false);

@@ -1,12 +1,16 @@
 import * as React from 'react';
-
+import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 
 /**
  * Компонент построения графиков в режими реального времени
  */
 export default class EngineInitialization extends React.Component {
-
-    constructor(props) {
+    public canvas: object;
+    public context: CanvasRenderingContext2D;
+    public imgBacground: object;
+    public imgHero: object;
+    private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
+    constructor(props: object) {
         super(props);
         this.state = {
             moveX: 0,
@@ -16,115 +20,42 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
+        this.canvas = document.getElementById('canvas');
+        this.context = this.canvas.getContext("2d");
+        this.imgBacground = new Image();
+        this.imgBacground.src = "./Client/image/map.jpg";
+        this.imgHero = new Image();
+        this.imgHero.src = "./Client/image/hero.png";
 
-        let canvas = document.getElementById('canvas');
+        this.imgBacground.onload = () => {
+            this.resize(this.canvas, this.imgBacground);
 
-        let context = canvas.getContext("2d");
-        let img = new Image();
-        img.src = "./Client/image/map.jpg";
-
-        let imgHero = new Image();
-        imgHero.src = "./Client/image/hero.png";
-
-        img.onload = () => {
-            this.resize(canvas, img);
+            this.drawCanvas(this.context, this.canvas, this.imgBacground, this.imgHero, this._dynamicAnimation);
         };
         this._count = 0;
-
-        this.drawCanvas(context, canvas, img, imgHero);
-        this.humanoidAnimation();
-
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
+        this.context = this.canvas.getContext("2d");
         this._animate = this.props.animations;
+        this._dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
+        this._dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
-    drawCanvas(context, canvas, img, imgHero) {
-        setInterval(() => {
-            this.updateMap(context, canvas, img);
-            this.updateUserAvatar(context, canvas, imgHero);
-        }, 1000 / 60);
+    drawCanvas(context: CanvasRenderingContext2D, canvas: object, img: object, imgHero: object, dynamicAnimation: DinamicAnimation) {
+        dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
+        dynamicAnimation.humanoidAnimation();
+        dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
-    humanoidAnimation() {
-        setInterval(() => {
-            if (this._animate) {
-                this._count++;
-            }
-            this._animate = false;
-        }, 1000 / 10);
-    }
-
-    resize(canvas, img) {
+    resize(canvas: object) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
 
-    updateUserAvatar(context, canvas, imgHero) {
-
-        if (this._count > 3) {
-            this._count = 0;
-        }
-        let spriteOffsetsS = [];
-        spriteOffsetsS.push({x: 0, y: 8, width: 57, height: 42});
-        spriteOffsetsS.push({x: 80, y: 8, width: 54, height: 39});
-        spriteOffsetsS.push({x: 160, y: 8, width: 57, height: 38});
-        spriteOffsetsS.push({x: 240, y: 8, width: 55, height: 40});
-
-        let spriteOffsetsW = [];
-        spriteOffsetsW.push({x: 0, y: 245, width: 57, height: 42});
-        spriteOffsetsW.push({x: 80, y: 245, width: 54, height: 39});
-        spriteOffsetsW.push({x: 160, y: 245, width: 57, height: 38});
-        spriteOffsetsW.push({x: 240, y: 245, width: 55, height: 40});
-        let spriteOffsetsD = [];
-        spriteOffsetsD.push({x: 0, y: 165, width: 57, height: 42});
-        spriteOffsetsD.push({x: 80, y: 165, width: 54, height: 39});
-        spriteOffsetsD.push({x: 160, y: 165, width: 57, height: 38});
-        spriteOffsetsD.push({x: 240, y: 165, width: 55, height: 40});
-        let spriteOffsetsA = [];
-        spriteOffsetsA.push({x: 0, y: 85, width: 57, height: 42});
-        spriteOffsetsA.push({x: 80, y: 85, width: 54, height: 39});
-        spriteOffsetsA.push({x: 160, y: 85, width: 57, height: 38});
-        spriteOffsetsA.push({x: 240, y: 85, width: 55, height: 40});
-
-        let rect = spriteOffsetsS[this._count];
-        if (this._pressKey === "A" || this.props.direction === "LEFT") {
-            rect = spriteOffsetsA[this._count];
-        }
-        if (this._pressKey === "D" || this.props.direction === "RIGHT") {
-            rect = spriteOffsetsD[this._count];
-        }
-        if (this._pressKey === "W" || this.props.direction === "UP") {
-            rect = spriteOffsetsW[this._count];
-        }
-        if (this._pressKey === "S" || this.props.direction === "DOWN") {
-            rect = spriteOffsetsS[this._count];
-        }
-        //рисуем героя по центру картинки
-        context.drawImage(imgHero, rect.x, rect.y, 70, 70, canvas.width / 2, canvas.height / 2, 50, 50);
-        //квадрат без картинки
-        // context.fillRect(canvas.width/2, canvas.height/2 , 30, 30);
-    }
-
-
-    updateMap(context, canvas, img) {
-        //TODO Так мы устанавливаем стартовую позицию на карте (нужно доработать)
-        let startPosition = 500;
-        // задаем картинки для анимации (позиции из большой картинки)
-
-
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        //Двигаем картинку перемещая персоонажаs
-        context.drawImage(img, this.props.moveX - startPosition, this.props.moveY);
-
-
-    }
-
-
     render() {
         return (
-            <canvas className="col-12" id="canvas"></canvas>
+            <canvas id="canvas"/>
         );
     }
 }

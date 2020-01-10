@@ -20,7 +20,7 @@ export default class App extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                    <GameEngineContainer/>
+                    <GameEngineContainer className="container-fluid"/>
             </Provider>
         )
     }
