@@ -1,12 +1,20 @@
 import * as React from 'react';
-
+import DinamicAnimation from "../Animation/Dynamic/Dynamic";
+import MapCreator from "../MapCreator/MapCreator";
 
 /**
- * Компонент построения графиков в режими реального времени
+ * Главный контрол первичной инициализации движка
  */
 export default class EngineInitialization extends React.Component {
+    public canvas: object;
+    public context: CanvasRenderingContext2D;
+    public imgBacground: object;
+    public imgHero: object;
+    private _testImageMap: object;
+    private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
+    private _mapCreator: MapCreator = new MapCreator();
 
-    constructor(props) {
+    constructor(props: object) {
         super(props);
         this.state = {
             moveX: 0,
@@ -16,79 +24,55 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        let el = document.getElementById("canvas");
-        document.addEventListener('keydown', (e) => {
-            this.setKey(e, true);
-        });
+        this._testImageMap = this._mapCreator.parserJSON();
+        this.canvas = document.getElementById('canvas');
+        this.context = this.canvas.getContext("2d");
+        this.imgBacground = new Image();
+        this.imgBacground.src = this._testImageMap.src;
+        this.imgHero = new Image();
+        this.imgHero.src = "./Client/image/hero.png";
 
-        el.addEventListener("touchstart", (e) => {
-            this.handleStart(e, true);
-        }, false);
-        el.addEventListener("touchend", (e) => {
-            this.handleStart(e, true);
-        }, false);
-        el.addEventListener("touchcancel", (e) => {
-            this.handleStart(e, true);
-        }, false);
-        el.addEventListener("touchmove", (e) => {
-            this.handleStart(e, true);
-        }, false);
-        setInterval(() => {
-            this.createCanvas()
-        }, 10)
+        this.imgBacground.onload = () => {
+            this.resize(this.canvas, this.imgBacground);
 
+            this.drawCanvas(this.context, this.canvas, this.imgBacground, this.imgHero, this._dynamicAnimation);
+        };
+        this._count = 0;
     }
 
-    handleStart(evt) {
-        console.log(evt);
-        if (evt.type === "touchmove") {
-            this.setState({moveX: evt.changedTouches[0].clientX, moveY: evt.changedTouches[0].clientY});
-        }
+    componentDidUpdate() {
+        this.context = this.canvas.getContext("2d");
+        this._animate = this.props.animations;
+        this._dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
+        this._dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
-    setKey(e) {
-        let code = e.keyCode;
-        console.log(code);
-        if (code === 87) {
-            let move = this.state.moveY;
-            move--;
-            this.setState({moveY: move});
-        }
-        if (code === 83) {
-            let move = this.state.moveY;
-            move++;
-            this.setState({moveY: move});
-        }
-        if (code === 65) {
-            let move = this.state.moveX;
-            move--;
-            this.setState({moveX: move});
-        }
-        if (code === 68) {
-            let move = this.state.moveX;
-            move++;
-            this.setState({moveX: move});
-        }
+    /**
+     * Отрисовка канваса на запущенном устройстве
+     * @param context
+     * @param canvas
+     * @param img картинка локации
+     * @param imgHero картинка героя
+     * @param dynamicAnimation метод изменения state через redux
+     */
+    drawCanvas(context: CanvasRenderingContext2D, canvas: object, img: object, imgHero: object, dynamicAnimation: DinamicAnimation) {
+        dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
+        dynamicAnimation.humanoidAnimation();
+        dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
-    createCanvas() {
-
-        let countTest = this.state.countMove;
-        let canvas = document.getElementById('canvas');
-        let ctx = canvas.getContext("2d");
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillRect(this.state.moveX, this.state.moveY, 10, 10);
-
-
+    /**
+     * Обновления Canvas в зависимости от разрешения экрана (работает при первичной инициализации)
+     * @param canvas
+     */
+    resize(canvas: object) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
-
 
     render() {
         return (
-            <div>
-                <canvas id="canvas"></canvas>
-            </div>
+            <canvas id="canvas"/>
         );
     }
 }

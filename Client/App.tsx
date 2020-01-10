@@ -1,22 +1,31 @@
-import * as React from 'react';
-import '../Client/projectLibrary.css'
+import * as React from 'react'
+import * as ReactDOM from "react-dom";
+import  {createStore} from 'redux';
 
-import EngineInitialization from "./EngineInitialization/EngineInitialization";
+import '../Client/projectLibrary.css';
+import GameEngineContainer from './GameEngineContainer'
+import rootReducer from './Store/Reducers'
+import {Provider} from 'react-redux';
+
+
+const store = createStore(rootReducer);
+
+
 export default class App extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
-
     render() {
-        const border = {border: '1px solid black'};
         return (
-            <div>
-              <EngineInitialization/>
-            </div>
+            <Provider store={store}>
+                    <GameEngineContainer className="container-fluid"/>
+            </Provider>
         )
     }
 
 
 }
+
+ReactDOM.render(<App/>, document.getElementById("root"));
