@@ -1,15 +1,19 @@
 import * as React from 'react';
 import DinamicAnimation from "../Animation/Dynamic/Dynamic";
+import MapCreator from "../MapCreator/MapCreator";
 
 /**
- * Компонент построения графиков в режими реального времени
+ * Главный контрол первичной инициализации движка
  */
 export default class EngineInitialization extends React.Component {
     public canvas: object;
     public context: CanvasRenderingContext2D;
     public imgBacground: object;
     public imgHero: object;
+    private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
+    private _mapCreator: MapCreator = new MapCreator();
+
     constructor(props: object) {
         super(props);
         this.state = {
@@ -20,10 +24,11 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
+        this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.context = this.canvas.getContext("2d");
         this.imgBacground = new Image();
-        this.imgBacground.src = "./Client/image/map.jpg";
+        this.imgBacground.src = this._testImageMap.src;
         this.imgHero = new Image();
         this.imgHero.src = "./Client/image/hero.png";
 
@@ -42,12 +47,24 @@ export default class EngineInitialization extends React.Component {
         this._dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
+    /**
+     * Отрисовка канваса на запущенном устройстве
+     * @param context
+     * @param canvas
+     * @param img картинка локации
+     * @param imgHero картинка героя
+     * @param dynamicAnimation метод изменения state через redux
+     */
     drawCanvas(context: CanvasRenderingContext2D, canvas: object, img: object, imgHero: object, dynamicAnimation: DinamicAnimation) {
         dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
         dynamicAnimation.humanoidAnimation();
         dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
     }
 
+    /**
+     * Обновления Canvas в зависимости от разрешения экрана (работает при первичной инициализации)
+     * @param canvas
+     */
     resize(canvas: object) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;

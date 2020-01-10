@@ -5,6 +5,7 @@ import * as React from 'react';
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
+    userSpeed: number = 10;
 
     constructor(props) {
 
@@ -69,16 +70,17 @@ export default class StickController extends React.Component {
         context.strokeStyle = 'red';
         context.stroke();
     }
+
     movePosition(e) {
-        let moveX=this.touchMovePositionX;
-        let moveY=this.touchMovePositionY;
+        let moveX = this.touchMovePositionX;
+        let moveY = this.touchMovePositionY;
         let resPosX = (this.thisXUp > moveX);
         let resPosY = (this.thisYUp > moveY);
 
         let xTest = Math.abs(this.thisXUp - moveX);
         let yTest = Math.abs(this.thisYUp - moveY);
 
-       this.moveDirection;
+        this.moveDirection;
         if (yTest > 2) {
             if (resPosY) {
                 this.moveDirection = "UP";
@@ -97,16 +99,16 @@ export default class StickController extends React.Component {
         }
 
         let code = e.keyCode;
-        if(code === 87){
+        if (code === 87) {
             this.moveDirection = "UP"
         }
-        if(code === 83){
+        if (code === 83) {
             this.moveDirection = "DOWN"
         }
-        if(code === 65){
-            this.moveDirection= "LEFT"
+        if (code === 65) {
+            this.moveDirection = "LEFT"
         }
-        if(code === 68){
+        if (code === 68) {
             this.moveDirection = "RIGHT"
         }
 
@@ -117,25 +119,25 @@ export default class StickController extends React.Component {
         this._animate = true;
         if (this.moveDirection === "UP") {
             let move = this.state.moveY;
-            move++;
+            move+=this.userSpeed;
             this.setState({moveY: move});
             this.changeY(move);
         }
         if (this.moveDirection === "DOWN") {
             let move = this.state.moveY;
-            move--;
+            move-=this.userSpeed;
             this.setState({moveY: move});
             this.changeY(move);
         }
         if (this.moveDirection === "LEFT") {
             let move = this.state.moveX;
-            move++;
+            move+=this.userSpeed;
             this.setState({moveX: move});
             this.changeX(move);
         }
         if (this.moveDirection === "RIGHT") {
             let move = this.state.moveX;
-            move--;
+            move-=this.userSpeed;
             this.setState({moveX: move});
             this.changeX(move);
         }
