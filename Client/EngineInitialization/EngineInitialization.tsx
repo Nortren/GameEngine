@@ -17,10 +17,27 @@ export default class EngineInitialization extends React.Component {
 
     componentDidMount() {
 
-        document.addEventListener('keydown', (e) => {
-            this.setKey(e, true);
+        document.addEventListener('keydown', (event) => {
+            this.setKey(event);
         });
+        document.addEventListener("touchstart", (event) => {
+            this.touchStartPositionX = event.changedTouches[0].clientX;
+            this.touchStartPositionY = event.changedTouches[0].clientY;
+            this._startAnimationTouch = true;
 
+            this._startAnimationTouch = setInterval(() => {
+                    this._animate = true;
+                this.setKey(event);
+                }, 10);
+
+        }, false);
+        document.addEventListener("touchend", (event) => {
+            clearInterval(this._startAnimationTouch);
+        }, false);
+        document.addEventListener("touchmove", (event) => {
+            this.touchMovePositionX = event.changedTouches[0].clientX;
+            this.touchMovePositionY = event.changedTouches[0].clientY;
+        }, false);
         let canvas = document.getElementById('canvas');
 
         let context = canvas.getContext("2d");
@@ -42,6 +59,7 @@ export default class EngineInitialization extends React.Component {
 
     componentDidUpdate(){
         this._animate = this.props.animations;
+        // this.setKey(event);
     }
 
     drawCanvas(context, canvas, img, imgHero) {
@@ -60,29 +78,66 @@ export default class EngineInitialization extends React.Component {
         }, 1000 / 10);
     }
 
+    directionOfMovement(startX, moveX, startY, moveY) {
+        let resPosX = (this.thisXUp > moveX);
+        let resPosY = (this.thisYUp > moveY);
 
+        let xTest = Math.abs(this.thisXUp - moveX);
+        let yTest = Math.abs(this.thisYUp - moveY);
+
+
+        this.thisXUp = moveX;
+        this.thisYUp = moveY;
+    }
     setKey(e) {
+        let moveX=this.touchMovePositionX;
+        let moveY=this.touchMovePositionY;
+        let resPosX = (this.thisXUp > moveX);
+        let resPosY = (this.thisYUp > moveY);
+
+        let xTest = Math.abs(this.thisXUp - moveX);
+        let yTest = Math.abs(this.thisYUp - moveY);
+
+        if (yTest > 2) {
+            if (resPosY) {
+                this.resultMovePosition = "UP";
+            }
+            if (!resPosY) {
+                this.resultMovePosition = "DOWN";
+            }
+        }
+        if (xTest > 2) {
+            if (resPosX) {
+                this.resultMovePosition = "LEFT";
+            }
+            if (!resPosX) {
+                this.resultMovePosition = "RIGHT";
+            }
+        }
+        this.thisXUp = moveX;
+        this.thisYUp = moveY;
+
         let code = e.keyCode;
         this._animate = true;
-        if (code === 87) {
+        if (code === 87 || this.resultMovePosition === "UP") {
             let move = this.state.moveY;
             move++;
             this.setState({moveY: move});
             this._pressKey = "W";
         }
-        if (code === 83) {
+        if (code === 83 || this.resultMovePosition === "DOWN") {
             let move = this.state.moveY;
             move--;
             this.setState({moveY: move});
             this._pressKey = "S";
         }
-        if (code === 65) {
+        if (code === 65 || this.resultMovePosition === "LEFT") {
             let move = this.state.moveX;
             move++;
             this.setState({moveX: move});
             this._pressKey = "A";
         }
-        if (code === 68) {
+        if (code === 68 || this.resultMovePosition === "RIGHT") {
             let move = this.state.moveX;
             move--;
             this.setState({moveX: move});
@@ -141,6 +196,7 @@ export default class EngineInitialization extends React.Component {
         // context.fillRect(canvas.width/2, canvas.height/2 , 30, 30);
     }
 
+
     updateMap(context, canvas, img) {
         //TODO Так мы устанавливаем стартовую позицию на карте (нужно доработать)
         let startPosition = 500;
@@ -149,7 +205,7 @@ export default class EngineInitialization extends React.Component {
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         //Двигаем картинку перемещая персоонажаs
-        context.drawImage(img, this.props.moveX - startPosition, this.props.moveY);
+        context.drawImage(img, this.state.moveX - startPosition, this.state.moveY);
 
 
     }
