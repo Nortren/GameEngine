@@ -11,8 +11,6 @@ export default class StickController extends React.Component {
         super(props);
         this.changeX = this.changeX.bind(this);
         this.changeY = this.changeY.bind(this);
-        this.directionOfMovementX = this.directionOfMovementX.bind(this);
-        this.directionOfMovementY = this.directionOfMovementY.bind(this);
         this.directionOfMovement = this.directionOfMovement.bind(this);
         this.state = {
             moveX: 0,
@@ -22,36 +20,31 @@ export default class StickController extends React.Component {
     }
 
     componentDidMount() {
-        this.thisXUp = 0;
-        this.thisYUp = 0;
-
-        this.touchStartPositionX;
-        this.touchStartPositionY;
-        this.touchMovePositionX;
-        this.touchMovePositionY;
-        this.touchEvent("UserLeftStick", this.changeX, this.changeY, this.directionOfMovementX, this.directionOfMovementY, this.directionOfMovement);
         this.createCanvas("UserLeftStick");
         this.createCanvas("UserRightStick");
-    }
 
-    touchEvent(touchControll, changeX, changeY, directionOfMovementX, directionOfMovementY, directionOfMovement) {
-        let el = document.getElementById(touchControll);
 
-        el.addEventListener("touchstart", (e) => {
-            this.touchStartPositionX = e.changedTouches[0].clientX;
-            this.touchStartPositionY = e.changedTouches[0].clientY;
+        this.thisXUp = 0;
+        this.thisYUp = 0;
+        document.addEventListener('keydown', (event) => {
+            this.movePosition(event);
+        });
+        document.addEventListener("touchstart", (event) => {
+            this.touchStartPositionX = event.changedTouches[0].clientX;
+            this.touchStartPositionY = event.changedTouches[0].clientY;
+            this._startAnimationTouch = true;
+
+            this._startAnimationTouch = setInterval(() => {
+                this.movePosition(event);
+            }, 10);
 
         }, false);
-        el.addEventListener("touchmove", (e) => {
-            this.touchMovePositionX = e.changedTouches[0].clientX;
-            this.touchMovePositionY = e.changedTouches[0].clientY;
-            changeX(this.touchMovePositionX);
-            changeY(this.touchMovePositionY);
-            let resultMoveX = this.touchStartPositionX > this.touchMovePositionX;
-            let resultMoveY = this.touchStartPositionY > this.touchMovePositionY;
-            directionOfMovementX(resultMoveX);
-            directionOfMovementY(resultMoveY);
-            directionOfMovement(this.touchStartPositionX, this.touchMovePositionX, this.touchStartPositionY, this.touchMovePositionY);
+        document.addEventListener("touchend", (event) => {
+            clearInterval(this._startAnimationTouch);
+        }, false);
+        document.addEventListener("touchmove", (event) => {
+            this.touchMovePositionX = event.changedTouches[0].clientX;
+            this.touchMovePositionY = event.changedTouches[0].clientY;
         }, false);
 
     }
@@ -75,48 +68,89 @@ export default class StickController extends React.Component {
         context.strokeStyle = 'red';
         context.stroke();
     }
-
-    directionOfMovementX(params) {
-        this.props.directionOfMovementX(params);
-    }
-
-    directionOfMovementY(params) {
-        this.props.directionOfMovementY(params);
-    }
-
-    directionOfMovement(startX, moveX, startY, moveY) {
+    movePosition(e) {
+        let moveX=this.touchMovePositionX;
+        let moveY=this.touchMovePositionY;
         let resPosX = (this.thisXUp > moveX);
         let resPosY = (this.thisYUp > moveY);
 
         let xTest = Math.abs(this.thisXUp - moveX);
         let yTest = Math.abs(this.thisYUp - moveY);
 
+       this.moveDirection;
         if (yTest > 2) {
             if (resPosY) {
-                this.props.directionOfMovement("UP")
+                this.moveDirection = "UP";
             }
             if (!resPosY) {
-                this.props.directionOfMovement("DOWN")
+                this.moveDirection = "DOWN";
             }
         }
         if (xTest > 2) {
             if (resPosX) {
-                this.props.directionOfMovement("LEFT")
+                this.moveDirection = "LEFT";
             }
             if (!resPosX) {
-                this.props.directionOfMovement("RIGHT")
+                this.moveDirection = "RIGHT";
             }
         }
+
+        let code = e.keyCode;
+        if(code === 87){
+            this.moveDirection = "UP"
+        }
+        if(code === 83){
+            this.moveDirection = "DOWN"
+        }
+        if(code === 65){
+            this.moveDirection= "LEFT"
+        }
+        if(code === 68){
+            this.moveDirection = "RIGHT"
+        }
+
         this.thisXUp = moveX;
         this.thisYUp = moveY;
+
+
+        this._animate = true;
+        if (this.moveDirection === "UP") {
+            let move = this.state.moveY;
+            move++;
+            this.setState({moveY: move});
+            this.changeY(move);
+        }
+        if (this.moveDirection === "DOWN") {
+            let move = this.state.moveY;
+            move--;
+            this.setState({moveY: move});
+            this.changeY(move);
+        }
+        if (this.moveDirection === "LEFT") {
+            let move = this.state.moveX;
+            move++;
+            this.setState({moveX: move});
+            this.changeX(move);
+        }
+        if (this.moveDirection === "RIGHT") {
+            let move = this.state.moveX;
+            move--;
+            this.setState({moveX: move});
+            this.changeX(move);
+        }
+        this.directionOfMovement(this.moveDirection);
+    }
+
+    directionOfMovement(result) {
+        this.props.directionOfMovement(result);
     }
 
     changeX(params) {
-        this.props.changeX(-params);
+        this.props.changeX(params);
     }
 
     changeY(params) {
-        this.props.changeY(-params);
+        this.props.changeY(params);
     }
 
     render() {

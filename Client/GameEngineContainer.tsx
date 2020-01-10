@@ -19,8 +19,6 @@ class GameEngineContainer extends React.Component {
                         moveX={this.props.moveX}
                         moveY={this.props.moveY}
                         animations={true}
-                        // directionX={this.props.directionX}
-                        // directionY={this.props.directionY}
                         direction={this.props.direction}
                     />
                 </div>
@@ -28,8 +26,6 @@ class GameEngineContainer extends React.Component {
                     <StickController className=".container-fluid"
                                      changeX={this.props.changeX}
                                      changeY={this.props.changeY}
-                                     directionOfMovementX={this.props.directionOfMovementX}
-                                     directionOfMovementY={this.props.directionOfMovementY}
                                      directionOfMovement={this.props.directionOfMovement}
                     />
                 </div>
@@ -45,16 +41,12 @@ const mapStateToProps = state => {
     return {
         moveX: state.userControls.moveX,
         moveY: state.userControls.moveY,
-        directionX: state.userControls.directionX,
-        directionY: state.userControls.directionY,
         direction: state.userControls.direction,
     };
 };
 const mapDispatchToProps = {
     changeX,
     changeY,
-    directionOfMovementX,
-    directionOfMovementY,
     directionOfMovement
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GameEngineContainer);
