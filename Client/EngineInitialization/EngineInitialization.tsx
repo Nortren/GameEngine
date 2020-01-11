@@ -26,6 +26,8 @@ export default class EngineInitialization extends React.Component {
     componentDidMount() {
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
         // this.context = this.canvas.getContext("2d");
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -41,7 +43,7 @@ export default class EngineInitialization extends React.Component {
         this.map =new THREE.Sprite(new THREE.SpriteMaterial({
             map:mapSprite,
         }));
-        this.map.scale.set(20,20);
+        this.map.scale.set(30,20);
         this.map.position.set(0,0,0);
 
 
@@ -59,8 +61,8 @@ export default class EngineInitialization extends React.Component {
 
         scene.add(hero,this.map);
 
-        this.update(renderer,scene, camera,this.map,hero)
-
+        this.update(renderer,scene, camera,this.map,hero);
+        this._dynamicAnimation.humanoidAnimation();
 
         // let heroMaterial = new THREE.MeshBasicMaterial( { map: heroTexture, side:THREE.DoubleSide } );
         // let heroGeometry = new THREE.PlaneGeometry(1, 1, 0, 0);
@@ -110,7 +112,7 @@ export default class EngineInitialization extends React.Component {
 
     render() {
         return (
-            <canvas id="canvas" width="1000" height="500"/>
+            <canvas id="canvas" />
         );
     }
 }

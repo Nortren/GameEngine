@@ -18,7 +18,7 @@ export default class Dynamic {
     humanoidAnimation() {
         setInterval(() => {
             this._count++;
-        }, 1000);
+        }, 100);
         this._animate = false;
     }
 
@@ -73,7 +73,6 @@ export default class Dynamic {
         //рисуем героя по центру картинки
         hero.material.map.offset.x = rect.x;
         hero.material.map.offset.y = rect.y;
-        this._count++;
         // context.drawImage(imgHero, rect.x, rect.y, 70, 70, canvas.width / 2, canvas.height / 2, 50, 50);
     }
 
