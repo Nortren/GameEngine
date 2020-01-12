@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {changeX, changeY,directionOfMovementX,directionOfMovementY,directionOfMovement} from './Store/UserControls/Actions';
+import {changeX, changeY,directionOfMovementX,directionOfMovementY,directionOfMovement,animationStatus} from './Store/UserControls/Actions';
 import EngineInitialization from "./EngineInitialization/EngineInitialization";
 import StickController from "./StickController/StickController";
 import 'bootstrap/dist/css/bootstrap.css'
@@ -27,6 +27,7 @@ class GameEngineContainer extends React.Component {
                                      changeX={this.props.changeX}
                                      changeY={this.props.changeY}
                                      directionOfMovement={this.props.directionOfMovement}
+                                     animationStatus={this.props.animationStatus}
                     />
                 </div>
             </div>
@@ -42,11 +43,13 @@ const mapStateToProps = state => {
         moveX: state.userControls.moveX,
         moveY: state.userControls.moveY,
         direction: state.userControls.direction,
+        animationStatus: state.userControls.animationStatus,
     };
 };
 const mapDispatchToProps = {
     changeX,
     changeY,
-    directionOfMovement
+    directionOfMovement,
+    animationStatus
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GameEngineContainer);

@@ -15,7 +15,7 @@ export default class Dynamic {
      * Метод запуска анимации персоонажа
      * При первичной инициализации движка запскаем анимацию персоонажа и обновляем ее состояние от изменения state
      */
-    humanoidAnimation() {
+    humanoidAnimation(animation) {
         setInterval(() => {
             this._count++;
         }, 100);

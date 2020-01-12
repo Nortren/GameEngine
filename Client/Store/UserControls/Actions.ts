@@ -4,6 +4,7 @@ export const ACTION_CHANGE_Y_POSITION = "ACTION_CHANGE_Y_POSITION";
 export const DIRECTION_CHANGE_X_MOVEMENT = "DIRECTION_CHANGE_X_MOVEMENT";
 export const DIRECTION_CHANGE_Y_MOVEMENT = "DIRECTION_CHANGE_Y_MOVEMENT";
 export const DIRECTION_CHANGE_MOVEMENT = "DIRECTION_CHANGE_MOVEMENT";
+export const ANIMATION_CHANGE = "ANIMATION_CHANGE";
 export const changeX = new_x_position=>{
 
     return {
@@ -33,5 +34,11 @@ export const directionOfMovement = new_direction =>{
     return {
         type: DIRECTION_CHANGE_MOVEMENT,
         payload: new_direction
+    }
+};
+export const animationStatus = animationStatus =>{
+    return {
+        type: ANIMATION_CHANGE,
+        payload: animationStatus
     }
 };
