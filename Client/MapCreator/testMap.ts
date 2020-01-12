@@ -1,6 +1,6 @@
 export const testMapJSON = {
     map: {
-        src: "./Client/image/spriteMap.jpg",
+        src: "./Client/image/pixelArtTestMap.jpg",
         startPositionX: 0,
         startPositionY: 0,
         width: 100,

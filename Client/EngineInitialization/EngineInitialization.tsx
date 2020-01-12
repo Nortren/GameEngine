@@ -43,7 +43,8 @@ export default class EngineInitialization extends React.Component {
         this.map =new THREE.Sprite(new THREE.SpriteMaterial({
             map:mapSprite,
         }));
-        this.map.scale.set(30,20);
+        this.map.scale.set(19.2,10.8);
+
         this.map.position.set(0,0,0);
 
 
