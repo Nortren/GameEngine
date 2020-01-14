@@ -1,25 +1,28 @@
 export default class Dynamic {
     _count: number;
     props: object;
-    _animate: boolean;
     _pressKey: string;
+    _animationTimer: number;
+    fixPoint: number;
 
     constructor(options) {
-        // super(props);
         this._count = 0;
         this.props = options.props;
-        this._animate = this.props.animations;
+
+        this._animationTimer = 0;
+        this.fixPoint = 0;
     }
 
     /**
      * Метод запуска анимации персоонажа
      * При первичной инициализации движка запскаем анимацию персоонажа и обновляем ее состояние от изменения state
      */
-    humanoidAnimation(animation) {
-        setInterval(() => {
+    humanoidAnimation(animation, animationSpeed) {
+        if (this._animationTimer > animationSpeed && animation) {
             this._count++;
-        }, 100);
-        this._animate = false;
+            this._animationTimer = 0;
+        }
+        this._animationTimer++;
     }
 
     /**
@@ -42,7 +45,7 @@ export default class Dynamic {
         spriteOffsetsS.push({x: 0.78, y: 0.75, width: 55, height: 40});
 
         let spriteOffsetsW = [];
-        spriteOffsetsW.push({x:  0.03, y: 0, width: 57, height: 42});
+        spriteOffsetsW.push({x: 0.03, y: 0, width: 57, height: 42});
         spriteOffsetsW.push({x: 0.27, y: 0, width: 54, height: 39});
         spriteOffsetsW.push({x: 0.53, y: 0, width: 57, height: 38});
         spriteOffsetsW.push({x: 0.78, y: 0, width: 55, height: 40});
@@ -84,8 +87,47 @@ export default class Dynamic {
      * @param props данные с контролов управления для перемещения карты относительно персоонажа
      */
     updateMap(map, props) {
-        map.position.x= props.moveX*0.01;
-        map.position.y= props.moveY*-0.01;
+        map.position.x = props.moveX * 0.01;
+        map.position.y = props.moveY * -0.01;
+    }
+
+    updateEnemy(enemy, map, props, moveCountTest) {
+
+
+
+        if (!enemy.startPositionX && !enemy.startPositionY) {
+            enemy.startPositionX = enemy.position.x;
+            enemy.startPositionY = enemy.position.y;
+        }
+
+        if (this.mapPosition !== map.position.x) {
+            enemy.position.x = enemy.startPositionX + map.position.x + moveCountTest * 0.01;
+            enemy.position.y = enemy.startPositionY + map.position.y + moveCountTest * 0.01;
+        }
+
+        switch (this.fixPoint) {
+            case 0:
+                enemy.position.x = enemy.startPositionX + map.position.x + moveCountTest * 0.01;
+                break;
+            case 1:
+                enemy.position.y = enemy.startPositionY + map.position.y + moveCountTest * 0.01;
+                break;
+            case 2:
+                enemy.position.x = enemy.startPositionX + map.position.x - moveCountTest * 0.01;
+                break;
+            case 3:
+                enemy.position.y = enemy.startPositionY + map.position.y - moveCountTest * 0.01;
+                break;
+        }
+
+
+        if (moveCountTest === 60) {
+            this.fixPoint++;
+        }
+        if (this.fixPoint > 3) {
+            this.fixPoint = 0;
+        }
+        this.mapPosition = map.position.x;
     }
 }
 

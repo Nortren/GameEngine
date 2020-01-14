@@ -36,7 +36,7 @@ export const directionOfMovement = new_direction =>{
         payload: new_direction
     }
 };
-export const animationStatus = animationStatus =>{
+export const animationStatusChange = animationStatus =>{
     return {
         type: ANIMATION_CHANGE,
         payload: animationStatus

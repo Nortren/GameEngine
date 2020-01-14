@@ -2,6 +2,7 @@ import * as React from 'react';
 import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 import MapCreator from "../MapCreator/MapCreator";
 import * as THREE from "three";
+
 /**
  * Главный контрол первичной инициализации движка
  */
@@ -10,6 +11,7 @@ export default class EngineInitialization extends React.Component {
     public context: CanvasRenderingContext2D;
     public imgBacground: object;
     public imgHero: object;
+    public moveCountTest:number = 0;
     private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
     private _mapCreator: MapCreator = new MapCreator();
@@ -26,80 +28,113 @@ export default class EngineInitialization extends React.Component {
     componentDidMount() {
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        // this.context = this.canvas.getContext("2d");
+        this.resize(this.canvas);
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        scene.scale.set(1,1,1);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
+        camera.position.set(1, 1, 10);
+        camera.scale.set(1,1,1);
 
-        const renderer = new THREE.WebGLRenderer({canvas:this.canvas});
-
-
-
-        camera.position.z = 5;
-
-        const loader = new THREE.TextureLoader();
-        let mapSprite =loader.load(this._testImageMap.map.src);
-        this.map =new THREE.Sprite(new THREE.SpriteMaterial({
-            map:mapSprite,
-        }));
-        this.map.scale.set(19.2,10.8);
-
-        this.map.position.set(0,0,0);
-
-
-        let heroTexture =loader.load(this._testImageMap.hero.src);
-        heroTexture.wrapS = heroTexture.wrapT = THREE.RepeatWrapping;
-        heroTexture.offset.x = 0.78;
-        heroTexture.offset.y = 0.5;
-        heroTexture.repeat.set( 0.2, 0.25 );
-        let hero ;
-        hero =new THREE.Sprite(new THREE.SpriteMaterial({
-            map:heroTexture,
-        }));
-        hero.scale.set(0.5,0.5);
-        hero.position.set(0,0,0);
-
-        scene.add(hero,this.map);
-
-        this.update(renderer,scene, camera,this.map,hero);
-        this._dynamicAnimation.humanoidAnimation();
-
-        // let heroMaterial = new THREE.MeshBasicMaterial( { map: heroTexture, side:THREE.DoubleSide } );
-        // let heroGeometry = new THREE.PlaneGeometry(1, 1, 0, 0);
-        // let heroNew = new THREE.Mesh(heroGeometry, heroMaterial);
-    }
-
-    update(renderer,scene, camera,map,hero) {
-        requestAnimationFrame( ()=>{ this.update(renderer,scene, camera,map,hero)} );
-        renderer.render( scene, camera );
-        // hero.material.map.wrapS = 500;
-        // hero.material.map.offset.x+=0.01;
-        // hero.material.map.offset.y=0.75;
-        this._dynamicAnimation.updateMap(map, this.props);
-        this._dynamicAnimation.updateUserAvatar(hero, this.props);
-        // this._dynamicAnimation.humanoidAnimation();
-
-    }
-    componentDidUpdate() {
-        // this.context = this.canvas.getContext("2d");
-        this._animate = this.props.animations;
-
-        // this._dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
+        const map = this.createGameLocation();
+        const user = this.createUser();
+        const enemy = this.createEnemy();
+        scene.add(user, map,enemy);
+        this.update(renderer, scene, camera, map, user,enemy);
     }
 
     /**
-     * Отрисовка канваса на запущенном устройстве
-     * @param context
-     * @param canvas
-     * @param img картинка локации
-     * @param imgHero картинка героя
-     * @param dynamicAnimation метод изменения state через redux
+     * Создаём игровую локацию
      */
-    drawCanvas(context: CanvasRenderingContext2D, canvas: object, img: object, imgHero: object, dynamicAnimation: DinamicAnimation) {
-        dynamicAnimation.updateMap(this.context, this.canvas, this.imgBacground, this.props);
-        dynamicAnimation.humanoidAnimation();
-        dynamicAnimation.updateUserAvatar(this.context, this.canvas, this.imgHero, this.props);
+    createGameLocation() {
+        const loader = new THREE.TextureLoader();
+        const mapImg = loader.load(this._testImageMap.map.src);
+        mapImg.magFilter = THREE.NearestFilter;
+        const mapTexture = new THREE.SpriteMaterial({
+            map: mapImg,
+        });
+
+
+        const map = new THREE.Sprite(mapTexture);
+        map.scale.set(50, 25, 1);
+        map.position.set(0, 0, 0);
+        return map;
+    }
+
+    /**
+     * генерируем игрока на карте
+     */
+    createUser() {
+        const loader = new THREE.TextureLoader();
+
+        const userImg = loader.load(this._testImageMap.hero.src);
+        userImg.wrapS = userImg.wrapT = THREE.RepeatWrapping;
+        userImg.offset.x = 0.78;
+        userImg.offset.y = 0.5;
+        userImg.repeat.set(0.2, 0.25);
+        userImg.magFilter = THREE.NearestFilter;
+        let user;
+        const heroTexture = new THREE.SpriteMaterial({
+            map: userImg
+        });
+        user = new THREE.Sprite(heroTexture);
+        user.scale.set(1, 1, 1);
+        user.position.set(0, 0, 1);
+        return user;
+    }
+
+
+    /**
+     * генерируем врага на карте
+     */
+    createEnemy() {
+        const loader = new THREE.TextureLoader();
+        const enemyColor = 0xff0000;
+        const enemyImg = loader.load(this._testImageMap.hero.src);
+        enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
+        enemyImg.offset.x = 0.78;
+        enemyImg.offset.y = 0.5;
+        enemyImg.repeat.set(0.2, 0.25);
+        enemyImg.magFilter = THREE.NearestFilter;
+
+        const enemyTexture = new THREE.SpriteMaterial({
+            map: enemyImg,
+            color:enemyColor
+        });
+        let enemy;
+        enemy = new THREE.Sprite(enemyTexture);
+        enemy.scale.set(1, 1, 1);
+        enemy.position.set(5, 0, 0);
+        return enemy;
+    }
+
+    /**
+     * Функция покадрового обновления сцены для отображения всех изменений и анимаций
+     * @param renderer
+     * @param scene
+     * @param camera
+     * @param map
+     * @param user
+     */
+    update(renderer, scene, camera, map, user,enemy) {
+        requestAnimationFrame(() => {
+            this.update(renderer, scene, camera, map, user,enemy)
+        });
+
+        if(this.moveCountTest > 60){
+            this.moveCountTest = 0
+        }
+        renderer.render(scene, camera);
+
+        this._dynamicAnimation.updateMap(map, this.props);
+        this._dynamicAnimation.updateEnemy(enemy, map,this.props,this.moveCountTest);
+        this._dynamicAnimation.updateUserAvatar(user, this.props);
+        this._dynamicAnimation.humanoidAnimation(this.props.animations, 3);
+        this.moveCountTest++;
+    }
+
+    componentDidUpdate() {
+        this._animate = this.props.animations;
     }
 
     /**
@@ -113,7 +148,7 @@ export default class EngineInitialization extends React.Component {
 
     render() {
         return (
-            <canvas id="canvas" />
+            <canvas id="canvas"/>
         );
     }
 }

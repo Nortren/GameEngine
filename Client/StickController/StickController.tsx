@@ -13,6 +13,7 @@ export default class StickController extends React.Component {
         this.changeX = this.changeX.bind(this);
         this.changeY = this.changeY.bind(this);
         this.directionOfMovement = this.directionOfMovement.bind(this);
+        this.animationStatusChange = this.animationStatusChange.bind(this);
         this.state = {
             moveX: 0,
             moveY: 0, countMove: 0,
@@ -29,7 +30,14 @@ export default class StickController extends React.Component {
         this.thisYUp = 0;
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
+            this.animationStatusChange(true);
             this.movePosition(event);
+
+        });
+        document.addEventListener('keyup', (event) => {
+            this.animationStatusChange(false);
+            this.movePosition(event);
+
         });
         evenObject.addEventListener("touchstart", (event) => {
             this.touchStartPositionX = event.changedTouches[0].clientX;
@@ -39,10 +47,11 @@ export default class StickController extends React.Component {
             this._startAnimationTouch = setInterval(() => {
                 this.movePosition(event);
             }, 10);
-
+            this.animationStatusChange(true);
         }, false);
         evenObject.addEventListener("touchend", (event) => {
             clearInterval(this._startAnimationTouch);
+            this.animationStatusChange(false);
         }, false);
         evenObject.addEventListener("touchmove", (event) => {
             this.touchMovePositionX = event.changedTouches[0].clientX;
@@ -61,7 +70,6 @@ export default class StickController extends React.Component {
         context.closePath();
         context.fill();
         context.clearRect(0, 0, canvas.width, canvas.height);
-        // context.fillRect(this.state.moveX, this.state.moveY, 100, 100);
         context.beginPath();
         context.arc(51, 50, 45, 0, Math.PI * 2, false);
         context.fillStyle = 'transparent';
@@ -119,25 +127,25 @@ export default class StickController extends React.Component {
         this._animate = true;
         if (this.moveDirection === "UP") {
             let move = this.state.moveY;
-            move+=this.userSpeed;
+            move += this.userSpeed;
             this.setState({moveY: move});
             this.changeY(move);
         }
         if (this.moveDirection === "DOWN") {
             let move = this.state.moveY;
-            move-=this.userSpeed;
+            move -= this.userSpeed;
             this.setState({moveY: move});
             this.changeY(move);
         }
         if (this.moveDirection === "LEFT") {
             let move = this.state.moveX;
-            move+=this.userSpeed;
+            move += this.userSpeed;
             this.setState({moveX: move});
             this.changeX(move);
         }
         if (this.moveDirection === "RIGHT") {
             let move = this.state.moveX;
-            move-=this.userSpeed;
+            move -= this.userSpeed;
             this.setState({moveX: move});
             this.changeX(move);
         }
@@ -146,6 +154,12 @@ export default class StickController extends React.Component {
 
     directionOfMovement(result) {
         this.props.directionOfMovement(result);
+
+    }
+
+    animationStatusChange(result) {
+        this.props.animationStatusChange(result);
+
     }
 
     changeX(params) {

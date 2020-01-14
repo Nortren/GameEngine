@@ -46,12 +46,12 @@ module.exports = {
 		})
 	],
 	optimization: {
-		minimizer: [
-			new UglifyJSPlugin({ sourceMap: true }),
-			// new ImageminWebpackPlugin({
-			// 	test: /\.(png|jpe?g|gif|svg)$/,
-			// })
-		],
+		// minimizer: [
+		// 	new UglifyJSPlugin({ sourceMap: true }),
+		// 	// new ImageminWebpackPlugin({
+		// 	// 	test: /\.(png|jpe?g|gif|svg)$/,
+		// 	// })
+		// ],
 	},
 
 };

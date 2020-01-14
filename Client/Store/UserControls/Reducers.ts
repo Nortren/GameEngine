@@ -36,7 +36,7 @@ export const userControlsReducer = (state = initionState, action) => {
         case ANIMATION_CHANGE:
             return {
                 ...state
-                , direction: action.payload
+                , animationStatus: action.payload
             };
     }
     return state;
