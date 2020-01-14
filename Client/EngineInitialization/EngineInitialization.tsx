@@ -121,12 +121,13 @@ export default class EngineInitialization extends React.Component {
             this.update(renderer, scene, camera, map, user,enemy)
         });
 
-        if(this.moveCountTest > 60){
+        if(this.moveCountTest > 120){
             this.moveCountTest = 0
         }
         renderer.render(scene, camera);
 
-        this._dynamicAnimation.updateMap(map, this.props);
+        // this._dynamicAnimation.updateMap(map, this.props);
+        this._dynamicAnimation.updateCameraGame(camera, this.props);
         this._dynamicAnimation.updateEnemy(enemy, map,this.props,this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.humanoidAnimation(this.props.animations, 3);

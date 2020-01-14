@@ -76,58 +76,51 @@ export default class Dynamic {
         //рисуем героя по центру картинки
         hero.material.map.offset.x = rect.x;
         hero.material.map.offset.y = rect.y;
-        // context.drawImage(imgHero, rect.x, rect.y, 70, 70, canvas.width / 2, canvas.height / 2, 50, 50);
+        hero.position.x = props.moveX * -0.01;
+        hero.position.y = props.moveY * 0.01;
     }
 
     /**
      * Метод обновления локации и перемещения персоонажа(он у нас всегда по центру)
-     * @param context
-     * @param canvas
-     * @param img картинка локации
      * @param props данные с контролов управления для перемещения карты относительно персоонажа
      */
-    updateMap(map, props) {
-        map.position.x = props.moveX * 0.01;
-        map.position.y = props.moveY * -0.01;
+    updateCameraGame(camera, props) {
+        camera.position.x = props.moveX * -0.01;
+        camera.position.y = props.moveY * 0.01;
     }
 
     updateEnemy(enemy, map, props, moveCountTest) {
-
 
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionY = enemy.position.y;
         }
-
-        if (this.mapPosition !== map.position.x) {
-            enemy.position.x = enemy.startPositionX + map.position.x + moveCountTest * 0.01;
-            enemy.position.y = enemy.startPositionY + map.position.y + moveCountTest * 0.01;
-        }
-
         switch (this.fixPoint) {
             case 0:
-                enemy.position.x = enemy.startPositionX + map.position.x + moveCountTest * 0.01;
+                enemy.position.x = enemy.startPositionX + moveCountTest * 0.01;
                 break;
             case 1:
-                enemy.position.y = enemy.startPositionY + map.position.y + moveCountTest * 0.01;
+                enemy.position.y = enemy.startPositionY + moveCountTest * 0.01;
                 break;
             case 2:
-                enemy.position.x = enemy.startPositionX + map.position.x - moveCountTest * 0.01;
+                enemy.position.x = enemy.startPositionX - moveCountTest * 0.01;
                 break;
             case 3:
-                enemy.position.y = enemy.startPositionY + map.position.y - moveCountTest * 0.01;
+                enemy.position.y = enemy.startPositionY - moveCountTest * 0.01;
                 break;
         }
 
 
-        if (moveCountTest === 60) {
+        if (moveCountTest === 120) {
             this.fixPoint++;
+            enemy.startPositionX = enemy.position.x;
+            enemy.startPositionY = enemy.position.y;
+
         }
         if (this.fixPoint > 3) {
             this.fixPoint = 0;
         }
-        this.mapPosition = map.position.x;
     }
 }
 
