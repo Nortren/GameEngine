@@ -1,3 +1,4 @@
+import MapCreator from "../../MapCreator/MapCreator";
 export default class Dynamic {
     _count: number;
     props: object;
@@ -73,6 +74,9 @@ export default class Dynamic {
         if (this._pressKey === "S" || (props && props.direction === "DOWN")) {
             rect = spriteOffsetsS[this._count];
         }
+
+
+
         //рисуем героя по центру картинки
         hero.material.map.offset.x = rect.x;
         hero.material.map.offset.y = rect.y;
@@ -85,6 +89,7 @@ export default class Dynamic {
      * @param props данные с контролов управления для перемещения карты относительно персоонажа
      */
     updateCameraGame(camera, props) {
+        // camera.position.z = 10;
         camera.position.x = props.moveX * -0.01;
         camera.position.y = props.moveY * 0.01;
     }

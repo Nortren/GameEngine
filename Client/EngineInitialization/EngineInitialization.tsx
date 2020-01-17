@@ -16,8 +16,10 @@ export default class EngineInitialization extends React.Component {
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
     private _mapCreator: MapCreator = new MapCreator();
 
+
     constructor(props: object) {
         super(props);
+        this.changePhysics = this.changePhysics.bind(this);
         this.state = {
             moveX: 0,
             moveY: 0, countMove: 0,
@@ -39,8 +41,15 @@ export default class EngineInitialization extends React.Component {
         const mapObject = this._mapCreator.createGameLocation(scene);
         const user = this.createUser();
         const enemy = this.createEnemy();
+
+
+
         scene.add(user, enemy);
         this.update(renderer, scene, camera, mapObject, user, enemy);
+
+
+
+
     }
 
 
@@ -63,6 +72,8 @@ export default class EngineInitialization extends React.Component {
         user = new THREE.Sprite(heroTexture);
         user.scale.set(1, 1, 1);
         user.position.set(0, 0, 1);
+        user.center.x =1;
+        user.center.y =1;
         return user;
     }
 
@@ -108,13 +119,19 @@ export default class EngineInitialization extends React.Component {
             this.moveCountTest = 0
         }
         renderer.render(scene, camera);
-
+        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX,this.lastUserPositionY));
         // this._dynamicAnimation.updateMap(map, this.props);
         this._dynamicAnimation.updateCameraGame(camera, this.props);
         this._dynamicAnimation.updateEnemy(enemy, mapObject[0], this.props, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.humanoidAnimation(this.props.animations, 3);
         this.moveCountTest++;
+        this.lastUserPositionX = user.position.x;
+        this.lastUserPositionY = user.position.y;
+    }
+
+    changePhysics(result){
+        this.props.changePhysics(result);
     }
 
     componentDidUpdate() {

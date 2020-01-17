@@ -18,18 +18,6 @@ export const changeY = new_y_position=>{
         payload: new_y_position
     }
 };
-export const directionOfMovementX = new_x_direction =>{
-    return {
-        type: DIRECTION_CHANGE_X_MOVEMENT,
-        payload: new_x_direction
-    }
-};
-export const directionOfMovementY = new_y_direction =>{
-    return {
-        type: DIRECTION_CHANGE_Y_MOVEMENT,
-        payload: new_y_direction
-    }
-};
 export const directionOfMovement = new_direction =>{
     return {
         type: DIRECTION_CHANGE_MOVEMENT,

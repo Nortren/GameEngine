@@ -31,12 +31,12 @@ export default class StickController extends React.Component {
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
-            this.movePosition(event,true);
+            this.movePosition(event, true);
 
         });
         document.addEventListener('keyup', (event) => {
             this.animationStatusChange(false);
-            this.movePosition(event,false);
+            this.movePosition(event, false);
 
         });
         evenObject.addEventListener("touchstart", (event) => {
@@ -45,11 +45,12 @@ export default class StickController extends React.Component {
             this._startAnimationTouch = true;
 
             this._startAnimationTouch = setInterval(() => {
-                this.movePosition(event);
+                this.movePosition(event, true);
             }, 10);
             this.animationStatusChange(true);
         }, false);
         evenObject.addEventListener("touchend", (event) => {
+            this.movePosition(event, false);
             clearInterval(this._startAnimationTouch);
             this.animationStatusChange(false);
         }, false);
@@ -83,8 +84,9 @@ export default class StickController extends React.Component {
         if (!stopMove) {
             this.moveKeyFix = clearInterval(this.moveKeyFix);
         }
-        if(stopMove && !this.moveKeyFix) {
+        if (stopMove && !this.moveKeyFix) {
             this.moveKeyFix = setInterval(() => {
+                this.collisionObject = this.props.physicalCollision;
                 let moveX = this.touchMovePositionX;
                 let moveY = this.touchMovePositionY;
                 let resPosX = (this.thisXUp > moveX);
@@ -130,29 +132,38 @@ export default class StickController extends React.Component {
 
 
                 this._animate = true;
-                if (this.moveDirection === "UP") {
-                    let move = this.state.moveY;
-                    move += this.userSpeed;
-                    this.setState({moveY: move});
-                    this.changeY(move);
+                if (this.moveDirection === "UP" && !this.collisionObject) {
+
+                        let move = this.state.moveY;
+                        move +=  this.userSpeed;
+                        this.setState({moveY: move});
+                        this.changeY(move);
+
                 }
-                if (this.moveDirection === "DOWN") {
-                    let move = this.state.moveY;
-                    move -= this.userSpeed;
-                    this.setState({moveY: move});
-                    this.changeY(move);
+                this.collisionObject = true;
+                else if (this.moveDirection === "DOWN" && !this.collisionObject) {
+
+                        let move = this.state.moveY;
+                        move -= this.userSpeed;
+                        this.setState({moveY: move});
+                        this.changeY(move);
+
                 }
-                if (this.moveDirection === "LEFT") {
-                    let move = this.state.moveX;
-                    move += this.userSpeed;
-                    this.setState({moveX: move});
-                    this.changeX(move);
+                else if (this.moveDirection === "LEFT") {
+
+                        let move = this.state.moveX;
+                        move +=  this.userSpeed;
+                        this.setState({moveX: move});
+                        this.changeX(move);
+
                 }
-                if (this.moveDirection === "RIGHT") {
-                    let move = this.state.moveX;
-                    move -= this.userSpeed;
-                    this.setState({moveX: move});
-                    this.changeX(move);
+                else if (this.moveDirection === "RIGHT") {
+
+                        let move = this.state.moveX;
+                        move -=this.userSpeed;
+                        this.setState({moveX: move});
+                        this.changeX(move);
+
                 }
                 this.directionOfMovement(this.moveDirection);
             }, 10);
