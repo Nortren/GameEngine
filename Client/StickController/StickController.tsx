@@ -31,12 +31,12 @@ export default class StickController extends React.Component {
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
-            this.movePosition(event);
+            this.movePosition(event,true);
 
         });
         document.addEventListener('keyup', (event) => {
             this.animationStatusChange(false);
-            this.movePosition(event);
+            this.movePosition(event,false);
 
         });
         evenObject.addEventListener("touchstart", (event) => {
@@ -79,77 +79,84 @@ export default class StickController extends React.Component {
         context.stroke();
     }
 
-    movePosition(e) {
-        let moveX = this.touchMovePositionX;
-        let moveY = this.touchMovePositionY;
-        let resPosX = (this.thisXUp > moveX);
-        let resPosY = (this.thisYUp > moveY);
+    movePosition(e, stopMove) {
+        if (!stopMove) {
+            this.moveKeyFix = clearInterval(this.moveKeyFix);
+        }
+        if(stopMove && !this.moveKeyFix) {
+            this.moveKeyFix = setInterval(() => {
+                let moveX = this.touchMovePositionX;
+                let moveY = this.touchMovePositionY;
+                let resPosX = (this.thisXUp > moveX);
+                let resPosY = (this.thisYUp > moveY);
 
-        let xTest = Math.abs(this.thisXUp - moveX);
-        let yTest = Math.abs(this.thisYUp - moveY);
+                let xTest = Math.abs(this.thisXUp - moveX);
+                let yTest = Math.abs(this.thisYUp - moveY);
 
-        this.moveDirection;
-        if (yTest > 2) {
-            if (resPosY) {
-                this.moveDirection = "UP";
-            }
-            if (!resPosY) {
-                this.moveDirection = "DOWN";
-            }
-        }
-        if (xTest > 2) {
-            if (resPosX) {
-                this.moveDirection = "LEFT";
-            }
-            if (!resPosX) {
-                this.moveDirection = "RIGHT";
-            }
-        }
+                this.moveDirection;
+                if (yTest > 2) {
+                    if (resPosY) {
+                        this.moveDirection = "UP";
+                    }
+                    if (!resPosY) {
+                        this.moveDirection = "DOWN";
+                    }
+                }
+                if (xTest > 2) {
+                    if (resPosX) {
+                        this.moveDirection = "LEFT";
+                    }
+                    if (!resPosX) {
+                        this.moveDirection = "RIGHT";
+                    }
+                }
 
-        let code = e.keyCode;
-        if (code === 87) {
-            this.moveDirection = "UP"
-        }
-        if (code === 83) {
-            this.moveDirection = "DOWN"
-        }
-        if (code === 65) {
-            this.moveDirection = "LEFT"
-        }
-        if (code === 68) {
-            this.moveDirection = "RIGHT"
-        }
+                let code = e.keyCode;
+                if (code === 87) {
+                    this.moveDirection = "UP"
+                }
+                if (code === 83) {
+                    this.moveDirection = "DOWN"
+                }
+                if (code === 65) {
+                    this.moveDirection = "LEFT"
+                }
+                if (code === 68) {
+                    this.moveDirection = "RIGHT"
+                }
 
-        this.thisXUp = moveX;
-        this.thisYUp = moveY;
+                this.thisXUp = moveX;
+                this.thisYUp = moveY;
 
 
-        this._animate = true;
-        if (this.moveDirection === "UP") {
-            let move = this.state.moveY;
-            move += this.userSpeed;
-            this.setState({moveY: move});
-            this.changeY(move);
+                this._animate = true;
+                if (this.moveDirection === "UP") {
+                    let move = this.state.moveY;
+                    move += this.userSpeed;
+                    this.setState({moveY: move});
+                    this.changeY(move);
+                }
+                if (this.moveDirection === "DOWN") {
+                    let move = this.state.moveY;
+                    move -= this.userSpeed;
+                    this.setState({moveY: move});
+                    this.changeY(move);
+                }
+                if (this.moveDirection === "LEFT") {
+                    let move = this.state.moveX;
+                    move += this.userSpeed;
+                    this.setState({moveX: move});
+                    this.changeX(move);
+                }
+                if (this.moveDirection === "RIGHT") {
+                    let move = this.state.moveX;
+                    move -= this.userSpeed;
+                    this.setState({moveX: move});
+                    this.changeX(move);
+                }
+                this.directionOfMovement(this.moveDirection);
+            }, 10);
         }
-        if (this.moveDirection === "DOWN") {
-            let move = this.state.moveY;
-            move -= this.userSpeed;
-            this.setState({moveY: move});
-            this.changeY(move);
-        }
-        if (this.moveDirection === "LEFT") {
-            let move = this.state.moveX;
-            move += this.userSpeed;
-            this.setState({moveX: move});
-            this.changeX(move);
-        }
-        if (this.moveDirection === "RIGHT") {
-            let move = this.state.moveX;
-            move -= this.userSpeed;
-            this.setState({moveX: move});
-            this.changeX(move);
-        }
-        this.directionOfMovement(this.moveDirection);
     }
 
     directionOfMovement(result) {

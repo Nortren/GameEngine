@@ -23,18 +23,19 @@ export default class MapCreator {
         const mapData = this.parserJSON().map;
         const loader = new THREE.TextureLoader();
         const mapImg = loader.load(mapData.src);
-        //Материал для pixe_art улучшает качество до пиксельного
-
-        const mapTexture = new THREE.SpriteMaterial({
-            map: mapImg,
-        });
-
         mapImg.wrapS = THREE.RepeatWrapping;
         mapImg.wrapT = THREE.RepeatWrapping;
         const timesToRepeatHorizontally = 4;
         const timesToRepeatVertically = 2;
         mapImg.repeat.set(timesToRepeatHorizontally, timesToRepeatVertically);
+        //Материал для pixe_art улучшает качество до пиксельного
         mapImg.magFilter = THREE.NearestFilter;
+
+        const mapTexture = new THREE.SpriteMaterial({
+            map: mapImg,
+        });
+
+
 
         const map = new THREE.Sprite(mapTexture);
         map.scale.set(mapData.width, mapData.height, mapData.zIndex1);
