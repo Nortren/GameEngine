@@ -52,7 +52,7 @@ export default class MapCreator {
             elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
             elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
 
-            this.createObjectCollision(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.width, mapElementObject.height);
+            this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
             scene.add(elementObj);
             mapObject.push(elementObj);
             console.log(mapElementObject.src);
