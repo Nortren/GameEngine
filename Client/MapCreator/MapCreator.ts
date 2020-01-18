@@ -57,17 +57,6 @@ export default class MapCreator {
             mapObject.push(elementObj);
             console.log(mapElementObject.src);
         }
-/*        const boxWidth = 1;
-        const boxHeight = 1;
-        const boxDepth = 1;
-        const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
-        const material = new THREE.MeshBasicMaterial({color: 0x44aa88});
-        const cube = new THREE.Mesh(geometry, material);
-        cube.scale.set(10,10,2);
-        cube.position.set(10,10,0);
-
-        this.createObjectCollision(cube.position.x,cube.position.y,cube.scale.x,cube.scale.y);
-        scene.add(cube);*/
 
         scene.add(map);
         return mapObject;
@@ -85,11 +74,11 @@ export default class MapCreator {
 
     }
 
-    checkCollision(Xmove, Ymove) {
-        let checkX = false;
-        let checkY = false;
+    checkCollision(Xmove, Ymove,direction) {
 
         for (let key in this.collisionPoint) {
+            let checkX = false;
+            let checkY = false;
 
             let collision = this.collisionPoint[key];
             let drawObjectRealWidth = collision.width/2;
@@ -102,13 +91,10 @@ export default class MapCreator {
             }
 
             if(checkX && checkY){
-                return true;
+                return direction;
             }
-            else{
-                return false;
-            }
-
         }
+        return false;
     }
 }
 

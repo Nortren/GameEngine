@@ -119,7 +119,7 @@ export default class EngineInitialization extends React.Component {
             this.moveCountTest = 0
         }
         renderer.render(scene, camera);
-        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX,this.lastUserPositionY));
+
         // this._dynamicAnimation.updateMap(map, this.props);
         this._dynamicAnimation.updateCameraGame(camera, this.props);
         this._dynamicAnimation.updateEnemy(enemy, mapObject[0], this.props, this.moveCountTest);
@@ -128,6 +128,7 @@ export default class EngineInitialization extends React.Component {
         this.moveCountTest++;
         this.lastUserPositionX = user.position.x;
         this.lastUserPositionY = user.position.y;
+        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX,this.lastUserPositionY,this.props.direction));
     }
 
     changePhysics(result){

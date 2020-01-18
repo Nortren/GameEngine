@@ -9,15 +9,15 @@ export const testMapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement:{
-        /*    home:{
-                src: "./Client/image/home2.png",
-                startPositionX: -10,
+            home:{
+                src: "./Client/image/testGeometry.png",
+                startPositionX: 20,
                 startPositionY: 0,
-                startPositionZ: 2,
+                startPositionZ: 0,
                 width: 10,
                 height: 10,
                 zIndex:1,
-            },*/
+            },
             home2:{
                 src: "./Client/image/testGeometry.png",
                 startPositionX: 10,

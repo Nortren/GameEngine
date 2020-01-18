@@ -86,6 +86,7 @@ export default class StickController extends React.Component {
         }
         if (stopMove && !this.moveKeyFix) {
             this.moveKeyFix = setInterval(() => {
+                //collisionObject это прроверка куда было движение перед тем как игрок столкнулся с препятствием, мы блокируем изминение координат по этому вектору
                 this.collisionObject = this.props.physicalCollision;
                 let moveX = this.touchMovePositionX;
                 let moveY = this.touchMovePositionY;
@@ -132,40 +133,42 @@ export default class StickController extends React.Component {
 
 
                 this._animate = true;
-                if (this.moveDirection === "UP" && !this.collisionObject) {
-
-                        let move = this.state.moveY;
-                        move +=  this.userSpeed;
-                        this.setState({moveY: move});
-                        this.changeY(move);
-
-                }
-                this.collisionObject = true;
-                else if (this.moveDirection === "DOWN" && !this.collisionObject) {
-
-                        let move = this.state.moveY;
-                        move -= this.userSpeed;
-                        this.setState({moveY: move});
-                        this.changeY(move);
-
-                }
-                else if (this.moveDirection === "LEFT") {
-
-                        let move = this.state.moveX;
-                        move +=  this.userSpeed;
-                        this.setState({moveX: move});
-                        this.changeX(move);
-
-                }
-                else if (this.moveDirection === "RIGHT") {
-
-                        let move = this.state.moveX;
-                        move -=this.userSpeed;
-                        this.setState({moveX: move});
-                        this.changeX(move);
-
-                }
                 this.directionOfMovement(this.moveDirection);
+                if (this.moveDirection === "UP" && this.collisionObject !== "UP") {
+
+                    let move = this.state.moveY;
+                    move += this.userSpeed;
+                    this.setState({moveY: move});
+                    this.changeY(move);
+
+                }
+
+                if (this.moveDirection === "DOWN" && this.collisionObject !== "DOWN") {
+
+                    let move = this.state.moveY;
+                    move -= this.userSpeed;
+                    this.setState({moveY: move});
+                    this.changeY(move);
+
+                }
+                if (this.moveDirection === "LEFT" && this.collisionObject !== "LEFT") {
+
+                    let move = this.state.moveX;
+                    move += this.userSpeed;
+                    this.setState({moveX: move});
+                    this.changeX(move);
+
+                }
+                if (this.moveDirection === "RIGHT" && this.collisionObject !== "RIGHT") {
+
+                    let move = this.state.moveX;
+                    move -= this.userSpeed;
+                    this.setState({moveX: move});
+                    this.changeX(move);
+
+                }
+
+
             }, 10);
         }
     }
