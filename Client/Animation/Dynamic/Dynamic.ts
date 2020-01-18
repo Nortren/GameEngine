@@ -94,39 +94,6 @@ export default class Dynamic {
         camera.position.y = props.moveY * 0.01;
     }
 
-    updateEnemy(enemy, map, props, moveCountTest) {
-
-
-        if (!enemy.startPositionX && !enemy.startPositionY) {
-            enemy.startPositionX = enemy.position.x;
-            enemy.startPositionY = enemy.position.y;
-        }
-        switch (this.fixPoint) {
-            case 0:
-                enemy.position.x = enemy.startPositionX + moveCountTest * 0.01;
-                break;
-            case 1:
-                enemy.position.y = enemy.startPositionY + moveCountTest * 0.01;
-                break;
-            case 2:
-                enemy.position.x = enemy.startPositionX - moveCountTest * 0.01;
-                break;
-            case 3:
-                enemy.position.y = enemy.startPositionY - moveCountTest * 0.01;
-                break;
-        }
-
-
-        if (moveCountTest === 120) {
-            this.fixPoint++;
-            enemy.startPositionX = enemy.position.x;
-            enemy.startPositionY = enemy.position.y;
-
-        }
-        if (this.fixPoint > 3) {
-            this.fixPoint = 0;
-        }
-    }
 }
 
 

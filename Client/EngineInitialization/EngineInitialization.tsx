@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 import MapCreator from "../MapCreator/MapCreator";
+import AI from "../AI/AI";
 import * as THREE from "three";
 
 /**
@@ -14,6 +15,7 @@ export default class EngineInitialization extends React.Component {
     public moveCountTest: number = 0;
     private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
+    private _AI: AI = new AI(this);
     private _mapCreator: MapCreator = new MapCreator();
 
 
@@ -28,6 +30,12 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
+        let position = {x: 5, y: 0, z: 0};
+        let position1 = {x: -5, y: 0, z: 0};
+        let position2 = {x: 5, y: -5, z: 0};
+
+        const enemyArray = [];
+
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -35,19 +43,17 @@ export default class EngineInitialization extends React.Component {
         scene.scale.set(1, 1, 1);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        camera.position.set(1, 1, 10);
+        camera.position.set(1, 1, 15);
         camera.scale.set(1, 1, 1);
 
         const mapObject = this._mapCreator.createGameLocation(scene);
         const user = this.createUser();
-        const enemy = this.createEnemy();
-
-
-
-        scene.add(user, enemy);
+        const enemy = this._AI.createEnemy(position);
+        const enemy1 = this._AI.createEnemy(position1);
+        const enemy3 = this._AI.createEnemy(position2);
+        enemyArray.push(enemy,enemy1,enemy3)
+        scene.add(user, enemy,enemy1,enemy3);
         this.update(renderer, scene, camera, mapObject, user, enemy);
-
-
 
 
     }
@@ -70,10 +76,10 @@ export default class EngineInitialization extends React.Component {
             map: userImg
         });
         user = new THREE.Sprite(heroTexture);
-        user.scale.set(1, 1, 1);
+        user.scale.set(2, 2, 1);
         user.position.set(0, 0, 1);
-        user.center.x =1;
-        user.center.y =1;
+        user.center.x = 1;
+        user.center.y = 1;
         return user;
     }
 
@@ -97,7 +103,7 @@ export default class EngineInitialization extends React.Component {
         });
         let enemy;
         enemy = new THREE.Sprite(enemyTexture);
-        enemy.scale.set(1, 1, 1);
+        enemy.scale.set(2, 2, 1);
         enemy.position.set(5, 0, 0);
         return enemy;
     }
@@ -122,16 +128,16 @@ export default class EngineInitialization extends React.Component {
 
         // this._dynamicAnimation.updateMap(map, this.props);
         this._dynamicAnimation.updateCameraGame(camera, this.props);
-        this._dynamicAnimation.updateEnemy(enemy, mapObject[0], this.props, this.moveCountTest);
+        this._AI.updateEnemy(enemy, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.humanoidAnimation(this.props.animations, 3);
         this.moveCountTest++;
         this.lastUserPositionX = user.position.x;
         this.lastUserPositionY = user.position.y;
-        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX,this.lastUserPositionY,this.props.direction));
+        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionY, this.props.direction));
     }
 
-    changePhysics(result){
+    changePhysics(result) {
         this.props.changePhysics(result);
     }
 

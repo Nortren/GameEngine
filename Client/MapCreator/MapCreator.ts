@@ -44,6 +44,7 @@ export default class MapCreator {
         for (let key in mapData.mapElement) {
             let mapElementObject = mapData.mapElement[key];
             let mapElementObjectIMG = loader.load(mapElementObject.src);
+            mapElementObjectIMG.magFilter = THREE.NearestFilter;
             let mapElementObjectTexture = new THREE.SpriteMaterial({
                 map: mapElementObjectIMG,
             });
