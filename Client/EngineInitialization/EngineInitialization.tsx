@@ -4,6 +4,8 @@ import MapCreator from "../MapCreator/MapCreator";
 import AI from "../AI/AI";
 import * as THREE from "three";
 import * as OrbitControls from "three-orbitcontrols";
+import * as OBJLoader from 'three-obj-loader';
+
 import {CameraControl} from  "../DevelopersTools/DevelopersTools"
 import {testMapJSON} from "./testMap";
 /**
@@ -50,9 +52,6 @@ export default class EngineInitialization extends React.Component {
         camera.scale.set(1, 1, 1);
 
 
-
-
-
         const mapObject = this._mapCreator.createGameLocation(scene);
         const user = this.createUser();
         const enemy = this._AI.createEnemy(position);
@@ -87,12 +86,33 @@ export default class EngineInitialization extends React.Component {
         scene.add(mesh);
 
 
-        // const cubeSize = 4;
-        // const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
-        // const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
-        // const mesh1 = new THREE.Mesh(cubeGeo, cubeMat);
-        // mesh1.position.set(cubeSize + 1, cubeSize / 2, 0);
-        // // scene.add(mesh1);
+        const cubeSize = 4;
+        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
+        const mesh1 = new THREE.Mesh(cubeGeo, cubeMat);
+        mesh1.position.set(cubeSize + 1, cubeSize / 2, 0);
+        scene.add(mesh1);
+
+
+        let manager = new THREE.LoadingManager();
+        // let IMAGE_LOADER = new THREE.ImageLoader(manager);
+        OBJLoader(THREE);
+        let loaderOBJ = new THREE.OBJLoader();
+        let object;
+
+
+
+        loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
+            object.scale.x = 1;
+            object.scale.y = 1;
+            object.scale.z = 1;
+            // object.rotation.x = -Math.PI / 2;
+            // object.position.y = -30;
+
+            let OBJECT = object;
+            scene.add(OBJECT);
+        });
+
         //
         //
         // const sphereRadius = 3;
@@ -109,7 +129,7 @@ export default class EngineInitialization extends React.Component {
         const light = new THREE.AmbientLight(color, intensity);
         scene.add(light);
         // this.update(renderer, scene, camera,user);
-        this.update(renderer, scene, camera, user, enemy,mapObject);
+        this.update(renderer, scene, camera, user, enemy, mapObject);
     }
 
     /**
@@ -146,9 +166,9 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera,  user, enemy,map) {
+    update(renderer, scene, camera, user, enemy, map) {
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera,  user, enemy,map);
+            this.update(renderer, scene, camera, user, enemy, map);
             // this.update(renderer, scene, camera,user);
         });
 
