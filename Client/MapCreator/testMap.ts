@@ -9,7 +9,21 @@ export const testMapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement:{
-            home:{
+            home3:{
+                src: "./Client/image/home.png",
+                startPositionX: 0,
+                startPositionY: 3,
+                startPositionZ: -15,
+                width: 10,
+                height: 10,
+                colliderPositionX: 0,
+                colliderPositionY: 11,
+                colliderPositionZ: 0,
+                colliderWidth: 20,
+                colliderHeight: 17,
+                zIndex:1,
+            },
+            /*home:{
                 src: "./Client/image/midieval/archery_range.png",
                 startPositionX: 15,
                 startPositionY: -10,
@@ -121,7 +135,7 @@ export const testMapJSON = {
                 colliderWidth: 9,
                 colliderHeight: 5,
                 zIndex:1,
-            }
+            }*/
         }
 
     },

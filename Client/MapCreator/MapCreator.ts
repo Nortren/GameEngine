@@ -25,6 +25,7 @@ export default class MapCreator {
         const mapData = this.parserJSON().map;
         const loader = new THREE.TextureLoader();
         const mapImg = loader.load(mapData.src);
+        const mapColor = 0xf3f3f3;
         mapImg.wrapS = THREE.RepeatWrapping;
         mapImg.wrapT = THREE.RepeatWrapping;
         const timesToRepeatHorizontally = 4;
@@ -35,6 +36,7 @@ export default class MapCreator {
 
         const mapTexture = new THREE.SpriteMaterial({
             map: mapImg,
+            color: mapColor
         });
 
 
@@ -56,10 +58,9 @@ export default class MapCreator {
             this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
             scene.add(elementObj);
             mapObject.push(elementObj);
-            console.log(mapElementObject.src);
         }
 
-        scene.add(map);
+        // scene.add(map);
         return mapObject;
     }
 

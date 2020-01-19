@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {changeX, changeY,directionOfMovement,animationStatusChange} from './Store/UserControls/Actions';
+import {changeX, changeZ,directionOfMovement,animationStatusChange} from './Store/UserControls/Actions';
 import {changePhysics} from './Store/Physics/Actions';
 import EngineInitialization from "./EngineInitialization/EngineInitialization";
 import StickController from "./StickController/StickController";
@@ -18,7 +18,7 @@ class GameEngineContainer extends React.Component {
                 <div className="row">
                     <EngineInitialization
                         moveX={this.props.moveX}
-                        moveY={this.props.moveY}
+                        moveZ={this.props.moveZ}
                         animations={this.props.animationStatus}
                         direction={this.props.direction}
                         changePhysics={this.props.changePhysics}
@@ -30,7 +30,7 @@ class GameEngineContainer extends React.Component {
                                      physicalCollision={this.props.physicalCollision}
                                      changePhysics={this.props.changePhysics}
                                      changeX={this.props.changeX}
-                                     changeY={this.props.changeY}
+                                     changeZ={this.props.changeZ}
                                      directionOfMovement={this.props.directionOfMovement}
                                      animationStatusChange={this.props.animationStatusChange}
                     />
@@ -46,7 +46,7 @@ class GameEngineContainer extends React.Component {
 const mapStateToProps = state => {
     return {
         moveX: state.userControls.moveX,
-        moveY: state.userControls.moveY,
+        moveZ: state.userControls.moveZ,
         direction: state.userControls.direction,
         animationStatus: state.userControls.animationStatus,
         physicalCollision: state.physics.physicalCollision
@@ -54,7 +54,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
     changeX,
-    changeY,
+    changeZ,
     directionOfMovement,
     animationStatusChange,
     changePhysics

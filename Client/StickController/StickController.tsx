@@ -11,12 +11,12 @@ export default class StickController extends React.Component {
 
         super(props);
         this.changeX = this.changeX.bind(this);
-        this.changeY = this.changeY.bind(this);
+        this.changeZ = this.changeZ.bind(this);
         this.directionOfMovement = this.directionOfMovement.bind(this);
         this.animationStatusChange = this.animationStatusChange.bind(this);
         this.state = {
             moveX: 0,
-            moveY: 0, countMove: 0,
+            moveZ: 0, countMove: 0,
             moveXBoll: true
         };
     }
@@ -27,7 +27,7 @@ export default class StickController extends React.Component {
 
 
         this.thisXUp = 0;
-        this.thisYUp = 0;
+        this.thisZUp = 0;
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
@@ -41,7 +41,7 @@ export default class StickController extends React.Component {
         });
         evenObject.addEventListener("touchstart", (event) => {
             this.touchStartPositionX = event.changedTouches[0].clientX;
-            this.touchStartPositionY = event.changedTouches[0].clientY;
+            this.touchStartPositionZ = event.changedTouches[0].clientZ;
             this._startAnimationTouch = true;
 
             this._startAnimationTouch = setInterval(() => {
@@ -56,7 +56,7 @@ export default class StickController extends React.Component {
         }, false);
         evenObject.addEventListener("touchmove", (event) => {
             this.touchMovePositionX = event.changedTouches[0].clientX;
-            this.touchMovePositionY = event.changedTouches[0].clientY;
+            this.touchMovePositionZ = event.changedTouches[0].clientZ;
         }, false);
 
     }
@@ -89,19 +89,19 @@ export default class StickController extends React.Component {
                 //collisionObject это прроверка куда было движение перед тем как игрок столкнулся с препятствием, мы блокируем изминение координат по этому вектору
                 this.collisionObject = this.props.physicalCollision;
                 let moveX = this.touchMovePositionX;
-                let moveY = this.touchMovePositionY;
+                let moveZ = this.touchMovePositionY;
                 let resPosX = (this.thisXUp > moveX);
-                let resPosY = (this.thisYUp > moveY);
+                let resPosZ = (this.thisZUp > moveZ);
 
                 let xTest = Math.abs(this.thisXUp - moveX);
-                let yTest = Math.abs(this.thisYUp - moveY);
+                let zTest = Math.abs(this.thisZUp - moveZ);
 
                 this.moveDirection;
-                if (yTest > 2) {
-                    if (resPosY) {
+                if (zTest > 2) {
+                    if (resPosZ) {
                         this.moveDirection = "UP";
                     }
-                    if (!resPosY) {
+                    if (!resPosZ) {
                         this.moveDirection = "DOWN";
                     }
                 }
@@ -129,26 +129,26 @@ export default class StickController extends React.Component {
                 }
 
                 this.thisXUp = moveX;
-                this.thisYUp = moveY;
+                this.thisZUp = moveZ;
 
 
                 this._animate = true;
                 this.directionOfMovement(this.moveDirection);
                 if (this.moveDirection === "UP" && this.collisionObject !== "UP") {
 
-                    let move = this.state.moveY;
+                    let move = this.state.moveZ;
                     move += this.userSpeed;
-                    this.setState({moveY: move});
-                    this.changeY(move);
+                    this.setState({moveZ: move});
+                    this.changeZ(move);
 
                 }
 
                 if (this.moveDirection === "DOWN" && this.collisionObject !== "DOWN") {
 
-                    let move = this.state.moveY;
+                    let move = this.state.moveZ;
                     move -= this.userSpeed;
-                    this.setState({moveY: move});
-                    this.changeY(move);
+                    this.setState({moveZ: move});
+                    this.changeZ(move);
 
                 }
                 if (this.moveDirection === "LEFT" && this.collisionObject !== "LEFT") {
@@ -187,8 +187,8 @@ export default class StickController extends React.Component {
         this.props.changeX(params);
     }
 
-    changeY(params) {
-        this.props.changeY(params);
+    changeZ(params) {
+        this.props.changeZ(params);
     }
 
     render() {

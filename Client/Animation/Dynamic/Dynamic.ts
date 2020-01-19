@@ -81,7 +81,7 @@ export default class Dynamic {
         hero.material.map.offset.x = rect.x;
         hero.material.map.offset.y = rect.y;
         hero.position.x = props.moveX * -0.01;
-        hero.position.y = props.moveY * 0.01;
+        hero.position.z = props.moveZ * -0.01;
     }
 
     /**
@@ -91,7 +91,7 @@ export default class Dynamic {
     updateCameraGame(camera, props) {
         // camera.position.z = 10;
         camera.position.x = props.moveX * -0.01;
-        camera.position.y = props.moveY * 0.01;
+        camera.position.z = props.moveZ * -0.01;
     }
 
 }

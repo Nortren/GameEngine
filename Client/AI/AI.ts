@@ -114,15 +114,16 @@ export default class AI {
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
             enemy.startPositionX = enemy.position.x;
-            enemy.startPositionY = enemy.position.y;
+            enemy.startPositionY = enemy.position.z;
         }
+        // enemy.position.z = 5;
         switch (this.fixPoint) {
             case 0:
                 enemy.position.x = enemy.startPositionX + moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy,'moveRight');
                 break;
             case 1:
-                enemy.position.y = enemy.startPositionY + moveCountTest * 0.01;
+                enemy.position.z = enemy.startPositionY - moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy,'moveUP');
                 break;
             case 2:
@@ -130,7 +131,7 @@ export default class AI {
                 this.updateEnemyAvatar(enemy,'moveLeft');
                 break;
             case 3:
-                enemy.position.y = enemy.startPositionY - moveCountTest * 0.01;
+                enemy.position.z = enemy.startPositionY + moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy,'moveDown');
                 break;
         }
@@ -139,7 +140,7 @@ export default class AI {
         if (moveCountTest === 120) {
             this.fixPoint++;
             enemy.startPositionX = enemy.position.x;
-            enemy.startPositionY = enemy.position.y;
+            enemy.startPositionY = enemy.position.z;
 
         }
 
