@@ -76,15 +76,7 @@ export default class Dynamic {
         hero.position.z = props.moveZ * -0.01;
     }
 
-    /**
-     * Метод обновления локации и перемещения персоонажа(он у нас всегда по центру)
-     * @param props данные с контролов управления для перемещения карты относительно персоонажа
-     */
-    updateCameraGame(camera, props) {
-        // camera.position.z = 10;
-        camera.position.x = props.moveX * -0.01;
-        camera.position.z = props.moveZ * -0.01;
-    }
+
 
 }
 

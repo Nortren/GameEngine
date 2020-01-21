@@ -8,12 +8,25 @@ export default class AI {
     animation: Dynamic = new Dynamic();
     _animationTimer: number;
     fixPoint: number;
+
+
+    radiusOfDetection: number;
+    moveSpeed: number;
+    attackSpeed: number;
+    damage: number;
+    amountOfHealth: number;
+
     private _testImageMap: object;
     private _mapCreator: MapCreator = new MapCreator();
 
-    constructor(options) {
+    constructor(amountOfHealth,damage,attackSpeed,moveSpeed,radiusOfDetection) {
         this._count = 0;
-        this.props = options.props;
+        this.radiusOfDetection = radiusOfDetection;
+        this.moveSpeed = moveSpeed;
+        this.attackSpeed = attackSpeed;
+        this.damage = damage;
+        this.amountOfHealth = amountOfHealth;
+
 
         this._animationTimer = 0;
         this.fixPoint = 0;
@@ -87,11 +100,11 @@ export default class AI {
             map: enemyImg,
             color: enemyColor
         });
-        let enemy;
-        enemy = new THREE.Sprite(enemyTexture);
-        enemy.scale.set(2, 2, 1);
-        enemy.position.set(position.x, position.y, position.z);
-        return enemy;
+        let enemySprite;
+        enemySprite = new THREE.Sprite(enemyTexture);
+        enemySprite.scale.set(2, 2, 1);
+        enemySprite.position.set(position.x, position.y, position.z);
+        return enemySprite;
     }
 
     updateEnemy(enemy, moveCountTest) {

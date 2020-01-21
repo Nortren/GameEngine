@@ -1,27 +1,28 @@
 export const testMapJSON = {
     map: {
-        src: "./Client/image/terrain.jpg",
+        src: "./Client/image/terrain_snow.jpg",
         startPositionX: 0,
         startPositionY: 0,
         width: 100,
         height: 100,
-        zIndex:3,
+        zIndex: 3,
         mapSizeX: 1000,
         mapSizeY: 1000,
-        mapElement:{
-            home3:{
-                src: "./Client/image/home.png",
+        mapElement: {
+            home3: {
+                src: "./Client/image/testGeometry.png",
                 startPositionX: 0,
                 startPositionY: 1,
                 startPositionZ: -15,
                 width: 10,
                 height: 10,
+                collaid: "./Client/image/collaid.png",
                 colliderPositionX: 0,
                 colliderPositionY: 11,
                 colliderPositionZ: 0,
                 colliderWidth: 20,
                 colliderHeight: 17,
-                zIndex:1,
+                zIndex: 1,
             },
             /*home:{
                 src: "./Client/image/midieval/archery_range.png",
@@ -30,6 +31,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 15,
                 height: 15,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 15,
                 colliderPositionY: -10,
                 colliderPositionZ: 0,
@@ -44,6 +46,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 15,
                 height: 15,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: -18,
                 colliderPositionY: 6,
                 colliderPositionZ: 0,
@@ -58,6 +61,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 25,
                 height: 25,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 0,
                 colliderPositionY: 11,
                 colliderPositionZ: 0,
@@ -72,6 +76,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 10,
                 height: 10,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 20,
                 colliderPositionY: 3,
                 colliderPositionZ: 0,
@@ -86,6 +91,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 10,
                 height: 10,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 30,
                 colliderPositionY: 3,
                 colliderPositionZ: 0,
@@ -100,6 +106,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 10,
                 height: 10,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 40,
                 colliderPositionY: 3,
                 colliderPositionZ: 0,
@@ -114,6 +121,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 14,
                 height: 14,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: -14,
                 colliderPositionY: -5,
                 colliderPositionZ: 0,
@@ -129,6 +137,7 @@ export const testMapJSON = {
                 startPositionZ: 2,
                 width: 12,
                 height: 12,
+                  collaid:"./Client/image/collaid.png",
                 colliderPositionX: 0,
                 colliderPositionY: -15,
                 colliderPositionZ: 0,
@@ -139,7 +148,7 @@ export const testMapJSON = {
         }
 
     },
-  hero:{
-      src: "./Client/image/hero.png",
-  }
+    hero: {
+        src: "./Client/image/testGeometry.png",
+    }
 };

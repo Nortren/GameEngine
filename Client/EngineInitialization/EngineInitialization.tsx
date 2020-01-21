@@ -3,23 +3,24 @@ import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 import MapCreator from "../MapCreator/MapCreator";
 import AI from "../AI/AI";
 import * as THREE from "three";
-import * as OrbitControls from "three-orbitcontrols";
 import * as OBJLoader from 'three-obj-loader';
+import Player from "../Player/Player"
+import Camera from "../Camera/Camera";
 
-import {CameraControl} from  "../DevelopersTools/DevelopersTools"
+import {CameraControl} from "../DevelopersTools/DevelopersTools"
 import {testMapJSON} from "./testMap";
+
 /**
  * Главный контрол первичной инициализации движка
  */
 export default class EngineInitialization extends React.Component {
     public canvas: object;
     public context: CanvasRenderingContext2D;
-    public imgBacground: object;
-    public imgHero: object;
     public moveCountTest: number = 0;
     private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
-    private _AI: AI = new AI(this);
+    private _player: Player = new Player();
+    private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
 
@@ -35,8 +36,6 @@ export default class EngineInitialization extends React.Component {
 
     componentDidMount() {
         let position = {x: 5, y: 1, z: 0};
-        let position1 = {x: -5, y: 1, z: 0};
-        let position2 = {x: 5, y: 1, z: 0};
 
         const enemyArray = [];
 
@@ -45,84 +44,51 @@ export default class EngineInitialization extends React.Component {
         this.resize(this.canvas);
         const scene = new THREE.Scene();
         scene.scale.set(1, 1, 1);
-        const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 100);
+        const camera = this._camera.createCamera();
 
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        camera.position.set(0, 10, 5);
-        camera.scale.set(1, 1, 1);
-
-
         const mapObject = this._mapCreator.createGameLocation(scene);
-        const user = this.createUser();
+        scene.add(mapObject);
+
+        const userData = {img: this._testImageMap.hero.src};
+        const user = this._player.createPlayer(userData);
+
+        this._AI = new AI(10, 1, 1, 10, 30);
         const enemy = this._AI.createEnemy(position);
-        const enemy1 = this._AI.createEnemy(position1);
-        const enemy3 = this._AI.createEnemy(position2);
-        enemyArray.push(enemy, enemy1, enemy3)
-        scene.add(user, enemy, enemy1, enemy3);
-        // this.update(renderer, scene, camera, mapObject, user, enemy);
+
+        enemyArray.push(enemy);
+        scene.add(user, enemy);
+
+        this._camera.сameraON(false, camera, this.canvas);
 
 
-        var controls = new OrbitControls(camera, this.canvas);
-        controls.target.set(0, 0, 0);
-        controls.update();
-
-        const planeSize = 100;
-
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(this._testImageMap.map.src);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.magFilter = THREE.NearestFilter;
-        const repeats = planeSize / 2;
-        texture.repeat.set(repeats, repeats);
-
-        const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-        const planeMat = new THREE.MeshPhongMaterial({
-            map: texture,
-            // side: THREE.DoubleSide,
-        });
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
-        mesh.rotation.x = Math.PI * -.5;
-        scene.add(mesh);
-
-
-    /*    const cubeSize = 4;
-        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
-        const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
-        const mesh1 = new THREE.Mesh(cubeGeo, cubeMat);
-        mesh1.position.set(cubeSize + 1, cubeSize / 2, 0);
-        scene.add(mesh1);*/
-
-
-        let manager = new THREE.LoadingManager();
-        // let IMAGE_LOADER = new THREE.ImageLoader(manager);
         OBJLoader(THREE);
         let loaderOBJ = new THREE.OBJLoader();
-        let object;
 
-
-
-   /*     loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
-            object.scale.x = 1;
-            object.scale.y = 1;
-            object.scale.z = 1;
+        let textuteModel = new THREE.Texture();
+        const loader = new THREE.TextureLoader();
+        const userImg = loader.load('./Client/image/ground.jpg', (img) => {
+            textuteModel.image = img, textuteModel.needsUpdate = true;
+        });
+        const heroTexture = new THREE.SpriteMaterial({
+            map: userImg
+        });
+        loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
+            object.scale.x = 0.3;
+            object.scale.y = 0.3;
+            object.scale.z = 0.3;
             // object.rotation.x = -Math.PI / 2;
             // object.position.y = -30;
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
 
+                    child.material.map = textuteModel;
+
+                }
+            });
             let OBJECT = object;
             scene.add(OBJECT);
-        });*/
-
-        //
-        //
-        // const sphereRadius = 3;
-        // const sphereWidthDivisions = 32;
-        // const sphereHeightDivisions = 16;
-        // const sphereGeo = new THREE.SphereBufferGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
-        // const sphereMat = new THREE.MeshPhongMaterial({color: '#CA8'});
-        // const mesh2 = new THREE.Mesh(sphereGeo, sphereMat);
-        // mesh2.position.set(-sphereRadius - 1, sphereRadius + 2, 0);
-        // scene.add(mesh2);
+        });
 
         const color = 0xFFFFFF;
         const intensity = 1;
@@ -131,32 +97,6 @@ export default class EngineInitialization extends React.Component {
         // this.update(renderer, scene, camera,user);
         this.update(renderer, scene, camera, user, enemy, mapObject);
     }
-
-    /**
-     * генерируем игрока на карте
-     */
-    createUser() {
-        const loader = new THREE.TextureLoader();
-
-        const userImg = loader.load(this._testImageMap.hero.src);
-        userImg.wrapS = userImg.wrapT = THREE.RepeatWrapping;
-        userImg.offset.x = 0.78;
-        userImg.offset.y = 0.5;
-        userImg.repeat.set(0.2, 0.25);
-        userImg.magFilter = THREE.NearestFilter;
-        let user;
-        const heroTexture = new THREE.SpriteMaterial({
-            map: userImg
-        });
-        user = new THREE.Sprite(heroTexture);
-        user.scale.set(2, 2, 1);
-        user.position.set(1, 1, 1);
-        user.center.x = 0;
-        user.center.y = 0;
-        user.center.z = 0;
-        return user;
-    }
-
 
     /**
      * Функция покадрового обновления сцены для отображения всех изменений и анимаций
@@ -178,14 +118,14 @@ export default class EngineInitialization extends React.Component {
         renderer.render(scene, camera);
         this._cameraControls.cameraControl(camera);
         // this._dynamicAnimation.updateMap(map, this.props);
-        // this._dynamicAnimation.updateCameraGame(camera, this.props);
+        this._camera.updateCameraGame(camera, this.props);
         this._AI.updateEnemy(enemy, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
         this.moveCountTest++;
         this.lastUserPositionX = user.position.x;
         this.lastUserPositionY = user.position.z;
-        // this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionY, this.props.direction));
+        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionY, this.props.direction));
     }
 
     changePhysics(result) {

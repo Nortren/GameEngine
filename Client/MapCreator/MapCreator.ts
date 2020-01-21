@@ -22,46 +22,28 @@ export default class MapCreator {
     createGameLocation(scene) {
         this.collisionPoint = [];
         const mapObject = [];
+        const planeSize = 30;
         const mapData = this.parserJSON().map;
+        const mapElementData = this.parserJSON().map.;
         const loader = new THREE.TextureLoader();
-        const mapImg = loader.load(mapData.src);
+        const texture = loader.load(mapData.src);
         const mapColor = 0xf3f3f3;
-        mapImg.wrapS = THREE.RepeatWrapping;
-        mapImg.wrapT = THREE.RepeatWrapping;
-        const timesToRepeatHorizontally = 4;
-        const timesToRepeatVertically = 2;
-        mapImg.repeat.set(timesToRepeatHorizontally, timesToRepeatVertically);
-        //Материал для pixe_art улучшает качество до пиксельного
-        mapImg.magFilter = THREE.NearestFilter;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.magFilter = THREE.NearestFilter;
 
-        const mapTexture = new THREE.SpriteMaterial({
-            map: mapImg,
-            color: mapColor
+        const repeats = planeSize / 2;
+        texture.repeat.set(repeats, repeats);
+
+        const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+        const planeMat = new THREE.MeshPhongMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
         });
+        const map = new THREE.Mesh(planeGeo, planeMat);
+        map.rotation.x = Math.PI * -.5;
 
-
-        const map = new THREE.Sprite(mapTexture);
-        map.scale.set(mapData.width, mapData.height, mapData.zIndex1);
-        mapObject.push(map);
-        for (let key in mapData.mapElement) {
-            let mapElementObject = mapData.mapElement[key];
-            let mapElementObjectIMG = loader.load(mapElementObject.src);
-            mapElementObjectIMG.magFilter = THREE.NearestFilter;
-            let mapElementObjectTexture = new THREE.SpriteMaterial({
-                map: mapElementObjectIMG,
-            });
-
-            const elementObj = new THREE.Sprite(mapElementObjectTexture);
-            elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
-            elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
-
-            this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
-            scene.add(elementObj);
-            mapObject.push(elementObj);
-        }
-
-        // scene.add(map);
-        return mapObject;
+        return map;
     }
 
     createObjectCollision(X: number, Y: number, Width: number, Height: number): void {
