@@ -48,7 +48,7 @@ export default class EngineInitialization extends React.Component {
 
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
         const mapObject = this._mapCreator.createGameLocation(scene);
-        scene.add(mapObject);
+
 
         const userData = {img: this._testImageMap.hero.src};
         const user = this._player.createPlayer(userData);
@@ -59,7 +59,7 @@ export default class EngineInitialization extends React.Component {
         enemyArray.push(enemy);
         scene.add(user, enemy);
 
-        this._camera.сameraON(false, camera, this.canvas);
+        this._camera.сameraON(true, camera, this.canvas);
 
 
         OBJLoader(THREE);
@@ -106,9 +106,9 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, user, enemy, map) {
+    update(renderer, scene, camera, user, enemy) {
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera, user, enemy, map);
+            this.update(renderer, scene, camera, user, enemy);
             // this.update(renderer, scene, camera,user);
         });
 
@@ -117,8 +117,7 @@ export default class EngineInitialization extends React.Component {
         }
         renderer.render(scene, camera);
         this._cameraControls.cameraControl(camera);
-        // this._dynamicAnimation.updateMap(map, this.props);
-        this._camera.updateCameraGame(camera, this.props);
+        // this._camera.updateCameraGame(camera, this.props);
         this._AI.updateEnemy(enemy, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);

@@ -10,12 +10,12 @@ export const testMapJSON = {
         mapSizeY: 1000,
         mapElement: {
             home3: {
-                src: "./Client/image/testGeometry.png",
+                src: "./Client/image/home.png",
                 startPositionX: 0,
                 startPositionY: 1,
-                startPositionZ: -15,
-                width: 10,
-                height: 10,
+                startPositionZ: -10,
+                width: 3,
+                height: 3,
                 collaid: "./Client/image/collaid.png",
                 colliderPositionX: 0,
                 colliderPositionY: 11,

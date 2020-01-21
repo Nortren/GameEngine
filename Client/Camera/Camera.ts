@@ -65,14 +65,13 @@ export default class Camera {
     }
 
     cameraControl(camera) {
-        this.cameraStartPositionZ = camera.rotation.x;
+        // this.cameraStartPositionZ = camera.rotation.x;
+        // this.cameraStartPositionY = camera.rotation._y;
         this.cameraStartPositionX = camera.rotation.x;
-        this.cameraStartPositionY = camera.rotation._y;
 
-
-        camera.position.z = this.cameraPositionZ ? this.cameraPositionZ : camera.position.z;
+        // camera.position.z = this.cameraPositionZ ? this.cameraPositionZ : camera.position.z;
         camera.rotation.x = this.cameraPositionX ? this.cameraPositionX : camera.rotation.x;
-        camera.rotation._y = this.cameraPositionY ? this.cameraPositionY : camera.rotation._y;
+        // camera.rotation._y = this.cameraPositionY ? this.cameraPositionY : camera.rotation._y;
 
 
 
