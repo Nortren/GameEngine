@@ -5,7 +5,7 @@ import * as React from 'react';
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
-    userSpeed: number = 10;
+    userSpeed: number = 30sss;
 
     constructor(props) {
 

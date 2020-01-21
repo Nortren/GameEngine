@@ -86,12 +86,12 @@ export default class EngineInitialization extends React.Component {
         scene.add(mesh);
 
 
-        const cubeSize = 4;
+    /*    const cubeSize = 4;
         const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
         const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
         const mesh1 = new THREE.Mesh(cubeGeo, cubeMat);
         mesh1.position.set(cubeSize + 1, cubeSize / 2, 0);
-        scene.add(mesh1);
+        scene.add(mesh1);*/
 
 
         let manager = new THREE.LoadingManager();
@@ -102,7 +102,7 @@ export default class EngineInitialization extends React.Component {
 
 
 
-        loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
+   /*     loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
             object.scale.x = 1;
             object.scale.y = 1;
             object.scale.z = 1;
@@ -111,7 +111,7 @@ export default class EngineInitialization extends React.Component {
 
             let OBJECT = object;
             scene.add(OBJECT);
-        });
+        });*/
 
         //
         //
@@ -150,7 +150,7 @@ export default class EngineInitialization extends React.Component {
         });
         user = new THREE.Sprite(heroTexture);
         user.scale.set(2, 2, 1);
-        user.position.set(1, 0, 1);
+        user.position.set(1, 1, 1);
         user.center.x = 0;
         user.center.y = 0;
         user.center.z = 0;
@@ -172,7 +172,7 @@ export default class EngineInitialization extends React.Component {
             // this.update(renderer, scene, camera,user);
         });
 
-        if (this.moveCountTest > 120) {
+        if (this.moveCountTest > 360) {
             this.moveCountTest = 0
         }
         renderer.render(scene, camera);
@@ -181,7 +181,7 @@ export default class EngineInitialization extends React.Component {
         // this._dynamicAnimation.updateCameraGame(camera, this.props);
         this._AI.updateEnemy(enemy, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
-        this._dynamicAnimation.humanoidAnimation(this.props.animations, 3);
+        this._dynamicAnimation.objectAnimation(this.props.animations, 3);
         this.moveCountTest++;
         this.lastUserPositionX = user.position.x;
         this.lastUserPositionY = user.position.z;

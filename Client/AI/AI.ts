@@ -1,13 +1,16 @@
 import * as THREE from "three";
 import MapCreator from "../MapCreator/MapCreator";
+import Dynamic from "../Animation/Dynamic/Dynamic";
+
 export default class AI {
     _count: number;
     props: object;
-
+    animation: Dynamic = new Dynamic();
     _animationTimer: number;
     fixPoint: number;
     private _testImageMap: object;
     private _mapCreator: MapCreator = new MapCreator();
+
     constructor(options) {
         this._count = 0;
         this.props = options.props;
@@ -20,7 +23,7 @@ export default class AI {
      * Метод запуска анимации персоонажа
      * При первичной инициализации движка запскаем анимацию персоонажа и обновляем ее состояние от изменения state
      */
-    humanoidAnimation(animation, animationSpeed) {
+    objectAnimation(animation, animationSpeed) {
         if (this._animationTimer > animationSpeed && animation) {
             this._count++;
             this._animationTimer = 0;
@@ -41,40 +44,22 @@ export default class AI {
             this._count = 0;
         }
 
-        let spriteOffsetsS = [];
-        spriteOffsetsS.push({x: 0.03, y: 0.75, width: 57, height: 42});
-        spriteOffsetsS.push({x: 0.27, y: 0.75, width: 54, height: 39});
-        spriteOffsetsS.push({x: 0.53, y: 0.75, width: 57, height: 38});
-        spriteOffsetsS.push({x: 0.78, y: 0.75, width: 55, height: 40});
-
-        let spriteOffsetsW = [];
-        spriteOffsetsW.push({x: 0.03, y: 0, width: 57, height: 42});
-        spriteOffsetsW.push({x: 0.27, y: 0, width: 54, height: 39});
-        spriteOffsetsW.push({x: 0.53, y: 0, width: 57, height: 38});
-        spriteOffsetsW.push({x: 0.78, y: 0, width: 55, height: 40});
-        let spriteOffsetsD = [];
-        spriteOffsetsD.push({x: 0.03, y: 0.25, width: 57, height: 42});
-        spriteOffsetsD.push({x: 0.27, y: 0.25, width: 54, height: 39});
-        spriteOffsetsD.push({x: 0.53, y: 0.25, width: 57, height: 38});
-        spriteOffsetsD.push({x: 0.78, y: 0.25, width: 55, height: 40});
-        let spriteOffsetsA = [];
-        spriteOffsetsA.push({x: 0.03, y: 0.5, width: 57, height: 42});
-        spriteOffsetsA.push({x: 0.27, y: 0.5, width: 54, height: 39});
-        spriteOffsetsA.push({x: 0.53, y: 0.5, width: 57, height: 38});
-        spriteOffsetsA.push({x: 0.78, y: 0.5, width: 55, height: 40});
-
-        let rect = spriteOffsetsS[ this._count];
+        let spriteOffsetsD = this.animation.animationSprite(0.03, 0.25, 0.25, null, 4);
+        let spriteOffsetsA = this.animation.animationSprite(0.03, 0.5, 0.25, null, 4);
+        let spriteOffsetsW = this.animation.animationSprite(0.03, 0, 0.25, null, 4);
+        let spriteOffsetsS = this.animation.animationSprite(0.03, 0.75, 0.25, null, 4);
+        let rect = spriteOffsetsS[this._count];
         if (moveDirection === "moveLeft") {
-            rect = spriteOffsetsA[ this._count];
+            rect = spriteOffsetsA[this._count];
         }
         if (moveDirection === "moveRight") {
-            rect = spriteOffsetsD[ this._count];
+            rect = spriteOffsetsD[this._count];
         }
         if (moveDirection === "moveUP") {
-            rect = spriteOffsetsW[ this._count];
+            rect = spriteOffsetsW[this._count];
         }
         if (moveDirection === "moveDown") {
-            rect = spriteOffsetsS[ this._count];
+            rect = spriteOffsetsS[this._count];
         }
 
 
@@ -110,7 +95,7 @@ export default class AI {
     }
 
     updateEnemy(enemy, moveCountTest) {
-        this.humanoidAnimation(true,7);
+        this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
             enemy.startPositionX = enemy.position.x;
@@ -120,24 +105,24 @@ export default class AI {
         switch (this.fixPoint) {
             case 0:
                 enemy.position.x = enemy.startPositionX + moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy,'moveRight');
+                this.updateEnemyAvatar(enemy, 'moveRight');
                 break;
             case 1:
                 enemy.position.z = enemy.startPositionY - moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy,'moveUP');
+                this.updateEnemyAvatar(enemy, 'moveUP');
                 break;
             case 2:
                 enemy.position.x = enemy.startPositionX - moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy,'moveLeft');
+                this.updateEnemyAvatar(enemy, 'moveLeft');
                 break;
             case 3:
                 enemy.position.z = enemy.startPositionY + moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy,'moveDown');
+                this.updateEnemyAvatar(enemy, 'moveDown');
                 break;
         }
 
 
-        if (moveCountTest === 120) {
+        if (moveCountTest === 360) {
             this.fixPoint++;
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionY = enemy.position.z;

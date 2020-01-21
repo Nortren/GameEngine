@@ -12,7 +12,7 @@ export const testMapJSON = {
             home3:{
                 src: "./Client/image/home.png",
                 startPositionX: 0,
-                startPositionY: 3,
+                startPositionY: 1,
                 startPositionZ: -15,
                 width: 10,
                 height: 10,
