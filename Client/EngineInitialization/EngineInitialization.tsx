@@ -47,7 +47,7 @@ export default class EngineInitialization extends React.Component {
         const camera = this._camera.createCamera();
 
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        const mapObject = this._mapCreator.createGameLocation(scene);
+        const mapObject = this._mapCreator.createGameLocation(scene,true);
 
 
         const userData = {img: this._testImageMap.hero.src};
@@ -59,7 +59,7 @@ export default class EngineInitialization extends React.Component {
         enemyArray.push(enemy);
         scene.add(user, enemy);
 
-        this._camera.сameraON(true, camera, this.canvas);
+        this._camera.сameraON(false, camera, this.canvas);
 
 
         OBJLoader(THREE);
@@ -73,10 +73,10 @@ export default class EngineInitialization extends React.Component {
         const heroTexture = new THREE.SpriteMaterial({
             map: userImg
         });
-        loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
-            object.scale.x = 0.3;
-            object.scale.y = 0.3;
-            object.scale.z = 0.3;
+   /*     loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
+            object.scale.x = 0.2;
+            object.scale.y = 0.2;
+            object.scale.z = 0.2;
             // object.rotation.x = -Math.PI / 2;
             // object.position.y = -30;
             object.traverse(function (child) {
@@ -88,7 +88,7 @@ export default class EngineInitialization extends React.Component {
             });
             let OBJECT = object;
             scene.add(OBJECT);
-        });
+        });*/
 
         const color = 0xFFFFFF;
         const intensity = 1;
@@ -117,14 +117,14 @@ export default class EngineInitialization extends React.Component {
         }
         renderer.render(scene, camera);
         this._cameraControls.cameraControl(camera);
-        // this._camera.updateCameraGame(camera, this.props);
+        this._camera.updateCameraGame(camera, this.props);
         this._AI.updateEnemy(enemy, this.moveCountTest);
         this._dynamicAnimation.updateUserAvatar(user, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
         this.moveCountTest++;
         this.lastUserPositionX = user.position.x;
-        this.lastUserPositionY = user.position.z;
-        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionY, this.props.direction));
+        this.lastUserPositionZ = user.position.z;
+        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionZ, this.props.direction));
     }
 
     changePhysics(result) {

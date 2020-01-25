@@ -30,7 +30,7 @@ export class CameraControl {
 
 
     constructor(options) {
-        console.log('constructor');
+
         window.addEventListener('keydown', (event) => {
             this.moveCamera(event);
 
@@ -41,7 +41,6 @@ export class CameraControl {
     moveCamera(event) {
 
         const codeButton = event.code;
-        console.log(codeButton);
 
         this.cameraPositionX = this.cameraStartPositionX;
         this.cameraPositionY = this.cameraStartPositionY;

@@ -19,7 +19,7 @@ export default class MapCreator {
     /**
      * Создаём игровую локацию
      */
-    createGameLocation(scene) {
+    createGameLocation(scene, showCollaider) {
         this.collisionPoint = [];
         const mapObject = [];
         const planeSize = 50;
@@ -42,31 +42,44 @@ export default class MapCreator {
         });
         const map = new THREE.Mesh(planeGeo, planeMat);
         map.rotation.x = Math.PI * -.5;
-        map.position.set(0,0,0)
+        map.position.set(0, 0, 0)
         mapObject.push(map);
         for (let key in mapData.mapElement) {
             let mapElementObject = mapData.mapElement[key];
             let mapElementObjectIMG = loader.load(mapElementObject.src);
             mapElementObjectIMG.magFilter = THREE.NearestFilter;
 
-            const planeGeo = new THREE.PlaneBufferGeometry(mapElementObject.width, mapElementObject.height);
-            const planeMat = new THREE.MeshPhongMaterial({
-                map: mapElementObjectIMG,
-                side: THREE.DoubleSide,
-            });
-            const elementObj = new THREE.Mesh(planeGeo, planeMat);
 
-            // let mapElementObjectTexture = new THREE.SpriteMaterial({
-            //     map: mapElementObjectIMG,
-            // });
-            //
-            // const elementObj = new THREE.Sprite(mapElementObjectTexture);
+            let mapElementObjectTexture = new THREE.SpriteMaterial({
+                map: mapElementObjectIMG,
+            });
+
+            const elementObj = new THREE.Sprite(mapElementObjectTexture);
 
 
             elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
             elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
-            elementObj.rotation.x = Math.PI * -.5;
-            this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
+
+            elementObj.center.x = 0;
+            elementObj.center.y = 0;
+
+
+            let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
+            const planeCollaiderGeo = new THREE.PlaneBufferGeometry(mapElementObject.colliderWidth, mapElementObject.colliderHeight);
+            const planeCollaiderMat = new THREE.SpriteMaterial({
+                map: mapElementObjectCollaider,
+                side: THREE.DoubleSide,
+            });
+            const elementObjCollaider = new THREE.Sprite(planeCollaiderMat);
+            elementObjCollaider.scale.set(mapElementObject.colliderWidth, mapElementObject.colliderHeight, mapElementObject.zIndex);
+            elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
+            elementObjCollaider.center.x = 0;
+            elementObjCollaider.center.y = 0;
+            this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
+            if (showCollaider) {
+                scene.add(elementObjCollaider);
+            }
+
             scene.add(elementObj);
             mapObject.push(elementObj);
         }
@@ -76,35 +89,41 @@ export default class MapCreator {
 
     }
 
-    createObjectCollision(X: number, Y: number, Width: number, Height: number): void {
+    createObjectCollision(X: number, Y: number, Z: number, Width: number, Height: number): void {
 
         this.collisionPoint.push(
             {
                 x: X,
                 y: Y,
+                z: Z,
                 width: Width,
                 height: Height
             })
 
     }
 
-    checkCollision(Xmove, Ymove,direction) {
-
+    checkCollision(Xmove, Zmove, direction) {
+        if(Zmove>=0) {
+            Xmove -= 4;
+        }
+        else{
+            Xmove -= 1.5;
+        }
         for (let key in this.collisionPoint) {
             let checkX = false;
-            let checkY = false;
+            let checkZ = false;
 
             let collision = this.collisionPoint[key];
-            let drawObjectRealWidth = collision.width/2;
-            let drawObjectRealHeight = collision.height/2;
-            if ((Xmove >= collision.x-drawObjectRealWidth) && (Xmove <= collision.x + drawObjectRealWidth)) {
+            let drawObjectRealWidth = collision.width*0.6;
+            let drawObjectRealHeight = collision.height / 2;
+            if ((Xmove >= collision.x - drawObjectRealWidth) && (Xmove <= collision.x + drawObjectRealWidth)) {
                 checkX = true;
             }
-            if ((Ymove >= collision.y - drawObjectRealHeight) && (Ymove <= collision.y + drawObjectRealHeight)) {
-                checkY = true;
+            if ((Zmove >= collision.z - drawObjectRealHeight) && (Zmove <= collision.z + drawObjectRealHeight)) {
+                checkZ = true;
             }
 
-            if(checkX && checkY){
+            if (checkX && checkZ) {
                 return direction;
             }
         }

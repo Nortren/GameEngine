@@ -62,7 +62,7 @@ export default class Player {
         });
         user = new THREE.Sprite(heroTexture);
         user.scale.set(2, 2, 1);
-        user.position.set(1, 1, 1);
+        user.position.set(1, 0, 1);
         user.center.x = 0;
         user.center.y = 0;
         user.center.z = 0;
