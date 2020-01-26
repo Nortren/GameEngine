@@ -9,7 +9,7 @@ export const testMapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement: {
-            home3: {
+            tree3: {
                 src: "./Client/image/home.png",
                 startPositionX: 10,
                 startPositionY: 0,
@@ -24,7 +24,7 @@ export const testMapJSON = {
                 colliderHeight:3,
                 zIndex: 1,
             },
-            home1: {
+            tree1: {
                 src: "./Client/image/treeTest.png",
                 startPositionX: -5,
                 startPositionY: 0,

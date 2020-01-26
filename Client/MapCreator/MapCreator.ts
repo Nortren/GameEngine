@@ -1,8 +1,7 @@
 import {testMapJSON} from "./testMap";
 import * as THREE from "three";
 export default class MapCreator {
-    _count: number;
-    objectCoordinate: number [];
+
     collisionPoint: object [];
 
     constructor(options) {
@@ -60,7 +59,6 @@ export default class MapCreator {
             elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
             elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
 
-            // elementObj.center.x = 0;
             elementObj.center.y = 0;
 
 
@@ -84,8 +82,6 @@ export default class MapCreator {
         }
 
         scene.add(map);
-        // return map;
-
     }
 
     createObjectCollision(X: number, Y: number, Z: number, Width: number, Height: number): void {
@@ -101,7 +97,7 @@ export default class MapCreator {
 
     }
 
-    checkCollision(Xmove, Zmove, Xwidth, Zheight, direction) {
+    checkCollision(Xmove: number, Zmove: number, Xwidth: number, Zheight: number, direction: string) {
 
         for (let key in this.collisionPoint) {
             let checkX = false;
@@ -110,7 +106,7 @@ export default class MapCreator {
             let collisionZ = collision.z;
             let collisionX = collision.x;
 
-//Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+            //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
             let drawObjectRealWidth = collision.width * 0.5;
             let drawObjectRealHeight = collision.height * 0.5;
             let PlayerRealWidth = Xwidth * 0.5;

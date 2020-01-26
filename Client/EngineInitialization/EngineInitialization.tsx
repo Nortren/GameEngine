@@ -16,7 +16,6 @@ import {testMapJSON} from "./testMap";
 export default class EngineInitialization extends React.Component {
     public canvas: object;
     public context: CanvasRenderingContext2D;
-    public moveCountTest: number = 0;
     private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
     private _player: Player = new Player();
@@ -113,16 +112,14 @@ export default class EngineInitialization extends React.Component {
             // this.update(renderer, scene, camera,user);
         });
 
-        if (this.moveCountTest > 360) {
-            this.moveCountTest = 0
-        }
+
         renderer.render(scene, camera);
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
-        this._AI.updateEnemy(enemy, this.moveCountTest);
+        this._AI.updateEnemy(enemy);
         this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
-        this.moveCountTest++;
+
         const playerX = playerData.collaider.position.x;
         const playerZ = playerData.collaider.position.z;
         const playerWidth = playerData.collaider.geometry.parameters.width;

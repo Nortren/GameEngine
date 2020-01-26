@@ -41,7 +41,7 @@ export default class StickController extends React.Component {
         });
         evenObject.addEventListener("touchstart", (event) => {
             this.touchStartPositionX = event.changedTouches[0].clientX;
-            this.touchStartPositionZ = event.changedTouches[0].clientZ;
+            this.touchStartPositionY = event.changedTouches[0].clientY;
             this._startAnimationTouch = true;
 
             this._startAnimationTouch = setInterval(() => {
@@ -56,7 +56,7 @@ export default class StickController extends React.Component {
         }, false);
         evenObject.addEventListener("touchmove", (event) => {
             this.touchMovePositionX = event.changedTouches[0].clientX;
-            this.touchMovePositionZ = event.changedTouches[0].clientZ;
+            this.touchMovePositionY = event.changedTouches[0].clientY;
         }, false);
 
     }

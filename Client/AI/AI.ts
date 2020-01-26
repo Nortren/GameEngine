@@ -26,7 +26,7 @@ export default class AI {
         this.attackSpeed = attackSpeed;
         this.damage = damage;
         this.amountOfHealth = amountOfHealth;
-
+        this.moveCountTest = 0;
 
         this._animationTimer = 0;
         this.fixPoint = 0;
@@ -107,7 +107,7 @@ export default class AI {
         return enemySprite;
     }
 
-    updateEnemy(enemy, moveCountTest) {
+    updateEnemy(enemy) {
         this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
@@ -117,34 +117,35 @@ export default class AI {
         // enemy.position.z = 5;
         switch (this.fixPoint) {
             case 0:
-                enemy.position.x = enemy.startPositionX + moveCountTest * 0.01;
+                enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy, 'moveRight');
                 break;
             case 1:
-                enemy.position.z = enemy.startPositionY - moveCountTest * 0.01;
+                enemy.position.z = enemy.startPositionY - this.moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy, 'moveUP');
                 break;
             case 2:
-                enemy.position.x = enemy.startPositionX - moveCountTest * 0.01;
+                enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy, 'moveLeft');
                 break;
             case 3:
-                enemy.position.z = enemy.startPositionY + moveCountTest * 0.01;
+                enemy.position.z = enemy.startPositionY + this.moveCountTest * 0.01;
                 this.updateEnemyAvatar(enemy, 'moveDown');
                 break;
         }
 
 
-        if (moveCountTest === 360) {
+        if (this.moveCountTest === 360) {
             this.fixPoint++;
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionY = enemy.position.z;
-
+            this.moveCountTest = 0;
         }
 
         if (this.fixPoint > 3) {
             this.fixPoint = 0;
         }
+        this.moveCountTest++;
     }
 }
 
