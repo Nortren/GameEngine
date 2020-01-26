@@ -22,7 +22,7 @@ export default class MapCreator {
     createGameLocation(scene, showCollaider) {
         this.collisionPoint = [];
         const mapObject = [];
-        const planeSize = 50;
+        const planeSize = 100;
         const mapData = this.parserJSON().map;
 
         const loader = new THREE.TextureLoader();
@@ -42,7 +42,7 @@ export default class MapCreator {
         });
         const map = new THREE.Mesh(planeGeo, planeMat);
         map.rotation.x = Math.PI * -.5;
-        map.position.set(0, 0, 0)
+        map.position.set(0, 0, 0);
         mapObject.push(map);
         for (let key in mapData.mapElement) {
             let mapElementObject = mapData.mapElement[key];
@@ -60,21 +60,20 @@ export default class MapCreator {
             elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
             elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
 
-            elementObj.center.x = 0;
+            // elementObj.center.x = 0;
             elementObj.center.y = 0;
 
 
             let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
             const planeCollaiderGeo = new THREE.PlaneBufferGeometry(mapElementObject.colliderWidth, mapElementObject.colliderHeight);
-            const planeCollaiderMat = new THREE.SpriteMaterial({
+            const planeCollaiderMat = new THREE.MeshPhongMaterial({
                 map: mapElementObjectCollaider,
                 side: THREE.DoubleSide,
             });
-            const elementObjCollaider = new THREE.Sprite(planeCollaiderMat);
-            elementObjCollaider.scale.set(mapElementObject.colliderWidth, mapElementObject.colliderHeight, mapElementObject.zIndex);
+            const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, planeCollaiderMat);
             elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
-            elementObjCollaider.center.x = 0;
-            elementObjCollaider.center.y = 0;
+
+            elementObjCollaider.rotation.x = Math.PI * -.5;
             this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ, mapElementObject.colliderWidth, mapElementObject.colliderHeight);
             if (showCollaider) {
                 scene.add(elementObjCollaider);
@@ -102,24 +101,24 @@ export default class MapCreator {
 
     }
 
-    checkCollision(Xmove, Zmove, direction) {
-        if(Zmove>=0) {
-            Xmove -= 4;
-        }
-        else{
-            Xmove -= 1.5;
-        }
+    checkCollision(Xmove, Zmove, Xwidth, Zheight, direction) {
+
         for (let key in this.collisionPoint) {
             let checkX = false;
             let checkZ = false;
-
             let collision = this.collisionPoint[key];
-            let drawObjectRealWidth = collision.width*0.6;
-            let drawObjectRealHeight = collision.height / 2;
-            if ((Xmove >= collision.x - drawObjectRealWidth) && (Xmove <= collision.x + drawObjectRealWidth)) {
+            let collisionZ = collision.z;
+            let collisionX = collision.x;
+
+//Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+            let drawObjectRealWidth = collision.width * 0.5;
+            let drawObjectRealHeight = collision.height * 0.5;
+            let PlayerRealWidth = Xwidth * 0.5;
+            let PlayerRealHeight = Zheight * 0.5;
+            if ((Xmove + PlayerRealWidth >= collisionX - drawObjectRealWidth) && (Xmove - PlayerRealWidth <= collisionX + drawObjectRealWidth)) {
                 checkX = true;
             }
-            if ((Zmove >= collision.z - drawObjectRealHeight) && (Zmove <= collision.z + drawObjectRealHeight)) {
+            if ((Zmove + PlayerRealHeight >= collisionZ - drawObjectRealHeight ) && (Zmove - PlayerRealHeight <= collisionZ + drawObjectRealHeight)) {
                 checkZ = true;
             }
 

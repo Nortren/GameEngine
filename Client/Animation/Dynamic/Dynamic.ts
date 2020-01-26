@@ -48,7 +48,7 @@ export default class Dynamic {
      * @param imgHero картинка отображения гавного героя
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(hero, props) {
+    updateUserAvatar(hero, collaider, props) {
 
         if (this._count > 3) {
             this._count = 0;
@@ -74,6 +74,9 @@ export default class Dynamic {
         hero.material.map.offset.y = rect.y;
         hero.position.x = props.moveX * -0.01;
         hero.position.z = props.moveZ * -0.01;
+        collaider.position.x = hero.position.x;
+        collaider.position.z = hero.position.z;
+
     }
 
 

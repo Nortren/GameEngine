@@ -50,14 +50,15 @@ export default class EngineInitialization extends React.Component {
         const mapObject = this._mapCreator.createGameLocation(scene,true);
 
 
-        const userData = {img: this._testImageMap.hero.src};
-        const user = this._player.createPlayer(userData);
-
+        const userData = this._testImageMap.hero;
+        const playerData = this._player.createPlayer(userData);
+        const user = playerData.user;
+        const userCollaider = playerData.collaider;
         this._AI = new AI(10, 1, 1, 10, 30);
         const enemy = this._AI.createEnemy(position);
 
         enemyArray.push(enemy);
-        scene.add(user, enemy);
+        scene.add(user, enemy,userCollaider);
 
         this._camera.сameraON(false, camera, this.canvas);
 
@@ -95,7 +96,7 @@ export default class EngineInitialization extends React.Component {
         const light = new THREE.AmbientLight(color, intensity);
         scene.add(light);
         // this.update(renderer, scene, camera,user);
-        this.update(renderer, scene, camera, user, enemy, mapObject);
+        this.update(renderer, scene, camera, playerData, enemy, mapObject);
     }
 
     /**
@@ -106,9 +107,9 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, user, enemy) {
+    update(renderer, scene, camera, playerData, enemy) {
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera, user, enemy);
+            this.update(renderer, scene, camera, playerData, enemy);
             // this.update(renderer, scene, camera,user);
         });
 
@@ -119,12 +120,15 @@ export default class EngineInitialization extends React.Component {
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
         this._AI.updateEnemy(enemy, this.moveCountTest);
-        this._dynamicAnimation.updateUserAvatar(user, this.props);
+        this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
         this.moveCountTest++;
-        this.lastUserPositionX = user.position.x;
-        this.lastUserPositionZ = user.position.z;
-        this.changePhysics(this._mapCreator.checkCollision(this.lastUserPositionX, this.lastUserPositionZ, this.props.direction));
+        const playerX = playerData.collaider.position.x;
+        const playerZ = playerData.collaider.position.z;
+        const playerWidth = playerData.collaider.geometry.parameters.width;
+        const playerHeight = playerData.collaider.geometry.parameters.height;
+        this.lastUserPositionZ = playerData.collaider.position.z - playerData.collaider.geometry.parameters.height;
+        this.changePhysics(this._mapCreator.checkCollision(playerX,playerZ,playerWidth,playerHeight, this.props.direction));
     }
 
     changePhysics(result) {
