@@ -54,18 +54,18 @@ export default class Dynamic {
             this._count = 0;
         }
 
-        let rect = this.animationSprite(0.03,0.75,0.25,null,4)[this._count];
+        let rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         if (this._pressKey === "A" || (props && props.direction === "LEFT")) {
-            rect = this.animationSprite(0.03,0.5,0.25,null,4)[this._count];
+            rect = this.animationSprite(0.03,0.39,0.25,null,4)[this._count];
         }
         if (this._pressKey === "D" || (props && props.direction === "RIGHT")) {
-            rect = this.animationSprite(0.03,0.25,0.25,null,4)[this._count];
+            rect = this.animationSprite(0.03,0.59,0.25,null,4)[this._count];
         }
         if (this._pressKey === "W" || (props && props.direction === "UP")) {
-            rect = this.animationSprite(0.03,0,0.25,null,4)[this._count];
+            rect = this.animationSprite(0.03,0.19,0.25,null,4)[this._count];
         }
         if (this._pressKey === "S" || (props && props.direction === "DOWN")) {
-            rect = this.animationSprite(0.03,0.75,0.25,null,4)[this._count];
+            rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         }
 
 

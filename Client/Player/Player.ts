@@ -55,14 +55,14 @@ export default class Player {
         userImg.wrapS = userImg.wrapT = THREE.RepeatWrapping;
         userImg.offset.x = 0.78;
         userImg.offset.y = 0.5;
-        userImg.repeat.set(0.2, 0.25);
+        userImg.repeat.set(0.2, 0.2);
         userImg.magFilter = THREE.NearestFilter;
         let user;
         const heroTexture = new THREE.SpriteMaterial({
             map: userImg
         });
         user = new THREE.Sprite(heroTexture);
-        user.scale.set(2, 2, 1);
+        user.scale.set(3, 3, 1);
         user.position.set(1, 0, 1);
         user.center.y = 0;
         playerData.user = user;

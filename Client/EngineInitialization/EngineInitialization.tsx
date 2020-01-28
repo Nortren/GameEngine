@@ -36,8 +36,6 @@ export default class EngineInitialization extends React.Component {
     componentDidMount() {
         let position = {x: 5, y: 1, z: 0};
 
-        const enemyArray = [];
-
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -54,14 +52,17 @@ export default class EngineInitialization extends React.Component {
         const user = playerData.user;
         const userCollaider = playerData.collaider;
         this._AI = new AI(10, 1, 1, 10, 30);
-        const enemy = this._AI.createEnemy(position);
+        const enemyData = this._AI.createEnemy(position);
+        const enemy = enemyData.enemySprite;
+        const scopeCircleMesh = enemyData.scopeCircleMesh;
+        const enemyColliderMesh = enemyData.scopeColliderMesh;
 
-        enemyArray.push(enemy);
-        scene.add(user, enemy,userCollaider);
+
+        scene.add(user, enemy,userCollaider,scopeCircleMesh,enemyColliderMesh);
 
         this._camera.сameraON(false, camera, this.canvas);
 
-
+        /*
         OBJLoader(THREE);
         let loaderOBJ = new THREE.OBJLoader();
 
@@ -73,7 +74,7 @@ export default class EngineInitialization extends React.Component {
         const heroTexture = new THREE.SpriteMaterial({
             map: userImg
         });
-   /*     loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
+        loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
             object.scale.x = 0.2;
             object.scale.y = 0.2;
             object.scale.z = 0.2;
@@ -95,7 +96,7 @@ export default class EngineInitialization extends React.Component {
         const light = new THREE.AmbientLight(color, intensity);
         scene.add(light);
         // this.update(renderer, scene, camera,user);
-        this.update(renderer, scene, camera, playerData, enemy, mapObject);
+        this.update(renderer, scene, camera, playerData, enemyData);
     }
 
     /**
@@ -106,31 +107,41 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, playerData, enemy) {
+    update(renderer, scene, camera, playerData, enemyData) {
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera, playerData, enemy);
-            // this.update(renderer, scene, camera,user);
+            this.update(renderer, scene, camera, playerData, enemyData);
         });
 
 
         renderer.render(scene, camera);
+        const playerInformation={
+            playerX: playerData.collaider.position.x,
+            playerZ: playerData.collaider.position.z,
+            playerWidth: playerData.collaider.geometry.parameters.width,
+            playerHeight: playerData.collaider.geometry.parameters.height
+        };
+
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
-        this._AI.updateEnemy(enemy);
+        this._AI.updateEnemy(enemyData.enemySprite);
+        this._AI.updateEnemVisualDate(enemyData.scopeCircleMesh,enemyData.enemySprite);
+        this._AI.updateEnemVisualDate(enemyData.scopeColliderMesh,enemyData.enemySprite);
+        this._AI.informationAboutWorld(playerInformation);
         this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
-        const playerX = playerData.collaider.position.x;
-        const playerZ = playerData.collaider.position.z;
-        const playerWidth = playerData.collaider.geometry.parameters.width;
-        const playerHeight = playerData.collaider.geometry.parameters.height;
-        this.lastUserPositionZ = playerData.collaider.position.z - playerData.collaider.geometry.parameters.height;
-        this.changePhysics(this._mapCreator.checkCollision(playerX,playerZ,playerWidth,playerHeight, this.props.direction));
+
+
+        this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX,playerInformation.playerZ,
+            playerInformation.playerWidth,playerInformation.playerHeight, this.props.direction));
+
     }
 
     changePhysics(result) {
         this.props.changePhysics(result);
     }
+
+
 
     componentDidUpdate() {
         this._animate = this.props.animations;

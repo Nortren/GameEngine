@@ -59,11 +59,24 @@ export const testMapJSON = {
 
     },
     hero: {
-        src: "./Client/image/hero.png",
+        src: "./Client/image/Player_v0.0.3.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0.01,
         colliderPositionZ: 0,
+        colliderWidth: 1,
+        colliderHeight: 1,
+    },
+    enemy: {
+        src: "./Client/image/hero.png",
+        collaid:"./Client/image/collaid.png",
+        scope:"./Client/image/scope_circle.png",
+        scopeRadius:8,
+        colliderPosition:{
+            positionX: 0,
+            positionY: 0.1,
+            positionZ: 0,
+        },
         colliderWidth: 1,
         colliderHeight: 1,
     }

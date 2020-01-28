@@ -19,7 +19,7 @@ export default class AI {
     private _testImageMap: object;
     private _mapCreator: MapCreator = new MapCreator();
 
-    constructor(amountOfHealth,damage,attackSpeed,moveSpeed,radiusOfDetection) {
+    constructor(amountOfHealth, damage, attackSpeed, moveSpeed, radiusOfDetection) {
         this._count = 0;
         this.radiusOfDetection = radiusOfDetection;
         this.moveSpeed = moveSpeed;
@@ -89,10 +89,14 @@ export default class AI {
         this._testImageMap = this._mapCreator.parserJSON();
         const loader = new THREE.TextureLoader();
         const enemyColor = 0xff0000;
-        const enemyImg = loader.load(this._testImageMap.hero.src);
+        const enemyData = this._testImageMap.enemy;
+
+        const enemyImg = loader.load(enemyData.src);
+        const scopeTexture = loader.load(enemyData.scope);
+        const colliderTexture = loader.load(enemyData.collaid);
+
         enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
-        enemyImg.offset.x = 0.78;
-        enemyImg.offset.y = 0.5;
+
         enemyImg.repeat.set(0.2, 0.25);
         enemyImg.magFilter = THREE.NearestFilter;
 
@@ -100,37 +104,74 @@ export default class AI {
             map: enemyImg,
             color: enemyColor
         });
-        let enemySprite;
-        enemySprite = new THREE.Sprite(enemyTexture);
+
+        let enemySprite = new THREE.Sprite(enemyTexture);
         enemySprite.scale.set(2, 2, 1);
         enemySprite.position.set(position.x, position.y, position.z);
-        return enemySprite;
+        enemySprite.center.y = 0;
+
+
+        let enemyResultData = {};
+
+        enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius,enemyData.scopeRadius,scopeTexture,position);
+        enemyResultData.scopeColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth,enemyData.colliderHeight,colliderTexture,enemyData.colliderPosition);
+        enemyResultData.enemySprite = enemySprite;
+
+        return enemyResultData;
+    }
+
+    createEnemySupportMesh(width, height,texture,position){
+
+        const x = position.positionX || 0;
+        const y = position.positionY || 0;
+        const z = position.positionZ || 0;
+
+        const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
+        const playerMeshMat = new THREE.MeshPhongMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
+            transparent:true
+        });
+        const Mesh = new THREE.Mesh(playerMeshGeo,playerMeshMat);
+        Mesh.rotation.x = Math.PI * -.5;
+        Mesh.position.set(x, y, z);
+
+        return Mesh;
+    }
+
+    //Метод который обновляет позицию item привязанных к боту
+    updateEnemVisualDate(enemyData,enemy) {
+        enemyData.position.x = enemy.position.x;
+        enemyData.position.z = enemy.position.z;
     }
 
     updateEnemy(enemy) {
-        this.objectAnimation(true, 20);
+            this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionY = enemy.position.z;
         }
-        // enemy.position.z = 5;
+
         switch (this.fixPoint) {
             case 0:
                 enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy, 'moveRight');
+                    this.updateEnemyAvatar(enemy, 'moveRight');
+
                 break;
             case 1:
                 enemy.position.z = enemy.startPositionY - this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy, 'moveUP');
+                    this.updateEnemyAvatar(enemy, 'moveUP');
+
                 break;
             case 2:
                 enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy, 'moveLeft');
+                    this.updateEnemyAvatar(enemy, 'moveLeft');
+
                 break;
             case 3:
                 enemy.position.z = enemy.startPositionY + this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemy, 'moveDown');
+                    this.updateEnemyAvatar(enemy, 'moveDown');
                 break;
         }
 
@@ -146,6 +187,10 @@ export default class AI {
             this.fixPoint = 0;
         }
         this.moveCountTest++;
+    }
+
+    informationAboutWorld(){
+
     }
 }
 
