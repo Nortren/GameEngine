@@ -72,10 +72,11 @@ export const testMapJSON = {
         collaid:"./Client/image/collaid.png",
         scope:"./Client/image/scope_circle.png",
         scopeRadius:8,
+
         colliderPosition:{
-            positionX: 0,
-            positionY: 0.01,
-            positionZ: 0,
+            x: 5,
+            y: 0.01,
+            z: 5,
         },
         colliderWidth: 1,
         colliderHeight: 1,

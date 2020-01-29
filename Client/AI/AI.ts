@@ -122,9 +122,9 @@ export default class AI {
 
     createEnemySupportMesh(width, height, texture, position) {
 
-        const x = position.positionX || 0;
-        const y = position.positionY || 0;
-        const z = position.positionZ || 0;
+        const x = position.x || 0;
+        const y = position.y || 0;
+        const z = position.z || 0;
 
         const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
         const playerMeshMat = new THREE.MeshPhongMaterial({
@@ -190,17 +190,18 @@ export default class AI {
     }
 
     informationAboutWorld(enemyData, playerData, mapData) {
-        this.updateEnemVisualDate(enemyData.scopeCircleMesh,enemyData.ColliderMesh);
-        this.updateEnemVisualDate(enemyData.ColliderMesh,enemyData.ColliderMesh);
+        this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
+        this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
 
-        this.updateEnemVisualDate(enemyData.enemySprite,enemyData.ColliderMesh);
-        this.persecutionObject(enemyData,playerData);
-
+        this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
+        this.persecutionObject(enemyData, playerData);
 
 
     }
-    persecutionObject(enemyData,playerData){
+
+    persecutionObject(enemyData, playerData) {
         const enemy = enemyData.ColliderMesh;
+        const enemySprite = enemyData.enemySprite;
         enemy.position.x;
         this.objectAnimation(true, 20);
 
@@ -208,26 +209,26 @@ export default class AI {
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionZ = enemy.position.z;
         }
-
-        if(enemy.position.x > playerData.playerX){
-            enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
-            this.updateEnemyAvatar(enemy, 'moveLeft');
+        if (enemy.startPositionX.toFixed(1) !== playerData.playerX.toFixed(1)) {
+            if (enemy.position.x > playerData.playerX) {
+                enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
+                this.updateEnemyAvatar(enemySprite, 'moveLeft');
+            }
+            if (enemy.position.x < playerData.playerX) {
+                enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
+                this.updateEnemyAvatar(enemySprite, 'moveRight');
+            }
         }
-        if(enemy.position.x < playerData.playerX){
-            enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
-            this.updateEnemyAvatar(enemy, 'moveRight');
+        if (enemy.startPositionZ.toFixed(1) !== playerData.playerZ.toFixed(1)) {
+            if (enemy.position.z > playerData.playerZ) {
+                enemy.position.z = enemy.startPositionZ - this.moveCountTest * 0.01;
+                this.updateEnemyAvatar(enemySprite, 'moveUP');
+            }
+            if (enemy.position.z < playerData.playerZ) {
+                this.updateEnemyAvatar(enemySprite, 'moveDown');
+                enemy.position.z = enemy.startPositionZ + this.moveCountTest * 0.01;
+            }
         }
-
-
-        if(enemy.position.z > playerData.playerZ){
-            enemy.position.z = enemy.startPositionZ - this.moveCountTest * 0.01;
-            this.updateEnemyAvatar(enemy, 'moveUP');
-        }
-        if(enemy.position.z < playerData.playerZ){
-            this.updateEnemyAvatar(enemy, 'moveDown');
-            enemy.position.z = enemy.startPositionZ + this.moveCountTest * 0.01;
-        }
-
 
 
         if (this.moveCountTest === 1) {
