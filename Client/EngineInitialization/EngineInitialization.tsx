@@ -34,8 +34,8 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        let position = {x: 5, y: 1, z: 0};
-
+        let position = {x: 5, y: 0.01, z: 0};
+        const showCollider = false;
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -44,7 +44,7 @@ export default class EngineInitialization extends React.Component {
         const camera = this._camera.createCamera();
 
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        const mapObject = this._mapCreator.createGameLocation(scene,true);
+        const mapObject = this._mapCreator.createGameLocation(scene,showCollider);
 
 
         const userData = this._testImageMap.hero;
@@ -55,11 +55,14 @@ export default class EngineInitialization extends React.Component {
         const enemyData = this._AI.createEnemy(position);
         const enemy = enemyData.enemySprite;
         const scopeCircleMesh = enemyData.scopeCircleMesh;
-        const enemyColliderMesh = enemyData.scopeColliderMesh;
+        const enemyColliderMesh = enemyData.ColliderMesh;
 
 
-        scene.add(user, enemy,userCollaider,scopeCircleMesh,enemyColliderMesh);
+        scene.add(user, enemy);
 
+        if(showCollider) {
+            scene.add(scopeCircleMesh, enemyColliderMesh, userCollaider);
+        }
         this._camera.сameraON(false, camera, this.canvas);
 
         /*
@@ -123,10 +126,8 @@ export default class EngineInitialization extends React.Component {
 
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
-        this._AI.updateEnemy(enemyData.enemySprite);
-        this._AI.updateEnemVisualDate(enemyData.scopeCircleMesh,enemyData.enemySprite);
-        this._AI.updateEnemVisualDate(enemyData.scopeColliderMesh,enemyData.enemySprite);
-        this._AI.informationAboutWorld(playerInformation);
+
+        this._AI.informationAboutWorld(enemyData,playerInformation,this._mapCreator);
         this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 

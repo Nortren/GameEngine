@@ -113,14 +113,14 @@ export default class AI {
 
         let enemyResultData = {};
 
-        enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius,enemyData.scopeRadius,scopeTexture,position);
-        enemyResultData.scopeColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth,enemyData.colliderHeight,colliderTexture,enemyData.colliderPosition);
+        enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius, enemyData.scopeRadius, scopeTexture, position);
+        enemyResultData.ColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
         enemyResultData.enemySprite = enemySprite;
 
         return enemyResultData;
     }
 
-    createEnemySupportMesh(width, height,texture,position){
+    createEnemySupportMesh(width, height, texture, position) {
 
         const x = position.positionX || 0;
         const y = position.positionY || 0;
@@ -130,9 +130,9 @@ export default class AI {
         const playerMeshMat = new THREE.MeshPhongMaterial({
             map: texture,
             side: THREE.DoubleSide,
-            transparent:true
+            transparent: true
         });
-        const Mesh = new THREE.Mesh(playerMeshGeo,playerMeshMat);
+        const Mesh = new THREE.Mesh(playerMeshGeo, playerMeshMat);
         Mesh.rotation.x = Math.PI * -.5;
         Mesh.position.set(x, y, z);
 
@@ -140,13 +140,13 @@ export default class AI {
     }
 
     //Метод который обновляет позицию item привязанных к боту
-    updateEnemVisualDate(enemyData,enemy) {
+    updateEnemVisualDate(enemyData, enemy) {
         enemyData.position.x = enemy.position.x;
         enemyData.position.z = enemy.position.z;
     }
 
     updateEnemy(enemy) {
-            this.objectAnimation(true, 20);
+        this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
             enemy.startPositionX = enemy.position.x;
@@ -156,22 +156,22 @@ export default class AI {
         switch (this.fixPoint) {
             case 0:
                 enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
-                    this.updateEnemyAvatar(enemy, 'moveRight');
+                this.updateEnemyAvatar(enemy, 'moveRight');
 
                 break;
             case 1:
                 enemy.position.z = enemy.startPositionY - this.moveCountTest * 0.01;
-                    this.updateEnemyAvatar(enemy, 'moveUP');
+                this.updateEnemyAvatar(enemy, 'moveUP');
 
                 break;
             case 2:
                 enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
-                    this.updateEnemyAvatar(enemy, 'moveLeft');
+                this.updateEnemyAvatar(enemy, 'moveLeft');
 
                 break;
             case 3:
                 enemy.position.z = enemy.startPositionY + this.moveCountTest * 0.01;
-                    this.updateEnemyAvatar(enemy, 'moveDown');
+                this.updateEnemyAvatar(enemy, 'moveDown');
                 break;
         }
 
@@ -189,8 +189,55 @@ export default class AI {
         this.moveCountTest++;
     }
 
-    informationAboutWorld(){
+    informationAboutWorld(enemyData, playerData, mapData) {
+        this.updateEnemVisualDate(enemyData.scopeCircleMesh,enemyData.ColliderMesh);
+        this.updateEnemVisualDate(enemyData.ColliderMesh,enemyData.ColliderMesh);
 
+        this.updateEnemVisualDate(enemyData.enemySprite,enemyData.ColliderMesh);
+        this.persecutionObject(enemyData,playerData);
+
+
+
+    }
+    persecutionObject(enemyData,playerData){
+        const enemy = enemyData.ColliderMesh;
+        enemy.position.x;
+        this.objectAnimation(true, 20);
+
+        if (!enemy.startPositionX && !enemy.startPositionZ) {
+            enemy.startPositionX = enemy.position.x;
+            enemy.startPositionZ = enemy.position.z;
+        }
+
+        if(enemy.position.x > playerData.playerX){
+            enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
+            this.updateEnemyAvatar(enemy, 'moveLeft');
+        }
+        if(enemy.position.x < playerData.playerX){
+            enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
+            this.updateEnemyAvatar(enemy, 'moveRight');
+        }
+
+
+        if(enemy.position.z > playerData.playerZ){
+            enemy.position.z = enemy.startPositionZ - this.moveCountTest * 0.01;
+            this.updateEnemyAvatar(enemy, 'moveUP');
+        }
+        if(enemy.position.z < playerData.playerZ){
+            this.updateEnemyAvatar(enemy, 'moveDown');
+            enemy.position.z = enemy.startPositionZ + this.moveCountTest * 0.01;
+        }
+
+
+
+        if (this.moveCountTest === 1) {
+            enemy.startPositionX = enemy.position.x;
+            enemy.startPositionZ = enemy.position.z;
+            this.moveCountTest = 0;
+        }
+
+
+        this.moveCountTest++;
     }
 }
 
