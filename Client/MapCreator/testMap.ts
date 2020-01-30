@@ -80,5 +80,7 @@ export const testMapJSON = {
         },
         colliderWidth: 1,
         colliderHeight: 1,
+        pursuitZone:30,
+        persecutionRadius:"./Client/image/persecutionRadius.png"
     }
 };

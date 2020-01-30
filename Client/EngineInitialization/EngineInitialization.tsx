@@ -34,8 +34,7 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        let position = {x: 5, y: 0.01, z: 10};
-        const showCollider = false;
+        const showCollider = true;
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -53,17 +52,12 @@ export default class EngineInitialization extends React.Component {
         const userCollaider = playerData.collaider;
         this._AI = new AI(10, 1, 1, 10, 30);
 
-        const enemyDataPosition = this._testImageMap.enemy;
-        const enemyData = this._AI.createEnemy(enemyDataPosition.colliderPosition);
-        const enemy = enemyData.enemySprite;
-        const scopeCircleMesh = enemyData.scopeCircleMesh;
-        const enemyColliderMesh = enemyData.ColliderMesh;
 
+        const enemyData = this._AI.createEnemy(this._testImageMap.enemy,scene,showCollider);
 
-        scene.add(user, enemy);
-
+        scene.add(user);
         if(showCollider) {
-            scene.add(scopeCircleMesh, enemyColliderMesh, userCollaider);
+            scene.add(userCollaider);
         }
         this._camera.сameraON(false, camera, this.canvas);
 

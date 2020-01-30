@@ -62,7 +62,7 @@ export default class Player {
             map: userImg
         });
         user = new THREE.Sprite(heroTexture);
-        user.scale.set(3, 3, 1);
+        user.scale.set(2, 2, 1);
         user.position.set(1, 0, 1);
         user.center.y = 0;
         playerData.user = user;

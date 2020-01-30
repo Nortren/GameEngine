@@ -85,15 +85,17 @@ export default class AI {
     /**
      * генерируем врага на карте
      */
-    createEnemy(position) {
+    createEnemy(enemyData,scene,showCollider) {
+        const position = enemyData.colliderPosition;
         this._testImageMap = this._mapCreator.parserJSON();
         const loader = new THREE.TextureLoader();
         const enemyColor = 0xff0000;
-        const enemyData = this._testImageMap.enemy;
+
 
         const enemyImg = loader.load(enemyData.src);
         const scopeTexture = loader.load(enemyData.scope);
         const colliderTexture = loader.load(enemyData.collaid);
+        const colliderpersecutionRadius = loader.load(enemyData.persecutionRadius);
 
         enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
 
@@ -114,8 +116,15 @@ export default class AI {
         let enemyResultData = {};
 
         enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius, enemyData.scopeRadius, scopeTexture, position);
-        enemyResultData.ColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
+        enemyResultData.ColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth*1.5, enemyData.colliderHeight*1.5, colliderTexture, enemyData.colliderPosition);
+        enemyResultData.persecutionRadius = this.createEnemySupportMesh(enemyData.pursuitZone*1.5, enemyData.pursuitZone*1.5, colliderpersecutionRadius, enemyData.colliderPosition);
+
         enemyResultData.enemySprite = enemySprite;
+        enemyResultData.enemyData = enemyData;
+        scene.add(enemySprite);
+        if(showCollider) {
+            scene.add(enemyResultData.scopeCircleMesh, enemyResultData.ColliderMesh,enemyResultData.persecutionRadius);
+        }
 
         return enemyResultData;
     }
@@ -145,7 +154,7 @@ export default class AI {
         enemyData.position.z = enemy.position.z;
     }
 
-    updateEnemy(enemy) {
+    /*updateEnemy(enemy) {
         this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionY) {
@@ -187,18 +196,29 @@ export default class AI {
             this.fixPoint = 0;
         }
         this.moveCountTest++;
-    }
+    }*/
 
+    /**
+     * текущее состояние ирового мира  чтоб бот мог в нём ориентироваться
+     * @param enemyData
+     * @param playerData
+     * @param mapData
+     */
     informationAboutWorld(enemyData, playerData, mapData) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
-
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
+
         this.persecutionObject(enemyData, playerData);
 
 
     }
 
+    /**
+     * Метод преследования указанного объекта
+     * @param enemyData
+     * @param playerData
+     */
     persecutionObject(enemyData, playerData) {
         const enemy = enemyData.ColliderMesh;
         const enemySprite = enemyData.enemySprite;
@@ -209,26 +229,21 @@ export default class AI {
             enemy.startPositionX = enemy.position.x;
             enemy.startPositionZ = enemy.position.z;
         }
-        if (enemy.startPositionX.toFixed(1) !== playerData.playerX.toFixed(1)) {
-            if (enemy.position.x > playerData.playerX) {
-                enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemySprite, 'moveLeft');
-            }
-            if (enemy.position.x < playerData.playerX) {
-                enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemySprite, 'moveRight');
-            }
-        }
-        if (enemy.startPositionZ.toFixed(1) !== playerData.playerZ.toFixed(1)) {
-            if (enemy.position.z > playerData.playerZ) {
-                enemy.position.z = enemy.startPositionZ - this.moveCountTest * 0.01;
-                this.updateEnemyAvatar(enemySprite, 'moveUP');
-            }
-            if (enemy.position.z < playerData.playerZ) {
-                this.updateEnemyAvatar(enemySprite, 'moveDown');
-                enemy.position.z = enemy.startPositionZ + this.moveCountTest * 0.01;
-            }
-        }
+        enemy.position.x = this.logicOfMovement(
+            enemy.startPositionX,enemy.position.x,
+            playerData.playerX,
+            enemySprite,
+            ['moveLeft','moveRight'],
+            enemyData,
+        'X');
+
+        enemy.position.z = this.logicOfMovement(
+            enemy.startPositionZ,enemy.position.z,
+            playerData.playerZ,
+            enemySprite,
+            ['moveUP','moveDown'],
+            enemyData,
+        'Z');
 
 
         if (this.moveCountTest === 1) {
@@ -239,6 +254,64 @@ export default class AI {
 
 
         this.moveCountTest++;
+    }
+
+    /**
+     * Метод который отвечает за направление вижения бота
+     * @param startPosition
+     * @param enemyPositionAxis текущая позиция по указанной оси
+     * @param persecutionObjectPosition позиция преследуемого объекта по указанной оси
+     * @param enemySprite
+     * @param arrayAnimationMove передаём название в направления (тут уже завязка на метод обновления анимации)
+     * @returns {any}
+     */
+    logicOfMovement(startPosition,enemyPositionAxis,persecutionObjectPosition,enemySprite,arrayAnimationMove,enemyData,axis){
+        const emptySpeed = 0.1;
+        const realStartPositionX = enemyData.enemyData.colliderPosition.x;
+        const realStartPositionZ = enemyData.enemyData.colliderPosition.z;
+        const pursuitZone = enemyData.enemyData.pursuitZone;
+        let persecution = true;
+
+        if(enemyData.enemyData.scopeRadius >= Math.abs(persecutionObjectPosition)){
+            persecution = true;
+        }
+
+        if(persecution && Math.abs(realStartPositionX+startPosition) < pursuitZone && Math.abs(persecutionObjectPosition) < pursuitZone) {
+            if (startPosition.toFixed(1) !== persecutionObjectPosition.toFixed(1)) {
+                if (enemyPositionAxis > persecutionObjectPosition) {
+                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[0]);
+                    return startPosition - this.moveCountTest * emptySpeed;
+
+                }
+                if (enemyPositionAxis < persecutionObjectPosition) {
+                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[1]);
+                    return startPosition + this.moveCountTest * emptySpeed;
+
+                }
+
+            }
+        }
+        else{
+
+            if(axis === 'X' && startPosition !== realStartPositionX && Math.abs(persecutionObjectPosition) > pursuitZone){
+                if(startPosition > realStartPositionX) {
+                    return startPosition - this.moveCountTest * emptySpeed;
+                }
+                else{
+                    return startPosition + this.moveCountTest * emptySpeed;
+                }
+            }
+            if(axis === 'Z' && Math.abs(startPosition) !== realStartPositionZ && Math.abs(persecutionObjectPosition) > pursuitZone){
+                if(startPosition > realStartPositionZ) {
+                    return startPosition - this.moveCountTest * emptySpeed;
+                }
+                else{
+                    return startPosition + this.moveCountTest * emptySpeed;
+                }
+            }
+
+        }
+        return startPosition;
     }
 }
 
