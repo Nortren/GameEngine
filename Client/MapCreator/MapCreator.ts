@@ -91,8 +91,9 @@ export default class MapCreator {
                 x: X,
                 y: Y,
                 z: Z,
-                width: Width,
-                height: Height
+                //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+                width: Width*0.5,
+                height: Height*0.5
             })
 
     }
@@ -106,11 +107,11 @@ export default class MapCreator {
             let collisionZ = collision.z;
             let collisionX = collision.x;
 
-            //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
-            let drawObjectRealWidth = collision.width * 0.5;
-            let drawObjectRealHeight = collision.height * 0.5;
-            let PlayerRealWidth = Xwidth * 0.5;
-            let PlayerRealHeight = Zheight * 0.5;
+
+            let drawObjectRealWidth = collision.width;
+            let drawObjectRealHeight = collision.height;
+            let PlayerRealWidth = Xwidth;
+            let PlayerRealHeight = Zheight;
             if ((Xmove + PlayerRealWidth >= collisionX - drawObjectRealWidth) && (Xmove - PlayerRealWidth <= collisionX + drawObjectRealWidth)) {
                 checkX = true;
             }

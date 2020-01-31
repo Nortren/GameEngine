@@ -70,17 +70,17 @@ export const testMapJSON = {
     enemy: {
         src: "./Client/image/hero.png",
         collaid:"./Client/image/collaid.png",
-        scope:"./Client/image/scope_circle.png",
+        scope:"./Client/image/persecutionRadius.png",
         scopeRadius:8,
 
         colliderPosition:{
-            x: 5,
+            x: 0,
             y: 0.01,
-            z: 5,
+            z: 0,
         },
         colliderWidth: 1,
         colliderHeight: 1,
-        pursuitZone:30,
+        pursuitZone:20,
         persecutionRadius:"./Client/image/persecutionRadius.png"
     }
 };
