@@ -58,7 +58,7 @@ export const testMapJSON = {
         }
 
     },
-    hero: {
+    player: {
         src: "./Client/image/Player_v0.0.3.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
@@ -66,6 +66,10 @@ export const testMapJSON = {
         colliderPositionZ: 0,
         colliderWidth: 1,
         colliderHeight: 1,
+        health:100,
+        damage:1,
+        attackDistance:1,
+        attackSpeed:10
     },
     enemy: {
         src: "./Client/image/hero.png",
@@ -81,6 +85,10 @@ export const testMapJSON = {
         colliderWidth: 1,
         colliderHeight: 1,
         pursuitZone:20,
-        persecutionRadius:"./Client/image/persecutionRadius.png"
+        persecutionRadius:"./Client/image/persecutionRadius.png",
+        health:100,
+        damage:1,
+        attackDistance:1,
+        attackSpeed:10
     }
 };

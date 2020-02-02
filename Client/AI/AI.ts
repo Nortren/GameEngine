@@ -15,7 +15,7 @@ export default class AI {
     attackSpeed: number;
     damage: number;
     amountOfHealth: number;
-
+    private _attackSpeedCount: number = 0;
     private _testImageMap: object;
     private _mapCreator: MapCreator = new MapCreator();
 
@@ -29,6 +29,7 @@ export default class AI {
         this.moveCountTest = 0;
 
         this._animationTimer = 0;
+        this._eventCount = 0;
         this.fixPoint = 0;
     }
 
@@ -282,7 +283,7 @@ export default class AI {
 
 
         let resultCollision = this.stopEnemyAtDistanceOfAttack(enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight,
-            persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight);
+            persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight, playerData, enemyData);
 
 
         const pursuitZone = enemyData.enemyData.pursuitZone * 0.5;
@@ -301,11 +302,11 @@ export default class AI {
             if (enemyPositionAxisX.toFixed(1) !== persecutionObjectPositionX.toFixed(1)) {
                 if (enemyPositionAxisX <= persecutionObjectPositionX) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[1]);
-                    returnData = this.bypassAnObstacle(enemy, returnData.x + emptySpeed, returnData.z , enemyWidth, enemyHeight, mapData,emptySpeed,'x');
+                    returnData = this.bypassAnObstacle(enemy, returnData.x + emptySpeed, returnData.z, enemyWidth, enemyHeight, mapData, emptySpeed, 'x');
                 }
                 if (enemyPositionAxisX >= persecutionObjectPositionX) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[0]);
-                    returnData = this.bypassAnObstacle(enemy, returnData.x - emptySpeed, returnData.z , enemyWidth, enemyHeight, mapData,-emptySpeed,'x');
+                    returnData = this.bypassAnObstacle(enemy, returnData.x - emptySpeed, returnData.z, enemyWidth, enemyHeight, mapData, -emptySpeed, 'x');
                 }
             }
 
@@ -363,7 +364,8 @@ export default class AI {
      * @returns {boolean}
      */
     stopEnemyAtDistanceOfAttack(enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight,
-                                persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight) {
+                                persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight
+        , playerData, enemyData) {
 
         enemyWidth = enemyWidth * 0.5;
         enemyHeight = enemyHeight * 0.5;
@@ -382,12 +384,24 @@ export default class AI {
         }
 
         if (checkX && checkZ) {
+            this.attack(playerData.playerData.playerData, enemyData.enemyData);
             return true;
         }
+
         return false;
     }
 
-    bypassAnObstacle(enemy, enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight, mapData,emptySpeed,axis) {
+    attack(playerData, enemyData) {
+        if(this._attackSpeedCount === enemyData.attackSpeed){
+
+            playerData.health = playerData.health - enemyData.damage;
+            this._attackSpeedCount = 0;
+        }
+        this._attackSpeedCount++;
+        console.log( playerData.health);
+    }
+
+    bypassAnObstacle(enemy, enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight, mapData, emptySpeed, axis) {
         let checkCollision = {};
         checkCollision.checkX = false;
         checkCollision.checkZ = false;
@@ -404,31 +418,33 @@ export default class AI {
             let drawObjectRealHeight = collision.height;
 
 
-            checkX = this.checkCollisionAxis(enemyPositionAxisX,enemyWidth,collisionX,drawObjectRealWidth);
-            checkZ = this.checkCollisionAxis(enemyPositionAxisZ,enemyHeight,collisionZ,drawObjectRealHeight);
+            checkX = this.checkCollisionAxis(enemyPositionAxisX, enemyWidth, collisionX, drawObjectRealWidth);
+            checkZ = this.checkCollisionAxis(enemyPositionAxisZ, enemyHeight, collisionZ, drawObjectRealHeight);
 
 
             if (checkX && checkZ) {
-                while(this.checkCollisionAxis(enemyPositionAxisX-emptySpeed,enemyWidth,collisionX,drawObjectRealWidth)){
-                    return {x: enemy.position.x-emptySpeed, z: enemy.position.z};
+                while (this.checkCollisionAxis(enemyPositionAxisX - emptySpeed, enemyWidth, collisionX, drawObjectRealWidth)) {
+                    return {x: enemy.position.x - emptySpeed, z: enemy.position.z};
                 }
-            /*    while(this.checkCollisionAxis(enemyPositionAxisZ-emptySpeed,enemyHeight,collisionZ,drawObjectRealHeight)){
-                    return {x: enemy.position.x, z: enemy.position.z-emptySpeed};
-                }*/
+                /*    while(this.checkCollisionAxis(enemyPositionAxisZ-emptySpeed,enemyHeight,collisionZ,drawObjectRealHeight)){
+                 return {x: enemy.position.x, z: enemy.position.z-emptySpeed};
+                 }*/
                 // return {x: enemy.position.x, z: enemy.position.z};
             }
 
         }
         return {x: enemyPositionAxisX, z: enemyPositionAxisZ}
     }
-    checkCollisionAxis(enemyPositionAxis,enemySize,positionCollision,sizeCollision){
+
+    checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
         if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
             (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
             return true;
         }
         return false;
     }
-    checkCollision(){
+
+    checkCollision() {
 
     }
 }

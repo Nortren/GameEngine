@@ -34,7 +34,7 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        const showCollider = true;
+        const showCollider = false;
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -46,16 +46,17 @@ export default class EngineInitialization extends React.Component {
         const mapObject = this._mapCreator.createGameLocation(scene,showCollider);
 
 
-        const userData = this._testImageMap.hero;
+        const userData = this._testImageMap.player;
         const playerData = this._player.createPlayer(userData);
         const user = playerData.user;
+        const healthLine = playerData.healthLine;
         const userCollaider = playerData.collaider;
         this._AI = new AI(10, 1, 1, 10, 30);
 
 
         const enemyData = this._AI.createEnemy(this._testImageMap.enemy,scene,showCollider);
 
-        scene.add(user);
+        scene.add(user,healthLine);
         if(showCollider) {
             scene.add(userCollaider);
         }
@@ -117,12 +118,14 @@ export default class EngineInitialization extends React.Component {
             playerX: playerData.collaider.position.x,
             playerZ: playerData.collaider.position.z,
             playerWidth: playerData.collaider.geometry.parameters.width,
-            playerHeight: playerData.collaider.geometry.parameters.height
+            playerHeight: playerData.collaider.geometry.parameters.height,
+            playerData:playerData
         };
 
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
 
+        this._player.update(playerInformation);
         this._AI.informationAboutWorld(enemyData,playerInformation,this._mapCreator);
         this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);

@@ -81,7 +81,7 @@ export default class MapCreator {
             mapObject.push(elementObj);
         }
 
-        scene.add(map);
+        // scene.add(map);
     }
 
     createObjectCollision(X: number, Y: number, Z: number, Width: number, Height: number): void {
