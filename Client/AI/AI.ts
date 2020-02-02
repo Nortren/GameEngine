@@ -209,7 +209,7 @@ export default class AI {
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
 
-        this.persecutionObject(enemyData, playerData);
+        this.persecutionObject(enemyData, playerData, mapData);
 
 
     }
@@ -219,7 +219,7 @@ export default class AI {
      * @param enemyData
      * @param playerData
      */
-    persecutionObject(enemyData, playerData) {
+    persecutionObject(enemyData, playerData, mapData) {
         const enemy = enemyData.ColliderMesh;
         const enemySprite = enemyData.enemySprite;
         enemy.position.x;
@@ -236,6 +236,7 @@ export default class AI {
             enemySprite,
             ['moveLeft', 'moveRight', 'moveUP', 'moveDown'],
             enemyData,
+            mapData
         );
         enemy.position.x = positionLogic.x;
         enemy.position.z = positionLogic.z;
@@ -261,49 +262,62 @@ export default class AI {
      * @returns {any}
      */
 
-    logicOfMovement(enemy, playerData, enemySprite, arrayAnimationMove, enemyData) {
-        const startPositionX = enemy.startPositionX;
-        const startPositionZ = enemy.startPositionZ;
+    logicOfMovement(enemy, playerData, enemySprite, arrayAnimationMove, enemyData, mapData) {
         const enemyPositionAxisX = enemy.position.x;
         const enemyPositionAxisZ = enemy.position.z;
-        const persecutionObjectPositionX = playerData.playerX;
-        const persecutionObjectPositionZ = playerData.playerZ;
         const realStartPositionX = enemyData.enemyData.colliderPosition.x;
         const realStartPositionZ = enemyData.enemyData.colliderPosition.z;
-        const scopeRadius = enemyData.enemyData.scopeRadius* 0.5;
+        const enemyWidth = enemyData.enemyData.colliderWidth;
+        const enemyHeight = enemyData.enemyData.colliderHeight;
+        const scopeRadius = enemyData.enemyData.scopeRadius * 0.5;
 
-        let returnData = {x: startPositionX, z: startPositionZ};
+        const persecutionObjectPositionX = playerData.playerX;
+        const persecutionObjectPositionZ = playerData.playerZ;
+        const persecutionObjectWidth = playerData.playerWidth;
+        const persecutionObjectHeight = playerData.playerHeight;
+        const emptySpeedCoefficient = 0.03;
+        const emptySpeed = this.moveCountTest * emptySpeedCoefficient;
 
-        const emptySpeed = 0.01; 
+        let returnData = {x: enemyPositionAxisX, z: enemyPositionAxisZ};
+
+
+        let resultCollision = this.stopEnemyAtDistanceOfAttack(enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight,
+            persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight);
+
+
         const pursuitZone = enemyData.enemyData.pursuitZone * 0.5;
-        let persecution = false;
-
-        if (scopeRadius >= Math.abs(persecutionObjectPositionX) && scopeRadius >= Math.abs(persecutionObjectPositionZ)) {
+        let persecution = true;
+        //TODO не очевидная логика перемещения вероятно связано с последовательностью определения координат
+        if (scopeRadius + Math.abs(enemyPositionAxisX) >= Math.abs(Math.abs(persecutionObjectPositionX) - persecutionObjectWidth * 0.5) &&
+            scopeRadius + Math.abs(enemyPositionAxisZ) >= Math.abs(Math.abs(persecutionObjectPositionZ) - persecutionObjectHeight * 0.5)) {
             persecution = true;
         }
+
+
         //Бежим за игроком
-        if (persecution && Math.abs(persecutionObjectPositionX) < pursuitZone && Math.abs(persecutionObjectPositionZ) < pursuitZone) {
-            if (startPositionX.toFixed(1) !== persecutionObjectPositionX.toFixed(1)) {
-                if (enemyPositionAxisX > persecutionObjectPositionX) {
-                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[0]);
-                    returnData.x = startPositionX - this.moveCountTest * emptySpeed;
+        if (!resultCollision && persecution && Math.abs(persecutionObjectPositionX) < pursuitZone && Math.abs(persecutionObjectPositionZ) < pursuitZone) {
 
-                }
-                if (enemyPositionAxisX < persecutionObjectPositionX) {
+
+            if (enemyPositionAxisX.toFixed(1) !== persecutionObjectPositionX.toFixed(1)) {
+                if (enemyPositionAxisX <= persecutionObjectPositionX) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[1]);
-                    returnData.x = startPositionX + this.moveCountTest * emptySpeed;
-
+                    returnData = this.bypassAnObstacle(enemy, returnData.x + emptySpeed, returnData.z , enemyWidth, enemyHeight, mapData,emptySpeed,'x');
+                }
+                if (enemyPositionAxisX >= persecutionObjectPositionX) {
+                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[0]);
+                    returnData = this.bypassAnObstacle(enemy, returnData.x - emptySpeed, returnData.z , enemyWidth, enemyHeight, mapData,-emptySpeed,'x');
                 }
             }
-            if (startPositionZ.toFixed(1) !== persecutionObjectPositionZ.toFixed(1)) {
-                if (enemyPositionAxisZ > persecutionObjectPositionZ) {
-                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[2]);
-                    returnData.z = startPositionZ - this.moveCountTest * emptySpeed;
 
-                }
-                if (enemyPositionAxisZ < persecutionObjectPositionZ) {
+            if (enemyPositionAxisZ.toFixed(1) !== persecutionObjectPositionZ.toFixed(1)) {
+                if (enemyPositionAxisZ <= persecutionObjectPositionZ) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[3]);
-                    returnData.z = startPositionZ + this.moveCountTest * emptySpeed;
+                    returnData = this.bypassAnObstacle(enemy, returnData.x, returnData.z + emptySpeed, enemyWidth, enemyHeight, mapData, emptySpeed, 'z');
+                }
+                if (enemyPositionAxisZ >= persecutionObjectPositionZ) {
+                    this.updateEnemyAvatar(enemySprite, arrayAnimationMove[2]);
+                    returnData = this.bypassAnObstacle(enemy, returnData.x, returnData.z - emptySpeed, enemyWidth, enemyHeight, mapData, -emptySpeed, 'z');
+
 
                 }
             }
@@ -312,28 +326,110 @@ export default class AI {
             return returnData;
         }
         else {
-//Возвращаемся к текущей позиции
+            //Возвращаемся к текущей позиции
             if (Math.abs(persecutionObjectPositionX) > pursuitZone || Math.abs(persecutionObjectPositionZ) > pursuitZone) {
-                if (startPositionX.toFixed(1) > realStartPositionX) {
+                if (enemyPositionAxisX.toFixed(1) > realStartPositionX) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[0]);
-                    returnData.x = startPositionX - this.moveCountTest * emptySpeed;
+                    returnData.x = enemyPositionAxisX - emptySpeed;
                 }
-                if (startPositionX.toFixed(1) < realStartPositionX) {
+                if (enemyPositionAxisX.toFixed(1) < realStartPositionX) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[1]);
-                    returnData.x = startPositionX + this.moveCountTest * emptySpeed;
+                    returnData.x = enemyPositionAxisX + emptySpeed;
                 }
 
-                if (startPositionZ.toFixed(1) > realStartPositionZ) {
+                if (enemyPositionAxisZ.toFixed(1) > realStartPositionZ) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[2]);
-                    returnData.z = startPositionZ - this.moveCountTest * emptySpeed;
+                    returnData.z = enemyPositionAxisZ - emptySpeed;
                 }
-                if (startPositionZ.toFixed(1) < realStartPositionZ) {
+                if (enemyPositionAxisZ.toFixed(1) < realStartPositionZ) {
                     this.updateEnemyAvatar(enemySprite, arrayAnimationMove[3]);
-                    returnData.z = startPositionZ + this.moveCountTest * emptySpeed;
+                    returnData.z = enemyPositionAxisZ + emptySpeed;
                 }
             }
         }
         return returnData;
+    }
+
+    /**
+     * Метод проверки столкновения с игроком(или проверка радиуса атаки на отором бот должен остановиться)
+     * @param enemyPositionAxisX
+     * @param enemyPositionAxisZ
+     * @param enemyWidth
+     * @param enemyHeight
+     * @param persecutionObjectPositionX
+     * @param persecutionObjectPositionZ
+     * @param persecutionObjectWidth
+     * @param persecutionObjectHeight
+     * @returns {boolean}
+     */
+    stopEnemyAtDistanceOfAttack(enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight,
+                                persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight) {
+
+        enemyWidth = enemyWidth * 0.5;
+        enemyHeight = enemyHeight * 0.5;
+        persecutionObjectWidth = persecutionObjectWidth * 0.5;
+        persecutionObjectHeight = persecutionObjectHeight * 0.5;
+        let checkX = false;
+        let checkZ = false;
+
+        if ((enemyPositionAxisX + enemyWidth >= persecutionObjectPositionX - persecutionObjectWidth) &&
+            (enemyPositionAxisX - enemyWidth <= persecutionObjectPositionX + persecutionObjectWidth)) {
+            checkX = true;
+        }
+        if ((enemyPositionAxisZ + enemyHeight >= persecutionObjectPositionZ - persecutionObjectHeight) &&
+            (enemyPositionAxisZ - enemyHeight <= persecutionObjectPositionZ + persecutionObjectHeight)) {
+            checkZ = true;
+        }
+
+        if (checkX && checkZ) {
+            return true;
+        }
+        return false;
+    }
+
+    bypassAnObstacle(enemy, enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight, mapData,emptySpeed,axis) {
+        let checkCollision = {};
+        checkCollision.checkX = false;
+        checkCollision.checkZ = false;
+
+        for (let key in mapData.collisionPoint) {
+            let checkX = false;
+            let checkZ = false;
+            let collision = mapData.collisionPoint[key];
+            let collisionZ = collision.z;
+            let collisionX = collision.x;
+
+
+            let drawObjectRealWidth = collision.width;
+            let drawObjectRealHeight = collision.height;
+
+
+            checkX = this.checkCollisionAxis(enemyPositionAxisX,enemyWidth,collisionX,drawObjectRealWidth);
+            checkZ = this.checkCollisionAxis(enemyPositionAxisZ,enemyHeight,collisionZ,drawObjectRealHeight);
+
+
+            if (checkX && checkZ) {
+                while(this.checkCollisionAxis(enemyPositionAxisX-emptySpeed,enemyWidth,collisionX,drawObjectRealWidth)){
+                    return {x: enemy.position.x-emptySpeed, z: enemy.position.z};
+                }
+            /*    while(this.checkCollisionAxis(enemyPositionAxisZ-emptySpeed,enemyHeight,collisionZ,drawObjectRealHeight)){
+                    return {x: enemy.position.x, z: enemy.position.z-emptySpeed};
+                }*/
+                // return {x: enemy.position.x, z: enemy.position.z};
+            }
+
+        }
+        return {x: enemyPositionAxisX, z: enemyPositionAxisZ}
+    }
+    checkCollisionAxis(enemyPositionAxis,enemySize,positionCollision,sizeCollision){
+        if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
+            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
+            return true;
+        }
+        return false;
+    }
+    checkCollision(){
+
     }
 }
 

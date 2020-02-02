@@ -9,7 +9,7 @@ export const testMapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement: {
-            tree3: {
+            home1: {
                 src: "./Client/image/home.png",
                 startPositionX: 10,
                 startPositionY: 0,
@@ -17,10 +17,10 @@ export const testMapJSON = {
                 width: 10,
                 height: 10,
                 collaid: "./Client/image/collaid.png",
-                colliderPositionX: 8,
+                colliderPositionX: 7,
                 colliderPositionY: 0.01,
-                colliderPositionZ: 8.5,
-                colliderWidth: 7,
+                colliderPositionZ: 3,
+                colliderWidth: 10,
                 colliderHeight:3,
                 zIndex: 1,
             },
@@ -34,12 +34,12 @@ export const testMapJSON = {
                 collaid: "./Client/image/collaid.png",
                 colliderPositionX: -5,
                 colliderPositionY: 0.01,
-                colliderPositionZ: -5,
-                colliderWidth: 0.5,
-                colliderHeight:0.5,
+                colliderPositionZ: 0,
+                colliderWidth: 3,
+                colliderHeight:10,
                 zIndex: 1,
             },
-            home2: {
+        /*    tree2: {
                 src: "./Client/image/treeTest.png",
                 startPositionX: 0,
                 startPositionY: 0,
@@ -54,7 +54,7 @@ export const testMapJSON = {
                 colliderHeight: 0.5,
                 zIndex: 1,
             },
-
+*/
         }
 
     },
@@ -71,7 +71,7 @@ export const testMapJSON = {
         src: "./Client/image/hero.png",
         collaid:"./Client/image/collaid.png",
         scope:"./Client/image/persecutionRadius.png",
-        scopeRadius:8,
+        scopeRadius:16,
 
         colliderPosition:{
             x: 0,
