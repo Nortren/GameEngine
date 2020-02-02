@@ -80,29 +80,60 @@ export default class Player {
         userData.playerData = playerData;
 
 
-        const material = new THREE.LineBasicMaterial({color: 0xff0000});
+      /*  const material = new THREE.LineBasicMaterial({color: 0xff0000});
         const geometry = new THREE.Geometry();
 
         geometry.vertices.push(new THREE.Vector3(0, 0, 0));
         geometry.vertices.push(new THREE.Vector3(1, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+
 
         const line = new THREE.Line(geometry, material);
-        userData.healthLine = line;
+        userData.healthLine = line;*/
+
+        const material = new THREE.MeshPhongMaterial(
+            {
+                color: 0xff0000,
+                // map: playerDataIMG,
+                // side: THREE.DoubleSide
+            });
+        const geometry = new THREE.PlaneBufferGeometry(
+            playerData.colliderWidth,
+            0.25);
+
+
+        const healthLine = new THREE.Mesh(geometry, material);
+        healthLine.rotation.x = Math.PI * -.5;
+        healthLine.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
+        userData.healthLine = healthLine;
 
         return userData;
     }
 
-    update(playerInformation) {
-        let positionPlayer = playerInformation.playerData.user.position;
-        let positionHealthLine = playerInformation.playerData.healthLine.position;
-        let playerHealth = playerInformation.playerData.playerData.health;
+    update(playerData,props,rect) {
+        let positionPlayer = playerData.user.position;
+        let positionHealthLine = playerData.healthLine.position;
+        let playerHealth = playerData.playerData.health;
         let healthLenght = this.calculationHealthLine(playerHealth);
-        playerInformation.playerData.healthLine.scale.x = healthLenght;
+        playerData.healthLine.scale.x = healthLenght;
+        playerData.healthLine.scale.z = 2;
+
+
+
+
 
         positionHealthLine.x = positionPlayer.x;
         positionHealthLine.z = positionPlayer.z;
         positionHealthLine.y = 0;
+
+        //рисуем героя по центру картинки
+        playerData.user.material.map.offset.x = rect.x;
+        playerData.user.material.map.offset.y = rect.y;
+        playerData.user.position.x = props.moveX * -0.01;
+        playerData.user.position.z = props.moveZ * -0.01;
+        playerData.collaider.position.x = playerData.user.position.x;
+        playerData.collaider.position.z = playerData.user.position.z;
+        playerData.healthLine.position.x = playerData.user.position.x;
+        playerData.healthLine.position.z = playerData.user.position.z;
 
     }
 

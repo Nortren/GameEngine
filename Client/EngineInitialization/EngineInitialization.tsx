@@ -125,9 +125,9 @@ export default class EngineInitialization extends React.Component {
         this._cameraControls.cameraControl(camera);
         this._camera.updateCameraGame(camera, this.props);
 
-        this._player.update(playerInformation);
+
         this._AI.informationAboutWorld(enemyData,playerInformation,this._mapCreator);
-        this._dynamicAnimation.updateUserAvatar(playerData.user,playerData.collaider, this.props);
+        this._dynamicAnimation.updateUserAvatar(playerData, this.props,this._player);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
 

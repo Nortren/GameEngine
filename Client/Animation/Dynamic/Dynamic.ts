@@ -1,3 +1,4 @@
+
 export default class Dynamic {
     _count: number;
     _pressKey: string;
@@ -48,7 +49,7 @@ export default class Dynamic {
      * @param imgHero картинка отображения гавного героя
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(hero, collaider, props) {
+    updateUserAvatar(playerData, props,player) {
 
         if (this._count > 3) {
             this._count = 0;
@@ -67,19 +68,10 @@ export default class Dynamic {
         if (this._pressKey === "S" || (props && props.direction === "DOWN")) {
             rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         }
+        player.update(playerData,props,rect);
 
-
-        //рисуем героя по центру картинки
-        hero.material.map.offset.x = rect.x;
-        hero.material.map.offset.y = rect.y;
-        hero.position.x = props.moveX * -0.01;
-        hero.position.z = props.moveZ * -0.01;
-        collaider.position.x = hero.position.x;
-        collaider.position.z = hero.position.z;
 
     }
-
-
 
 }
 
