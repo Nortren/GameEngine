@@ -15,7 +15,7 @@ export default class Camera {
         const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 100);
         camera.position.set(0, 10, 5);
         camera.scale.set(1, 1, 1);
-        camera.rotateX(4.7);
+        camera.rotateX(4.99);
         return camera;
     }
 

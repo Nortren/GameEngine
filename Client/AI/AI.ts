@@ -384,7 +384,7 @@ export default class AI {
         }
 
         if (checkX && checkZ) {
-            this.attack(playerData.playerData.playerData, enemyData.enemyData);
+            this.attack(playerData.playerData, enemyData.enemyData);
             return true;
         }
 
@@ -398,7 +398,6 @@ export default class AI {
             this._attackSpeedCount = 0;
         }
         this._attackSpeedCount++;
-        console.log( playerData.health);
     }
 
     bypassAnObstacle(enemy, enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight, mapData, emptySpeed, axis) {
