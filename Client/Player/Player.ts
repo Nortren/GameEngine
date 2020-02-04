@@ -77,16 +77,19 @@ export default class Player {
      * @param playerColliderImg
      */
     createEngineUserCollaid(playerData: Object, playerColliderImg: Texture) {
-        const playerCollaiderGeo = new THREE.PlaneBufferGeometry(playerData.colliderWidth, playerData.colliderHeight);
+        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderHeight,playerData.colliderWidth);
         const playerCollaiderMat = new THREE.MeshPhongMaterial({
             map: playerColliderImg,
             side: THREE.DoubleSide,
-
+         /*   transparent: true,
+            opacity : 0*/
         });
+
         const playerCollaider = new THREE.Mesh(playerCollaiderGeo, playerCollaiderMat);
         playerCollaider.rotation.x = Math.PI * -.5;
         playerCollaider.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
         playerData.collaider = playerCollaider;
+        playerCollaider.castShadow = true;
     }
 
     /**

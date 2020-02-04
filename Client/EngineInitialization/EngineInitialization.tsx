@@ -34,7 +34,7 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        const showCollider = false;
+        const showCollider = true;
         this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
@@ -43,6 +43,8 @@ export default class EngineInitialization extends React.Component {
         const camera = this._camera.createCamera();
 
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
+        renderer.shadowMap.enabled = true;
+
         const mapObject = this._mapCreator.createGameLocation(scene,showCollider);
 
 
@@ -94,8 +96,58 @@ export default class EngineInitialization extends React.Component {
         const color = 0xFFFFFF;
         const intensity = 1;
         const light = new THREE.AmbientLight(color, intensity);
-        scene.add(light);
+        // scene.add(light);
         // this.update(renderer, scene, camera,user);
+
+
+
+        var materials = [
+            //делаем каждую сторону своего цвета
+            new THREE.MeshBasicMaterial( { transparent: true,opacity : 0 }), // правая сторона
+            new THREE.MeshBasicMaterial( { transparent: true,opacity : 0 }), // левая сторона
+            new THREE.MeshBasicMaterial( { transparent: true,opacity : 0 }), //верх
+            new THREE.MeshBasicMaterial( { transparent: true,opacity : 0 }), // низ
+            new THREE.MeshBasicMaterial( { color: 0xED7700 }), // лицевая сторона
+            new THREE.MeshBasicMaterial( { color: 0xB5B1AE }) // задняя сторона
+        ];
+
+        const boxWidth = 1;
+        const boxHeight = 1;
+        const boxDepth = 1;
+        const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+        const material = new THREE.MeshBasicMaterial({color: 0x44aa88});  // greenish blue
+
+
+        const colorLight = 0xFFFFFF;
+        const intensityLight = 0.4;
+        const lightTest = new THREE.PointLight(colorLight, intensityLight);
+        lightTest.castShadow = true;
+        lightTest.position.set(0, 11, 0);
+        // lightTest.target.position.set(-4, 0, -4);
+
+
+        const cubeSize = 1;
+        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMat = new THREE.MeshPhongMaterial({   side: THREE.DoubleSide,
+            transparent: true,opacity : 0});
+        const mesh = new THREE.Mesh(cubeGeo, materials);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.position.set( 0, 2, 0 );
+
+
+
+
+        //добавлям свет
+        scene.add( lightTest,light.target ,mesh);
+
+
+
+
+
+
+
         this.update(renderer, scene, camera, playerData, enemyData);
     }
 
