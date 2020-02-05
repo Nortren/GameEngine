@@ -1,4 +1,5 @@
 import {testMapJSON} from "./testMap";
+import {globalVariables} from "../GlobalVariables";
 import * as THREE from "three";
 export default class MapCreator {
 
@@ -31,6 +32,17 @@ export default class MapCreator {
         texture.wrapT = THREE.RepeatWrapping;
         texture.magFilter = THREE.NearestFilter;
 
+        //добавлям свет
+        const color = 0xFFFFFF;
+        const intensity = 1;
+        const colorLight = 0xFFFFFF;
+        const intensityLight = 0.4;
+        const light = new THREE.PointLight(colorLight, intensityLight);
+        light.castShadow = true;
+        light.position.set(0, 11, 0);
+        scene.add(light, light.target);
+
+
         const repeats = planeSize / 2;
         texture.repeat.set(repeats, repeats);
 
@@ -46,53 +58,59 @@ export default class MapCreator {
         mapObject.push(map);
         for (let key in mapData.mapElement) {
             let mapElementObject = mapData.mapElement[key];
-            let mapElementObjectIMG = loader.load(mapElementObject.src);
-            mapElementObjectIMG.magFilter = THREE.NearestFilter;
 
+            if (globalVariables.models.sprite) {
+                let mapElementObjectIMG = loader.load(mapElementObject.src);
+                mapElementObjectIMG.magFilter = THREE.NearestFilter;
+                let mapElementObjectTexture = new THREE.SpriteMaterial({
+                    map: mapElementObjectIMG,
+                });
 
-            let mapElementObjectTexture = new THREE.SpriteMaterial({
-                map: mapElementObjectIMG,
-            });
-
-            const elementObj = new THREE.Sprite(mapElementObjectTexture);
-
-
-            elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
-            elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
-
-            elementObj.center.y = 0;
-
+                const elementObj = new THREE.Sprite(mapElementObjectTexture);
+                elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
+                elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
+                elementObj.center.y = 0;
+                scene.add(elementObj);
+                mapObject.push(elementObj);
+            }
 
             let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
-            const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth,mapElementObject.colliderLength, mapElementObject.colliderHeight);
+            const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
             const planeCollaiderMat = new THREE.MeshPhongMaterial({
                 map: mapElementObjectCollaider,
                 side: THREE.DoubleSide,
             });
-
-
-            var materials = [
+            let materials = [
                 //делаем каждую сторону своего цвета
-                new THREE.MeshBasicMaterial( { color: 0xED7700  }), // левая сторона
-                new THREE.MeshBasicMaterial( {color: 0xED7700 }), // правая сторона
-                new THREE.MeshBasicMaterial( {  map: mapElementObjectCollaider, }), //зaдняя сторона
-                new THREE.MeshBasicMaterial( {   color: 0xED7700  }), // лицевая сторона
-                new THREE.MeshBasicMaterial( { map: mapElementObjectCollaider, }), // верх
-                new THREE.MeshBasicMaterial( { transparent: true,opacity : 0 }) // низ
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
             ];
 
+            if (globalVariables.collider.showCollider) {
+                materials = [
+                    //делаем каждую сторону своего цвета
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
+                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), //зaдняя сторона
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
+                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), // верх
+                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+                ];
+            }
 
             const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
             elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
             elementObjCollaider.castShadow = true;
             elementObjCollaider.rotation.x = Math.PI * -.5;
             this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ, mapElementObject.colliderWidth, mapElementObject.colliderLength);
-            if (showCollaider) {
-                scene.add(elementObjCollaider);
-            }
+            scene.add(elementObjCollaider);
 
-            scene.add(elementObj);
-            mapObject.push(elementObj);
+
+
         }
 
         scene.add(map);
@@ -106,8 +124,8 @@ export default class MapCreator {
                 y: Y,
                 z: Z,
                 //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
-                width: Width*0.5,
-                height: Height*0.5
+                width: Width * 0.5,
+                height: Height * 0.5
             })
 
     }

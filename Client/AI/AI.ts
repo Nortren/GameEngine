@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import MapCreator from "../MapCreator/MapCreator";
 import Dynamic from "../Animation/Dynamic/Dynamic";
+import {globalVariables} from "../GlobalVariables";
 
 export default class AI {
     _count: number;
@@ -117,15 +118,15 @@ export default class AI {
         let enemyResultData = {};
 
         enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius, enemyData.scopeRadius, scopeTexture, position);
-        enemyResultData.ColliderMesh = this.createEnemySupportMesh(enemyData.colliderWidth, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
+        enemyResultData.ColliderMesh = this.createEnemyCollider(enemyData.colliderWidth, enemyData.colliderLength, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
         enemyResultData.persecutionRadius = this.createEnemySupportMesh(enemyData.pursuitZone, enemyData.pursuitZone, colliderpersecutionRadius, enemyData.colliderPosition);
 
         enemyResultData.enemySprite = enemySprite;
         enemyResultData.enemyData = enemyData;
         scene.add(enemySprite);
-        if (showCollider) {
+
             scene.add(enemyResultData.scopeCircleMesh, enemyResultData.ColliderMesh, enemyResultData.persecutionRadius);
-        }
+
 
         return enemyResultData;
     }
@@ -146,6 +147,40 @@ export default class AI {
         Mesh.rotation.x = Math.PI * -.5;
         Mesh.position.set(x, y, z);
 
+        return Mesh;
+    }
+    createEnemyCollider(width,length, height, texture, position) {
+
+        const x = position.x || 0;
+        const y = position.y || 0;
+        const z = position.z || 0;
+
+        const playerMeshGeo = new THREE.BoxBufferGeometry(width,length,height);
+        let materials = [
+            //делаем каждую сторону своего цвета
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+        ];
+
+        if(globalVariables.collider.showCollider) {
+            materials = [
+                //делаем каждую сторону своего цвета
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
+                new THREE.MeshBasicMaterial({map: texture,}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
+                new THREE.MeshBasicMaterial({map: texture,}), // верх
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+            ];
+        }
+        const Mesh = new THREE.Mesh(playerMeshGeo, materials);
+        Mesh.rotation.x = Math.PI * -.5;
+        Mesh.position.set(x, y, z);
+        Mesh.castShadow = true;
         return Mesh;
     }
 
@@ -287,7 +322,7 @@ export default class AI {
 
 
         const pursuitZone = enemyData.enemyData.pursuitZone * 0.5;
-        let persecution = true;
+        let persecution = false;
         //TODO не очевидная логика перемещения вероятно связано с последовательностью определения координат
         if (scopeRadius + Math.abs(enemyPositionAxisX) >= Math.abs(Math.abs(persecutionObjectPositionX) - persecutionObjectWidth * 0.5) &&
             scopeRadius + Math.abs(enemyPositionAxisZ) >= Math.abs(Math.abs(persecutionObjectPositionZ) - persecutionObjectHeight * 0.5)) {

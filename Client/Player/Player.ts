@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import MapCreator from "../MapCreator/MapCreator";
+import {globalVariables} from "../GlobalVariables";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {Texture} from "three";
 
@@ -77,15 +77,32 @@ export default class Player {
      * @param playerColliderImg
      */
     createEngineUserCollaid(playerData: Object, playerColliderImg: Texture) {
-        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderHeight,playerData.colliderWidth);
-        const playerCollaiderMat = new THREE.MeshPhongMaterial({
-            map: playerColliderImg,
-            side: THREE.DoubleSide,
-         /*   transparent: true,
-            opacity : 0*/
-        });
+        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderLength,playerData.colliderHeight);
 
-        const playerCollaider = new THREE.Mesh(playerCollaiderGeo, playerCollaiderMat);
+
+        let materials = [
+            //делаем каждую сторону своего цвета
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+        ];
+
+        if(globalVariables.collider.showCollider) {
+            materials = [
+                //делаем каждую сторону своего цвета
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
+                new THREE.MeshBasicMaterial({map: playerColliderImg,}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
+                new THREE.MeshBasicMaterial({map: playerColliderImg,}), // верх
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+            ];
+        }
+
+        const playerCollaider = new THREE.Mesh(playerCollaiderGeo, materials);
         playerCollaider.rotation.x = Math.PI * -.5;
         playerCollaider.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
         playerData.collaider = playerCollaider;
