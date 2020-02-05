@@ -57,7 +57,7 @@ export default class EngineInitialization extends React.Component {
         this._AI = new AI(10, 1, 1, 10, 30);
 
 
-        const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene, showCollider);
+        const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
 
         scene.add(user, healthLine, userCollaider);
 

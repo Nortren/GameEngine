@@ -2,6 +2,7 @@ import * as THREE from "three";
 import MapCreator from "../MapCreator/MapCreator";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {globalVariables} from "../GlobalVariables";
+import {Scene, Texture, Mesh, Sprite} from "three";
 
 export default class AI {
     _count: number;
@@ -38,7 +39,7 @@ export default class AI {
      * Метод запуска анимации персоонажа
      * При первичной инициализации движка запскаем анимацию персоонажа и обновляем ее состояние от изменения state
      */
-    objectAnimation(animation, animationSpeed) {
+    objectAnimation(animation: boolean, animationSpeed: number) {
         if (this._animationTimer > animationSpeed && animation) {
             this._count++;
             this._animationTimer = 0;
@@ -87,7 +88,7 @@ export default class AI {
     /**
      * генерируем врага на карте
      */
-    createEnemy(enemyData, scene, showCollider) {
+    createEnemy(enemyData: object, scene: Scene) {
         const position = enemyData.colliderPosition;
         this._testImageMap = this._mapCreator.parserJSON();
         const loader = new THREE.TextureLoader();
@@ -125,13 +126,13 @@ export default class AI {
         enemyResultData.enemyData = enemyData;
         scene.add(enemySprite);
 
-            scene.add(enemyResultData.scopeCircleMesh, enemyResultData.ColliderMesh, enemyResultData.persecutionRadius);
+        scene.add(enemyResultData.scopeCircleMesh, enemyResultData.ColliderMesh, enemyResultData.persecutionRadius);
 
 
         return enemyResultData;
     }
 
-    createEnemySupportMesh(width, height, texture, position) {
+    createEnemySupportMesh(width: number, height: number, texture: Texture, position: object) {
 
         const x = position.x || 0;
         const y = position.y || 0;
@@ -149,13 +150,14 @@ export default class AI {
 
         return Mesh;
     }
-    createEnemyCollider(width,length, height, texture, position) {
+
+    createEnemyCollider(width: number, length: number, height: number, texture: Texture, position: object) {
 
         const x = position.x || 0;
         const y = position.y || 0;
         const z = position.z || 0;
 
-        const playerMeshGeo = new THREE.BoxBufferGeometry(width,length,height);
+        const playerMeshGeo = new THREE.BoxBufferGeometry(width, length, height);
         let materials = [
             //делаем каждую сторону своего цвета
             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
@@ -166,7 +168,7 @@ export default class AI {
             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
         ];
 
-        if(globalVariables.collider.showCollider) {
+        if (globalVariables.collider.showCollider) {
             materials = [
                 //делаем каждую сторону своего цвета
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
@@ -185,7 +187,7 @@ export default class AI {
     }
 
     //Метод который обновляет позицию item привязанных к боту
-    updateEnemVisualDate(enemyData, enemy) {
+    updateEnemVisualDate(enemyData: Mesh, enemy: Mesh) {
         enemyData.position.x = enemy.position.x;
         enemyData.position.z = enemy.position.z;
     }
@@ -240,7 +242,7 @@ export default class AI {
      * @param playerData
      * @param mapData
      */
-    informationAboutWorld(enemyData, playerData, mapData) {
+    informationAboutWorld(enemyData: object, playerData: object, mapData: MapCreator) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
@@ -255,7 +257,7 @@ export default class AI {
      * @param enemyData
      * @param playerData
      */
-    persecutionObject(enemyData, playerData, mapData) {
+    persecutionObject(enemyData: object, playerData: object, mapData: MapCreator) {
         const enemy = enemyData.ColliderMesh;
         const enemySprite = enemyData.enemySprite;
         enemy.position.x;
@@ -298,7 +300,7 @@ export default class AI {
      * @returns {any}
      */
 
-    logicOfMovement(enemy, playerData, enemySprite, arrayAnimationMove, enemyData, mapData) {
+    logicOfMovement(enemy: Mesh, playerData: object, enemySprite: Sprite, arrayAnimationMove: Array<string>, enemyData: object, mapData: MapCreator) {
         const enemyPositionAxisX = enemy.position.x;
         const enemyPositionAxisZ = enemy.position.z;
         const realStartPositionX = enemyData.enemyData.colliderPosition.x;
@@ -398,9 +400,9 @@ export default class AI {
      * @param persecutionObjectHeight
      * @returns {boolean}
      */
-    stopEnemyAtDistanceOfAttack(enemyPositionAxisX, enemyPositionAxisZ, enemyWidth, enemyHeight,
-                                persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight
-        , playerData, enemyData) {
+    stopEnemyAtDistanceOfAttack(enemyPositionAxisX: number, enemyPositionAxisZ: number, enemyWidth: number, enemyHeight: number,
+                                persecutionObjectPositionX: number, persecutionObjectPositionZ: number, persecutionObjectWidth: number,
+                                persecutionObjectHeight: number, playerData: object, enemyData: object) {
 
         enemyWidth = enemyWidth * 0.5;
         enemyHeight = enemyHeight * 0.5;
@@ -426,8 +428,8 @@ export default class AI {
         return false;
     }
 
-    attack(playerData, enemyData) {
-        if(this._attackSpeedCount === enemyData.attackSpeed){
+    attack(playerData: object, enemyData: object) {
+        if (this._attackSpeedCount === enemyData.attackSpeed) {
 
             playerData.health = playerData.health - enemyData.damage;
             this._attackSpeedCount = 0;

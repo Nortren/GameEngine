@@ -1,6 +1,6 @@
 export const globalVariables = {
         camera: {
-            cameraControl: true
+            cameraControl: false
         },
         shadow: {
             src: "./Client/image/Player_v0.0.3.png",
@@ -18,6 +18,7 @@ export const globalVariables = {
         },
         models: {sprite: false},
         collider: {
+            shadow:false,
             showShadow: true,
             showCollider: true
         },
