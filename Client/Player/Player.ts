@@ -90,7 +90,7 @@ export default class Player {
             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
         ];
 
-        if(globalVariables.collider.showCollider) {
+        if(globalVariables.collider.showColliderDynamick) {
             materials = [
                 //делаем каждую сторону своего цвета
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
@@ -106,7 +106,9 @@ export default class Player {
         playerCollaider.rotation.x = Math.PI * -.5;
         playerCollaider.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
         playerData.collaider = playerCollaider;
-        playerCollaider.castShadow = true;
+        if (globalVariables.shadow.materialShadow) {
+            playerCollaider.castShadow = true;
+        }
     }
 
     /**

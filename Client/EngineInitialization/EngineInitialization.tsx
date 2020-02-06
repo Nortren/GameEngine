@@ -23,6 +23,7 @@ export default class EngineInitialization extends React.Component {
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
+    _FPSCounter: number;
 
     constructor(props: object) {
         super(props);
@@ -30,7 +31,8 @@ export default class EngineInitialization extends React.Component {
         this.state = {
             moveX: 0,
             moveY: 0, countMove: 0,
-            moveXBoll: true
+            moveXBoll: true,
+            fps: 0
         };
     }
 
@@ -57,7 +59,10 @@ export default class EngineInitialization extends React.Component {
         this._AI = new AI(10, 1, 1, 10, 30);
 
 
-        const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
+        // const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
+
+        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 1000);
+
 
         scene.add(user, healthLine, userCollaider);
 
@@ -93,7 +98,36 @@ export default class EngineInitialization extends React.Component {
          });*/
 
 
-        this.update(renderer, scene, camera, playerData, enemyData);
+        this.update(renderer, scene, camera, playerData, enemyArray, 0);
+    }
+
+    testCreateEnemyArray(enemyData, scene, count) {
+        let enemyArray = [];
+        let x = 0;
+        let z = 0;
+        for (let i = 0; i < count; i++) {
+
+
+            if (i % 2 === 0) {
+                z = i * 0.3;
+            }
+            else {
+                z = -i * 0.3;
+            }
+            if (i % 3 === 0) {
+                x = i * 0.3;
+            }
+            else {
+                x = -i * 0.3;
+            }
+
+            enemyData.colliderPosition.x = x;
+            enemyData.colliderPosition.z = z;
+
+            enemyArray.push(this._AI.createEnemy(enemyData, scene));
+
+        }
+        return enemyArray;
     }
 
     /**
@@ -104,9 +138,22 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, playerData, enemyData) {
+    update(renderer, scene, camera, playerData, enemyArray, timeStart): void {
+        let now = performance.now();
+        let duration = now - timeStart;
+
+        if (duration < 1000) {
+            this._FPSCounter++;
+        } else {
+            console.log(this._FPSCounter);
+            this.setState({fps: this._FPSCounter});
+            this._FPSCounter = 0;
+            timeStart = now;
+
+
+        }
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera, playerData, enemyData);
+            this.update(renderer, scene, camera, playerData, enemyArray, timeStart);
         });
 
 
@@ -124,7 +171,11 @@ export default class EngineInitialization extends React.Component {
             this._camera.updateCameraGame(camera, this.props);
         }
 
-        this._AI.informationAboutWorld(enemyData, playerInformation, this._mapCreator);
+        for (let key in enemyArray) {
+            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator);
+        }
+
+
         this._dynamicAnimation.updateUserAvatar(playerData, this.props, this._player);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
@@ -154,7 +205,10 @@ export default class EngineInitialization extends React.Component {
 
     render() {
         return (
-            <canvas id="canvas"/>
+            <div className="fps-counter">
+                <div className="fps-counter-view">{this.state.fps}</div>
+                <canvas id="canvas"/>
+            </div>
         );
     }
 }

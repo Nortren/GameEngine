@@ -38,7 +38,9 @@ export default class MapCreator {
         const colorLight = 0xFFFFFF;
         const intensityLight = 0.4;
         const light = new THREE.PointLight(colorLight, intensityLight);
-        light.castShadow = true;
+        if (globalVariables.shadow.materialShadow) {
+            light.castShadow = true;
+        }
         light.position.set(0, 11, 0);
         scene.add(light, light.target);
 
@@ -104,7 +106,9 @@ export default class MapCreator {
 
             const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
             elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
-            elementObjCollaider.castShadow = true;
+            if (globalVariables.shadow.materialShadow) {
+                elementObjCollaider.castShadow = true;
+            }
             elementObjCollaider.rotation.x = Math.PI * -.5;
             this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ, mapElementObject.colliderWidth, mapElementObject.colliderLength);
             scene.add(elementObjCollaider);

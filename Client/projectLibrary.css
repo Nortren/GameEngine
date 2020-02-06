@@ -12,6 +12,14 @@ canvas {
 .canvasWindows {
   display: flex;
 }
+.fps-counter-view {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  background-color: inherit;
+  color: #0CF8E8;
+  z-index: 1;
+}
 .Sticks {
   display: flex;
   justify-content: space-between;

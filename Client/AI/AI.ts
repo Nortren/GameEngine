@@ -125,10 +125,13 @@ export default class AI {
         enemyResultData.enemySprite = enemySprite;
         enemyResultData.enemyData = enemyData;
         scene.add(enemySprite);
+        if (globalVariables.collider.showColliderDynamick) {
+            scene.add(enemyResultData.ColliderMesh);
+        }
 
-        scene.add(enemyResultData.scopeCircleMesh, enemyResultData.ColliderMesh, enemyResultData.persecutionRadius);
-
-
+        if (globalVariables.collider.additionalData) {
+            scene.add(enemyResultData.scopeCircleMesh,enemyResultData.persecutionRadius);
+        }
         return enemyResultData;
     }
 
@@ -182,7 +185,9 @@ export default class AI {
         const Mesh = new THREE.Mesh(playerMeshGeo, materials);
         Mesh.rotation.x = Math.PI * -.5;
         Mesh.position.set(x, y, z);
-        Mesh.castShadow = true;
+        if (globalVariables.shadow.materialShadow) {
+            Mesh.castShadow = true;
+        }
         return Mesh;
     }
 

@@ -2,25 +2,14 @@ export const globalVariables = {
         camera: {
             cameraControl: false
         },
-        shadow: {
-            src: "./Client/image/Player_v0.0.3.png",
-            collaid: "./Client/image/collaid.png",
-            colliderPositionX: 0,
-            colliderPositionY: 0,
-            colliderPositionZ: 0,
-            colliderWidth: 1,
-            colliderHeight: 2,
-            colliderLength: 1,
-            health: 100,
-            damage: 1,
-            attackDistance: 1,
-            attackSpeed: 10
-        },
+        shadow:{materialShadow: false},
         models: {sprite: false},
         collider: {
-            shadow:false,
+            shadow:true,
             showShadow: true,
-            showCollider: true
+            showCollider: true,
+            showColliderDynamick: false,
+            additionalData: false
         },
     }
 ;
