@@ -30,7 +30,7 @@ export default class Player {
         this._animationTimer = 0;
         this.fixPoint = 0;
     }
-    
+
     /**
      * генерируем игрока на карте
      */
@@ -77,7 +77,7 @@ export default class Player {
      * @param playerColliderImg
      */
     createEngineUserCollaid(playerData: Object, playerColliderImg: Texture) {
-        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderLength,playerData.colliderHeight);
+        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderLength, playerData.colliderHeight);
 
 
         let materials = [
@@ -90,7 +90,7 @@ export default class Player {
             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
         ];
 
-        if(globalVariables.collider.showColliderDynamick) {
+        if (globalVariables.collider.showColliderDynamick) {
             materials = [
                 //делаем каждую сторону своего цвета
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
@@ -111,9 +111,38 @@ export default class Player {
         }
     }
 
+    /**
+     * Игрок атакует или использует скилы
+     * @param skill
+     */
+    playerSkillUse(skill) {
+        if (!skill) {
+            return;
+        }
+        switch (skill.nameButton) {
+            case 'ButtonAttack':
+                this.attack(skill);
+                break;
+            case 'ButtonSkills_1':
+                this.useSkill(skill);
+                break;
+            case 'ButtonSkills_2':
+                this.useSkill(skill);
+                break;
+            case 'ButtonSkills_3':
+                this.useSkill(skill);
+                break;
 
-    playerSkillUse(){
+        }
 
+    }
+
+    attack(skill) {
+        console.log(skill.nameButton,skill.press)
+    }
+
+    useSkill(skill) {
+        console.log(skill.nameButton,skill.press)
     }
 
     /**
@@ -176,6 +205,8 @@ export default class Player {
         playerData.healthLine.position.x = playerData.user.position.x;
         playerData.healthLine.position.z = playerData.user.position.z;
 
+
+        this.playerSkillUse(props.skillButton);
     }
 
     /**

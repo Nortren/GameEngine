@@ -110,9 +110,14 @@ export default class MapCreator {
                 elementObjCollaider.castShadow = true;
             }
             elementObjCollaider.rotation.x = Math.PI * -.5;
-            this.createObjectCollision(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ, mapElementObject.colliderWidth, mapElementObject.colliderLength);
+            this.createObjectCollision('mapElement' + key,
+                mapElementObject.colliderPositionX,
+                mapElementObject.colliderPositionY,
+                mapElementObject.colliderPositionZ,
+                mapElementObject.colliderWidth,
+                mapElementObject.colliderLength,
+                'mapElement');
             scene.add(elementObjCollaider);
-
 
 
         }
@@ -120,17 +125,69 @@ export default class MapCreator {
         scene.add(map);
     }
 
-    createObjectCollision(X: number, Y: number, Z: number, Width: number, Height: number): void {
+    createObjectCollision(id: number, X: number, Y: number, Z: number, Width: number, Length: number, objectType: string): void {
 
-        this.collisionPoint.push(
-            {
+
+        let item = this.collisionPoint.find(b => b.id === id);
+        if (this.collisionPoint.find(b => b.id === id)) {
+            item.id = id;
+                item.x = X;
+                item.y = Y;
+                item.z = Z;
+                //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+                item.width = Width * 0.5;
+                //TODO тут нужно указать не высату а длинну
+                item.height =Length * 0.5;
+                item.type = objectType;
+        } else {
+            this.collisionPoint.push({
+                id: id,
                 x: X,
                 y: Y,
                 z: Z,
                 //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
                 width: Width * 0.5,
-                height: Height * 0.5
-            })
+                //TODO тут нужно указать не высату а длинну
+                height: Length * 0.5,
+                type: objectType
+            });
+        }
+        //
+        // this.collisionPoint.forEach((item, i) => {
+        //
+        //         if(item.id ===id){
+        //             this.collisionPoint[i] = {
+        //                 id: id,
+        //                 x: X,
+        //                 y: Y,
+        //                 z: Z,
+        //                 //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+        //                 width: Width * 0.5,
+        //                 //TODO тут нужно указать не высату а длинну
+        //                 height: Length * 0.5,
+        //                 type: objectType
+        //             };
+        //             return;
+        //         }
+        //         else{
+        //             this.collisionPoint.push(
+        //                 {
+        //                     id: id,
+        //                     x: X,
+        //                     y: Y,
+        //                     z: Z,
+        //                     //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+        //                     width: Width * 0.5,
+        //                     //TODO тут нужно указать не высату а длинну
+        //                     height: Length * 0.5,
+        //                     type: objectType
+        //                 })
+        //         }
+        //
+        // });
+
+
+
 
     }
 

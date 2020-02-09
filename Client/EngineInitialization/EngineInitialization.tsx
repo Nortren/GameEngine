@@ -127,6 +127,7 @@ export default class EngineInitialization extends React.Component {
             enemyArray.push(this._AI.createEnemy(enemyData, scene));
 
         }
+
         return enemyArray;
     }
 
@@ -171,6 +172,11 @@ export default class EngineInitialization extends React.Component {
         }
 
         for (let key in enemyArray) {
+       /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
+                enemyArray[key].ColliderMesh.position.y,
+                enemyArray[key].ColliderMesh.position.z,
+                enemyArray[key].enemyData.colliderWidth,
+                enemyArray[key].enemyData.colliderLength, 'enemy');*/
             this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator);
         }
 

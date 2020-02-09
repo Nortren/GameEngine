@@ -121,18 +121,51 @@ export default class AI {
         enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius, enemyData.scopeRadius, scopeTexture, position);
         enemyResultData.ColliderMesh = this.createEnemyCollider(enemyData.colliderWidth, enemyData.colliderLength, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
         enemyResultData.persecutionRadius = this.createEnemySupportMesh(enemyData.pursuitZone, enemyData.pursuitZone, colliderpersecutionRadius, enemyData.colliderPosition);
-
+        this.createEnemyHealthLine(enemyData);
+        enemyResultData.EnemyHealthLine = enemyData.healthLine;
         enemyResultData.enemySprite = enemySprite;
         enemyResultData.enemyData = enemyData;
-        scene.add(enemySprite);
+        scene.add(enemySprite, enemyResultData.EnemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
             scene.add(enemyResultData.ColliderMesh);
         }
 
         if (globalVariables.collider.additionalData) {
-            scene.add(enemyResultData.scopeCircleMesh,enemyResultData.persecutionRadius);
+            scene.add(enemyResultData.scopeCircleMesh, enemyResultData.persecutionRadius);
         }
         return enemyResultData;
+    }
+
+    /**
+     * Создание полоски жизни бота
+     * @param playerData
+     */
+    createEnemyHealthLine(enemyData: Object) {
+        const material = new THREE.LineBasicMaterial({
+            color: 0xff0000,
+            linewidth: 10,
+        });
+        const geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(1, 0, 0));
+        const line = new THREE.Line(geometry, material);
+        enemyData.healthLine = line;
+        //Линия жизни на основе меша
+        /*               const material = new THREE.MeshPhongMaterial(
+         {
+         color: 0xff0000,
+         // map: playerDataIMG,
+         // side: THREE.DoubleSide
+         });
+         const geometry = new THREE.PlaneBufferGeometry(
+         playerData.colliderWidth,
+         0.25);
+
+
+         const healthLine = new THREE.Mesh(geometry, material);
+         healthLine.rotation.x = Math.PI * -.5;
+         healthLine.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
+         enemyData.healthLine = healthLine;*/
     }
 
     createEnemySupportMesh(width: number, height: number, texture: Texture, position: object) {
@@ -197,50 +230,6 @@ export default class AI {
         enemyData.position.z = enemy.position.z;
     }
 
-    /*updateEnemy(enemy) {
-     this.objectAnimation(true, 20);
-
-     if (!enemy.startPositionX && !enemy.startPositionY) {
-     enemy.startPositionX = enemy.position.x;
-     enemy.startPositionY = enemy.position.z;
-     }
-
-     switch (this.fixPoint) {
-     case 0:
-     enemy.position.x = enemy.startPositionX + this.moveCountTest * 0.01;
-     this.updateEnemyAvatar(enemy, 'moveRight');
-
-     break;
-     case 1:
-     enemy.position.z = enemy.startPositionY - this.moveCountTest * 0.01;
-     this.updateEnemyAvatar(enemy, 'moveUP');
-
-     break;
-     case 2:
-     enemy.position.x = enemy.startPositionX - this.moveCountTest * 0.01;
-     this.updateEnemyAvatar(enemy, 'moveLeft');
-
-     break;
-     case 3:
-     enemy.position.z = enemy.startPositionY + this.moveCountTest * 0.01;
-     this.updateEnemyAvatar(enemy, 'moveDown');
-     break;
-     }
-
-
-     if (this.moveCountTest === 360) {
-     this.fixPoint++;
-     enemy.startPositionX = enemy.position.x;
-     enemy.startPositionY = enemy.position.z;
-     this.moveCountTest = 0;
-     }
-
-     if (this.fixPoint > 3) {
-     this.fixPoint = 0;
-     }
-     this.moveCountTest++;
-     }*/
-
     /**
      * текущее состояние ирового мира  чтоб бот мог в нём ориентироваться
      * @param enemyData
@@ -250,11 +239,10 @@ export default class AI {
     informationAboutWorld(enemyData: object, playerData: object, mapData: MapCreator) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
+        this.updateEnemVisualDate(enemyData.EnemyHealthLine, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
 
         this.persecutionObject(enemyData, playerData, mapData);
-
-
     }
 
     /**
