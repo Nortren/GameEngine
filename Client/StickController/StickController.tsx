@@ -14,6 +14,7 @@ export default class StickController extends React.Component {
         this.changeX = this.changeX.bind(this);
         this.changeZ = this.changeZ.bind(this);
         this.directionOfMovement = this.directionOfMovement.bind(this);
+        this.clickedSkillButton = this.clickedSkillButton.bind(this);
         this.animationStatusChange = this.animationStatusChange.bind(this);
         this.state = {
             moveX: 0,
@@ -23,47 +24,35 @@ export default class StickController extends React.Component {
     }
 
     componentDidMount() {
-        this.createCanvas("UserLeftStick",100,100,45,51,50);
-        this.createCanvas("UserButtonAttack",200,200,30,51,50);
-        this.createCanvas("UserButtonSkills_1",35,35,15,18,18);
-        this.createCanvas("UserButtonSkills_2",35,35,15,18,18);
-        this.createCanvas("UserButtonSkills_3",35,35,15,18,18);
+        this.createCanvas("UserLeftStick", 100, 100, 45, 51, 50);
+        this.createCanvas("ButtonAttack", 200, 200, 30, 51, 50);
+        this.createCanvas("ButtonSkills_1", 35, 35, 15, 18, 18);
+        this.createCanvas("ButtonSkills_2", 35, 35, 15, 18, 18);
+        this.createCanvas("ButtonSkills_3", 35, 35, 15, 18, 18);
 
 
         this.thisXUp = 0;
         this.thisZUp = 0;
 
-        this.initLeftStick();
-        this.initRightStick('UserButtonAttack');
-        this.initRightStick('UserButtonSkills_1');
-        this.initRightStick('UserButtonSkills_2');
-        this.initRightStick('UserButtonSkills_3');
+        this.leftStick();
+        this.skillButtonPress('ButtonAttack');
+        this.skillButtonPress('ButtonSkills_1');
+        this.skillButtonPress('ButtonSkills_2');
+        this.skillButtonPress('ButtonSkills_3');
 
     }
-    initRightStick(nameButton) {
+
+    skillButtonPress(nameButton) {
         let evenObject = document.getElementById(nameButton);
         evenObject.addEventListener("touchstart", (event) => {
-            this.touchStartPositionX = event.changedTouches[0].clientX;
-            this.touchStartPositionY = event.changedTouches[0].clientY;
-            this._startAnimationTouch = true;
-
-            this._startAnimationTouch = setInterval(() => {
-                this.movePosition(event, true);
-            }, 10);
-            this.animationStatusChange(true);
+            this.clickedSkillButton({nameButton:nameButton,press:true});
         }, false);
         evenObject.addEventListener("touchend", (event) => {
-            this.movePosition(event, false);
-            clearInterval(this._startAnimationTouch);
-            this.animationStatusChange(false);
-        }, false);
-        evenObject.addEventListener("touchmove", (event) => {
-            this.touchMovePositionX = event.changedTouches[0].clientX;
-            this.touchMovePositionY = event.changedTouches[0].clientY;
+            this.clickedSkillButton({nameButton:nameButton,press:false});
         }, false);
     }
 
-    initLeftStick() {
+    leftStick() {
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
@@ -96,7 +85,7 @@ export default class StickController extends React.Component {
         }, false);
     }
 
-    createCanvas(id,,width,height,radius,startPositionX,startPositionY) {
+    createCanvas(id,width, height, radius, startPositionX, startPositionY) {
         let canvas = document.getElementById(id);
         canvas.width = width;
         canvas.height = height;
@@ -213,6 +202,10 @@ export default class StickController extends React.Component {
 
     }
 
+    clickedSkillButton(result) {
+        this.props.clickedSkillButton(result);
+    }
+
     animationStatusChange(result) {
         this.props.animationStatusChange(result);
 
@@ -233,10 +226,10 @@ export default class StickController extends React.Component {
                     <canvas id="UserLeftStick"></canvas>
                 </div>
                 <div className="rightStick">
-                    <canvas id="UserButtonAttack"></canvas>
-                    <canvas id="UserButtonSkills_1"></canvas>
-                    <canvas id="UserButtonSkills_2"></canvas>
-                    <canvas id="UserButtonSkills_3"></canvas>
+                    <canvas id="ButtonAttack"></canvas>
+                    <canvas id="ButtonSkills_1"></canvas>
+                    <canvas id="ButtonSkills_2"></canvas>
+                    <canvas id="ButtonSkills_3"></canvas>
                 </div>
             </div>
         );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {changeX, changeZ,directionOfMovement,animationStatusChange} from './Store/UserControls/Actions';
+import {changeX, changeZ,directionOfMovement,animationStatusChange,clickedSkillButton} from './Store/UserControls/Actions';
 import {changePhysics} from './Store/Physics/Actions';
 import EngineInitialization from "./EngineInitialization/EngineInitialization";
 import StickController from "./StickController/StickController";
@@ -22,7 +22,7 @@ class GameEngineContainer extends React.Component {
                         animations={this.props.animationStatus}
                         direction={this.props.direction}
                         changePhysics={this.props.changePhysics}
-
+                        skillButton={this.props.skillButton}
                     />
                 </div>
                 <div className="row">
@@ -33,6 +33,7 @@ class GameEngineContainer extends React.Component {
                                      changeZ={this.props.changeZ}
                                      directionOfMovement={this.props.directionOfMovement}
                                      animationStatusChange={this.props.animationStatusChange}
+                                     clickedSkillButton={this.props.clickedSkillButton}
                     />
                 </div>
             </div>
@@ -49,6 +50,7 @@ const mapStateToProps = state => {
         moveZ: state.userControls.moveZ,
         direction: state.userControls.direction,
         animationStatus: state.userControls.animationStatus,
+        skillButton: state.userControls.skillButton,
         physicalCollision: state.physics.physicalCollision
     };
 };
@@ -57,6 +59,7 @@ const mapDispatchToProps = {
     changeZ,
     directionOfMovement,
     animationStatusChange,
-    changePhysics
+    changePhysics,
+    clickedSkillButton
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GameEngineContainer);

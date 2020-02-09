@@ -1,13 +1,20 @@
-import {ACTION_CHANGE_X_POSITION,ACTION_CHANGE_Z_POSITION,DIRECTION_CHANGE_X_MOVEMENT,DIRECTION_CHANGE_Z_MOVEMENT,DIRECTION_CHANGE_MOVEMENT,ANIMATION_CHANGE} from './Actions'
+import {
+    ACTION_CHANGE_X_POSITION,
+    ACTION_CHANGE_Z_POSITION,
+    DIRECTION_CHANGE_X_MOVEMENT,
+    DIRECTION_CHANGE_Z_MOVEMENT,
+    DIRECTION_CHANGE_MOVEMENT,
+    ANIMATION_CHANGE,
+    CLICKED_BUTTON_SKILL
+} from './Actions'
 const initionState = {
     moveX: 0,
     moveZ: 0
 };
 
 
-
 export const userControlsReducer = (state = initionState, action) => {
-    switch (action.type){
+    switch (action.type) {
         case ACTION_CHANGE_X_POSITION:
             return {
                 ...state,
@@ -37,6 +44,11 @@ export const userControlsReducer = (state = initionState, action) => {
             return {
                 ...state
                 , animationStatus: action.payload
+            };
+        case CLICKED_BUTTON_SKILL:
+            return {
+                ...state
+                , skillButton: action.payload
             };
     }
     return state;
