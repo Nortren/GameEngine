@@ -111,6 +111,11 @@ export default class Player {
         }
     }
 
+
+    playerSkillUse(){
+
+    }
+
     /**
      * Создание полоски жизни персоонажа
      * @param playerData

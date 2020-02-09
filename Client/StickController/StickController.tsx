@@ -25,7 +25,7 @@ export default class StickController extends React.Component {
 
     componentDidMount() {
         this.createCanvas("UserLeftStick", 100, 100, 45, 51, 50);
-        this.createCanvas("ButtonAttack", 200, 200, 30, 51, 50);
+        this.createCanvas("ButtonAttack", 100, 100, 30, 51, 50);
         this.createCanvas("ButtonSkills_1", 35, 35, 15, 18, 18);
         this.createCanvas("ButtonSkills_2", 35, 35, 15, 18, 18);
         this.createCanvas("ButtonSkills_3", 35, 35, 15, 18, 18);

@@ -34,15 +34,12 @@ canvas {
 .Sticks .rightStick {
   width: 100px;
 }
-#ButtonSkills_1 {
-  bottom: 115px;
-  right: 5px;
+.Sticks #ButtonSkills_1 {
+  margin: -25px 0 0 50px;
 }
-#ButtonSkills_2 {
-  bottom: 110px;
-  right: 65px;
+.Sticks #ButtonSkills_2 {
+  margin: -10px 0 0 -10px;
 }
-#ButtonSkills_3 {
-  bottom: 60px;
-  right: 95px;
+.Sticks #ButtonSkills_3 {
+  margin: 40px 0 0 -30px;
 }

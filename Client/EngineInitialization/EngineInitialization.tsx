@@ -23,7 +23,7 @@ export default class EngineInitialization extends React.Component {
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
-    _FPSCounter: number;
+    _FPSCounter: number = 0;
 
     constructor(props: object) {
         super(props);
@@ -145,7 +145,6 @@ export default class EngineInitialization extends React.Component {
         if (duration < 1000) {
             this._FPSCounter++;
         } else {
-            console.log(this._FPSCounter);
             this.setState({fps: this._FPSCounter});
             this._FPSCounter = 0;
             timeStart = now;
