@@ -81,9 +81,9 @@ export const testMapJSON = {
         scopeRadius:16,
 
         colliderPosition:{
-            x: 0,
+            x: 3,
             y: 0.01,
-            z: 0,
+            z: 3,
         },
         colliderWidth: 1,
         colliderHeight: 1,

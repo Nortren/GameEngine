@@ -5,7 +5,7 @@
   justify-content: space-between;
 }
 canvas {
-  position: absolute;
+  position: fixed;
   margin: 0;
   padding: 0;
 }
@@ -29,8 +29,20 @@ canvas {
   width: 100%;
 }
 .Sticks .leftStick {
-  background-color: grey;
+  width: 100px;
 }
 .Sticks .rightStick {
-  background-color: grey;
+  width: 100px;
+}
+#UserButtonSkills_1 {
+  bottom: 115px;
+  right: 5px;
+}
+#UserButtonSkills_2 {
+  bottom: 110px;
+  right: 65px;
+}
+#UserButtonSkills_3 {
+  bottom: 60px;
+  right: 95px;
 }

@@ -5,7 +5,8 @@ import * as React from 'react';
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
-    userSpeed: number = 30sss;
+    userSpeed: number = 30
+    sss;
 
     constructor(props) {
 
@@ -22,12 +23,47 @@ export default class StickController extends React.Component {
     }
 
     componentDidMount() {
-        this.createCanvas("UserLeftStick");
-        this.createCanvas("UserRightStick");
+        this.createCanvas("UserLeftStick",100,100,45,51,50);
+        this.createCanvas("UserButtonAttack",200,200,30,51,50);
+        this.createCanvas("UserButtonSkills_1",35,35,15,18,18);
+        this.createCanvas("UserButtonSkills_2",35,35,15,18,18);
+        this.createCanvas("UserButtonSkills_3",35,35,15,18,18);
 
 
         this.thisXUp = 0;
         this.thisZUp = 0;
+
+        this.initLeftStick();
+        this.initRightStick('UserButtonAttack');
+        this.initRightStick('UserButtonSkills_1');
+        this.initRightStick('UserButtonSkills_2');
+        this.initRightStick('UserButtonSkills_3');
+
+    }
+    initRightStick(nameButton) {
+        let evenObject = document.getElementById(nameButton);
+        evenObject.addEventListener("touchstart", (event) => {
+            this.touchStartPositionX = event.changedTouches[0].clientX;
+            this.touchStartPositionY = event.changedTouches[0].clientY;
+            this._startAnimationTouch = true;
+
+            this._startAnimationTouch = setInterval(() => {
+                this.movePosition(event, true);
+            }, 10);
+            this.animationStatusChange(true);
+        }, false);
+        evenObject.addEventListener("touchend", (event) => {
+            this.movePosition(event, false);
+            clearInterval(this._startAnimationTouch);
+            this.animationStatusChange(false);
+        }, false);
+        evenObject.addEventListener("touchmove", (event) => {
+            this.touchMovePositionX = event.changedTouches[0].clientX;
+            this.touchMovePositionY = event.changedTouches[0].clientY;
+        }, false);
+    }
+
+    initLeftStick() {
         let evenObject = document.getElementById('UserLeftStick');
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
@@ -58,13 +94,12 @@ export default class StickController extends React.Component {
             this.touchMovePositionX = event.changedTouches[0].clientX;
             this.touchMovePositionY = event.changedTouches[0].clientY;
         }, false);
-
     }
 
-    createCanvas(id) {
+    createCanvas(id,,width,height,radius,startPositionX,startPositionY) {
         let canvas = document.getElementById(id);
-        canvas.width = 100;
-        canvas.height = 100;
+        canvas.width = width;
+        canvas.height = height;
         let context = canvas.getContext("2d");
         context.beginPath();
         context.arc(350, 90, 50, 0, Math.PI * 2, false);
@@ -72,7 +107,7 @@ export default class StickController extends React.Component {
         context.fill();
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.beginPath();
-        context.arc(51, 50, 45, 0, Math.PI * 2, false);
+        context.arc(startPositionX, startPositionY, radius, 0, Math.PI * 2, false);
         context.fillStyle = 'transparent';
         context.fill();
         context.lineWidth = 2;
@@ -198,7 +233,10 @@ export default class StickController extends React.Component {
                     <canvas id="UserLeftStick"></canvas>
                 </div>
                 <div className="rightStick">
-                    <canvas id="UserRightStick"></canvas>
+                    <canvas id="UserButtonAttack"></canvas>
+                    <canvas id="UserButtonSkills_1"></canvas>
+                    <canvas id="UserButtonSkills_2"></canvas>
+                    <canvas id="UserButtonSkills_3"></canvas>
                 </div>
             </div>
         );

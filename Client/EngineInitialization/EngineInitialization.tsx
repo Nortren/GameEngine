@@ -61,7 +61,7 @@ export default class EngineInitialization extends React.Component {
 
         // const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
 
-        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 1000);
+        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 300);
 
 
         scene.add(user, healthLine, userCollaider);
@@ -103,8 +103,8 @@ export default class EngineInitialization extends React.Component {
 
     testCreateEnemyArray(enemyData, scene, count) {
         let enemyArray = [];
-        let x = 0;
-        let z = 0;
+        let x = enemyData.colliderPosition.x;
+        let z = enemyData.colliderPosition.z;
         for (let i = 0; i < count; i++) {
 
 
