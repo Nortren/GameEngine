@@ -49,7 +49,7 @@ export default class Dynamic {
      * @param imgHero картинка отображения гавного героя
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(playerData, props,player) {
+    updateUserAvatar(playerData, props,player,enemyArray) {
 
         if (this._count > 3) {
             this._count = 0;
@@ -68,7 +68,7 @@ export default class Dynamic {
         if (this._pressKey === "S" || (props && props.direction === "DOWN")) {
             rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         }
-        player.update(playerData,props,rect);
+        player.update(playerData,props,rect,enemyArray);
 
 
     }

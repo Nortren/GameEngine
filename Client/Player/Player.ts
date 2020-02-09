@@ -115,34 +115,58 @@ export default class Player {
      * Игрок атакует или использует скилы
      * @param skill
      */
-    playerSkillUse(skill) {
-        if (!skill) {
+    playerSkillUse(props,playerData,enemyArray) {
+        if (!props.skillButton) {
             return;
         }
-        switch (skill.nameButton) {
+        switch (props.skillButton.nameButton) {
             case 'ButtonAttack':
-                this.attack(skill);
+                this.attack(props,playerData,enemyArray);
                 break;
             case 'ButtonSkills_1':
-                this.useSkill(skill);
+                this.useSkill(props);
                 break;
             case 'ButtonSkills_2':
-                this.useSkill(skill);
+                this.useSkill(props);
                 break;
             case 'ButtonSkills_3':
-                this.useSkill(skill);
+                this.useSkill(props);
                 break;
 
         }
 
     }
 
-    attack(skill) {
-        console.log(skill.nameButton,skill.press)
+    attack(props,playerData,enemyArray) {
+
+        if(props.skillButton.press){
+            for (let key in enemyArray) {
+               let collider =  enemyArray[key].ColliderMesh;
+
+/*
+                let checkX = this.checkDistanceCollisionAxis(collider.position.x, collider.scale.x, collisionX, drawObjectRealWidth);
+                let checkZ = this.checkDistanceCollisionAxis(collider.position.z, collider.scale.y,, collisionZ, drawObjectRealHeight);*/
+                if(props.moveX+playerData.attackDistance || props.moveX+playerData.attackDistance){
+
+                }
+            }
+
+            console.log(props.skillButton.nameButton,props.skillButton.press,playerData,enemyArray)
+        }
+
     }
 
     useSkill(skill) {
         console.log(skill.nameButton,skill.press)
+    }
+
+
+    checkDistanceCollisionAxis(playerPositionAxis, enemySize, positionCollision, sizeCollision) {
+        if ((playerPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
+            (playerPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -183,7 +207,7 @@ export default class Player {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, rect: Object) {
+    update(playerData: Object, props: Object, rect: Object,enemyArray) {
         let positionPlayer = playerData.user.position;
         let positionHealthLine = playerData.healthLine.position;
         let playerHealth = playerData.health;
@@ -206,7 +230,7 @@ export default class Player {
         playerData.healthLine.position.z = playerData.user.position.z;
 
 
-        this.playerSkillUse(props.skillButton);
+        this.playerSkillUse(props,playerData,enemyArray);
     }
 
     /**

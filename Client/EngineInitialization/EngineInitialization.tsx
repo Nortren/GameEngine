@@ -61,7 +61,7 @@ export default class EngineInitialization extends React.Component {
 
         // const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
 
-        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 3);
+        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 1);
 
 
         scene.add(user, healthLine, userCollaider);
@@ -172,6 +172,7 @@ export default class EngineInitialization extends React.Component {
         }
 
         for (let key in enemyArray) {
+            //Добавлял для расчета столкновений в общий массив с коллайдекрами но ониначинают шарахаться друг от друга
        /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
                 enemyArray[key].ColliderMesh.position.y,
                 enemyArray[key].ColliderMesh.position.z,
@@ -181,7 +182,7 @@ export default class EngineInitialization extends React.Component {
         }
 
 
-        this._dynamicAnimation.updateUserAvatar(playerData, this.props, this._player);
+        this._dynamicAnimation.updateUserAvatar(playerData, this.props, this._player,enemyArray);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
 
