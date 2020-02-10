@@ -115,13 +115,13 @@ export default class Player {
      * Игрок атакует или использует скилы
      * @param skill
      */
-    playerSkillUse(props,playerData,enemyArray) {
+    playerSkillUse(props, playerData, enemyArray) {
         if (!props.skillButton) {
             return;
         }
         switch (props.skillButton.nameButton) {
             case 'ButtonAttack':
-                this.attack(props,playerData,enemyArray);
+                this.attack(props, playerData, enemyArray);
                 break;
             case 'ButtonSkills_1':
                 this.useSkill(props);
@@ -137,33 +137,40 @@ export default class Player {
 
     }
 
-    attack(props,playerData,enemyArray) {
+    attack(props, playerData, enemyArray) {
 
-        if(props.skillButton.press){
+        if (props.skillButton.press) {
             for (let key in enemyArray) {
-               let collider =  enemyArray[key].ColliderMesh;
+                let collider = enemyArray[key].ColliderMesh;
 
-/*
-                let checkX = this.checkDistanceCollisionAxis(collider.position.x, collider.scale.x, collisionX, drawObjectRealWidth);
-                let checkZ = this.checkDistanceCollisionAxis(collider.position.z, collider.scale.y,, collisionZ, drawObjectRealHeight);*/
-                if(props.moveX+playerData.attackDistance || props.moveX+playerData.attackDistance){
+                let checkX = this.checkDistanceCollisionAxis(playerData.collaider.position.x, playerData.colliderWidth, collider.position.x, collider.scale.x, playerData.attackDistance);
+                let checkZ = this.checkDistanceCollisionAxis(playerData.collaider.position.z, playerData.colliderHeight, collider.position.z, collider.scale.z, playerData.attackDistance);
+
+                if (checkX && checkZ) {
+                    if (enemyArray[key].enemyHealth <= 0) {
+                        enemyArray.splice(key, 1);
+                    }
+                    if (enemyArray[key]) {
+                        enemyArray[key].enemyHealth -= playerData.damage;
+                    }
+                }
+                if (props.moveX + playerData.attackDistance || props.moveX + playerData.attackDistance) {
 
                 }
             }
 
-            console.log(props.skillButton.nameButton,props.skillButton.press,playerData,enemyArray)
         }
 
     }
 
     useSkill(skill) {
-        console.log(skill.nameButton,skill.press)
+        console.log(skill.nameButton, skill.press)
     }
 
 
-    checkDistanceCollisionAxis(playerPositionAxis, enemySize, positionCollision, sizeCollision) {
-        if ((playerPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
-            (playerPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
+    checkDistanceCollisionAxis(playerPositionAxis, enemySize, positionCollision, sizeCollision, attackDistance) {
+        if ((playerPositionAxis + enemySize * 0.5 + attackDistance >= positionCollision - sizeCollision) &&
+            (playerPositionAxis - enemySize * 0.5 - attackDistance <= positionCollision + sizeCollision)) {
             return true;
         }
         return false;
@@ -207,7 +214,7 @@ export default class Player {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, rect: Object,enemyArray) {
+    update(playerData: Object, props: Object, rect: Object, enemyArray) {
         let positionPlayer = playerData.user.position;
         let positionHealthLine = playerData.healthLine.position;
         let playerHealth = playerData.health;
@@ -230,7 +237,7 @@ export default class Player {
         playerData.healthLine.position.z = playerData.user.position.z;
 
 
-        this.playerSkillUse(props,playerData,enemyArray);
+        this.playerSkillUse(props, playerData, enemyArray);
     }
 
     /**

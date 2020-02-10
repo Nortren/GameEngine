@@ -70,7 +70,7 @@ export const testMapJSON = {
         colliderHeight: 2,
         colliderLength:1,
         health:100,
-        damage:1,
+        damage:2,
         attackDistance:1,
         attackSpeed:10
     },

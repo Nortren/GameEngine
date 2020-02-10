@@ -125,6 +125,7 @@ export default class AI {
         enemyResultData.EnemyHealthLine = enemyData.healthLine;
         enemyResultData.enemySprite = enemySprite;
         enemyResultData.enemyData = enemyData;
+        enemyResultData.enemyHealth = enemyData.health;
         scene.add(enemySprite, enemyResultData.EnemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
             scene.add(enemyResultData.ColliderMesh);
@@ -236,18 +237,32 @@ export default class AI {
      * @param playerData
      * @param mapData
      */
-    informationAboutWorld(enemyData: object, playerData: object, mapData: MapCreator) {
+    informationAboutWorld(enemyData: object, playerData: object, mapData: MapCreator,scene) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
-        this.updateEnemVisualDate(enemyData.EnemyHealthLine, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
+        this.updateHealthLine(enemyData);
 
-        this.persecutionObject(enemyData, playerData, mapData);
+        if(enemyData.enemyHealth > 0) {
+            this.persecutionObject(enemyData, playerData, mapData);
+        }
+        else{
+            scene.remove(enemyData.scopeCircleMesh,enemyData.ColliderMesh,enemyData.persecutionRadius,enemyData.EnemyHealthLine,enemyData.enemySprite);
+        }
+    }
+
+
+    updateHealthLine(enemyData){
+
+        enemyData.EnemyHealthLine.scale.x = enemyData.enemyData.health/100;
+        enemyData.EnemyHealthLine.scale.z = 2;
+        this.updateEnemVisualDate(enemyData.EnemyHealthLine, enemyData.ColliderMesh);
+
     }
 
     /**
      * Метод преследования указанного объекта
-     * @param enemyData
+     * @param enemyDataa
      * @param playerData
      */
     persecutionObject(enemyData: object, playerData: object, mapData: MapCreator) {

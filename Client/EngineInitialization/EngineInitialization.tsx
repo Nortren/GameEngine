@@ -61,7 +61,7 @@ export default class EngineInitialization extends React.Component {
 
         // const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
 
-        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 1);
+        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 300);
 
 
         scene.add(user, healthLine, userCollaider);
@@ -178,7 +178,7 @@ export default class EngineInitialization extends React.Component {
                 enemyArray[key].ColliderMesh.position.z,
                 enemyArray[key].enemyData.colliderWidth,
                 enemyArray[key].enemyData.colliderLength, 'enemy');*/
-            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator);
+            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator,scene);
         }
 
 
