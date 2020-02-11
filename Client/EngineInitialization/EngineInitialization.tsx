@@ -7,6 +7,8 @@ import * as OBJLoader from 'three-obj-loader';
 import Player from "../Player/Player"
 import Camera from "../Camera/Camera";
 import {globalVariables} from "../GlobalVariables";
+import BL from "../BusinessLogic";
+
 
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
 import {testMapJSON} from "./testMap";
@@ -49,6 +51,11 @@ export default class EngineInitialization extends React.Component {
         renderer.shadowMap.enabled = true;
 
         this._mapCreator.createGameLocation(scene, showCollider);
+
+        const testBl = new BL();
+        testBl.getAIData(3000,{test:12312},function (data) {
+            console.log(data);
+        });
 
 
         const userData = this._testImageMap.player;
