@@ -6,7 +6,7 @@ import '../Client/projectLibrary.css';
 import GameEngineContainer from './GameEngineContainer'
 import rootReducer from './Store/Reducers'
 import {Provider} from 'react-redux';
-
+import  Authorization from "./ClientAuthorization/ClientAuthorization"
 
 const store = createStore(rootReducer);
 
@@ -20,7 +20,8 @@ export default class App extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                    <GameEngineContainer className="container-fluid"/>
+                <Authorization/>
+                    {/*<GameEngineContainer className="container-fluid"/>*/}
             </Provider>
         )
     }

@@ -1,4 +1,5 @@
 import AI from "./AI/AI";
+import mapData from "./MapCreator/StaticMapData"
 
 const express = require('express');
 const io = require('socket.io')();
@@ -8,12 +9,15 @@ const app = express();
 const server = http.createServer(app);
 
 io.on('connection', (client) => {
-    client.on('getAIStatus', (interval, data) => {
-        console.log('getAIStatus', data);
-        // const generator = new StatusGenerator();
-        setInterval(() => {
-            io.emit('setAIStatus', {test:123});
-        }, interval);
+
+    var ID = (client.id).toString().substr(0, 5);
+    console.log(ID);
+    client.on('getMapStatic', () => {
+            io.emit('returnMapStaticData', mapData);
+    });
+
+    client.on('getPlayersData', () => {
+        io.emit('returnMapStaticData', mapData);
     });
 });
 

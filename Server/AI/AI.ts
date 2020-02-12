@@ -268,7 +268,7 @@ export default class AI {
     persecutionObject(enemyData: object, playerData: object, mapData: MapCreator) {
         const enemy = enemyData.ColliderMesh;
         const enemySprite = enemyData.enemySprite;
-        enemy.position.x;
+
         this.objectAnimation(true, 20);
 
         if (!enemy.startPositionX && !enemy.startPositionZ) {
@@ -299,7 +299,7 @@ export default class AI {
     }
 
     /**
-     * Метод который отвечает за направление вижения бота
+     * Метод который отвечает за направление движения бота
      * @param startPosition
      * @param enemyPositionAxis текущая позиция по указанной оси
      * @param persecutionObjectPosition позиция преследуемого объекта по указанной оси
@@ -470,10 +470,6 @@ export default class AI {
                 while (this.checkCollisionAxis(enemyPositionAxisX - emptySpeed, enemyWidth, collisionX, drawObjectRealWidth)) {
                     return {x: enemy.position.x - emptySpeed, z: enemy.position.z};
                 }
-                /*    while(this.checkCollisionAxis(enemyPositionAxisZ-emptySpeed,enemyHeight,collisionZ,drawObjectRealHeight)){
-                 return {x: enemy.position.x, z: enemy.position.z-emptySpeed};
-                 }*/
-                // return {x: enemy.position.x, z: enemy.position.z};
             }
 
         }
