@@ -9,6 +9,11 @@ export default class ClientAuthorization extends React.Component {
         super(props);
         this.login = this.login.bind(this);
         this.registration = this.registration.bind(this);
+        this.changeUserStatus = this.changeUserStatus.bind(this);
+    }
+
+    changeUserStatus(params) {
+        this.props.changeUserStatus(params);
     }
 
     login() {
@@ -18,7 +23,8 @@ export default class ClientAuthorization extends React.Component {
         let userData = {login: login.value, password: password.value};
 
         this.businessLogic.checkUserAuthorization(userData, (data) => {
-            console.log(data,'login');
+            this.changeUserStatus(data);
+            console.log(data, 'login');
         });
 
     }
