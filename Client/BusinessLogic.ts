@@ -17,5 +17,11 @@ export default class BusinessLogic {
         });
     }
 
+    checkUserAuthorization(userData,callback){
+        socket.emit('checkUserAuthorization',userData);
+        socket.on('resultUserAuthorization', (data) => {
+            callback(data);
+        });
+    }
 
 }
