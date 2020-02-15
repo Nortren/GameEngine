@@ -34,15 +34,15 @@ export default class Player {
     /**
      * генерируем игрока на карте
      */
-    createPlayer(data: Object) {
+    createPlayer(data: object,position:object) {
         const playerData = data;
         const loader = new THREE.TextureLoader();
 
         const userImg = loader.load(data.src);
         const playerColliderImg = loader.load(data.collaid);
 
-        this.createEngineUserObject(playerData, userImg);
-        this.createEngineUserCollaid(playerData, playerColliderImg);
+        this.createEngineUserObject(playerData, userImg,position);
+        this.createEngineUserCollaid(playerData, playerColliderImg,position);
         this.createEngineUserHealthLine(playerData);
 
         return playerData;
@@ -54,7 +54,7 @@ export default class Player {
      * @param userData
      * @param userImg
      */
-    createEngineUserObject(playerData: Object, playerImg: Texture) {
+    createEngineUserObject(playerData: Object, playerImg: Texture,position) {
         playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
         playerImg.offset.x = 0.78;
         playerImg.offset.y = 0.5;
@@ -66,7 +66,7 @@ export default class Player {
         });
         user = new THREE.Sprite(heroTexture);
         user.scale.set(2, 2, 1);
-        user.position.set(1, 0, 1);
+        user.position.set(position.x, 0, position.z);
         user.center.y = 0;
         playerData.user = user;
     }
@@ -76,7 +76,7 @@ export default class Player {
      * @param playerData
      * @param playerColliderImg
      */
-    createEngineUserCollaid(playerData: Object, playerColliderImg: Texture) {
+    createEngineUserCollaid(playerData: Object, playerColliderImg: Texture, position: object) {
         const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderLength, playerData.colliderHeight);
 
 
@@ -104,7 +104,7 @@ export default class Player {
 
         const playerCollaider = new THREE.Mesh(playerCollaiderGeo, materials);
         playerCollaider.rotation.x = Math.PI * -.5;
-        playerCollaider.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
+        playerCollaider.position.set(position.x, playerData.colliderPositionY, position.z);
         playerData.collaider = playerCollaider;
         if (globalVariables.shadow.materialShadow) {
             playerCollaider.castShadow = true;

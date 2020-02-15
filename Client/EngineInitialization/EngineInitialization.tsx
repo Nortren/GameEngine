@@ -48,26 +48,38 @@ export default class EngineInitialization extends React.Component {
         renderer.shadowMap.enabled = true;
         this._camera.сameraON(globalVariables.camera.cameraControl, camera, this.canvas);
 
-        this.userID;
+        this.userID = null;
 
         this.blData = new BL();
         this._AI = new AI(10, 1, 1, 10, 30);
-
+        this.playerInMaps = [];
 
         this.blData.getMapStaticData((data) => {
 
+            if (!this.userID) {
+                this.userID = data.playerName;
+                this.testMapJSON = data.testMapJSON;
+                this._mapCreator.createGameLocation(scene, this.testMapJSON.map);
+            }
 
-            this.userID = data.playerName;
-            let testMapJSON = data.testMapJSON;
-            this._mapCreator.createGameLocation(scene, testMapJSON.map);
-            const playerData = this._player.createPlayer(testMapJSON.player);
-            const user = playerData.user;
-            const healthLine = playerData.healthLine;
-            const userCollaider = playerData.collaider;
-            scene.add(user, healthLine, userCollaider);
-            this._enemyArray = this.testCreateEnemyArray(testMapJSON.enemy, scene, 1);
-            this.update(renderer, scene, camera, playerData, this._enemyArray, 0);
+
+
+
+            data.allPlayerArray.forEach((item, i) => {
+                const playerData = this._player.createPlayer(this.testMapJSON.player,item.position);
+                const user = playerData.user;
+                const healthLine = playerData.healthLine;
+                const userCollaider = playerData.collaider;
+                this.playerInMaps.push(playerData);
+                scene.add(user, healthLine, userCollaider);
+            });
+
+            this._enemyArray = this.testCreateEnemyArray(this.testMapJSON.enemy, scene, 0);
+
+            this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
+
         });
+
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
@@ -122,7 +134,7 @@ export default class EngineInitialization extends React.Component {
 
         }
 
-            this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
+        this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
 
         requestAnimationFrame(() => {
             this.update(renderer, scene, camera, playerData, enemyArray, timeStart);
@@ -131,11 +143,11 @@ export default class EngineInitialization extends React.Component {
 
         renderer.render(scene, camera);
         const playerInformation = {
-            playerX: playerData.collaider.position.x,
+           /* playerX: playerData.collaider.position.x,
             playerZ: playerData.collaider.position.z,
             playerWidth: playerData.collaider.geometry.parameters.width,
             playerHeight: playerData.collaider.geometry.parameters.height,
-            playerData: playerData
+            playerData: playerData*/
         };
 
         this._cameraControls.cameraControl(camera);
@@ -154,12 +166,17 @@ export default class EngineInitialization extends React.Component {
         }
         let testProps = {};
         this.blData.getUserPosition((data) => {
-            if(data.thisUser) {
-                testProps.moveX = data.thisUser.position.x;
-                testProps.moveZ = data.thisUser.position.z;
-                if (this.userID === data.thisUser.userId) {
-                    this._dynamicAnimation.updateUserAvatar(playerData, testProps, this._player, enemyArray);
-                }
+            if (data.thisUser) {
+
+
+                data.arrayUser.forEach((item, i) => {
+                        testProps.moveX = data.arrayUser[i].position.x;
+                        testProps.moveZ = data.arrayUser[i].position.z;
+                        if(playerData[i]) {
+                            this._dynamicAnimation.updateUserAvatar(playerData[i], testProps, this._player, enemyArray);
+                        }
+                    }
+                )
             }
         });
 
