@@ -1,6 +1,5 @@
-import AI from "./AI/AI";
-import mapData from "./MapCreator/StaticMapData"
-import Authorization from "./ClientAuthorization/Authorization"
+
+import Authorization from "./AccountService/ClientAuthorization/Authorization"
 
 const express = require('express');
 const io = require('socket.io')();
@@ -12,16 +11,6 @@ const server = http.createServer(app);
 const authorization = new Authorization();
 
 io.on('connection', (client) => {
-
-    var ID = (client.id).toString().substr(0, 5);
-    console.log(ID);
-    client.on('getMapStatic', () => {
-        io.emit('returnMapStaticData', mapData);
-    });
-
-    client.on('getPlayersData', () => {
-        io.emit('returnMapStaticData', mapData);
-    });
 
     client.on('checkUserAuthorization', (userData) => {
         let result = authorization.checkAuthorizationData(userData);

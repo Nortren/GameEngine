@@ -20,36 +20,34 @@ class GameEngineContainer extends React.Component {
         super(props);
     }
 
-    engineInitialization =
-        <div>
-            <EngineInitialization
-                showElement={this.props.userStatusAuthorization}
-                moveX={this.props.moveX}
-                moveZ={this.props.moveZ}
-                animations={this.props.animationStatus}
-                direction={this.props.direction}
-                changePhysics={this.props.changePhysics}
-                skillButton={this.props.skillButton}
-            />
-            <StickController className=".container-fluid"
-                             showElement={this.props.userStatusAuthorization}
-                             physicalCollision={this.props.physicalCollision}
-                             changePhysics={this.props.changePhysics}
-                             changeX={this.props.changeX}
-                             changeZ={this.props.changeZ}
-                             directionOfMovement={this.props.directionOfMovement}
-                             animationStatusChange={this.props.animationStatusChange}
-                             clickedSkillButton={this.props.clickedSkillButton}
-            />
-        </div>;
-    authorization = <Authorization changeUserStatus={this.props.changeUserStatus}/>;
+
 
 
     startInit() {
         if (this.props.userStatusAuthorization) {
-            return this.engineInitialization
+            return      <div>
+                <EngineInitialization
+                    showElement={this.props.userStatusAuthorization}
+                    moveX={this.props.moveX}
+                    moveZ={this.props.moveZ}
+                    animations={this.props.animationStatus}
+                    direction={this.props.direction}
+                    changePhysics={this.props.changePhysics}
+                    skillButton={this.props.skillButton}
+                />
+                <StickController className=".container-fluid"
+                                 showElement={this.props.userStatusAuthorization}
+                                 physicalCollision={this.props.physicalCollision}
+                                 changePhysics={this.props.changePhysics}
+                                 changeX={this.props.changeX}
+                                 changeZ={this.props.changeZ}
+                                 directionOfMovement={this.props.directionOfMovement}
+                                 animationStatusChange={this.props.animationStatusChange}
+                                 clickedSkillButton={this.props.clickedSkillButton}
+                />
+            </div>;
         }
-        return this.authorization;
+        return  <Authorization changeUserStatus={this.props.changeUserStatus}/>;;
     }
 
     render() {
