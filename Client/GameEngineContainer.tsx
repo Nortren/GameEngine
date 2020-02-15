@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
+import BL from "./BusinessLogic";
 
 import {
     changeX,
@@ -20,12 +21,17 @@ class GameEngineContainer extends React.Component {
         super(props);
     }
 
+    componentDidMount() {
 
 
+
+    }
 
     startInit() {
+        const blData = new BL();
         if (this.props.userStatusAuthorization) {
-            return      <div>
+
+            return <div>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}
@@ -47,7 +53,8 @@ class GameEngineContainer extends React.Component {
                 />
             </div>;
         }
-        return  <Authorization changeUserStatus={this.props.changeUserStatus}/>;;
+        return <Authorization changeUserStatus={this.props.changeUserStatus}/>;
+        ;
     }
 
     render() {

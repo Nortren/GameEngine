@@ -48,23 +48,24 @@ export default class EngineInitialization extends React.Component {
         renderer.shadowMap.enabled = true;
         this._camera.сameraON(globalVariables.camera.cameraControl, camera, this.canvas);
 
+        this.userID;
 
-        const blData = new BL();
+        this.blData = new BL();
         this._AI = new AI(10, 1, 1, 10, 30);
 
 
+        this.blData.getMapStaticData((data) => {
 
 
-
-
-        blData.getMapStaticData((data) => {
-            this._mapCreator.createGameLocation(scene,data.map);
-            const playerData = this._player.createPlayer(data.player);
+            this.userID = data.playerName;
+            let testMapJSON = data.testMapJSON;
+            this._mapCreator.createGameLocation(scene, testMapJSON.map);
+            const playerData = this._player.createPlayer(testMapJSON.player);
             const user = playerData.user;
             const healthLine = playerData.healthLine;
             const userCollaider = playerData.collaider;
             scene.add(user, healthLine, userCollaider);
-            this._enemyArray = this.testCreateEnemyArray(data.enemy, scene, 300);
+            this._enemyArray = this.testCreateEnemyArray(testMapJSON.enemy, scene, 1);
             this.update(renderer, scene, camera, playerData, this._enemyArray, 0);
         });
     }
@@ -120,6 +121,9 @@ export default class EngineInitialization extends React.Component {
 
 
         }
+
+            this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
+
         requestAnimationFrame(() => {
             this.update(renderer, scene, camera, playerData, enemyArray, timeStart);
         });
@@ -142,15 +146,24 @@ export default class EngineInitialization extends React.Component {
         for (let key in enemyArray) {
             //Добавлял для расчета столкновений в общий массив с коллайдекрами но ониначинают шарахаться друг от друга
             /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
-                     enemyArray[key].ColliderMesh.position.y,
-                     enemyArray[key].ColliderMesh.position.z,
-                     enemyArray[key].enemyData.colliderWidth,
-                     enemyArray[key].enemyData.colliderLength, 'enemy');*/
+             enemyArray[key].ColliderMesh.position.y,
+             enemyArray[key].ColliderMesh.position.z,
+             enemyArray[key].enemyData.colliderWidth,
+             enemyArray[key].enemyData.colliderLength, 'enemy');*/
             this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
+        let testProps = {};
+        this.blData.getUserPosition((data) => {
+            if(data.thisUser) {
+                testProps.moveX = data.thisUser.position.x;
+                testProps.moveZ = data.thisUser.position.z;
+                if (this.userID === data.thisUser.userId) {
+                    this._dynamicAnimation.updateUserAvatar(playerData, testProps, this._player, enemyArray);
+                }
+            }
+        });
 
 
-        this._dynamicAnimation.updateUserAvatar(playerData, this.props, this._player, enemyArray);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
 

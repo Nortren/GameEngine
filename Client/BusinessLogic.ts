@@ -23,5 +23,13 @@ export default class BusinessLogic {
             callback(data);
         });
     }
+    setUserPosition(userData){
+        socket.emit('setDataControls',userData);
 
+    }
+    getUserPosition(callback){
+        socket.on('getUserPosition', (data) => {
+            callback(data);
+        });
+    }
 }
