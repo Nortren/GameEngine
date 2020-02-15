@@ -19,14 +19,14 @@ export default class MapCreator {
     /**
      * Создаём игровую локацию
      */
-    createGameLocation(scene, showCollaider) {
+    createGameLocation(scene,mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
         const planeSize = 100;
-        const mapData = this.parserJSON().map;
+
 
         const loader = new THREE.TextureLoader();
-        const texture = loader.load(mapData.src);
+        const texture = loader.load(mapStaticData.src);
         const mapColor = 0xf3f3f3;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -58,8 +58,8 @@ export default class MapCreator {
         map.position.set(0, 0, 0);
         map.receiveShadow = true;
         mapObject.push(map);
-        for (let key in mapData.mapElement) {
-            let mapElementObject = mapData.mapElement[key];
+        for (let key in mapStaticData.mapElement) {
+            let mapElementObject = mapStaticData.mapElement[key];
 
             if (globalVariables.models.sprite) {
                 let mapElementObjectIMG = loader.load(mapElementObject.src);
@@ -152,43 +152,6 @@ export default class MapCreator {
                 type: objectType
             });
         }
-        //
-        // this.collisionPoint.forEach((item, i) => {
-        //
-        //         if(item.id ===id){
-        //             this.collisionPoint[i] = {
-        //                 id: id,
-        //                 x: X,
-        //                 y: Y,
-        //                 z: Z,
-        //                 //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
-        //                 width: Width * 0.5,
-        //                 //TODO тут нужно указать не высату а длинну
-        //                 height: Length * 0.5,
-        //                 type: objectType
-        //             };
-        //             return;
-        //         }
-        //         else{
-        //             this.collisionPoint.push(
-        //                 {
-        //                     id: id,
-        //                     x: X,
-        //                     y: Y,
-        //                     z: Z,
-        //                     //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
-        //                     width: Width * 0.5,
-        //                     //TODO тут нужно указать не высату а длинну
-        //                     height: Length * 0.5,
-        //                     type: objectType
-        //                 })
-        //         }
-        //
-        // });
-
-
-
-
     }
 
     checkCollision(Xmove: number, Zmove: number, Xwidth: number, Zheight: number, direction: string) {

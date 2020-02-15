@@ -19,12 +19,12 @@ import {testMapJSON} from "./testMap";
 export default class EngineInitialization extends React.Component {
     public canvas: object;
     public context: CanvasRenderingContext2D;
-    private _testImageMap: object;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
     private _player: Player = new Player();
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
+    private _enemyArray: Array<object>;
     _FPSCounter: number = 0;
 
     constructor(props: object) {
@@ -39,73 +39,35 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        const showCollider = true;
-        this._testImageMap = this._mapCreator.parserJSON();
         this.canvas = document.getElementById('canvas');
         this.resize(this.canvas);
         const scene = new THREE.Scene();
         scene.scale.set(1, 1, 1);
         const camera = this._camera.createCamera();
-
         const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
         renderer.shadowMap.enabled = true;
+        this._camera.сameraON(globalVariables.camera.cameraControl, camera, this.canvas);
 
-        this._mapCreator.createGameLocation(scene, showCollider);
+        this.userID;
 
-        const testBl = new BL();
-        testBl.getAIData(3000,{test:12312},function (data) {
-            console.log(data);
-        });
-
-
-        const userData = this._testImageMap.player;
-        const playerData = this._player.createPlayer(userData);
-        const user = playerData.user;
-        const healthLine = playerData.healthLine;
-        const userCollaider = playerData.collaider;
+        this.blData = new BL();
         this._AI = new AI(10, 1, 1, 10, 30);
 
 
-        // const enemyData = this._AI.createEnemy(this._testImageMap.enemy, scene);
-
-        let enemyArray = this.testCreateEnemyArray(this._testImageMap.enemy, scene, 300);
+        this.blData.getMapStaticData((data) => {
 
 
-        scene.add(user, healthLine, userCollaider);
-
-        this._camera.сameraON(globalVariables.camera.cameraControl, camera, this.canvas);
-
-        /*
-         OBJLoader(THREE);
-         let loaderOBJ = new THREE.OBJLoader();
-
-         let textuteModel = new THREE.Texture();
-         const loader = new THREE.TextureLoader();
-         const userImg = loader.load('./Client/image/ground.jpg', (img) => {
-         textuteModel.image = img, textuteModel.needsUpdate = true;
-         });
-         const heroTexture = new THREE.SpriteMaterial({
-         map: userImg
-         });
-         loaderOBJ.load('./Client/Models/Marauder.obj', (object) => {
-         object.scale.x = 0.2;
-         object.scale.y = 0.2;
-         object.scale.z = 0.2;
-         // object.rotation.x = -Math.PI / 2;
-         // object.position.y = -30;
-         object.traverse(function (child) {
-         if (child instanceof THREE.Mesh) {
-
-         child.material.map = textuteModel;
-
-         }
-         });
-         let OBJECT = object;
-         scene.add(OBJECT);
-         });*/
-
-
-        this.update(renderer, scene, camera, playerData, enemyArray, 0);
+            this.userID = data.playerName;
+            let testMapJSON = data.testMapJSON;
+            this._mapCreator.createGameLocation(scene, testMapJSON.map);
+            const playerData = this._player.createPlayer(testMapJSON.player);
+            const user = playerData.user;
+            const healthLine = playerData.healthLine;
+            const userCollaider = playerData.collaider;
+            scene.add(user, healthLine, userCollaider);
+            this._enemyArray = this.testCreateEnemyArray(testMapJSON.enemy, scene, 1);
+            this.update(renderer, scene, camera, playerData, this._enemyArray, 0);
+        });
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
@@ -159,6 +121,9 @@ export default class EngineInitialization extends React.Component {
 
 
         }
+
+            this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
+
         requestAnimationFrame(() => {
             this.update(renderer, scene, camera, playerData, enemyArray, timeStart);
         });
@@ -180,16 +145,25 @@ export default class EngineInitialization extends React.Component {
 
         for (let key in enemyArray) {
             //Добавлял для расчета столкновений в общий массив с коллайдекрами но ониначинают шарахаться друг от друга
-       /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
-                enemyArray[key].ColliderMesh.position.y,
-                enemyArray[key].ColliderMesh.position.z,
-                enemyArray[key].enemyData.colliderWidth,
-                enemyArray[key].enemyData.colliderLength, 'enemy');*/
-            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator,scene);
+            /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
+             enemyArray[key].ColliderMesh.position.y,
+             enemyArray[key].ColliderMesh.position.z,
+             enemyArray[key].enemyData.colliderWidth,
+             enemyArray[key].enemyData.colliderLength, 'enemy');*/
+            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
+        let testProps = {};
+        this.blData.getUserPosition((data) => {
+            if(data.thisUser) {
+                testProps.moveX = data.thisUser.position.x;
+                testProps.moveZ = data.thisUser.position.z;
+                if (this.userID === data.thisUser.userId) {
+                    this._dynamicAnimation.updateUserAvatar(playerData, testProps, this._player, enemyArray);
+                }
+            }
+        });
 
 
-        this._dynamicAnimation.updateUserAvatar(playerData, this.props, this._player,enemyArray);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
 
 
