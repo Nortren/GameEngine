@@ -53,7 +53,7 @@ export default class EngineInitialization extends React.Component {
         this.blData = new BL();
         this._AI = new AI(10, 1, 1, 10, 30);
         this.playerInMaps = [];
-
+        this.isThereUser = false;
         this.blData.getMapStaticData((data) => {
 
             if (!this.userID) {
@@ -61,25 +61,50 @@ export default class EngineInitialization extends React.Component {
                 this.testMapJSON = data.testMapJSON;
                 this._mapCreator.createGameLocation(scene, this.testMapJSON.map);
             }
+            if (data.allPlayerArray.length) {
+                this.isThereUser = data.allPlayerArray.filter(function (item) {
+                    return item.userId === data.playerName;
+                });
 
+            }
+            if (!data.allPlayerArray.length ) {
+                this.addPlayerToMap(scene, data, {userId: data.playerName, position: {x: 0, z: 0}});
+            }
+            else if(!this.isThereUser.length){
+                this.addPlayerToMap(scene, data, {userId: data.playerName, position: {x: 0, z: 0}});
+                data.allPlayerArray.forEach((item, i) => {
+                    this.addPlayerToMap(scene, data, item);
+                });
+            }
+            else {
 
-
-
-            data.allPlayerArray.forEach((item, i) => {
-                const playerData = this._player.createPlayer(this.testMapJSON.player,item.position);
-                const user = playerData.user;
-                const healthLine = playerData.healthLine;
-                const userCollaider = playerData.collaider;
-                this.playerInMaps.push(playerData);
-                scene.add(user, healthLine, userCollaider);
-            });
-
-            this._enemyArray = this.testCreateEnemyArray(this.testMapJSON.enemy, scene, 0);
+                data.allPlayerArray.forEach((item, i) => {
+                    this.addPlayerToMap(scene, data, item);
+                });
+            }
+            this._enemyArray = this.testCreateEnemyArray(this.testMapJSON.enemy, scene, 100);
 
             this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
 
         });
 
+    }
+
+    addPlayerToMap(scene, data, item) {
+        const playerData = this._player.createPlayer(this.testMapJSON.player, item);
+        const user = playerData.user;
+        const healthLine = playerData.healthLine;
+        const userCollaider = playerData.collaider;
+        const testDataSyncronize = data;
+
+        let test = this.playerInMaps.filter(function (data) {
+            return data.userId === item.userId;
+        });
+        if (test.length === 0) {
+            this.playerInMaps.push(playerData);
+
+        }
+        scene.add(user, healthLine, userCollaider);
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
@@ -120,7 +145,7 @@ export default class EngineInitialization extends React.Component {
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, playerData, enemyArray, timeStart): void {
+    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
         let now = performance.now();
         let duration = now - timeStart;
 
@@ -137,17 +162,18 @@ export default class EngineInitialization extends React.Component {
         this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
 
         requestAnimationFrame(() => {
-            this.update(renderer, scene, camera, playerData, enemyArray, timeStart);
+            this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);
         });
 
 
         renderer.render(scene, camera);
+        //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
         const playerInformation = {
-           /* playerX: playerData.collaider.position.x,
-            playerZ: playerData.collaider.position.z,
-            playerWidth: playerData.collaider.geometry.parameters.width,
-            playerHeight: playerData.collaider.geometry.parameters.height,
-            playerData: playerData*/
+            playerX: playerInMaps[0].collaider.position.x,
+            playerZ: playerInMaps[0].collaider.position.z,
+            playerWidth: playerInMaps[0].collaider.geometry.parameters.width,
+            playerHeight: playerInMaps[0].collaider.geometry.parameters.height,
+            playerData: playerInMaps[0]
         };
 
         this._cameraControls.cameraControl(camera);
@@ -172,8 +198,8 @@ export default class EngineInitialization extends React.Component {
                 data.arrayUser.forEach((item, i) => {
                         testProps.moveX = data.arrayUser[i].position.x;
                         testProps.moveZ = data.arrayUser[i].position.z;
-                        if(playerData[i]) {
-                            this._dynamicAnimation.updateUserAvatar(playerData[i], testProps, this._player, enemyArray);
+                        if (playerInMaps[i]) {
+                            this._dynamicAnimation.updateUserAvatar(playerInMaps[i], testProps, this._player, enemyArray);
                         }
                     }
                 )

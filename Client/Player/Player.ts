@@ -4,6 +4,7 @@ import Dynamic from "../Animation/Dynamic/Dynamic";
 import {Texture} from "three";
 
 export default class Player {
+    name:string;
     _count: number;
     props: object;
     animation: Dynamic = new Dynamic();
@@ -18,14 +19,9 @@ export default class Player {
     amountOfHealth: number;
 
 
-    constructor(amountOfHealth, damage, attackSpeed, moveSpeed, radiusOfDetection) {
+    constructor(name) {
+        this.name = name;
         this._count = 0;
-        this.radiusOfDetection = radiusOfDetection;
-        this.moveSpeed = moveSpeed;
-        this.attackSpeed = attackSpeed;
-        this.damage = damage;
-        this.amountOfHealth = amountOfHealth;
-
 
         this._animationTimer = 0;
         this.fixPoint = 0;
@@ -34,15 +30,16 @@ export default class Player {
     /**
      * генерируем игрока на карте
      */
-    createPlayer(data: object,position:object) {
-        const playerData = data;
+    createPlayer(data: object,dataServer:object) {
+        const playerData = {...data};
         const loader = new THREE.TextureLoader();
 
         const userImg = loader.load(data.src);
         const playerColliderImg = loader.load(data.collaid);
 
-        this.createEngineUserObject(playerData, userImg,position);
-        this.createEngineUserCollaid(playerData, playerColliderImg,position);
+        playerData.serverData = dataServer;
+        this.createEngineUserObject(playerData, userImg,dataServer.position);
+        this.createEngineUserCollaid(playerData, playerColliderImg,dataServer.position);
         this.createEngineUserHealthLine(playerData);
 
         return playerData;
