@@ -49,6 +49,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "immutable": "^4.0.0-rc.12",
+    "moleculer": "^0.14.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
