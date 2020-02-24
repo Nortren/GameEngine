@@ -42,8 +42,10 @@ class RoomCreator extends Service {
                     result.id = ctx.params;
                     this.broker.call("PlayerController.createPlayer", result).then(
                         result => {
+                            console.log('Создать игрока',result)
                         },
                         error => {
+                            console.log('Ошибка при попытке создать игрока')
                         }
                     );
 

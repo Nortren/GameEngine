@@ -11,6 +11,7 @@ export const PlayerJson = {
         health:100,
         damage:2,
         attackDistance:1,
-        attackSpeed:10
+        attackSpeed:10,
+        moveSpeed:1
     },
 };

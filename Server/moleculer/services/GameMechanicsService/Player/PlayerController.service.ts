@@ -31,16 +31,26 @@ class PlayerController extends Service {
     }
 
     createPlayer(ctx) {
-        let playerAvatar = new PlayerAvatar();
-        console.log('Test createPlayer',ctx.params);
+        console.log('createPlayer');
+        let id = ctx.params.id;
+        let health = ctx.params.health;
+        let damage = ctx.params.damage;
+        let attackDistance = ctx.params.attackDistance;
+        let attackSpeed = ctx.params.attackSpeed;
+        let moveSpeed = ctx.params.moveSpeed;
+
+        let playerAvatar = new PlayerAvatar(id,health,damage,attackSpeed,moveSpeed,attackDistance);
+        console.log('Test createPlayer test');
+        return playerAvatar;
+
     }
     createRoom(ctx) {
         let playerAvatar = new PlayerAvatar();
-        console.log('Test createPlayer',ctx.params);
+        // console.log('Test createPlayer',ctx.params);
     }
     getRoomsList(ctx) {
         let playerAvatar = new PlayerAvatar();
-        console.log('Test createPlayer',ctx.params);
+        // console.log('Test createPlayer',ctx.params);
     }
 
 
