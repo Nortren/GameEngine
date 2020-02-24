@@ -4,7 +4,7 @@ process.env.TEST=true;
 
 const { ServiceBroker, Context } = require("moleculer");
 const { ValidationError } = require("moleculer").Errors;
-const TestService = require("../../../services/products.service");
+const TestService = require("../../../Old/products.service");
 
 describe("Test 'products' service", () => {
 

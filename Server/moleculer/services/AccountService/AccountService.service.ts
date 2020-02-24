@@ -1,13 +1,7 @@
 const Service = require("moleculer").Service;
-import Authorization from './ClientAuthorization/Authorization'
-
 class AccountService extends Service {
 
-    _authorization: Authorization = new Authorization;
-    // services/AccountService/AccountService.service.js
     constructor(broker) {
-
-
         super(broker);
 
         this.parseServiceSchema({
@@ -17,7 +11,7 @@ class AccountService extends Service {
                 scalable: true
             },
             settings: {
-                upperCase: true
+                upperCase: true,
             },
             actions: {
                 checkUserAuthorization: this.userAuthorization
@@ -29,14 +23,15 @@ class AccountService extends Service {
         });
     }
 
-    testH() {
-        console.log('Test Hello');
-    }
 
     userAuthorization(ctx) {
-        console.log(ctx.params);
-        const authorization = new Authorization();
-        return authorization.checkAuthorizationData(ctx.params)
+        const  userParams = ctx.params;
+        return this.broker.call("DB.checkAuthorization",userParams).then(
+            result => {
+                return result;
+            },
+            error =>{   console.log('Ошибка Авторизации пользователя DB')}
+            );
     }
 
     serviceCreated() {

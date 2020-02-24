@@ -58,7 +58,7 @@ export default class EngineInitialization extends React.Component {
 
             if (!this.userID) {
                 this.userID = data.playerName;
-                this.testMapJSON = data.testMapJSON;
+                this.testMapJSON = data.result;
                 this._mapCreator.createGameLocation(scene, this.testMapJSON.map);
             }
 

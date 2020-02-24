@@ -46,41 +46,66 @@ class ServicesController extends Service {
         this.playerArray = [];
         this.connectionPlayerName;
         io.on('connection', (client) => {
-            console.log('connection');
-            client.on('getMapStatic', () => {
-                io.emit('returnMapStaticData', {
-                    testMapJSON,
-                    playerName: this.connectionPlayerName,
-                    allPlayerArray: this.playerArray
-                });
-            });
-
-            client.on('checkUserAuthorization', (userData) => {
-
-                this.broker.call("AccountService.checkUserAuthorization", userData).then(result => {
-                    this.connectionPlayerName = result.name;
-                    io.emit('resultUserAuthorization', result);
-                })
-            });
-
-            client.on('setDataControls', (userData) => {
-
-                let test = this.playerArray.filter(function (data) {
-                    return data.userId === userData.userId;
-                });
-                if (test.length === 0) {
-                    this.playerArray.push(userData);
-
-                }
-
-                if (test[0]) {
-                    test[0].position = userData.position;
-                }
-                io.emit('getUserPosition', {thisUser: test[0], arrayUser: this.playerArray});
-            });
+            this.checkUserAuthorization(client);
+            this.getMap(client);
+            this.playerControls(client);
         });
         const portIO = 8010;
         io.listen(portIO);
+    }
+
+    /**
+     * Метод принимающий данные от игрока(клавиатура тачпад) и расчитывающий его движение на сервере
+     */
+    playerControls(client) {
+        client.on('setDataControls', (userData) => {
+
+            let test = this.playerArray.filter(function (data) {
+                return data.userId === userData.userId;
+            });
+            if (test.length === 0) {
+
+                this.playerArray.push(userData);
+
+            }
+
+            if (test[0]) {
+                test[0].position = userData.position;
+            }
+            io.emit('getUserPosition', {thisUser: test[0], arrayUser: this.playerArray});
+        });
+    }
+
+    /**
+     * Метод авторизациипользователя с проверкой данных из БД
+     * @param client
+     */
+    checkUserAuthorization(client) {
+        client.on('checkUserAuthorization', (userData) => {
+            this.broker.call("AccountService.checkUserAuthorization", userData).then(result => {
+                console.log(result, 'this.connectionPlayerNameAuth');
+                this.connectionPlayerName = result.id;
+
+                io.emit('resultUserAuthorization', result);
+            })
+        });
+    }
+
+    /**
+     * Отдаём пользователю комнату вкоторой должен быть инициализирован его персоонаж
+     * @param client
+     */
+    getMap(client) {
+        client.on('getMapStatic', () => {
+            this.broker.call("RoomCreator.createRoom", this.connectionPlayerName).then(result => {
+
+                io.emit('returnMapStaticData', {
+                    result,
+                    playerName: this.connectionPlayerName,
+                    allPlayerArray: this.playerArray
+                });
+            })
+        });
     }
 }
 

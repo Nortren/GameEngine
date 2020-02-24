@@ -518,28 +518,28 @@
 				return {
 					menu: [
 						{ id: "home", caption: "Home" },
-						{ id: "greeter", caption: "Greeter service" },
+						/*{ id: "greeter", caption: "Greeter service" },*/
 						{ id: "AccountService", caption: "Account Service" },
-						{ id: "products", caption: "Products service" },
+				/*		{ id: "products", caption: "Products service" },*/
 						{ id: "nodes", caption: "Nodes" },
 						{ id: "services", caption: "Services" }
 					],
 					page: "home",
 
 					requests: {
-						greeter: [
+						/*greeter: [
 							{ id: "hello", action: "greeter.hello", rest: "/api/greeter/hello", response: null, status: null, duration: null },
 
 							{ id: "welcome", action: "greeter.welcome", rest: "/api/greeter/welcome", fields: [
 								{ field: "name", label: "Name", type: "text", paramType: "param", model: "welcomeName" }
 							], response: null, status: null, duration: null }
-						],
+						],*/
                         AccountService: [
 							{ id: "hello", action: "AccountService.hello", rest: "/api/AccountService/hello", response: null, status: null, duration: null },
 
 							{ id: "welcome", action: "AccountService.first", rest: "/api/AccountService/first", response: null, status: null, duration: null },
 						],
-						products: [
+				/*		products: [
 							{ id: "list", action: "products.list", rest: "/api/products/", response: null, status: null, duration: null, afterResponse: response => !this.fields.productID && (this.fields.productID = response.rows[0]._id) },
 
 							{ id: "create", action: "products.create", rest: "/api/products/", method: "POST", fields: [
@@ -571,7 +571,7 @@
 								{ field: "id", label: "ID", type: "text", paramType: "url", model: "productID" }
 							], response: null, status: null, duration: null },
 
-						]
+						]*/
 					},
 
 					fields: {
