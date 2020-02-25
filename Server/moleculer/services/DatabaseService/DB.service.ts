@@ -5,67 +5,79 @@ import {NPCJson} from './temporaryDataDB/NPCData';
 import {UserDataJSON} from './temporaryDataDB/UserData';
 
 class DB extends Service {
-    constructor(broker) {
-        super(broker);
-        this.parseServiceSchema({
-            name: "DB",
-            // version: "v2",
-            meta: {
-                scalable: true
-            },
-            settings: {
-                upperCase: true,
-            },
-            actions: {
-                getMapData: this.getMapData,
-                getPlayerData: this.getPlayerData,
-                getEnemyData: this.getEnemyData,
-                checkAuthorization: this.checkAuthorization,
-            },
-            events: {},
-            created: this.serviceCreated,
-            started: this.serviceStarted,
-            stopped: this.serviceStopped,
-        });
-    }
+	constructor(broker) {
+		super(broker);
+		this.parseServiceSchema({
+			name: "DB",
+			// version: "v2",
+			meta: {
+				scalable: true
+			},
+			settings: {
+				upperCase: true,
+			},
+			actions: {
+				getMapData: this.getMapData,
+				getPlayerData: this.getPlayerData,
+				getEnemyData: this.getEnemyData,
+				checkAuthorization: this.checkAuthorization,
+			},
+			events: {},
+			created: this.serviceCreated,
+			started: this.serviceStarted,
+			stopped: this.serviceStopped,
+		});
+	}
 
 
-    getMapData(ctx) {
-        return MapJSON.map;
-    }
+	getMapData(ctx) {
+		return MapJSON.map;
+	}
 
-    getPlayerData(ctx) {
-        return PlayerJson.player;
-    }
+	//TODO метод получения данных самого пользователя id,name,password наименование последней локации где был игрок одним словом самые главные данные
+	getUserData(ctx) {
+		const userData = ctx.params;
+		let result = UserDataJSON.filter((user) => {
+			return (user.password === userData.password) && (user.name === userData.name)
+		});
 
-    getEnemyData(ctx) {
-        return NPCJson.enemy;
-    }
+		console.log(result);
+	}
 
-    checkAuthorization(ctx) {
-        const authorizationParams = ctx.params;
-        let result = UserDataJSON.filter((user) => {
-            return user.password === authorizationParams.password
-        });
+	//TODO временный эмулятор данных БД по которому создаётся аватар игрока
+	getPlayerData(ctx) {
+		return PlayerJson.player;
+	}
 
-        if (result) {
-            result[0].status = true;
-        }
+	getEnemyData(ctx) {
+		return NPCJson.enemy;
+	}
 
-        return result[0];
-    }
+	checkAuthorization(ctx) {
+		const authorizationParams = ctx.params;
+		let result = UserDataJSON.filter((user) => {
+			return user.password === authorizationParams.password;
+			// return (user.password === authorizationParams.password) && (user.name === authorizationParams.name)
+		});
 
-    serviceCreated() {
-        this.logger.info("ES6 Service created.");
-    }
+		if (result) {
+			result[0].status = true;
+		}
 
-    serviceStarted() {
-        this.logger.info("ES6 Service started.");
-    }
+		return result[0];
+	}
 
-    serviceStopped() {
-        this.logger.info("ES6 Service stopped.");
-    }
+	serviceCreated() {
+		this.logger.info("ES6 Service created.");
+	}
+
+	serviceStarted() {
+		this.logger.info("ES6 Service started.");
+	}
+
+	serviceStopped() {
+		this.logger.info("ES6 Service stopped.");
+	}
 }
 
 module.exports = DB;

@@ -18,8 +18,8 @@ class PlayerController extends Service {
                 upperCase: true
             },
             actions: {
-                createRoom:this.createPlayer,
-                createPlayer:this.createRoom,
+                createRoom:this.createRoom,
+                createPlayer:this.createPlayer,
                 getRoomsList:this.getRoomsList,
 
             },
@@ -31,7 +31,7 @@ class PlayerController extends Service {
     }
 
     createPlayer(ctx) {
-        console.log('createPlayer');
+
         let id = ctx.params.id;
         let health = ctx.params.health;
         let damage = ctx.params.damage;
@@ -40,7 +40,6 @@ class PlayerController extends Service {
         let moveSpeed = ctx.params.moveSpeed;
 
         let playerAvatar = new PlayerAvatar(id,health,damage,attackSpeed,moveSpeed,attackDistance);
-        console.log('Test createPlayer test');
         return playerAvatar;
 
     }
