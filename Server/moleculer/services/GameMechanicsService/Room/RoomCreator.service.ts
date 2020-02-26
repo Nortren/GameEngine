@@ -1,7 +1,8 @@
 const Service = require("moleculer").Service;
+import Room from './Room';
 
 class RoomCreator extends Service {
-	roomList: Array<object>;
+	roomList: Array<object> = [];
 
 	constructor(broker) {
 
@@ -16,7 +17,6 @@ class RoomCreator extends Service {
 				upperCase: true,
 			},
 			actions: {
-				createRoom: this.createRoom,
 				getRoomList: this.getRoomList,
 				getRoom: this.getRoom,
 			},
@@ -30,18 +30,65 @@ class RoomCreator extends Service {
 	getRoomList(ctx) {
 	}
 
-	createRoom(ctx) {
+	/**
+	 * Создание новой комнаты и наполнение ее контентом по шаблону
+	 * @param userData
+	 */
+	createRoom(userData) {
+		userData = userData[0];
 
+		let idRoom = this.roomList ? this.roomList.length + 1 : 1;
+		//Создаём комнату того типа где последний раз был пользователь
+		let typeRoom = userData.lastRoomType;
+		let numberPlaces = 3;
+
+		let room = new Room(idRoom, typeRoom, numberPlaces, 0);
+
+		//Занимаем место увеличивая счетчик занятых мест
+		room.setPlayersList(userData);
+
+
+		this.roomList.push(room);
 	}
 
-	getRoom(ctx) {
-		console.log('Start Room');
+	async getRoom(ctx) {
 		const promises = [];
 		let resolveData = {};
+		let userSuitableRooms = null;
+		//Получаем данные по игроку
+		let userData = await this.broker.call("DB.getUserData", ctx.params);
+
+		//проверяем есть ли комната подобного типа в которой последний раз был игрок
+		if (this.roomList && userData) {
+
+			userSuitableRooms = this.roomList.filter((room) => {
+
+				return room.type === userData[0].lastRoomType;
+			});
+
+		}
+
+		//Выбираем первую комнату где есть свободные места
+		//TODO игрок может быть из этой комнаты но список будет переполнен(при вылете игрока)
+		let freeRoom = userSuitableRooms.filter((item) => {
+			return item.numberPlaces > item.numberTakePlaces;
+		});
+
+		//Есть ли такие комнаты
+		if (freeRoom.length) {
+
+			//Занимаем место увеличивая счетчик занятых мест
+			freeRoom[0].setPlayersList(userData[0]);
+
+		}
+		//Создаём новую комнату такого типа
+		else {
+			this.createRoom(userData);
+		}
+		console.log(this.roomList, 'this.roomList');
 
 
 		return new Promise((resolve, reject) => {
-			console.log(ctx.params, 'Создаём аватар игрока');
 			//Создаём аватар игрока
 			promises.push(this.addPlayerToRoom(resolveData, ctx));
 			//Получаем данные карты
@@ -61,12 +108,11 @@ class RoomCreator extends Service {
 	 * @param ctx опции переданные через action сервису
 	 */
 	addPlayerToRoom(resolveData, ctx) {
-		console.log(ctx.params, 'Создаём аватар игрока1111');
 		return this.broker.call("DB.getPlayerData").then(result => {
 				result.id = ctx.params;
 				this.broker.call("PlayerController.createPlayer", result).then(
 					result => {
-						console.log('Создать игрока', result)
+						console.log('Создать игрока')
 					},
 					error => {
 						console.log('Ошибка при попытке создать игрока')
@@ -85,26 +131,26 @@ class RoomCreator extends Service {
 	 * Добовляем данные по карте на основе которых будет строится статика в комнате
 	 * @param resolveData
 	 */
-	addMapToRoom(resolveData) {
-		this.broker.call("DB.getMapData").then(result => {
-				resolveData.map = result;
-			},
-			error => {
-				console.log('ошибка получения данных о карте из БД')
-			})
+	async addMapToRoom(resolveData) {
+		try {
+			resolveData.map = await this.broker.call("DB.getMapData");
+		}
+		catch (e) {
+			console.log('ошибка получения данных о карте из БД', e)
+		}
+
 	}
 
 	/**
 	 * Добавляем противников на карту
 	 * @param resolveData
 	 */
-	addEnemyToRoom(resolveData) {
-		this.broker.call("DB.getEnemyData").then(result => {
-				resolveData.enemy = result;
-			},
-			error => {
-				console.log('ошибка получения данных о противнике из БД')
-			})
+	async addEnemyToRoom(resolveData) {
+		try {
+			resolveData.enemy = await this.broker.call("DB.getEnemyData");
+		} catch (e) {
+			console.log('ошибка получения данных о противнике из БД', e)
+		}
 	}
 
 	serviceCreated() {

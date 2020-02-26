@@ -20,6 +20,7 @@ class DB extends Service {
 				getMapData: this.getMapData,
 				getPlayerData: this.getPlayerData,
 				getEnemyData: this.getEnemyData,
+				getUserData: this.getUserData,
 				checkAuthorization: this.checkAuthorization,
 			},
 			events: {},
@@ -31,17 +32,21 @@ class DB extends Service {
 
 
 	getMapData(ctx) {
+
+
+
 		return MapJSON.map;
 	}
 
 	//TODO метод получения данных самого пользователя id,name,password наименование последней локации где был игрок одним словом самые главные данные
 	getUserData(ctx) {
-		const userData = ctx.params;
+
+		const userID = ctx.params;
 		let result = UserDataJSON.filter((user) => {
-			return (user.password === userData.password) && (user.name === userData.name)
+			return user.id === userID;
 		});
 
-		console.log(result);
+		return result;
 	}
 
 	//TODO временный эмулятор данных БД по которому создаётся аватар игрока
