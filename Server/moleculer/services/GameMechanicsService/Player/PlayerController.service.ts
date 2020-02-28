@@ -32,14 +32,18 @@ class PlayerController extends Service {
 
     createPlayer(ctx) {
 
-        let id = ctx.params.id;
-        let health = ctx.params.health;
-        let damage = ctx.params.damage;
-        let attackDistance = ctx.params.attackDistance;
-        let attackSpeed = ctx.params.attackSpeed;
-        let moveSpeed = ctx.params.moveSpeed;
+
+        const id = ctx.params.playerID;
+        const player =ctx.params.result;
+
+        let health = player.health;
+        let damage = player.damage;
+        let attackDistance = player.attackDistance;
+        let attackSpeed = player.attackSpeed;
+        let moveSpeed = player.moveSpeed;
 
         let playerAvatar = new PlayerAvatar(id,health,damage,attackSpeed,moveSpeed,attackDistance);
+
         return playerAvatar;
 
     }

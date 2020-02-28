@@ -1,19 +1,17 @@
 import PlayerMainClass from "./PlayerMainClass";
-export default class Player extends PlayerMainClass {
+export default class PlayerAvatar extends PlayerMainClass {
 
-    userSetting: object;
 
     constructor(id: number, health: number, damage: number, attackSpeed: number, moveSpeed: number, attackDistance: number) {
         super(id, health, damage, attackSpeed, moveSpeed, attackDistance);
 
-        this.userSetting={
-            id,
-            health,
-            damage,
-            attackSpeed,
-            moveSpeed,
-            attackDistance
-        }
+        this.id = id;
+        this.health = health;
+        this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
+        this.attackDistance = attackDistance;
+
 
     }
 
@@ -22,7 +20,7 @@ export default class Player extends PlayerMainClass {
 
     }
 
-    update(newData:Array<object>,oldData:Array<object>) {
+    update(newData: Array<object>, oldData: Array<object>) {
 
     }
 

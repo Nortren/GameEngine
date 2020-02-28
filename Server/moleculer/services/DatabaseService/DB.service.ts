@@ -5,84 +5,91 @@ import {NPCJson} from './temporaryDataDB/NPCData';
 import {UserDataJSON} from './temporaryDataDB/UserData';
 
 class DB extends Service {
-	constructor(broker) {
-		super(broker);
-		this.parseServiceSchema({
-			name: "DB",
-			// version: "v2",
-			meta: {
-				scalable: true
-			},
-			settings: {
-				upperCase: true,
-			},
-			actions: {
-				getMapData: this.getMapData,
-				getPlayerData: this.getPlayerData,
-				getEnemyData: this.getEnemyData,
-				getUserData: this.getUserData,
-				checkAuthorization: this.checkAuthorization,
-			},
-			events: {},
-			created: this.serviceCreated,
-			started: this.serviceStarted,
-			stopped: this.serviceStopped,
-		});
-	}
+    constructor(broker) {
+        super(broker);
+        this.parseServiceSchema({
+            name: "DB",
+            // version: "v2",
+            meta: {
+                scalable: true
+            },
+            settings: {
+                upperCase: true,
+            },
+            actions: {
+                getMapData: this.getMapData,
+                getPlayerData: this.getPlayerData,
+                getEnemyData: this.getEnemyData,
+                getUserData: this.getUserData,
+                checkAuthorization: this.checkAuthorization,
+            },
+            events: {},
+            created: this.serviceCreated,
+            started: this.serviceStarted,
+            stopped: this.serviceStopped,
+        });
+    }
 
 
-	getMapData(ctx) {
+    getMapData(ctx) {
+        return MapJSON[ctx.params];
+    }
 
+    //TODO метод получения данных самого пользователя id,name,password наименование последней локации где был игрок одним словом самые главные данные
+    getUserData(ctx) {
 
+        const userID = ctx.params;
+        let result = UserDataJSON.filter((user) => {
+            return user.id === userID;
+        });
 
-		return MapJSON.map;
-	}
+        return result[0];
+    }
 
-	//TODO метод получения данных самого пользователя id,name,password наименование последней локации где был игрок одним словом самые главные данные
-	getUserData(ctx) {
+    //TODO временный эмулятор данных БД по которому создаётся аватар игрока
+    getPlayerData(ctx) {
 
-		const userID = ctx.params;
-		let result = UserDataJSON.filter((user) => {
-			return user.id === userID;
-		});
+        const playerID = ctx.params.id;
+        return PlayerJson[playerID];
+    }
 
-		return result;
-	}
+    getEnemyData(ctx) {
+        const enemyMap = new Map();
 
-	//TODO временный эмулятор данных БД по которому создаётся аватар игрока
-	getPlayerData(ctx) {
-		return PlayerJson.player;
-	}
+        ctx.params.forEach((enemy) => {
+            let enemyType = enemy.typeEnemy;
+            let enemyProperty = NPCJson[enemyType];
 
-	getEnemyData(ctx) {
-		return NPCJson.enemy;
-	}
+            enemyMap.set(enemyType,enemyProperty);
+        });
+        return enemyMap;
+    }
 
-	checkAuthorization(ctx) {
-		const authorizationParams = ctx.params;
-		let result = UserDataJSON.filter((user) => {
-			return user.password === authorizationParams.password;
-			// return (user.password === authorizationParams.password) && (user.name === authorizationParams.name)
-		});
+    checkAuthorization(ctx) {
+        const authorizationParams = ctx.params;
+        let result = UserDataJSON.filter((user) => {
+            return user.password === authorizationParams.password;
+            // return (user.password === authorizationParams.password) && (user.name === authorizationParams.name)
+        });
 
-		if (result) {
-			result[0].status = true;
-		}
+        if (result) {
+            result[0].status = true;
+        }
 
-		return result[0];
-	}
+        return result[0];
+    }
 
-	serviceCreated() {
-		this.logger.info("ES6 Service created.");
-	}
+    serviceCreated() {
+        this.logger.info("ES6 Service created.");
+    }
 
-	serviceStarted() {
-		this.logger.info("ES6 Service started.");
-	}
+    serviceStarted() {
+        this.logger.info("ES6 Service started.");
+    }
 
-	serviceStopped() {
-		this.logger.info("ES6 Service stopped.");
-	}
+    serviceStopped() {
+        this.logger.info("ES6 Service stopped.");
+    }
 }
 
 module.exports = DB;
