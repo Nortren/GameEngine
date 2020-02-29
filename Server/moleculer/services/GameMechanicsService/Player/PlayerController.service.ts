@@ -34,8 +34,7 @@ class PlayerController extends Service {
 
 
         const id = ctx.params.playerID;
-        const player =ctx.params.result;
-
+        const player =ctx.params.playerDBData;
         let health = player.health;
         let damage = player.damage;
         let attackDistance = player.attackDistance;

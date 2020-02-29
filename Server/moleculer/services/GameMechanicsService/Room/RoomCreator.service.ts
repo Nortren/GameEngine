@@ -1,12 +1,12 @@
 import Enemy from "../Enemy/Enemy";
 const Service = require("moleculer").Service;
 import Room from './Room';
+import {BrokerNode} from "moleculer";
 
 class RoomCreator extends Service {
     roomList: Array<object> = [];
 
     constructor(broker) {
-
         super(broker);
         this.parseServiceSchema({
             name: "RoomCreator",
@@ -35,48 +35,32 @@ class RoomCreator extends Service {
      * Создание новой комнаты и наполнение ее контентом по шаблону
      * @param userData
      */
-    createRoom(userData, resolveData) {
-
-
-        let idRoom = this.roomList ? this.roomList.length + 1 : 1;
+    async createRoom(userData): Promise<void> {
+        const idRoom = this.roomList ? this.roomList.length + 1 : 1;
         //Создаём комнату того типа где последний раз был пользователь
-        let typeRoom = userData.lastRoomType;
-        let numberPlaces = 3;
-        //Дожидаемся получения карты
-        // из базы
-        this.addMapToRoom(typeRoom).then((map) => {
+        const typeRoom = userData.lastRoomType;
+        const numberPlaces = 3;
+        //Дожидаемся получения карты  из базы
 
-            this.addEnemyToRoom(map).then((enemy) => {
-                this.addPlayerToRoom(userData).then((player) => {
-
-                    let room = new Room(idRoom, typeRoom, numberPlaces, 0, map, enemy);
-console.log(player,'CREATE');
-                    //Занимаем место увеличивая счетчик занятых мест
-                    room.setPlayersList(player);
-                    this.roomList.push(room);
-
-                });
-            });
-
-        });
-
+        const map = await this.addMapToRoom(typeRoom);
+        const enemy = await this.addEnemyToRoom(map);
+        const player = await this.addPlayerToRoom(userData);
+        const room = new Room(idRoom, typeRoom, numberPlaces, 0, map, enemy);
+        //Занимаем место увеличивая счетчик занятых мест
+        room.setPlayersList(player);
+        this.roomList.push(room);
     }
 
-    async getRoom(ctx) {
-        const promises = [];
-        let resolveData = {};
+    async getRoom(ctx: BrokerNode) {
         let userSuitableRooms = null;
         //Получаем данные по игроку
-        let userData = await this.broker.call("DB.getUserData", ctx.params);
+        const userData = await this.broker.call("DB.getUserData", ctx.params);
 
         //проверяем есть ли комната подобного типа в которой последний раз был игрок
         if (this.roomList && userData) {
-
             userSuitableRooms = this.roomList.filter((room) => {
-
                 return room.type === userData.lastRoomType;
             });
-
         }
 
         //Выбираем первую комнату где есть свободные места
@@ -87,63 +71,34 @@ console.log(player,'CREATE');
 
         //Есть ли такие комнаты
         if (freeRoom.length) {
-            this.addPlayerToRoom(userData).then((player) => {
-                console.log(player,'ADD');
-
-                //Занимаем место увеличивая счетчик занятых мест
-                freeRoom[0].setPlayersList(player);
-
-
-            });
-
-
+            const player = await this.addPlayerToRoom(userData);
+            freeRoom[0].setPlayersList(player);
         }
         //Создаём новую комнату такого типа
         else {
-            this.createRoom(userData, resolveData);
+            await this.createRoom(userData);
         }
-        console.log(this.roomList);
-        return new Promise((resolve, reject) => {
-            //Создаём аватар игрока
-            // promises.push(this.addPlayerToRoom(resolveData, ctx));
-            //Получаем данные карты
-            // promises.push(this.addMapToRoom(resolveData));
-            //Добавляем противников в комнату
-            // promises.push(this.addEnemyToRoom(resolveData));
 
-            Promise.all(promises).then(() => {
-                resolve(resolveData);
-            });
-        });
+        return this.roomList;
     }
 
+    //TODO ненадо передавать все данные игрока только id
     /**
      * Добовляем игрока в комнату
-     * @param resolveData массив в который мы собираем данный прежде чем отдать клиенту
-     * @param ctx опции переданные через action сервису
+     * @param playerData данные аккаунта игрока
+     *
      */
-    addPlayerToRoom(playerData) {
-
-        //Получаем данные игрока (id, инвентарь,последнее месторасположение и т.д) из базы
-        return this.broker.call("DB.getPlayerData", playerData).then(result => {
-
-                const playerID = playerData.id;
-                return this.broker.call("PlayerController.createPlayer", {playerID, result}).then(
-                    player => {
-
-                        console.log('Создать игрока ');
-
-                        return player;
-                    },
-                    error => {
-                        console.log('Ошибка при попытке создать игрока ')
-                    }
-                );
-
-            },
-            error => {
-                console.log('ошибка получения данных о игроке из БД')
-            })
+    async addPlayerToRoom(playerData: object) {
+        console.log(playerData,'playerData');
+        try {
+            //Получаем данные игрока (id, инвентарь,последнее месторасположение и т.д) из базы
+            const playerDBData = await this.broker.call("DB.getPlayerData", playerData);
+            const playerID = playerData.id;
+            const player = await this.broker.call("PlayerController.createPlayer", {playerID, playerDBData});
+            return player;
+        } catch (e) {
+            console.log('Ошибка при попытке создать игрока ',e);
+        }
     }
 
     /**
@@ -165,18 +120,13 @@ console.log(player,'CREATE');
      */
     async addEnemyToRoom(map) {
         try {
-            //Масси противников которые будут присутствовать на карте
+            //Массив противников которые будут присутствовать на карте
             const roomEnemyArray = [];
-
             //Получаем данные о конкретном типе противника из БД
-            return await this.broker.call("DB.getEnemyData", map.enemyOnMap).then((enemyMap) => {
-
-                // console.log(enemyMap, 'enemyTypeATestCreate');
+                const enemyMap = await this.broker.call("DB.getEnemyData", map.enemyOnMap);
                 map.enemyOnMap.forEach((enemy) => {
-
                     //Генерируем необходимое количество противников заданного типа
                     for (let i = 0; i < enemy.count; i++) {
-
                         //добавляем в массив противников на карте
                         let enemyID = enemy.typeEnemy + '_' + (i + 1);
                         roomEnemyArray.push(new Enemy(
@@ -202,14 +152,8 @@ console.log(player,'CREATE');
                             this.attackSpeed = enemyMap.get(enemy.typeEnemy).attackSpeed
                         ));
                     }
-
-
                 });
                 return roomEnemyArray;
-            });
-            // console.log(mapEnemyArray, 'mapEnemyArray');
-            // map.enemy
-
         } catch (e) {
             console.log('ошибка получения данных о противнике из БД', e)
         }
