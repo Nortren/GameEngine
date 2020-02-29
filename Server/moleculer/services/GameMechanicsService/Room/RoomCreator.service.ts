@@ -39,7 +39,7 @@ class RoomCreator extends Service {
         const idRoom = this.roomList ? this.roomList.length + 1 : 1;
         //Создаём комнату того типа где последний раз был пользователь
         const typeRoom = userData.lastRoomType;
-        const numberPlaces = 3;
+        const numberPlaces = 2;
         //Дожидаемся получения карты  из базы
 
         const map = await this.addMapToRoom(typeRoom);
@@ -52,6 +52,7 @@ class RoomCreator extends Service {
     }
 
     async getRoom(ctx: BrokerNode) {
+        let userRoom;
         let userSuitableRooms = null;
         //Получаем данные по игроку
         const userData = await this.broker.call("DB.getUserData", ctx.params);
@@ -63,23 +64,38 @@ class RoomCreator extends Service {
             });
         }
 
-        //Выбираем первую комнату где есть свободные места
-        //TODO игрок может быть из этой комнаты но список будет переполнен(при вылете игрока)
-        let freeRoom = userSuitableRooms.filter((item) => {
-            return item.numberPlaces > item.numberTakePlaces;
+        //проверяем есть ли игрок в одной из комнат подобного типа(если вдруг он вышел или перезалогинился)
+        const userInThisRoom = userSuitableRooms.filter((room) => {
+            return !!room.getPlayerInRoom(userData).length;
+
         });
 
-        //Есть ли такие комнаты
-        if (freeRoom.length) {
-            const player = await this.addPlayerToRoom(userData);
-            freeRoom[0].setPlayersList(player);
-        }
-        //Создаём новую комнату такого типа
-        else {
-            await this.createRoom(userData);
-        }
 
-        return this.roomList;
+        //Выбираем первую комнату где есть свободные места
+        let freeRoom = [];
+        // console.log(userInThisRoom, 'userInThisRoom');
+        if (!userInThisRoom.length) {
+            freeRoom = userSuitableRooms.filter((item) => {
+                return item.numberPlaces > item.numberTakePlaces;
+            });
+
+            //Есть ли такие комнаты
+            if (freeRoom.length) {
+                const player = await this.addPlayerToRoom(userData);
+                freeRoom[0].setPlayersList(player);
+            }
+            //Создаём новую комнату такого типа
+            else {
+                await this.createRoom(userData);
+            }
+        }
+       //Получаем комнату где находится пользователь
+        this.roomList.forEach((room) => {
+            if (room.getPlayerInRoom(userData).length) {
+                userRoom = room;
+            }
+        });
+        return userRoom;
     }
 
     //TODO ненадо передавать все данные игрока только id
@@ -89,7 +105,6 @@ class RoomCreator extends Service {
      *
      */
     async addPlayerToRoom(playerData: object) {
-        console.log(playerData,'playerData');
         try {
             //Получаем данные игрока (id, инвентарь,последнее месторасположение и т.д) из базы
             const playerDBData = await this.broker.call("DB.getPlayerData", playerData);
@@ -97,7 +112,7 @@ class RoomCreator extends Service {
             const player = await this.broker.call("PlayerController.createPlayer", {playerID, playerDBData});
             return player;
         } catch (e) {
-            console.log('Ошибка при попытке создать игрока ',e);
+            console.log('Ошибка при попытке создать игрока ', e);
         }
     }
 
@@ -123,37 +138,37 @@ class RoomCreator extends Service {
             //Массив противников которые будут присутствовать на карте
             const roomEnemyArray = [];
             //Получаем данные о конкретном типе противника из БД
-                const enemyMap = await this.broker.call("DB.getEnemyData", map.enemyOnMap);
-                map.enemyOnMap.forEach((enemy) => {
-                    //Генерируем необходимое количество противников заданного типа
-                    for (let i = 0; i < enemy.count; i++) {
-                        //добавляем в массив противников на карте
-                        let enemyID = enemy.typeEnemy + '_' + (i + 1);
-                        roomEnemyArray.push(new Enemy(
-                            this.id = enemyID,
-                            this.src = enemyMap.get(enemy.typeEnemy).src,
-                            this.collaid = enemyMap.get(enemy.typeEnemy).collaid,
-                            this.scope = enemyMap.get(enemy.typeEnemy).scope,
-                            this.scopeRadius = enemyMap.get(enemy.typeEnemy).scopeRadius,
-                            //TODO сейчас пока реализовал самый простой способ размещение врагов на карте без учета колайдов зданий и других игроков
-                            this.colliderPosition = {
-                                x: (enemy.startPoint.x + enemy.distanceBetweenEnemies * i),
-                                y: 0.01,
-                                z: (enemy.startPoint.z + enemy.distanceBetweenEnemies * i)
-                            },
-                            this.colliderWidth = enemyMap.get(enemy.typeEnemy).colliderWidth,
-                            this.colliderHeight = enemyMap.get(enemy.typeEnemy).colliderHeight,
-                            this.colliderLength = enemyMap.get(enemy.typeEnemy).colliderLength,
-                            this.pursuitZone = enemyMap.get(enemy.typeEnemy).pursuitZone,
-                            this.persecutionRadius = enemyMap.get(enemy.typeEnemy).persecutionRadius,
-                            this.health = enemyMap.get(enemy.typeEnemy).health,
-                            this.damage = enemyMap.get(enemy.typeEnemy).damage,
-                            this.attackDistance = enemyMap.get(enemy.typeEnemy).attackDistance,
-                            this.attackSpeed = enemyMap.get(enemy.typeEnemy).attackSpeed
-                        ));
-                    }
-                });
-                return roomEnemyArray;
+            const enemyMap = await this.broker.call("DB.getEnemyData", map.enemyOnMap);
+            map.enemyOnMap.forEach((enemy) => {
+                //Генерируем необходимое количество противников заданного типа
+                for (let i = 0; i < enemy.count; i++) {
+                    //добавляем в массив противников на карте
+                    let enemyID = enemy.typeEnemy + '_' + (i + 1);
+                    roomEnemyArray.push(new Enemy(
+                        this.id = enemyID,
+                        this.src = enemyMap.get(enemy.typeEnemy).src,
+                        this.collaid = enemyMap.get(enemy.typeEnemy).collaid,
+                        this.scope = enemyMap.get(enemy.typeEnemy).scope,
+                        this.scopeRadius = enemyMap.get(enemy.typeEnemy).scopeRadius,
+                        //TODO сейчас пока реализовал самый простой способ размещение врагов на карте без учета колайдов зданий и других игроков
+                        this.colliderPosition = {
+                            x: (enemy.startPoint.x + enemy.distanceBetweenEnemies * i),
+                            y: 0.01,
+                            z: (enemy.startPoint.z + enemy.distanceBetweenEnemies * i)
+                        },
+                        this.colliderWidth = enemyMap.get(enemy.typeEnemy).colliderWidth,
+                        this.colliderHeight = enemyMap.get(enemy.typeEnemy).colliderHeight,
+                        this.colliderLength = enemyMap.get(enemy.typeEnemy).colliderLength,
+                        this.pursuitZone = enemyMap.get(enemy.typeEnemy).pursuitZone,
+                        this.persecutionRadius = enemyMap.get(enemy.typeEnemy).persecutionRadius,
+                        this.health = enemyMap.get(enemy.typeEnemy).health,
+                        this.damage = enemyMap.get(enemy.typeEnemy).damage,
+                        this.attackDistance = enemyMap.get(enemy.typeEnemy).attackDistance,
+                        this.attackSpeed = enemyMap.get(enemy.typeEnemy).attackSpeed
+                    ));
+                }
+            });
+            return roomEnemyArray;
         } catch (e) {
             console.log('ошибка получения данных о противнике из БД', e)
         }

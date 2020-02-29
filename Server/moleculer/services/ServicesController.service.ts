@@ -97,12 +97,10 @@ class ServicesController extends Service {
      */
     getRoom(client) {
         client.on('getRoomData', () => {
-            this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(result => {
-                console.log(result);
+            this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
                 io.emit('returnRoomData', {
-                    result,
+                    room,
                     playerName: this.connectionPlayerName,
-                    allPlayerArray: this.playerArray
                 });
             })
         });

@@ -58,13 +58,13 @@ export default class EngineInitialization extends React.Component {
 
             if (!this.userID) {
                 this.userID = data.playerName;
-                this.testMapJSON = data.result;
+                this.testMapJSON = data.room;
                 this._mapCreator.createGameLocation(scene, this.testMapJSON.map);
             }
 
             //TODO весьма костыльно решение , надо сделать добавление в массив игроков на карте по нормальному на сервере
-            if (data.allPlayerArray.length) {
-                this.isThereUser = data.allPlayerArray.filter(function (item) {
+            if (data.room.playersInTheRoom.length) {
+                this.isThereUser = data.room.playersInTheRoom.filter(function (item) {
                     return item.userId === data.playerName;
                 });
 
