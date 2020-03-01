@@ -60,15 +60,17 @@ class ServicesController extends Service {
      * Метод принимающий данные от игрока(клавиатура тачпад) и расчитывающий его движение на сервере
      */
     playerControls(client, room) {
-        client.on('setDataControls', (userData) => {
-            console.log(userData);
+        client.on('setDataControls', (keyUserPress) => {
+            console.log(keyUserPress);
             let playerThatUserControls = room.playersInTheRoom.filter(function (player) {
-                return player.id === userData.userId;
+                //Проверяем тот ли это игрок по его SocketID
+                return player.clientSocketIOID === client.id;
             })[0];
 
             if (playerThatUserControls) {
-                playerThatUserControls.position = userData.position;
+                playerThatUserControls.updateViaController(keyUserPress);
             }
+
             io.to(room.id).emit('getUserPosition', {
                 thisUser: playerThatUserControls,
                 arrayUser: room.playersInTheRoom

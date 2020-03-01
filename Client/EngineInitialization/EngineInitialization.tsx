@@ -169,7 +169,7 @@ export default class EngineInitialization extends React.Component {
         }
         let testProps = {};
         this.blData.getUserPosition((data) => {
-            if (data.thisUser) {
+     /*       if (data.thisUser) {
 
 
                 data.arrayUser.forEach((item, i) => {
@@ -180,7 +180,7 @@ export default class EngineInitialization extends React.Component {
                         }
                     }
                 )
-            }
+            }*/
         });
 
 

@@ -45,7 +45,7 @@ export default class PlayerAvatar extends PlayerMainClass {
         return this.clientSocketIOID = IOID;
     }
 
-    updateViaVontroller(keyPress) {
+    updateViaController(keyPress) {
 
         if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD') {
             this.updatePosition(keyPress);
@@ -55,18 +55,21 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
     updatePosition(keyPress) {
-
         if (keyPress === 'KeyA') {
-            this.colliderPositionX += this.colliderPositionX + 0.01;
+            console.log(this.colliderPositionX,'START +');
+            this.colliderPositionX = this.colliderPositionX + 0.01;
+            console.log(this.colliderPositionX,'END +');
         }
         if (keyPress === 'KeyD') {
-            this.colliderPositionX -= this.colliderPositionX + 0.01;
+            console.log(this.colliderPositionX,'START -');
+            this.colliderPositionX = this.colliderPositionX - 0.01;
+            console.log(this.colliderPositionX,'END -');
         }
         if (keyPress === 'KeyW') {
-            this.colliderPositionZ += this.colliderPositionZ + 0.01;
+            this.colliderPositionZ = this.colliderPositionZ + 0.01;
         }
         if (keyPress === 'KeyS') {
-            this.colliderPositionZ -= this.colliderPositionZ + 0.01;
+            this.colliderPositionZ = this.colliderPositionZ - 0.01;
         }
 
 
