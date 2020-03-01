@@ -1,6 +1,6 @@
 const Service = require("moleculer").Service;
 const io = require('socket.io')();
-import {testMapJSON} from "./GameMechanicsService/MapCreator/StaticMapData";
+import {room} from "./GameMechanicsService/MapCreator/StaticMapData";
 import Authorization from "./AccountService/ClientAuthorization/Authorization"
 
 class ServicesController extends Service {
@@ -47,9 +47,10 @@ class ServicesController extends Service {
         this.playerArray = [];
         this.connectionPlayerName;
         io.on('connection', (client) => {
+
             this.checkUserAuthorization(client);
             this.getRoom(client);
-            this.playerControls(client);
+
         });
         const portIO = 8010;
         io.listen(portIO);
@@ -58,22 +59,16 @@ class ServicesController extends Service {
     /**
      * Метод принимающий данные от игрока(клавиатура тачпад) и расчитывающий его движение на сервере
      */
-    playerControls(client) {
+    playerControls(client,room) {
         client.on('setDataControls', (userData) => {
-            // console.log(userData);
-            let test = this.playerArray.filter(function (data) {
-                return data.userId === userData.userId;
-            });
-            if (test.length === 0) {
+            let playerThatUserControls =  room.playersInTheRoom.filter(function (player) {
+                return player.id === userData.userId;
+            })[0];
 
-                this.playerArray.push(userData);
-
+            if (playerThatUserControls) {
+                playerThatUserControls.position = userData.position;
             }
-
-            if (test[0]) {
-                test[0].position = userData.position;
-            }
-            io.emit('getUserPosition', {thisUser: test[0], arrayUser: this.playerArray});
+            io.to(room.id).emit('getUserPosition', {thisUser: playerThatUserControls, arrayUser: room.playersInTheRoom});
         });
     }
 
@@ -98,10 +93,12 @@ class ServicesController extends Service {
     getRoom(client) {
         client.on('getRoomData', () => {
             this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
-                io.emit('returnRoomData', {
+                client.join(room.id);
+                io.to(room.id).emit('returnRoomData', {
                     room,
                     playerName: this.connectionPlayerName,
                 });
+                this.playerControls(client, room);
             })
         });
     }

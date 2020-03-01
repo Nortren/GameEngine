@@ -11,7 +11,7 @@ import BL from "../BusinessLogic";
 
 
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
-import {testMapJSON} from "./testMap";
+import {room} from "./testMap";
 
 /**
  * Главный контрол первичной инициализации движка
@@ -58,30 +58,30 @@ export default class EngineInitialization extends React.Component {
 
             if (!this.userID) {
                 this.userID = data.playerName;
-                this.testMapJSON = data.room;
-                this._mapCreator.createGameLocation(scene, this.testMapJSON.map);
+                this.room = data.room;
+                this._mapCreator.createGameLocation(scene, this.room.map);
             }
 
             //TODO весьма костыльно решение , надо сделать добавление в массив игроков на карте по нормальному на сервере
             if (data.room.playersInTheRoom.length) {
                 this.isThereUser = data.room.playersInTheRoom.filter(function (item) {
-                    return item.userId === data.playerName;
+                    return item.id === data.playerName;
                 });
 
             }
             if (!this.isThereUser.length) {
                 this.addPlayerToMap(scene, data, {userId: data.playerName, position: {x: 0, z: 0}});
-                data.allPlayerArray.forEach((item, i) => {
+                this.room.playersInTheRoom.forEach((item, i) => {
                     this.addPlayerToMap(scene, data, item);
                 });
             }
             else {
 
-                data.allPlayerArray.forEach((item, i) => {
+                this.room.playersInTheRoom.forEach((item, i) => {
                     this.addPlayerToMap(scene, data, item);
                 });
             }
-            this._enemyArray = this.testCreateEnemyArray(this.testMapJSON.enemy, scene, 100);
+            this._enemyArray = this.testCreateEnemyArray(this.room.enemy, scene, 100);
 
             this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
 
@@ -90,14 +90,14 @@ export default class EngineInitialization extends React.Component {
     }
 
     addPlayerToMap(scene, data, item) {
-        const playerData = this._player.createPlayer(this.testMapJSON.player, item);
+        const playerData = this._player.createPlayer(item, item);
         const user = playerData.user;
         const healthLine = playerData.healthLine;
         const userCollaider = playerData.collaider;
         const testDataSyncronize = data;
 
         let test = this.playerInMaps.filter(function (data) {
-            return data.userId === item.userId;
+            return data.id === item.userId;
         });
         if (test.length === 0) {
             this.playerInMaps.push(playerData);
@@ -107,32 +107,10 @@ export default class EngineInitialization extends React.Component {
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
-        let enemyArray = [];
-        let x = enemyData.colliderPosition.x;
-        let z = enemyData.colliderPosition.z;
-        for (let i = 0; i < count; i++) {
-
-
-            if (i % 2 === 0) {
-                z = i * 0.3;
-            }
-            else {
-                z = -i * 0.3;
-            }
-            if (i % 3 === 0) {
-                x = i * 0.3;
-            }
-            else {
-                x = -i * 0.3;
-            }
-
-            enemyData.colliderPosition.x = x;
-            enemyData.colliderPosition.z = z;
-
-            enemyArray.push(this._AI.createEnemy(enemyData, scene));
-
-        }
-
+        let enemyArray = []
+        enemyData.forEach((enemy) => {
+            enemyArray.push(this._AI.createEnemy(enemy, scene));
+        });
         return enemyArray;
     }
 

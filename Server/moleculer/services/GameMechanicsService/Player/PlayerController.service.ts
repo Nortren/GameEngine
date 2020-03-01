@@ -35,13 +35,27 @@ class PlayerController extends Service {
 
         const id = ctx.params.playerID;
         const player =ctx.params.playerDBData;
-        let health = player.health;
-        let damage = player.damage;
-        let attackDistance = player.attackDistance;
-        let attackSpeed = player.attackSpeed;
-        let moveSpeed = player.moveSpeed;
+        const health = player.health;
+        const damage = player.damage;
+        const attackDistance = player.attackDistance;
+        const attackSpeed = player.attackSpeed;
+        const moveSpeed = player.moveSpeed;
 
-        let playerAvatar = new PlayerAvatar(id,health,damage,attackSpeed,moveSpeed,attackDistance);
+        const colliderPositionX = player.colliderPositionX;
+        const colliderPositionY = player.colliderPositionY;
+        const colliderPositionZ = player.colliderPositionZ;
+        const colliderWidth = player.colliderWidth;
+        const colliderHeight = player.colliderHeight;
+        const colliderLength = player.colliderLength;
+        const src = player.src;
+        const collaid = player.collaid;
+
+        const playerAvatar = new PlayerAvatar(id,health,damage,
+            attackSpeed,moveSpeed,attackDistance,
+            colliderPositionX,colliderPositionY,colliderPositionZ,
+            colliderWidth,colliderHeight,colliderLength,
+            src,collaid
+        );
 
         return playerAvatar;
 

@@ -1,4 +1,4 @@
-export const testMapJSON = {
+export const room = {
     map: {
         src: "./Client/image/testRepeatGround.png",
         startPositionX: 0,
