@@ -38,8 +38,10 @@ export default class Player {
         const playerColliderImg = loader.load(data.collaid);
 
         playerData.serverData = dataServer;
-        this.createEngineUserObject(playerData, userImg,dataServer.position);
-        this.createEngineUserCollaid(playerData, playerColliderImg,dataServer.position);
+
+        let position = {x:dataServer.colliderPositionX,y:dataServer.colliderPositionY,z:dataServer.colliderPositionZ};
+        this.createEngineUserObject(playerData, userImg,position);
+        this.createEngineUserCollaid(playerData, playerColliderImg,position);
         this.createEngineUserHealthLine(playerData);
 
         return playerData;

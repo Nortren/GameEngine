@@ -1,4 +1,4 @@
-import {testMapJSON} from "./testMap";
+import {room} from "./testMap";
 import {globalVariables} from "../GlobalVariables";
 import * as THREE from "three";
 export default class MapCreator {
@@ -13,7 +13,7 @@ export default class MapCreator {
      *
      */
     parserJSON() {
-        return testMapJSON;
+        return room;
     }
 
     /**

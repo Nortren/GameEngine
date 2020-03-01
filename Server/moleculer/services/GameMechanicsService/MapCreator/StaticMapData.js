@@ -1,4 +1,6 @@
-export const room = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.testMapJSON = {
     map: {
         src: "./Client/image/testRepeatGround.png",
         startPositionX: 0,
@@ -21,8 +23,8 @@ export const room = {
                 colliderPositionY: 2,
                 colliderPositionZ: 0,
                 colliderWidth: 10,
-                colliderHeight:5,
-                colliderLength:3,
+                colliderHeight: 5,
+                colliderLength: 3,
                 zIndex: 1,
             },
             tree1: {
@@ -37,62 +39,45 @@ export const room = {
                 colliderPositionY: 0,
                 colliderPositionZ: -5,
                 colliderWidth: 3,
-                colliderHeight:3,
-                colliderLength:1,
+                colliderHeight: 3,
+                colliderLength: 1,
                 zIndex: 1,
             },
-        /*    tree2: {
-                src: "./Client/image/treeTest.png",
-                startPositionX: 0,
-                startPositionY: 0,
-                startPositionZ: -8,
-                width: 5,
-                height: 5,
-                collaid: "./Client/image/collaid.png",
-                colliderPositionX: 0,
-                colliderPositionY: 0.01,
-                colliderPositionZ: -8,
-                colliderWidth: 0.5,
-                colliderHeight: 0.5,
-                zIndex: 1,
-            },
-*/
         }
-
     },
     player: {
         src: "./Client/image/Player_v0.0.3.png",
-        collaid:"./Client/image/collaid.png",
+        collaid: "./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
         colliderPositionZ: 0,
         colliderWidth: 1,
         colliderHeight: 2,
-        colliderLength:1,
-        health:100,
-        damage:2,
-        attackDistance:1,
-        attackSpeed:10
+        colliderLength: 1,
+        health: 100,
+        damage: 2,
+        attackDistance: 1,
+        attackSpeed: 10
     },
     enemy: {
         src: "./Client/image/hero.png",
-        collaid:"./Client/image/collaid.png",
-        scope:"./Client/image/persecutionRadius.png",
-        scopeRadius:16,
-
-        colliderPosition:{
+        collaid: "./Client/image/collaid.png",
+        scope: "./Client/image/persecutionRadius.png",
+        scopeRadius: 16,
+        colliderPosition: {
             x: 3,
             y: 0.01,
             z: 3,
         },
         colliderWidth: 1,
         colliderHeight: 1,
-        colliderLength:1,
-        pursuitZone:60,
-        persecutionRadius:"./Client/image/persecutionRadius.png",
-        health:100,
-        damage:1,
-        attackDistance:1,
-        attackSpeed:10
+        colliderLength: 1,
+        pursuitZone: 60,
+        persecutionRadius: "./Client/image/persecutionRadius.png",
+        health: 100,
+        damage: 1,
+        attackDistance: 1,
+        attackSpeed: 10
     }
 };
+//# sourceMappingURL=StaticMapData.js.map

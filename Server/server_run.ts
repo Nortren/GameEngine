@@ -1,5 +1,5 @@
-import {testMapJSON} from "./GameMechanicsService/MapCreator/StaticMapData"
-import Authorization from "./AccountService/ClientAuthorization/Authorization"
+import {room} from "./moleculer/services/GameMechanicsService/MapCreator/StaticMapData"
+import Authorization from "./moleculer/services/AccountService/ClientAuthorization/Authorization"
 
 const express = require('express');
 const io = require('socket.io')();
@@ -17,7 +17,7 @@ io.on('connection', (client) => {
 
     client.on('getMapStatic', () => {
         io.emit('returnMapStaticData', {
-            testMapJSON,
+            room,
             playerName: this.connectionPlayerName,
             allPlayerArray: this.playerArray
         });
