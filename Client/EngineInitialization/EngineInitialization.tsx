@@ -136,7 +136,7 @@ export default class EngineInitialization extends React.Component {
 
         }
 
-        this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
+        // this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
 
         requestAnimationFrame(() => {
             this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);

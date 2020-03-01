@@ -30,7 +30,6 @@ export default class PlayerAvatar extends PlayerMainClass {
         this.colliderLength = colliderLength;
         this.src = src;
         this.collaid = collaid;
-
     }
 
     create() {
@@ -38,7 +37,38 @@ export default class PlayerAvatar extends PlayerMainClass {
 
     }
 
-    update(newData: Array<object>, oldData: Array<object>) {
+    /**
+     * Методж присвоения и изменения Socket ID игрока (нужнен нам для доп проверки пользователя например управление)
+     * @param IOID
+     */
+    changeSocketIOID(IOID) {
+        return this.clientSocketIOID = IOID;
+    }
+
+    updateViaVontroller(keyPress) {
+
+        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD') {
+            this.updatePosition(keyPress);
+        }
+
+
+    }
+
+    updatePosition(keyPress) {
+
+        if (keyPress === 'KeyA') {
+            this.colliderPositionX += this.colliderPositionX + 0.01;
+        }
+        if (keyPress === 'KeyD') {
+            this.colliderPositionX -= this.colliderPositionX + 0.01;
+        }
+        if (keyPress === 'KeyW') {
+            this.colliderPositionZ += this.colliderPositionZ + 0.01;
+        }
+        if (keyPress === 'KeyS') {
+            this.colliderPositionZ -= this.colliderPositionZ + 0.01;
+        }
+
 
     }
 

@@ -1,12 +1,12 @@
 import * as React from 'react';
-
+import BL from "../BusinessLogic";
 
 /**
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
     userSpeed: number = 30
-    sss;
+    blData:BL;
 
     constructor(props) {
 
@@ -24,6 +24,8 @@ export default class StickController extends React.Component {
     }
 
     componentDidMount() {
+        this.blData = new BL();
+
         this.createCanvas("UserLeftStick", 100, 100, 45, 51, 50);
         this.createCanvas("ButtonAttack", 100, 100, 30, 51, 50);
         this.createCanvas("ButtonSkills_1", 35, 35, 15, 18, 18);
@@ -40,6 +42,8 @@ export default class StickController extends React.Component {
         this.skillButtonPress('ButtonSkills_2');
         this.skillButtonPress('ButtonSkills_3');
 
+
+        this.keyboardControl();
     }
 
     skillButtonPress(nameButton) {
@@ -54,11 +58,7 @@ export default class StickController extends React.Component {
 
     leftStick() {
         let evenObject = document.getElementById('UserLeftStick');
-        document.addEventListener('keydown', (event) => {
-            this.animationStatusChange(true);
-            this.movePosition(event, true);
 
-        });
         document.addEventListener('keyup', (event) => {
             this.animationStatusChange(false);
             this.movePosition(event, false);
@@ -102,6 +102,18 @@ export default class StickController extends React.Component {
         context.lineWidth = 2;
         context.strokeStyle = 'red';
         context.stroke();
+    }
+
+    keyboardControl(){
+        document.addEventListener('keydown', (event) => {
+            this.animationStatusChange(true);
+            this.movePosition(event, true);
+
+
+            this.blData.setUserPosition(event.code);
+        });
+
+
     }
 
     movePosition(e, stopMove) {

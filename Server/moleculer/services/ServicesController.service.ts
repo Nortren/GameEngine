@@ -59,16 +59,20 @@ class ServicesController extends Service {
     /**
      * Метод принимающий данные от игрока(клавиатура тачпад) и расчитывающий его движение на сервере
      */
-    playerControls(client,room) {
+    playerControls(client, room) {
         client.on('setDataControls', (userData) => {
-            let playerThatUserControls =  room.playersInTheRoom.filter(function (player) {
+            console.log(userData);
+            let playerThatUserControls = room.playersInTheRoom.filter(function (player) {
                 return player.id === userData.userId;
             })[0];
 
             if (playerThatUserControls) {
                 playerThatUserControls.position = userData.position;
             }
-            io.to(room.id).emit('getUserPosition', {thisUser: playerThatUserControls, arrayUser: room.playersInTheRoom});
+            io.to(room.id).emit('getUserPosition', {
+                thisUser: playerThatUserControls,
+                arrayUser: room.playersInTheRoom
+            });
         });
     }
 
@@ -93,6 +97,7 @@ class ServicesController extends Service {
     getRoom(client) {
         client.on('getRoomData', () => {
             this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
+                this.addUserSocketID(this.connectionPlayerName, room.playersInTheRoom, client.id);
                 client.join(room.id);
                 io.to(room.id).emit('returnRoomData', {
                     room,
@@ -101,6 +106,20 @@ class ServicesController extends Service {
                 this.playerControls(client, room);
             })
         });
+    }
+
+    /**
+     * Метод добавления игроку socketId по некму нам проще ьудет отслеживать его действия на клиенте
+     * @param playerID
+     * @param playersInTheRoom
+     * @param socketId
+     */
+    addUserSocketID(playerID, playersInTheRoom, socketId) {
+
+        playersInTheRoom.filter((playerAvatar) => {
+            return playerID === playerAvatar.id;
+        })[0].changeSocketIOID(socketId)
+
     }
 }
 
