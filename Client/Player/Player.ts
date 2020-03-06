@@ -228,8 +228,8 @@ export default class Player {
         //рисуем героя по центру картинки
         playerData.user.material.map.offset.x = rect.x;
         playerData.user.material.map.offset.y = rect.y;
-        playerData.user.position.x = props.moveX * -0.01;
-        playerData.user.position.z = props.moveZ * -0.01;
+        playerData.user.position.x = props.moveX ;
+        playerData.user.position.z = props.moveZ ;
         playerData.collaider.position.x = playerData.user.position.x;
         playerData.collaider.position.z = playerData.user.position.z;
         playerData.healthLine.position.x = playerData.user.position.x;

@@ -111,7 +111,7 @@ class ServicesController extends Service {
     }
 
     /**
-     * Метод добавления игроку socketId по некму нам проще ьудет отслеживать его действия на клиенте
+     * Метод добавления игроку socketId по некму нам проще будет отслеживать его действия на клиенте
      * @param playerID
      * @param playersInTheRoom
      * @param socketId

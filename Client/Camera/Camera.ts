@@ -6,7 +6,7 @@ export default class Camera {
 
     constructor() {
         window.addEventListener('keydown', (event) => {
-            this.moveCamera(event);
+            // this.moveCamera(event);
 
         });
     }
@@ -35,8 +35,8 @@ export default class Camera {
      */
     updateCameraGame(camera, props) {
         // camera.position.z = 10;
-        camera.position.x = props.moveX * -0.01;
-        camera.position.z = props.moveZ * -0.01;
+        camera.position.x = props.moveX;
+        camera.position.z = props.moveZ;
         // camera.rotation.x += 0.01;
         this.cameraControl(camera);
     }

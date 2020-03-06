@@ -56,20 +56,16 @@ export default class PlayerAvatar extends PlayerMainClass {
 
     updatePosition(keyPress) {
         if (keyPress === 'KeyA') {
-            console.log(this.colliderPositionX,'START +');
-            this.colliderPositionX = this.colliderPositionX + 0.01;
-            console.log(this.colliderPositionX,'END +');
+            this.colliderPositionX = this.colliderPositionX - 1;
         }
         if (keyPress === 'KeyD') {
-            console.log(this.colliderPositionX,'START -');
-            this.colliderPositionX = this.colliderPositionX - 0.01;
-            console.log(this.colliderPositionX,'END -');
+            this.colliderPositionX = this.colliderPositionX + 1;
         }
         if (keyPress === 'KeyW') {
-            this.colliderPositionZ = this.colliderPositionZ + 0.01;
+            this.colliderPositionZ = this.colliderPositionZ - 1;
         }
         if (keyPress === 'KeyS') {
-            this.colliderPositionZ = this.colliderPositionZ - 0.01;
+            this.colliderPositionZ = this.colliderPositionZ + 1;
         }
 
 

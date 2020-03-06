@@ -153,10 +153,6 @@ export default class EngineInitialization extends React.Component {
             playerData: playerInMaps[0]
         };
 
-        this._cameraControls.cameraControl(camera);
-        if (!globalVariables.camera.cameraControl) {
-            this._camera.updateCameraGame(camera, this.props);
-        }
 
         for (let key in enemyArray) {
             //Добавлял для расчета столкновений в общий массив с коллайдекрами но ониначинают шарахаться друг от друга
@@ -169,18 +165,21 @@ export default class EngineInitialization extends React.Component {
         }
         let testProps = {};
         this.blData.getUserPosition((data) => {
-     /*       if (data.thisUser) {
-
-
+            if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
-                        testProps.moveX = data.arrayUser[i].position.x;
-                        testProps.moveZ = data.arrayUser[i].position.z;
+                        testProps.moveX = data.arrayUser[i].colliderPositionX;
+                        testProps.moveZ = data.arrayUser[i].colliderPositionZ;
                         if (playerInMaps[i]) {
+                            this._cameraControls.cameraControl(camera);
+                            if (!globalVariables.camera.cameraControl &&(data.thisUser.id === this.userID)) {
+                                this._camera.updateCameraGame(camera, testProps);
+                            }
+
                             this._dynamicAnimation.updateUserAvatar(playerInMaps[i], testProps, this._player, enemyArray);
                         }
                     }
                 )
-            }*/
+            }
         });
 
 
