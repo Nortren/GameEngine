@@ -2,9 +2,31 @@ import * as THREE from "three";
 import {globalVariables} from "../GlobalVariables";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {Texture} from "three";
-
-export default class Player {
-    name:string;
+interface BasicProperty {
+    id: number;
+    health: number;
+    damage: number;
+    attackSpeed: number;
+    moveSpeed: number;
+    attackDistance: number;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    src: string;
+    collaid: string;
+    clientSocketIOID: string;
+    create();
+    update();
+    move();
+    attack();
+    death();
+    changeSocketIOID();
+}
+export default class Player implements BasicProperty  {
+    name: string;
     _count: number;
     props: object;
     animation: Dynamic = new Dynamic();
@@ -19,32 +41,60 @@ export default class Player {
     amountOfHealth: number;
 
 
-    constructor(name) {
+    constructor(id: number, health: number, damage: number,
+                attackSpeed: number, moveSpeed: number, attackDistance: number,
+                colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
+                colliderWidth: number, colliderHeight: number, colliderLength: number,
+                src: string, collaid: string) {
+
+
+        this.id = id;
+        this.health = health;
+        this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
+        this.attackDistance = attackDistance;
+
+        this.colliderPositionX = colliderPositionX;
+        this.colliderPositionY = colliderPositionY;
+        this.colliderPositionZ = colliderPositionZ;
+        this.colliderWidth = colliderWidth;
+        this.colliderHeight = colliderHeight;
+        this.colliderLength = colliderLength;
+        this.src = src;
+        this.collaid = collaid;
+
+
+
         this.name = name;
         this._count = 0;
 
         this._animationTimer = 0;
         this.fixPoint = 0;
+
+
+        this.playerData = this;
+        const loader = new THREE.TextureLoader();
+
+        const userImg = loader.load(src);
+        const playerColliderImg = loader.load(collaid);
+
+
+        let position = {
+            x: colliderPositionX,
+            y: colliderPositionY,
+            z: colliderPositionZ
+        };
+        this.createEngineUserObject(this.playerData, userImg, position);
+        this.createEngineUserCollaid(this.playerData, playerColliderImg, position);
+        this.createEngineUserHealthLine(this.playerData);
     }
 
     /**
      * генерируем игрока на карте
      */
-    createPlayer(data: object,dataServer:object) {
-        const playerData = {...data};
-        const loader = new THREE.TextureLoader();
-
-        const userImg = loader.load(data.src);
-        const playerColliderImg = loader.load(data.collaid);
-
-        playerData.serverData = dataServer;
-
-        let position = {x:dataServer.colliderPositionX,y:dataServer.colliderPositionY,z:dataServer.colliderPositionZ};
-        this.createEngineUserObject(playerData, userImg,position);
-        this.createEngineUserCollaid(playerData, playerColliderImg,position);
-        this.createEngineUserHealthLine(playerData);
-
-        return playerData;
+    createPlayer(dataServer: object) {
+        return this.playerData;
     }
 
 
@@ -53,21 +103,21 @@ export default class Player {
      * @param userData
      * @param userImg
      */
-    createEngineUserObject(playerData: Object, playerImg: Texture,position) {
+    createEngineUserObject(playerData: Object, playerImg: Texture, position) {
         playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
         playerImg.offset.x = 0.78;
         playerImg.offset.y = 0.5;
         playerImg.repeat.set(0.2, 0.2);
         playerImg.magFilter = THREE.NearestFilter;
-        let user;
+        let playerAvatarSprite;
         const heroTexture = new THREE.SpriteMaterial({
             map: playerImg
         });
-        user = new THREE.Sprite(heroTexture);
-        user.scale.set(2, 2, 1);
-        user.position.set(position.x, 0, position.z);
-        user.center.y = 0;
-        playerData.user = user;
+        playerAvatarSprite = new THREE.Sprite(heroTexture);
+        playerAvatarSprite.scale.set(2, 2, 1);
+        playerAvatarSprite.position.set(position.x, 0, position.z);
+        playerAvatarSprite.center.y = 0;
+        playerData.playerAvatarSprite = playerAvatarSprite;
     }
 
     /**
@@ -189,22 +239,6 @@ export default class Player {
         geometry.vertices.push(new THREE.Vector3(1, 0, 0));
         const line = new THREE.Line(geometry, material);
         playerData.healthLine = line;
-        //Линия жизни на основе меша
-        /*               const material = new THREE.MeshPhongMaterial(
-         {
-         color: 0xff0000,
-         // map: playerDataIMG,
-         // side: THREE.DoubleSide
-         });
-         const geometry = new THREE.PlaneBufferGeometry(
-         playerData.colliderWidth,
-         0.25);
-
-
-         const healthLine = new THREE.Mesh(geometry, material);
-         healthLine.rotation.x = Math.PI * -.5;
-         healthLine.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
-         playerData.healthLine = healthLine;*/
     }
 
     /**
@@ -213,8 +247,13 @@ export default class Player {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, rect: Object, enemyArray) {
-        let positionPlayer = playerData.user.position;
+    update(playerData: Object, props: Object, enemyArray) {
+
+
+        let rect = this.animation.updateUserAvatar(props);
+
+        playerData = playerData.playerData;
+        let positionPlayer = {x: playerData.colliderPosit, z: playerData.colliderPositionZ};
         let positionHealthLine = playerData.healthLine.position;
         let playerHealth = playerData.health;
         let healthLenght = this.calculationHealthLine(playerHealth);
@@ -226,14 +265,14 @@ export default class Player {
         positionHealthLine.y = 0;
 
         //рисуем героя по центру картинки
-        playerData.user.material.map.offset.x = rect.x;
-        playerData.user.material.map.offset.y = rect.y;
-        playerData.user.position.x = props.moveX ;
-        playerData.user.position.z = props.moveZ ;
-        playerData.collaider.position.x = playerData.user.position.x;
-        playerData.collaider.position.z = playerData.user.position.z;
-        playerData.healthLine.position.x = playerData.user.position.x;
-        playerData.healthLine.position.z = playerData.user.position.z;
+        playerData.playerAvatarSprite.material.map.offset.x = rect.x;
+        playerData.playerAvatarSprite.material.map.offset.y = rect.y;
+        playerData.playerAvatarSprite.position.x = props.moveX;
+        playerData.playerAvatarSprite.position.z = props.moveZ;
+        playerData.collaider.position.x = playerData.playerAvatarSprite.position.x;
+        playerData.collaider.position.z = playerData.playerAvatarSprite.position.z;
+        playerData.healthLine.position.x = playerData.playerAvatarSprite.position.x;
+        playerData.healthLine.position.z = playerData.playerAvatarSprite.position.z;
 
 
         this.playerSkillUse(props, playerData, enemyArray);

@@ -237,14 +237,14 @@ export default class AI {
      * @param playerData
      * @param mapData
      */
-    informationAboutWorld(enemyData: object, playerData: object, mapData: MapCreator,scene) {
+    informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator,scene) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
         this.updateHealthLine(enemyData);
 
         if(enemyData.enemyHealth > 0) {
-            this.persecutionObject(enemyData, playerData, mapData);
+            this.persecutionObject(enemyData, playerInformation, mapData);
         }
         else{
             scene.remove(enemyData.scopeCircleMesh,enemyData.ColliderMesh,enemyData.persecutionRadius,enemyData.EnemyHealthLine,enemyData.enemySprite);

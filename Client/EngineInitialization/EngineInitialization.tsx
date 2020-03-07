@@ -8,23 +8,30 @@ import Player from "../Player/Player"
 import Camera from "../Camera/Camera";
 import {globalVariables} from "../GlobalVariables";
 import BL from "../BusinessLogic";
-
-
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
-import {room} from "./testMap";
+
+
+interface primaryEngineInitializationData {
+    userID: string;
+    blData: BL;
+    AI: AI;
+    playerInMaps: Array<object>;
+}
+
 
 /**
  * Главный контрол первичной инициализации движка
  */
 export default class EngineInitialization extends React.Component {
-    public canvas: object;
+
     public context: CanvasRenderingContext2D;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
-    private _player: Player = new Player();
+
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
     private _enemyArray: Array<object>;
+
     _FPSCounter: number = 0;
 
     constructor(props: object) {
@@ -39,30 +46,57 @@ export default class EngineInitialization extends React.Component {
     }
 
     componentDidMount() {
-        this.canvas = document.getElementById('canvas');
-        this.resize(this.canvas);
+        const canvas = this.createCanvas();
+        const camera = this.createCameraScene(canvas);
+        const renderer = new THREE.WebGLRenderer({canvas: canvas});
         const scene = new THREE.Scene();
         scene.scale.set(1, 1, 1);
-        const camera = this._camera.createCamera();
-        const renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-        renderer.shadowMap.enabled = true;
-        this._camera.сameraON(globalVariables.camera.cameraControl, camera, this.canvas);
-
-        this.userID = null;
-
         this.blData = new BL();
-        this._AI = new AI(10, 1, 1, 10, 30);
-        this.playerInMaps = [];
-        this.isThereUser = false;
-        this.blData.getMapStaticData((data) => {
 
+
+        this.createUserRoom(scene, renderer, camera);
+    }
+
+    /**
+     * Метод создания холста на котором в дальнейшем будет рисоваться весь контент
+     */
+    createCanvas() {
+        const canvas = document.getElementById('canvas');
+        this.resize(canvas);
+        return canvas;
+    }
+
+    /**
+     * Создаём основную камеру(камеру игрока)
+     * @param canvas
+     * @returns {PerspectiveCamera}
+     */
+    createCameraScene(canvas) {
+        const camera = this._camera.createCamera();
+        this._camera.сameraON(globalVariables.camera.cameraControl, camera, canvas);
+        return camera;
+    }
+
+    /**
+     * Метод создания комнаты в которой помещен игрок и получения данных с БЛ о состоянии комнаты
+     * (Нахождении в ней игроков ,монстров , игровых объектов)
+     * и рендер полученных данных
+     * @param scene
+     * @param renderer
+     * @param camera
+     */
+    createUserRoom(scene, renderer, camera) {
+        this.isThereUser = false;
+        this.userID = null;
+        this.playerInMaps = [];
+        this.blData.getUserRoom((data) => {
+            const room = data.room;
+            //Если userID клиента нет значит это первый вход и надо создать локацию комнаты
             if (!this.userID) {
                 this.userID = data.playerName;
-                this.room = data.room;
-                this._mapCreator.createGameLocation(scene, this.room.map);
+                this._mapCreator.createGameLocation(scene, room.map);
             }
 
-            //TODO весьма костыльно решение , надо сделать добавление в массив игроков на карте по нормальному на сервере
             if (data.room.playersInTheRoom.length) {
                 this.isThereUser = data.room.playersInTheRoom.filter(function (item) {
                     return item.id === data.playerName;
@@ -70,43 +104,73 @@ export default class EngineInitialization extends React.Component {
 
             }
             if (!this.isThereUser.length) {
-                this.addPlayerToMap(scene, data, {userId: data.playerName, position: {x: 0, z: 0}});
-                this.room.playersInTheRoom.forEach((item, i) => {
-                    this.addPlayerToMap(scene, data, item);
+                this.addPlayerToRoom(scene, {userId: data.playerName, position: {x: 0, z: 0}});
+                room.playersInTheRoom.forEach((item, i) => {
+                    this.addPlayerToRoom(scene, item);
                 });
             }
             else {
 
-                this.room.playersInTheRoom.forEach((item, i) => {
-                    this.addPlayerToMap(scene, data, item);
+                room.playersInTheRoom.forEach((item, i) => {
+                    this.addPlayerToRoom(scene, item);
                 });
             }
-            this._enemyArray = this.testCreateEnemyArray(this.room.enemy, scene, 100);
+            this._enemyArray = this.testCreateEnemyArray(room.enemy, scene, 100);
 
             this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
 
         });
-
     }
 
-    addPlayerToMap(scene, data, item) {
-        const playerData = this._player.createPlayer(item, item);
-        const user = playerData.user;
+    /**
+     * Метод добавления игроков на сцену (всех кто находятся в текущей комнате включая игрока пользователя)
+     * @param scene
+     * @param item
+     */
+    addPlayerToRoom(scene, item) {
+        const id = item.id;
+        const health = item.height;
+        const damage = item.damage;
+        const attackSpeed = item.attackSpeed;
+        const moveSpeed = item.moveSpeed;
+        const attackDistance = item.attackDistance;
+        const colliderPositionX = item.colliderPositionX;
+        const colliderPositionY = item.colliderPositionY;
+        const colliderPositionZ = item.colliderPositionZ;
+        const colliderWidth = item.colliderWidth;
+        const colliderHeight = item.colliderHeight;
+        const colliderLength = item.colliderLength;
+        const src = item.src;
+        const collaid = item.collaid;
+
+
+        const player = new Player(id, health, damage,
+            attackSpeed, moveSpeed, attackDistance,
+            colliderPositionX, colliderPositionY, colliderPositionZ,
+            colliderWidth, colliderHeight, colliderLength,
+            src, collaid
+        );
+        const playerData = player.createPlayer(item);
+
+        const playerAvatarSprite = playerData.playerAvatarSprite;
         const healthLine = playerData.healthLine;
         const userCollaider = playerData.collaider;
-        const testDataSyncronize = data;
 
-        let test = this.playerInMaps.filter(function (data) {
+        //Проверяем есть ли такой игрок на карте
+        let thisIdOnMap = this.playerInMaps.filter((data) => {
             return data.id === item.userId;
         });
-        if (test.length === 0) {
-            this.playerInMaps.push(playerData);
+        //есть нет то добавляем его в общий массив игроко
+        if (thisIdOnMap.length === 0) {
+            this.playerInMaps.push(player);
 
         }
-        scene.add(user, healthLine, userCollaider);
+        //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
+        scene.add(playerAvatarSprite, healthLine, userCollaider);
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
+        this._AI = new AI(10, 1, 1, 10, 30);
         let enemyArray = []
         enemyData.forEach((enemy) => {
             enemyArray.push(this._AI.createEnemy(enemy, scene));
@@ -126,72 +190,85 @@ export default class EngineInitialization extends React.Component {
         let now = performance.now();
         let duration = now - timeStart;
 
+        //Счетчик FPS
         if (duration < 1000) {
             this._FPSCounter++;
         } else {
             this.setState({fps: this._FPSCounter});
             this._FPSCounter = 0;
             timeStart = now;
-
-
         }
-
-        // this.blData.setUserPosition({userId: this.userID, position: {x: this.props.moveX, z: this.props.moveZ}});
 
         requestAnimationFrame(() => {
             this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);
         });
-
-
         renderer.render(scene, camera);
-        //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
-        const playerInformation = {
-            playerX: playerInMaps[0].collaider.position.x,
-            playerZ: playerInMaps[0].collaider.position.z,
-            playerWidth: playerInMaps[0].collaider.geometry.parameters.width,
-            playerHeight: playerInMaps[0].collaider.geometry.parameters.height,
-            playerData: playerInMaps[0]
-        };
-
-
+        const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
         for (let key in enemyArray) {
-            //Добавлял для расчета столкновений в общий массив с коллайдекрами но ониначинают шарахаться друг от друга
-            /*     this._mapCreator.createObjectCollision('enemy' + key,  enemyArray[key].ColliderMesh.position.x,
-             enemyArray[key].ColliderMesh.position.y,
-             enemyArray[key].ColliderMesh.position.z,
-             enemyArray[key].enemyData.colliderWidth,
-             enemyArray[key].enemyData.colliderLength, 'enemy');*/
             this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
         let testProps = {};
         let cameraProps = {};
+        this.updateUsersPositionInRoom(testProps, playerInMaps, camera, cameraProps, enemyArray);
+        this._dynamicAnimation.objectAnimation(this.props.animations, 3);
+        this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
+            playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
+    }
+
+    //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
+    seeWhichPlayersAreBots(playerInMaps) {
+        return {
+            playerX: playerInMaps[0].playerData.colliderPositionX,
+            playerZ: playerInMaps[0].playerData.colliderPositionZ,
+            playerWidth: playerInMaps[0].playerData.colliderWidth,
+            playerHeight: playerInMaps[0].playerData.colliderLength,
+            playerData: playerInMaps[0]
+        };
+    }
+
+
+    /**
+     * Обновляем координаты игроков в комнате для корректного отображения на клиенте пришедшие с сервера
+     * @param testProps
+     * @param playerInMaps
+     * @param camera
+     * @param cameraProps
+     * @param enemyArray
+     */
+    updateUsersPositionInRoom(testProps, playerInMaps, camera, cameraProps, enemyArray) {
         this.blData.getUserPosition((data) => {
             if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
                         testProps.moveX = data.arrayUser[i].colliderPositionX;
                         testProps.moveZ = data.arrayUser[i].colliderPositionZ;
                         if (playerInMaps[i]) {
-                            this._cameraControls.cameraControl(camera);
-                            if (!globalVariables.camera.cameraControl &&(data.arrayUser[i].id === this.userID)) {
-                                cameraProps.moveX = data.arrayUser[i].colliderPositionX;
-                                cameraProps.moveZ = data.arrayUser[i].colliderPositionZ;
-                                this._camera.updateCameraGame(camera, cameraProps);
+
+
+                            if (!globalVariables.camera.cameraControl && (data.arrayUser[i].id === this.userID)) {
+                                this.updateCameraClientPosition(camera, i, cameraProps, data);
                             }
 
-                            this._dynamicAnimation.updateUserAvatar(playerInMaps[i], testProps, this._player, enemyArray);
+                            playerInMaps[i].update(playerInMaps[i], testProps,enemyArray);
+
                         }
                     }
                 )
             }
         });
+    }
 
-
-        this._dynamicAnimation.objectAnimation(this.props.animations, 3);
-
-
-        this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
-            playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
-
+    /**
+     * Обновляем позицию комаеру по позиции аватара клиента
+     * @param camera
+     * @param i
+     * @param cameraProps
+     * @param data
+     */
+    updateCameraClientPosition(camera, i, cameraProps, data) {
+        this._cameraControls.cameraControl(camera);
+        cameraProps.moveX = data.arrayUser[i].colliderPositionX;
+        cameraProps.moveZ = data.arrayUser[i].colliderPositionZ;
+        this._camera.updateCameraGame(camera, cameraProps);
     }
 
     changePhysics(result) {

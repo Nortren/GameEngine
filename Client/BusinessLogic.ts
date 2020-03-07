@@ -10,7 +10,7 @@ export default class BusinessLogic {
             callback(data);
         });
     }
-    getMapStaticData(callback) {
+    getUserRoom(callback) {
         socket.emit('getRoomData');
         socket.on('returnRoomData', (data) => {
             callback(data);
