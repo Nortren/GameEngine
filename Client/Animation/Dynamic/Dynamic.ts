@@ -49,23 +49,23 @@ export default class Dynamic {
      * @param imgHero картинка отображения гавного героя
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(props) {
-
+    updateUserAvatar(props,directionMove) {
+        this._count++;
         if (this._count > 3) {
             this._count = 0;
         }
 
         let rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
-        if (this._pressKey === "A" || (props && props.direction === "LEFT")) {
+        if (this._pressKey === "A" || (directionMove === "LEFT")) {
             rect = this.animationSprite(0.03,0.39,0.25,null,4)[this._count];
         }
-        if (this._pressKey === "D" || (props && props.direction === "RIGHT")) {
+        if (this._pressKey === "D" || (directionMove === "RIGHT")) {
             rect = this.animationSprite(0.03,0.59,0.25,null,4)[this._count];
         }
-        if (this._pressKey === "W" || (props && props.direction === "UP")) {
+        if (this._pressKey === "W" || (directionMove === "UP")) {
             rect = this.animationSprite(0.03,0.19,0.25,null,4)[this._count];
         }
-        if (this._pressKey === "S" || (props && props.direction === "DOWN")) {
+        if (this._pressKey === "S" || (directionMove === "DOWN")) {
             rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         }
         return rect

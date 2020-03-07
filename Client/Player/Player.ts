@@ -25,21 +25,24 @@ interface BasicProperty {
     death();
     changeSocketIOID();
 }
-export default class Player implements BasicProperty  {
-    name: string;
-    _count: number;
-    props: object;
+export default class Player implements BasicProperty {
     animation: Dynamic = new Dynamic();
-    _animationTimer: number;
-    fixPoint: number;
-
-
-    radiusOfDetection: number;
-    moveSpeed: number;
-    attackSpeed: number;
+    health: number;
     damage: number;
-    amountOfHealth: number;
+    attackSpeed: number;
+    moveSpeed: number;
+    attackDistance: number;
+    id: number;
 
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    src: string;
+    collaid: string;
+    clientSocketIOID: string;
 
     constructor(id: number, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
@@ -63,14 +66,6 @@ export default class Player implements BasicProperty  {
         this.colliderLength = colliderLength;
         this.src = src;
         this.collaid = collaid;
-
-
-
-        this.name = name;
-        this._count = 0;
-
-        this._animationTimer = 0;
-        this.fixPoint = 0;
 
 
         this.playerData = this;
@@ -247,10 +242,10 @@ export default class Player implements BasicProperty  {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, enemyArray) {
+    update(playerData: Object, props: Object, enemyArray,directionMove) {
 
 
-        let rect = this.animation.updateUserAvatar(props);
+        let rect = this.animation.updateUserAvatar(props,directionMove);
 
         playerData = playerData.playerData;
         let positionPlayer = {x: playerData.colliderPosit, z: playerData.colliderPositionZ};

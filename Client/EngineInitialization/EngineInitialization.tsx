@@ -248,7 +248,7 @@ export default class EngineInitialization extends React.Component {
                                 this.updateCameraClientPosition(camera, i, cameraProps, data);
                             }
 
-                            playerInMaps[i].update(playerInMaps[i], testProps,enemyArray);
+                            playerInMaps[i].update(playerInMaps[i], testProps,enemyArray,this.props.direction);
 
                         }
                     }
