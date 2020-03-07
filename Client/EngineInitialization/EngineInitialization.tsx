@@ -164,6 +164,7 @@ export default class EngineInitialization extends React.Component {
             this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
         let testProps = {};
+        let cameraProps = {};
         this.blData.getUserPosition((data) => {
             if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
@@ -171,8 +172,10 @@ export default class EngineInitialization extends React.Component {
                         testProps.moveZ = data.arrayUser[i].colliderPositionZ;
                         if (playerInMaps[i]) {
                             this._cameraControls.cameraControl(camera);
-                            if (!globalVariables.camera.cameraControl &&(data.thisUser.id === this.userID)) {
-                                this._camera.updateCameraGame(camera, testProps);
+                            if (!globalVariables.camera.cameraControl &&(data.arrayUser[i].id === this.userID)) {
+                                cameraProps.moveX = data.arrayUser[i].colliderPositionX;
+                                cameraProps.moveZ = data.arrayUser[i].colliderPositionZ;
+                                this._camera.updateCameraGame(camera, cameraProps);
                             }
 
                             this._dynamicAnimation.updateUserAvatar(playerInMaps[i], testProps, this._player, enemyArray);
