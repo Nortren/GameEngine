@@ -2,5 +2,5 @@
 /.idea
 .idea
 .package-lock.json
-.js
-.map
+*.js
+*.map
