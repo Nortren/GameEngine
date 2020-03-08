@@ -46,12 +46,21 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
     updateViaController(keyPress) {
-
         if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD') {
             this.updatePosition(keyPress);
         }
+        if (keyPress.event) {
+          this.updateTouchPosition(keyPress);
+        }
 
+    }
 
+    /**
+     * Метод работы с управлением на TOUCH устройствах
+     * @param keyPress
+     */
+    updateTouchPosition(keyPress) {
+        console.log(keyPress,'EVENT');
     }
 
     updatePosition(keyPress) {

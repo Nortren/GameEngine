@@ -5,7 +5,7 @@ export default class MapCreator {
 
     collisionPoint: object [];
 
-    constructor(options) {
+    constructor() {
 
     }
 

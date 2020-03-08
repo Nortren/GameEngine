@@ -105,6 +105,19 @@ export default class StickController extends React.Component {
     }
 
     keyboardControl(){
+        document.addEventListener('touchstart', (event) => {
+            let startPositionX = event.changedTouches[0].clientX;
+            let startPositionZ = event.changedTouches[0].clientY;
+            this.blData.setUserPosition({event:'touchstart',x:startPositionX,z:startPositionZ});
+        });
+        document.addEventListener('touchmove', (event) => {
+            let startPositionX = event.changedTouches[0].clientX;
+            let startPositionZ = event.changedTouches[0].clientY;
+            this.blData.setUserPosition({event:'touchmove',x:startPositionX,z:startPositionZ});
+        });
+        document.addEventListener('touchend', (event) => {
+            this.blData.setUserPosition({event:'touchend'});
+        });
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
             this.movePosition(event, true);

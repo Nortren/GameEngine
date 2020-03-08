@@ -61,7 +61,7 @@ class ServicesController extends Service {
      */
     playerControls(client, room) {
         client.on('setDataControls', (keyUserPress) => {
-            console.log(keyUserPress);
+
             let playerThatUserControls = room.playersInTheRoom.filter(function (player) {
                 //Проверяем тот ли это игрок по его SocketID
                 return player.clientSocketIOID === client.id;

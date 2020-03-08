@@ -182,7 +182,6 @@ export default class Player implements BasicProperty {
     }
 
     attack(props, playerData, enemyArray) {
-
         if (props.skillButton.press) {
             for (let key in enemyArray) {
                 let collider = enemyArray[key].ColliderMesh;
@@ -242,7 +241,7 @@ export default class Player implements BasicProperty {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, enemyArray,directionMove) {
+    update(playerData: Object, props: Object, enemyArray) {
 
 
         let rect = this.animation.updateUserAvatar(props);

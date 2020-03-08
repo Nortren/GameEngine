@@ -13,20 +13,6 @@ export default class Dynamic {
         this.fixPoint = 0;
     }
 
-    /**
-     * Метод запуска анимации персоонажа
-     * При первичной инициализации движка запскаем анимацию персоонажа и обновляем ее состояние от изменения state
-     */
-    objectAnimation(animation, animationSpeed) {
-        if (this._animationTimer > animationSpeed && animation) {
-            this._count++;
-            this._animationTimer = 0;
-        }
-        this._animationTimer++;
-
-
-    }
-
     animationSprite(startX, startY,stepX, stepY, numberOfFrames) {
         let spriteOffsets = [];
         let xPosition = startX;
@@ -38,15 +24,11 @@ export default class Dynamic {
             yPosition += stepY ? stepY : 0;
         }
 
-
         return spriteOffsets;
     }
 
     /**
      * Обновления sprite анимации
-     * @param context
-     * @param canvas
-     * @param imgHero картинка отображения гавного героя
      * @param props данные от контроллеров управления
      */
     updateUserAvatar(props) {
@@ -69,9 +51,6 @@ export default class Dynamic {
             rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
         }
         return rect
-
-
-
     }
 
 }
