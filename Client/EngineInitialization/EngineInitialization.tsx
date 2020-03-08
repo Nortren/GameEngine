@@ -207,9 +207,9 @@ export default class EngineInitialization extends React.Component {
         for (let key in enemyArray) {
             this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
-        let testProps = {};
+        let userProps = {};
         let cameraProps = {};
-        this.updateUsersPositionInRoom(testProps, playerInMaps, camera, cameraProps, enemyArray);
+        this.updateUsersPositionInRoom(userProps, playerInMaps, camera, cameraProps, enemyArray);
         this._dynamicAnimation.objectAnimation(this.props.animations, 3);
         this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
             playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
@@ -235,12 +235,14 @@ export default class EngineInitialization extends React.Component {
      * @param cameraProps
      * @param enemyArray
      */
-    updateUsersPositionInRoom(testProps, playerInMaps, camera, cameraProps, enemyArray) {
+    updateUsersPositionInRoom(userProps, playerInMaps, camera, cameraProps, enemyArray) {
         this.blData.getUserPosition((data) => {
             if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
-                        testProps.moveX = data.arrayUser[i].colliderPositionX;
-                        testProps.moveZ = data.arrayUser[i].colliderPositionZ;
+                    userProps.moveX = data.arrayUser[i].colliderPositionX;
+
+                    userProps.moveZ = data.arrayUser[i].colliderPositionZ;
+                    userProps.moveDirection = data.arrayUser[i].moveDirection;
                         if (playerInMaps[i]) {
 
 
@@ -248,7 +250,7 @@ export default class EngineInitialization extends React.Component {
                                 this.updateCameraClientPosition(camera, i, cameraProps, data);
                             }
 
-                            playerInMaps[i].update(playerInMaps[i], testProps,enemyArray,this.props.direction);
+                            playerInMaps[i].update(playerInMaps[i], userProps,enemyArray,this.props.direction);
 
                         }
                     }

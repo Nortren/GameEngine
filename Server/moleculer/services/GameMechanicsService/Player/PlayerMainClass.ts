@@ -13,6 +13,7 @@ interface BasicProperty {
     colliderLength: number;
     src: string;
     collaid: string;
+    moveDirection: string;
     clientSocketIOID: string;
     create();
     update();
@@ -39,6 +40,7 @@ export default class PlayerMainClass implements BasicProperty {
     colliderLength: number;
     src: string;
     collaid: string;
+    moveDirection: string;
     clientSocketIOID: string;
 
     constructor(id: number, health: number, damage: number,

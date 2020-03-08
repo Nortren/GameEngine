@@ -245,7 +245,7 @@ export default class Player implements BasicProperty {
     update(playerData: Object, props: Object, enemyArray,directionMove) {
 
 
-        let rect = this.animation.updateUserAvatar(props,directionMove);
+        let rect = this.animation.updateUserAvatar(props);
 
         playerData = playerData.playerData;
         let positionPlayer = {x: playerData.colliderPosit, z: playerData.colliderPositionZ};
