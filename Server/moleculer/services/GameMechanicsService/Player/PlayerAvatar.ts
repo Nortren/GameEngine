@@ -50,7 +50,7 @@ export default class PlayerAvatar extends PlayerMainClass {
             this.updatePosition(keyPress);
         }
         if (keyPress.event) {
-          this.updateTouchPosition(keyPress);
+            this.updateTouchPosition(keyPress);
         }
 
     }
@@ -60,7 +60,37 @@ export default class PlayerAvatar extends PlayerMainClass {
      * @param keyPress
      */
     updateTouchPosition(keyPress) {
-        console.log(keyPress,'EVENT');
+
+        console.log(keyPress);
+
+        if (keyPress.event === 'touchstart') {
+            this.touchStartPointX = keyPress.x;
+            this.touchStartPointZ = keyPress.z;
+        }
+        if (keyPress.event === 'touchend') {
+            this.touchStartPointX = false;
+            this.touchStartPointZ = 0;
+
+        }
+
+        if (this.touchStartPointX > keyPress.x) {
+            this.colliderPositionX = this.colliderPositionX - 0.1;
+            this.moveDirection = 'LEFT';
+        }
+        if (this.touchStartPointX < keyPress.x) {
+            this.colliderPositionX = this.colliderPositionX + 0.1;
+            this.moveDirection = 'RIGHT';
+        }
+        if (this.touchStartPointZ > keyPress.z) {
+            this.colliderPositionZ = this.colliderPositionZ - 0.1;
+            this.moveDirection = 'UP';
+        }
+        if (this.touchStartPointZ < keyPress.z) {
+            this.colliderPositionZ = this.colliderPositionZ + 0.1;
+            this.moveDirection = 'DOWN';
+        }
+
+
     }
 
     updatePosition(keyPress) {

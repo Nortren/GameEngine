@@ -84,6 +84,7 @@ class ServicesController extends Service {
      */
     checkUserAuthorization(client) {
         client.on('checkUserAuthorization', (userData) => {
+            console.log(userData);
             this.broker.call("AccountService.checkUserAuthorization", userData).then(result => {
                 this.connectionPlayerName = result.id;
 

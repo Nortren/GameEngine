@@ -6,7 +6,7 @@ import BL from "../BusinessLogic";
  */
 export default class StickController extends React.Component {
     userSpeed: number = 30
-    blData:BL;
+    blData: BL;
 
     constructor(props) {
 
@@ -49,10 +49,10 @@ export default class StickController extends React.Component {
     skillButtonPress(nameButton) {
         let evenObject = document.getElementById(nameButton);
         evenObject.addEventListener("touchstart", (event) => {
-            this.clickedSkillButton({nameButton:nameButton,press:true});
+            this.clickedSkillButton({nameButton: nameButton, press: true});
         }, false);
         evenObject.addEventListener("touchend", (event) => {
-            this.clickedSkillButton({nameButton:nameButton,press:false});
+            this.clickedSkillButton({nameButton: nameButton, press: false});
         }, false);
     }
 
@@ -85,7 +85,7 @@ export default class StickController extends React.Component {
         }, false);
     }
 
-    createCanvas(id,width, height, radius, startPositionX, startPositionY) {
+    createCanvas(id, width, height, radius, startPositionX, startPositionY) {
         let canvas = document.getElementById(id);
         canvas.width = width;
         canvas.height = height;
@@ -104,19 +104,27 @@ export default class StickController extends React.Component {
         context.stroke();
     }
 
-    keyboardControl(){
+    /**
+     * Метод работы с устройствами ввода при нажатии на лкавишу или клик отправляем направление движения на сервер
+     */
+    keyboardControl() {
         document.addEventListener('touchstart', (event) => {
-            let startPositionX = event.changedTouches[0].clientX;
-            let startPositionZ = event.changedTouches[0].clientY;
-            this.blData.setUserPosition({event:'touchstart',x:startPositionX,z:startPositionZ});
+            this.startPositionX = event.changedTouches[0].clientX;
+            this.startPositionZ = event.changedTouches[0].clientY;
+            this.blData.setUserPosition({event: 'touchstart', x: this.startPositionX, z: this.startPositionZ});
         });
         document.addEventListener('touchmove', (event) => {
-            let startPositionX = event.changedTouches[0].clientX;
-            let startPositionZ = event.changedTouches[0].clientY;
-            this.blData.setUserPosition({event:'touchmove',x:startPositionX,z:startPositionZ});
+            this.startPositionX = event.changedTouches[0].clientX;
+            this.startPositionZ = event.changedTouches[0].clientY;
+            if (!this.autoMove) {
+                this.autoMove = setInterval(() => {
+                    this.blData.setUserPosition({event: 'touchmove', x:  this.startPositionX, z: this.startPositionZ});
+                }, 10);
+            }
         });
         document.addEventListener('touchend', (event) => {
-            this.blData.setUserPosition({event:'touchend'});
+            this.autoMove =  clearInterval(this.autoMove);
+            this.blData.setUserPosition({event: 'touchend'});
         });
         document.addEventListener('keydown', (event) => {
             this.animationStatusChange(true);
