@@ -88,7 +88,11 @@ export default class Player implements BasicProperty {
     /**
      * генерируем игрока на карте
      */
-    createPlayer(dataServer: object) {
+    createPlayer() {
+        //Припервичной инициализации нужно корректно отрисовать спрайт игрока
+        let rect = this.animation.updateUserAvatar(null);
+        this.playerData.playerAvatarSprite.material.map.offset.x = rect.x;
+        this.playerData.playerAvatarSprite.material.map.offset.y = rect.y;
         return this.playerData;
     }
 

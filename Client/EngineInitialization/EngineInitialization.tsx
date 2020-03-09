@@ -47,14 +47,14 @@ export default class EngineInitialization extends React.Component implements pri
 
     componentDidMount() {
         const canvas = this.createCanvas();
-        const camera = this.createCameraScene(canvas);
+
         const renderer = new THREE.WebGLRenderer({canvas: canvas});
         const scene = new THREE.Scene();
         scene.scale.set(1, 1, 1);
         this.blData = new BL();
 
 
-        this.createUserRoom(scene, renderer, camera);
+        this.createUserRoom(scene, renderer,canvas);
     }
 
     /**
@@ -71,8 +71,9 @@ export default class EngineInitialization extends React.Component implements pri
      * @param canvas
      * @returns {PerspectiveCamera}
      */
-    createCameraScene(canvas) {
-        const camera = this._camera.createCamera();
+    createCameraScene(canvas,userData) {
+        const userStartPositionCamera = userData[0];
+        const camera = this._camera.createCamera(userStartPositionCamera);
         this._camera.сameraON(globalVariables.camera.cameraControl, camera, canvas);
         return camera;
     }
@@ -85,7 +86,7 @@ export default class EngineInitialization extends React.Component implements pri
      * @param renderer
      * @param camera
      */
-    createUserRoom(scene, renderer, camera) {
+    createUserRoom(scene, renderer, canvas) {
         this.isThereUser = false;
         this.userID = null;
         this.playerInMaps = [];
@@ -103,6 +104,9 @@ export default class EngineInitialization extends React.Component implements pri
                 });
 
             }
+
+            const camera = this.createCameraScene(canvas,this.isThereUser);
+
             if (!this.isThereUser.length) {
                 this.addPlayerToRoom(scene, {userId: data.playerName, position: {x: 0, z: 0}});
                 room.playersInTheRoom.forEach((item, i) => {
@@ -158,7 +162,7 @@ export default class EngineInitialization extends React.Component implements pri
 
         //Проверяем есть ли такой игрок на карте
         let thisIdOnMap = this.playerInMaps.filter((data) => {
-            return data.id === item.userId;
+            return data.id === item.id;
         });
         //есть нет то добавляем его в общий массив игроко
         if (thisIdOnMap.length === 0) {

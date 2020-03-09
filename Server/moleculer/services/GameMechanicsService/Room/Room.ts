@@ -56,6 +56,14 @@ export default class Room implements BasicProperty {
         });
         // return this.playersInTheRoom;
     }
+    removePlayerInRoom(player) {
+
+        return this.playersInTheRoom.filter((playerInRoom)=>{
+            return playerInRoom.id === player.id;
+        });
+        // return this.playersInTheRoom;
+    }
+
 
     setPlayersList(player: object) {
 

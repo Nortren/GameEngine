@@ -11,9 +11,17 @@ export default class Camera {
         });
     }
 
-    createCamera() {
+    /**
+     * Метод создания первичного положения камеры
+     * @param userStartPositionCamera координаты пользователя в которых будет установленна камера
+     * @returns {PerspectiveCamera}
+     */
+    createCamera(userStartPositionCamera) {
         const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 100);
-        camera.position.set(0, 10, 5);
+        const x = userStartPositionCamera.colliderPositionX;
+        const y = 10; //высота до аватара игрока
+        const z = userStartPositionCamera.colliderPositionZ;
+        camera.position.set(x, y, z);
         camera.scale.set(1, 1, 1);
         camera.rotateX(4.99);
         return camera;

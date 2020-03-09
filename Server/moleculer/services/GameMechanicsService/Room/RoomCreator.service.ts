@@ -66,6 +66,7 @@ class RoomCreator extends Service {
 
         //проверяем есть ли игрок в одной из комнат подобного типа(если вдруг он вышел или перезалогинился)
         const userInThisRoom = userSuitableRooms.filter((room) => {
+
             return !!room.getPlayerInRoom(userData).length;
 
         });
@@ -73,7 +74,6 @@ class RoomCreator extends Service {
 
         //Выбираем первую комнату где есть свободные места
         let freeRoom = [];
-        // console.log(userInThisRoom, 'userInThisRoom');
         if (!userInThisRoom.length) {
             freeRoom = userSuitableRooms.filter((item) => {
                 return item.numberPlaces > item.numberTakePlaces;
@@ -105,6 +105,18 @@ class RoomCreator extends Service {
      *
      */
     async addPlayerToRoom(playerData: object) {
+        try {
+            //Получаем данные игрока (id, инвентарь,последнее месторасположение и т.д) из базы
+            const playerDBData = await this.broker.call("DB.getPlayerData", playerData);
+            const playerID = playerData.id;
+            const player = await this.broker.call("PlayerController.createPlayer", {playerID, playerDBData});
+            return player;
+        } catch (e) {
+            console.log('Ошибка при попытке создать игрока ', e);
+        }
+    }
+
+    async removePlayerToRoom(playerData: object) {
         try {
             //Получаем данные игрока (id, инвентарь,последнее месторасположение и т.д) из базы
             const playerDBData = await this.broker.call("DB.getPlayerData", playerData);

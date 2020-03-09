@@ -46,10 +46,14 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
     updateViaController(keyPress) {
-        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD') {
+        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp') {
             this.updatePosition(keyPress);
         }
+
+        console.log(keyPress,'TOUCH');
+
         if (keyPress.event) {
+            console.log(keyPress,'EVENT');
             this.updateTouchPosition(keyPress);
         }
 
@@ -61,8 +65,6 @@ export default class PlayerAvatar extends PlayerMainClass {
      */
     updateTouchPosition(keyPress) {
 
-        console.log(keyPress);
-
         if (keyPress.event === 'touchstart') {
             this.touchStartPointX = keyPress.x;
             this.touchStartPointZ = keyPress.z;
@@ -70,7 +72,8 @@ export default class PlayerAvatar extends PlayerMainClass {
         if (keyPress.event === 'touchend') {
             this.touchStartPointX = false;
             this.touchStartPointZ = 0;
-
+            //Если пользователь прекратил нажатия на экран Touch устройства то нужно оповестить об этом чтоб прекратить анимации
+            this.moveDirection = 'STOP';
         }
 
         if (this.touchStartPointX > keyPress.x) {
@@ -109,6 +112,10 @@ export default class PlayerAvatar extends PlayerMainClass {
         if (keyPress === 'KeyS') {
             this.colliderPositionZ = this.colliderPositionZ + 1;
             this.moveDirection = 'DOWN';
+        }
+        //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации
+        if (keyPress === 'keyUp') {
+            this.moveDirection = 'STOP';
         }
 
 

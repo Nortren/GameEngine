@@ -47,11 +47,15 @@ class ServicesController extends Service {
         this.playerArray = [];
         this.connectionPlayerName;
         io.on('connection', (client) => {
-
+            console.log('UserConnect');
             this.checkUserAuthorization(client);
             this.getRoom(client);
+            client.on('disconnect', (client) => {
+                console.log('UserDisconnect');
 
+            });
         });
+
         const portIO = 8010;
         io.listen(portIO);
     }
@@ -109,10 +113,21 @@ class ServicesController extends Service {
                 this.playerControls(client, room);
             })
         });
+        client.on('disconnect', () => {
+            this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
+            room.removePlayerInRoom(this.connectionPlayerName);
+                client.leave(room.id);
+                io.to(room.id).emit('returnRoomData', {
+                    room,
+                    playerName: this.connectionPlayerName,
+                });
+                this.playerControls(client, room);
+            })
+        });
     }
 
     /**
-     * Метод добавления игроку socketId по некму нам проще будет отслеживать его действия на клиенте
+     * Метод добавления игроку socketId так нам будет проще  отслеживать его действия на клиенте
      * @param playerID
      * @param playersInTheRoom
      * @param socketId

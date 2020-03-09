@@ -1,4 +1,3 @@
-
 export default class Dynamic {
     _count: number;
     _pressKey: string;
@@ -13,7 +12,7 @@ export default class Dynamic {
         this.fixPoint = 0;
     }
 
-    animationSprite(startX, startY,stepX, stepY, numberOfFrames) {
+    animationSprite(startX, startY, stepX, stepY, numberOfFrames) {
         let spriteOffsets = [];
         let xPosition = startX;
         let yPosition = startY;
@@ -32,27 +31,35 @@ export default class Dynamic {
      * @param props данные от контроллеров управления
      */
     updateUserAvatar(props) {
-        this._count++;
-        if (this._count > 3) {
-            this._count = 0;
-        }
+        let rect = this.animationSprite(0.03, 0.99, 0.25, null, 4)[this._count];
+        //Если нет props значит это первичная инициализация игрока
+        if (props) {
+            //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
+            if (props.moveDirection !== "STOP") {
+                this.lastDirectionMove = props.moveDirection;
+                this._count++;
+            }
+            if (this._count > 3) {
+                this._count = 0;
+            }
 
-        let rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
-        if (this._pressKey === "A" || (props.moveDirection === "LEFT")) {
-            rect = this.animationSprite(0.03,0.39,0.25,null,4)[this._count];
-        }
-        if (this._pressKey === "D" || (props.moveDirection === "RIGHT")) {
-            rect = this.animationSprite(0.03,0.59,0.25,null,4)[this._count];
-        }
-        if (this._pressKey === "W" || (props.moveDirection === "UP")) {
-            rect = this.animationSprite(0.03,0.19,0.25,null,4)[this._count];
-        }
-        if (this._pressKey === "S" || (props.moveDirection === "DOWN")) {
-            rect = this.animationSprite(0.03,0.99,0.25,null,4)[this._count];
+            let rect = this.animationSprite(0.03, 0.99, 0.25, null, 4)[this._count];
+            if (this._pressKey === "A" || ( this.lastDirectionMove === "LEFT")) {
+                rect = this.animationSprite(0.03, 0.39, 0.25, null, 4)[this._count];
+            }
+            if (this._pressKey === "D" || (this.lastDirectionMove === "RIGHT")) {
+                rect = this.animationSprite(0.03, 0.59, 0.25, null, 4)[this._count];
+            }
+            if (this._pressKey === "W" || (this.lastDirectionMove === "UP")) {
+                rect = this.animationSprite(0.03, 0.19, 0.25, null, 4)[this._count];
+            }
+            if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
+                rect = this.animationSprite(0.03, 0.99, 0.25, null, 4)[this._count];
+            }
         }
         return rect
-    }
 
+    }
 }
 
 

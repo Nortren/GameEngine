@@ -33,57 +33,17 @@ export default class StickController extends React.Component {
         this.createCanvas("ButtonSkills_3", 35, 35, 15, 18, 18);
 
 
-        this.thisXUp = 0;
-        this.thisZUp = 0;
-
-        this.leftStick();
         this.skillButtonPress('ButtonAttack');
         this.skillButtonPress('ButtonSkills_1');
         this.skillButtonPress('ButtonSkills_2');
         this.skillButtonPress('ButtonSkills_3');
 
 
-        this.keyboardControl();
+        this.controlOfManagement();
     }
 
-    skillButtonPress(nameButton) {
-        let evenObject = document.getElementById(nameButton);
-        evenObject.addEventListener("touchstart", (event) => {
-            this.clickedSkillButton({nameButton: nameButton, press: true});
-        }, false);
-        evenObject.addEventListener("touchend", (event) => {
-            this.clickedSkillButton({nameButton: nameButton, press: false});
-        }, false);
-    }
 
-    leftStick() {
-        let evenObject = document.getElementById('UserLeftStick');
 
-        document.addEventListener('keyup', (event) => {
-            this.animationStatusChange(false);
-            this.movePosition(event, false);
-
-        });
-        evenObject.addEventListener("touchstart", (event) => {
-            this.touchStartPositionX = event.changedTouches[0].clientX;
-            this.touchStartPositionY = event.changedTouches[0].clientY;
-            this._startAnimationTouch = true;
-
-            this._startAnimationTouch = setInterval(() => {
-                this.movePosition(event, true);
-            }, 10);
-            this.animationStatusChange(true);
-        }, false);
-        evenObject.addEventListener("touchend", (event) => {
-            this.movePosition(event, false);
-            clearInterval(this._startAnimationTouch);
-            this.animationStatusChange(false);
-        }, false);
-        evenObject.addEventListener("touchmove", (event) => {
-            this.touchMovePositionX = event.changedTouches[0].clientX;
-            this.touchMovePositionY = event.changedTouches[0].clientY;
-        }, false);
-    }
 
     createCanvas(id, width, height, radius, startPositionX, startPositionY) {
         let canvas = document.getElementById(id);
@@ -107,128 +67,62 @@ export default class StickController extends React.Component {
     /**
      * Метод работы с устройствами ввода при нажатии на лкавишу или клик отправляем направление движения на сервер
      */
-    keyboardControl() {
-        document.addEventListener('touchstart', (event) => {
+    controlOfManagement() {
+        this.touchControl();
+        this.keyBoardControl();
+    }
+
+    /**
+     * Контроллер нажатий на клавиатуре и мыши
+     */
+    keyBoardControl() {
+        document.addEventListener('keydown', (event) => {
+            this.blData.setUserPosition(event.code);
+        });
+        document.addEventListener('keyup', (event) => {
+            this.blData.setUserPosition('keyUp');
+        });
+    }
+
+    /**
+     * Контроллер нажатий Touch устройств (стик управление движением)
+     */
+    touchControl() {
+        let evenObject = document.getElementById('UserLeftStick');
+        evenObject.addEventListener('touchstart', (event) => {
             this.startPositionX = event.changedTouches[0].clientX;
             this.startPositionZ = event.changedTouches[0].clientY;
             this.blData.setUserPosition({event: 'touchstart', x: this.startPositionX, z: this.startPositionZ});
         });
-        document.addEventListener('touchmove', (event) => {
+        evenObject.addEventListener('touchmove', (event) => {
             this.startPositionX = event.changedTouches[0].clientX;
             this.startPositionZ = event.changedTouches[0].clientY;
             if (!this.autoMove) {
                 this.autoMove = setInterval(() => {
-                    this.blData.setUserPosition({event: 'touchmove', x:  this.startPositionX, z: this.startPositionZ});
+                    this.blData.setUserPosition({event: 'touchmove', x: this.startPositionX, z: this.startPositionZ});
                 }, 10);
             }
         });
-        document.addEventListener('touchend', (event) => {
-            this.autoMove =  clearInterval(this.autoMove);
+        evenObject.addEventListener('touchend', (event) => {
+            this.autoMove = clearInterval(this.autoMove);
             this.blData.setUserPosition({event: 'touchend'});
         });
-        document.addEventListener('keydown', (event) => {
-            this.animationStatusChange(true);
-            this.movePosition(event, true);
-
-
-            this.blData.setUserPosition(event.code);
-        });
-
-
     }
 
-    movePosition(e, stopMove) {
-        if (!stopMove) {
-            this.moveKeyFix = clearInterval(this.moveKeyFix);
-        }
-        if (stopMove && !this.moveKeyFix) {
-            this.moveKeyFix = setInterval(() => {
-                //collisionObject это прроверка куда было движение перед тем как игрок столкнулся с препятствием, мы блокируем изминение координат по этому вектору
-                this.collisionObject = this.props.physicalCollision;
-                let moveX = this.touchMovePositionX;
-                let moveZ = this.touchMovePositionY;
-                let resPosX = (this.thisXUp > moveX);
-                let resPosZ = (this.thisZUp > moveZ);
-
-                let xTest = Math.abs(this.thisXUp - moveX);
-                let zTest = Math.abs(this.thisZUp - moveZ);
-
-                this.moveDirection;
-                if (zTest > 2) {
-                    if (resPosZ) {
-                        this.moveDirection = "UP";
-                    }
-                    if (!resPosZ) {
-                        this.moveDirection = "DOWN";
-                    }
-                }
-                if (xTest > 2) {
-                    if (resPosX) {
-                        this.moveDirection = "LEFT";
-                    }
-                    if (!resPosX) {
-                        this.moveDirection = "RIGHT";
-                    }
-                }
-
-                let code = e.keyCode;
-                if (code === 87) {
-                    this.moveDirection = "UP"
-                }
-                if (code === 83) {
-                    this.moveDirection = "DOWN"
-                }
-                if (code === 65) {
-                    this.moveDirection = "LEFT"
-                }
-                if (code === 68) {
-                    this.moveDirection = "RIGHT"
-                }
-
-                this.thisXUp = moveX;
-                this.thisZUp = moveZ;
-
-
-                this._animate = true;
-                this.directionOfMovement(this.moveDirection);
-                if (this.moveDirection === "UP" && this.collisionObject !== "UP") {
-
-                    let move = this.state.moveZ;
-                    move += this.userSpeed;
-                    this.setState({moveZ: move});
-                    this.changeZ(move);
-
-                }
-
-                if (this.moveDirection === "DOWN" && this.collisionObject !== "DOWN") {
-
-                    let move = this.state.moveZ;
-                    move -= this.userSpeed;
-                    this.setState({moveZ: move});
-                    this.changeZ(move);
-
-                }
-                if (this.moveDirection === "LEFT" && this.collisionObject !== "LEFT") {
-
-                    let move = this.state.moveX;
-                    move += this.userSpeed;
-                    this.setState({moveX: move});
-                    this.changeX(move);
-
-                }
-                if (this.moveDirection === "RIGHT" && this.collisionObject !== "RIGHT") {
-
-                    let move = this.state.moveX;
-                    move -= this.userSpeed;
-                    this.setState({moveX: move});
-                    this.changeX(move);
-
-                }
-
-
-            }, 10);
-        }
+    /**
+     * Управление нажатием на доп. стики (скилов и аттак)
+     * @param nameButton
+     */
+    skillButtonPress(nameButton) {
+        let evenObject = document.getElementById(nameButton);
+        evenObject.addEventListener("touchstart", (event) => {
+            this.blData.setUserPosition({nameButton: nameButton, press: true});
+        }, false);
+        evenObject.addEventListener("touchend", (event) => {
+            this.blData.setUserPosition({nameButton: nameButton, press: false});
+        }, false);
     }
+
 
     directionOfMovement(result) {
         this.props.directionOfMovement(result);
