@@ -43,7 +43,6 @@ export default class Dynamic {
                 this._count = 0;
             }
 
-            let rect = this.animationSprite(0.03, 0.99, 0.25, null, 4)[this._count];
             if (this._pressKey === "A" || ( this.lastDirectionMove === "LEFT")) {
                 rect = this.animationSprite(0.03, 0.39, 0.25, null, 4)[this._count];
             }
