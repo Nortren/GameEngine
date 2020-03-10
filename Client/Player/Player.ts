@@ -96,6 +96,9 @@ export default class Player implements BasicProperty {
         return this.playerData;
     }
 
+    removingPlayerFromScene(scene){
+        scene.remove(this.playerAvatarSprite,this.playerAvatarSprite,this.collaider)
+    }
 
     /**
      * Метод создания спрайта пользователя

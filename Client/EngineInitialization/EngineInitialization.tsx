@@ -22,7 +22,7 @@ interface primaryEngineInitializationData {
 /**
  * Главный контрол первичной инициализации движка
  */
-export default class EngineInitialization extends React.Component implements primaryEngineInitializationData{
+export default class EngineInitialization extends React.Component implements primaryEngineInitializationData {
 
     public context: CanvasRenderingContext2D;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
@@ -54,7 +54,7 @@ export default class EngineInitialization extends React.Component implements pri
         this.blData = new BL();
 
 
-        this.createUserRoom(scene, renderer,canvas);
+        this.createUserRoom(scene, renderer, canvas);
     }
 
     /**
@@ -71,7 +71,7 @@ export default class EngineInitialization extends React.Component implements pri
      * @param canvas
      * @returns {PerspectiveCamera}
      */
-    createCameraScene(canvas,userData) {
+    createCameraScene(canvas, userData) {
         const userStartPositionCamera = userData[0];
         const camera = this._camera.createCamera(userStartPositionCamera);
         this._camera.сameraON(globalVariables.camera.cameraControl, camera, canvas);
@@ -99,30 +99,45 @@ export default class EngineInitialization extends React.Component implements pri
             }
 
             if (data.room.playersInTheRoom.length) {
-                this.isThereUser = data.room.playersInTheRoom.filter(function (item) {
-                    return item.id === data.playerName;
+                this.isThereUser = data.room.playersInTheRoom.filter((item) => {
+                    return item.id === this.userID;
                 });
 
             }
 
-            const camera = this.createCameraScene(canvas,this.isThereUser);
+            if(data.action === 'addPlayer') {
+                if (!this.isThereUser.length) {
+                    this.addPlayerToRoom(scene, {userId: data.playerName, position: {x: 0, z: 0}});
+                    room.playersInTheRoom.forEach((item, i) => {
+                        this.addPlayerToRoom(scene, item);
+                    });
+                }
+                else {
 
-            if (!this.isThereUser.length) {
-                this.addPlayerToRoom(scene, {userId: data.playerName, position: {x: 0, z: 0}});
-                room.playersInTheRoom.forEach((item, i) => {
-                    this.addPlayerToRoom(scene, item);
-                });
+                    room.playersInTheRoom.forEach((item, i) => {
+                        this.addPlayerToRoom(scene, item);
+                    });
+                }
             }
-            else {
-
-                room.playersInTheRoom.forEach((item, i) => {
-                    this.addPlayerToRoom(scene, item);
+            //Если игрок вышел из комнаты нам прилетает событие с сервера и мы его убираем со сцены
+            if(data.action === 'removePlayer') {
+                let removePlayerthis = this.playerInMaps.filter((item)=>{
+                    return data.playerName === item.id;
                 });
+                this.playerInMaps.splice();
+                this.playerInMaps.forEach((item, i) => {
+                    if (item.id === data.playerName) {
+                        this.playerInMaps.splice(i, 1)
+                    }
+                });
+                removePlayerthis[0].removingPlayerFromScene(scene);
             }
             this._enemyArray = this.testCreateEnemyArray(room.enemy, scene, 100);
+            if (this.isThereUser) {
+                const camera = this.createCameraScene(canvas, this.isThereUser);
 
-            this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
-
+                this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
+            }
         });
     }
 
@@ -167,10 +182,10 @@ export default class EngineInitialization extends React.Component implements pri
         //есть нет то добавляем его в общий массив игроко
         if (thisIdOnMap.length === 0) {
             this.playerInMaps.push(player);
-
+            //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
+            scene.add(playerAvatarSprite, healthLine, userCollaider);
         }
-        //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
-        scene.add(playerAvatarSprite, healthLine, userCollaider);
+
     }
 
     testCreateEnemyArray(enemyData, scene, count) {
@@ -243,14 +258,14 @@ export default class EngineInitialization extends React.Component implements pri
         this.blData.getUserPosition((data) => {
             if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
-                    userProps.moveX = data.arrayUser[i].colliderPositionX;
-                    userProps.moveZ = data.arrayUser[i].colliderPositionZ;
-                    userProps.moveDirection = data.arrayUser[i].moveDirection;
+                        userProps.moveX = data.arrayUser[i].colliderPositionX;
+                        userProps.moveZ = data.arrayUser[i].colliderPositionZ;
+                        userProps.moveDirection = data.arrayUser[i].moveDirection;
                         if (playerInMaps[i]) {
                             if (!globalVariables.camera.cameraControl && (data.arrayUser[i].id === this.userID)) {
                                 this.updateCameraClientPosition(camera, i, cameraProps, data);
                             }
-                            playerInMaps[i].update(playerInMaps[i], userProps,enemyArray);
+                            playerInMaps[i].update(playerInMaps[i], userProps, enemyArray);
                         }
                     }
                 )

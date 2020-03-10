@@ -109,6 +109,7 @@ class ServicesController extends Service {
                 io.to(room.id).emit('returnRoomData', {
                     room,
                     playerName: this.connectionPlayerName,
+					action:'addPlayer'
                 });
                 this.playerControls(client, room);
             })
@@ -120,6 +121,7 @@ class ServicesController extends Service {
                 io.to(room.id).emit('returnRoomData', {
                     room,
                     playerName: this.connectionPlayerName,
+					action:'removePlayer'
                 });
                 this.playerControls(client, room);
             })
