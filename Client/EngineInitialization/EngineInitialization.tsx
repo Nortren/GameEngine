@@ -1,7 +1,7 @@
 import * as React from 'react';
 import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 import MapCreator from "../MapCreator/MapCreator";
-import AI from "../AI/AI";
+import Enemy from "../AI/Enemy";
 import * as THREE from "three";
 import * as OBJLoader from 'three-obj-loader';
 import Player from "../Player/Player"
@@ -14,7 +14,7 @@ import {CameraControl} from "../DevelopersTools/DevelopersTools"
 interface primaryEngineInitializationData {
     userID: string;
     blData: BL;
-    AI: AI;
+    AI: Enemy;
     playerInMaps: Array<object>;
 }
 
@@ -132,7 +132,7 @@ export default class EngineInitialization extends React.Component implements pri
                 });
                 removePlayerthis[0].removingPlayerFromScene(scene);
             }
-            this._enemyArray = this.testCreateEnemyArray(room.enemy, scene, 100);
+            this._enemyArray = this.createEnemyArray(room.enemy, scene, 100);
             if (this.isThereUser) {
                 const camera = this.createCameraScene(canvas, this.isThereUser);
 
@@ -188,13 +188,50 @@ export default class EngineInitialization extends React.Component implements pri
 
     }
 
-    testCreateEnemyArray(enemyData, scene, count) {
-        this._AI = new AI(10, 1, 1, 10, 30);
-        let enemyArray = []
+    createEnemyArray(enemyData, scene, count) {
+
+
+
+
+
+        let enemyDataArrayTest = [];
+        enemyData.forEach((enemy) => {
+            const id = enemy.id;
+            const src = enemy.src;
+            const collaid = enemy.collaid;
+            const scope = enemy.scope;
+            const scopeRadius = enemy.scopeRadius;
+            const colliderPosition = enemy.colliderPosition;
+            const colliderWidth = enemy.colliderWidth;
+            const colliderHeight = enemy.colliderHeight;
+            const colliderLength = enemy.colliderLength;
+            const pursuitZone = enemy.pursuitZone;
+            const persecutionRadius = enemy.persecutionRadius;
+            const health = enemy.health;
+            const damage = enemy.damage;
+            const attackDistance = enemy.attackDistance;
+            const attackSpeed = enemy.attackSpeed;
+            const moveSpeed = enemy.moveSpeed;
+
+            enemyDataArrayTest.push(new Enemy(id, src, collaid,
+                scope, scopeRadius, colliderPosition,
+                colliderWidth, colliderHeight, colliderLength,
+                pursuitZone, persecutionRadius, health,
+                damage, attackDistance,attackSpeed,
+                moveSpeed));
+        });
+
+        this._AI = new Enemy(enemyData[0].id, enemyData[0].src, enemyData[0].collaid,
+            enemyData[0].scope, enemyData[0].scopeRadius, enemyData[0].colliderPosition,
+            enemyData[0].colliderWidth, enemyData[0].colliderHeight, enemyData[0].colliderLength,
+            enemyData[0].pursuitZone, enemyData[0].persecutionRadius, enemyData[0].health,
+            enemyData[0].damage, enemyData[0].attackDistance,enemyData[0].attackSpeed,
+            enemyData[0].moveSpeed);
+        let enemyArray = [];
         enemyData.forEach((enemy) => {
             enemyArray.push(this._AI.createEnemy(enemy, scene));
         });
-        return enemyArray;
+        return enemyDataArrayTest;
     }
 
     /**

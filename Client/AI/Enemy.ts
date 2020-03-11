@@ -4,7 +4,37 @@ import Dynamic from "../Animation/Dynamic/Dynamic";
 import {globalVariables} from "../GlobalVariables";
 import {Scene, Texture, Mesh, Sprite} from "three";
 
-export default class AI {
+interface BasicPropertyEnemy {
+    id: number;
+    health: number;
+    damage: number;
+    attackSpeed: number;
+    moveSpeed: number;
+    attackDistance: number;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    src: string;
+    collaid: string;
+    clientSocketIOID: string;
+
+    create();
+
+    update();
+
+    move();
+
+    attack();
+
+    death();
+
+    changeSocketIOID();
+}
+
+export default class Enemy implements BasicPropertyEnemy {
     _count: number;
     props: object;
     animation: Dynamic = new Dynamic();
@@ -13,23 +43,64 @@ export default class AI {
 
 
     radiusOfDetection: number;
-    moveSpeed: number;
-    attackSpeed: number;
-    damage: number;
+
+
     amountOfHealth: number;
     private _attackSpeedCount: number = 0;
     private _testImageMap: object;
     private _mapCreator: MapCreator = new MapCreator();
 
-    constructor(amountOfHealth, damage, attackSpeed, moveSpeed, radiusOfDetection) {
-        this._count = 0;
-        this.radiusOfDetection = radiusOfDetection;
-        this.moveSpeed = moveSpeed;
-        this.attackSpeed = attackSpeed;
-        this.damage = damage;
-        this.amountOfHealth = amountOfHealth;
-        this.moveCountTest = 0;
+    id: number;
+    src: string;
+    collaid: string;
+    scope: string;
+    scopeRadius: number;
+    colliderPosition: Array<number>;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    pursuitZone: number;
+    persecutionRadius: string;
+    health: number;
+    damage: number;
+    attackDistance: number;
+    attackSpeed: number;
+    moveSpeed: number;
 
+    constructor(id: number, src: string, collaid: string, scope: string, scopeRadius: number, colliderPosition: Array<number>,
+                colliderWidth: number, colliderHeight: number, colliderLength: number,
+                pursuitZone: number, persecutionRadius: string, health: number,
+                damage: number, attackDistance: number,
+                attackSpeed: number, moveSpeed: number) {
+
+        this.id = id;
+        this.src = src;
+        this.collaid = collaid;
+        this.scope = scope;
+        this.scopeRadius = scopeRadius;
+        this.colliderPosition = colliderPosition;
+        this.colliderWidth = colliderWidth;
+        this.colliderHeight = colliderHeight;
+        this.colliderLength = colliderLength;
+        this.pursuitZone = pursuitZone;
+        this.persecutionRadius = persecutionRadius;
+        this.health = health;
+        this.damage = damage;
+        this.attackDistance = attackDistance;
+        this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
+
+        const loader = new THREE.TextureLoader();
+
+        this.scopeCircleMesh = this.createEnemySupportMeshNew(scopeRadius, scopeRadius, scope, colliderPosition, loader);
+        this.ColliderMesh = this.createEnemyColliderNew(colliderWidth, colliderLength, colliderHeight, collaid, colliderPosition, loader);
+        this.persecutionRadius = this.createEnemySupportMeshNew(pursuitZone, pursuitZone, persecutionRadius, colliderPosition, loader);
+        this.createEnemyHealthLineNew();
+        this.createEnemySprite(colliderPosition,src,loader);
+
+
+        this._count = 0;
+        this.moveCountTest = 0;
         this._animationTimer = 0;
         this._eventCount = 0;
         this.fixPoint = 0;
@@ -92,7 +163,7 @@ export default class AI {
         const position = enemyData.colliderPosition;
         this._testImageMap = this._mapCreator.parserJSON();
         const loader = new THREE.TextureLoader();
-        const enemyColor = 0xff0000;
+
 
 
         const enemyImg = loader.load(enemyData.src);
@@ -101,9 +172,10 @@ export default class AI {
         const colliderpersecutionRadius = loader.load(enemyData.persecutionRadius);
 
         enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
-
         enemyImg.repeat.set(0.2, 0.25);
         enemyImg.magFilter = THREE.NearestFilter;
+
+        const enemyColor = 0xff0000;
 
         const enemyTexture = new THREE.SpriteMaterial({
             map: enemyImg,
@@ -135,6 +207,22 @@ export default class AI {
             scene.add(enemyResultData.scopeCircleMesh, enemyResultData.persecutionRadius);
         }
         return enemyResultData;
+    }
+    createEnemySprite(position,src,loader){
+        const enemyImg = loader.load(src);
+        enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
+        enemyImg.repeat.set(0.2, 0.25);
+        enemyImg.magFilter = THREE.NearestFilter;
+
+        const enemyColor = 0xff0000;
+        const enemyTexture = new THREE.SpriteMaterial({
+            map: enemyImg,
+            color: enemyColor
+        });
+        this.enemySprite = new THREE.Sprite(enemyTexture);
+        this.enemySprite.scale.set(2, 2, 1);
+        this.enemySprite.position.set(position.x, position.y, position.z);
+        this.enemySprite.center.y = 0;
     }
 
     /**
@@ -169,8 +257,111 @@ export default class AI {
          enemyData.healthLine = healthLine;*/
     }
 
+    createEnemyHealthLineNew(enemyData: Object) {
+        const material = new THREE.LineBasicMaterial({
+            color: 0xff0000,
+            linewidth: 10,
+        });
+        const geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+        geometry.vertices.push(new THREE.Vector3(1, 0, 0));
+        const line = new THREE.Line(geometry, material);
+        this.EnemyHealthLine = line;
+        //Линия жизни на основе меша
+        /*               const material = new THREE.MeshPhongMaterial(
+         {
+         color: 0xff0000,
+         // map: playerDataIMG,
+         // side: THREE.DoubleSide
+         });
+         const geometry = new THREE.PlaneBufferGeometry(
+         playerData.colliderWidth,
+         0.25);
+
+
+         const healthLine = new THREE.Mesh(geometry, material);
+         healthLine.rotation.x = Math.PI * -.5;
+         healthLine.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
+         enemyData.healthLine = healthLine;*/
+    }
+
     createEnemySupportMesh(width: number, height: number, texture: Texture, position: object) {
 
+        const x = position.x || 0;
+        const y = position.y || 0;
+        const z = position.z || 0;
+
+        const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
+        const playerMeshMat = new THREE.MeshPhongMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+        const Mesh = new THREE.Mesh(playerMeshGeo, playerMeshMat);
+        Mesh.rotation.x = Math.PI * -.5;
+        Mesh.position.set(x, y, z);
+
+        return Mesh;
+    }
+
+    createEnemySupportMeshNew(width: number, height: number, scope: Texture, position: object, loader) {
+        const texture = loader.load(scope);
+        const x = position.x || 0;
+        const y = position.y || 0;
+        const z = position.z || 0;
+
+        const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
+        const playerMeshMat = new THREE.MeshPhongMaterial({
+            map: texture,
+            side: THREE.DoubleSide,
+            transparent: true
+        });
+        const Mesh = new THREE.Mesh(playerMeshGeo, playerMeshMat);
+        Mesh.rotation.x = Math.PI * -.5;
+        Mesh.position.set(x, y, z);
+
+        return Mesh;
+    }
+
+    createEnemyColliderNew(width: number, length: number, height: number, collaid: string, position: object, loader) {
+        const texture = loader.load(collaid);
+        const x = position.x || 0;
+        const y = position.y || 0;
+        const z = position.z || 0;
+
+        const playerMeshGeo = new THREE.BoxBufferGeometry(width, length, height);
+        let materials = [
+            //делаем каждую сторону своего цвета
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
+            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+        ];
+
+        if (globalVariables.collider.showCollider) {
+            materials = [
+                //делаем каждую сторону своего цвета
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
+                new THREE.MeshBasicMaterial({map: texture,}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
+                new THREE.MeshBasicMaterial({map: texture,}), // верх
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+            ];
+        }
+        const Mesh = new THREE.Mesh(playerMeshGeo, materials);
+        Mesh.rotation.x = Math.PI * -.5;
+        Mesh.position.set(x, y, z);
+        if (globalVariables.shadow.materialShadow) {
+            Mesh.castShadow = true;
+        }
+        return Mesh;
+    }
+
+    createEnemySupportMeshNew(width: number, height: number, persecutionRadius: string, position: object, loader) {
+        const texture = loader.load(persecutionRadius);
         const x = position.x || 0;
         const y = position.y || 0;
         const z = position.z || 0;
@@ -237,24 +428,24 @@ export default class AI {
      * @param playerData
      * @param mapData
      */
-    informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator,scene) {
+    informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator, scene) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
         this.updateHealthLine(enemyData);
 
-        if(enemyData.enemyHealth > 0) {
+        if (enemyData.health > 0) {
             this.persecutionObject(enemyData, playerInformation, mapData);
         }
-        else{
-            scene.remove(enemyData.scopeCircleMesh,enemyData.ColliderMesh,enemyData.persecutionRadius,enemyData.EnemyHealthLine,enemyData.enemySprite);
+        else {
+            scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
         }
     }
 
 
-    updateHealthLine(enemyData){
+    updateHealthLine(enemyData) {
 
-        enemyData.EnemyHealthLine.scale.x = enemyData.enemyData.health/100;
+        enemyData.EnemyHealthLine.scale.x = enemyData.health / 100;
         enemyData.EnemyHealthLine.scale.z = 2;
         this.updateEnemVisualDate(enemyData.EnemyHealthLine, enemyData.ColliderMesh);
 
@@ -311,11 +502,11 @@ export default class AI {
     logicOfMovement(enemy: Mesh, playerData: object, enemySprite: Sprite, arrayAnimationMove: Array<string>, enemyData: object, mapData: MapCreator) {
         const enemyPositionAxisX = enemy.position.x;
         const enemyPositionAxisZ = enemy.position.z;
-        const realStartPositionX = enemyData.enemyData.colliderPosition.x;
-        const realStartPositionZ = enemyData.enemyData.colliderPosition.z;
-        const enemyWidth = enemyData.enemyData.colliderWidth;
-        const enemyHeight = enemyData.enemyData.colliderHeight;
-        const scopeRadius = enemyData.enemyData.scopeRadius * 0.5;
+        const realStartPositionX = enemyData.colliderPosition.x;
+        const realStartPositionZ = enemyData.colliderPosition.z;
+        const enemyWidth = enemyData.colliderWidth;
+        const enemyHeight = enemyData.colliderHeight;
+        const scopeRadius = enemyData.scopeRadius * 0.5;
 
         const persecutionObjectPositionX = playerData.playerX;
         const persecutionObjectPositionZ = playerData.playerZ;
@@ -331,7 +522,7 @@ export default class AI {
             persecutionObjectPositionX, persecutionObjectPositionZ, persecutionObjectWidth, persecutionObjectHeight, playerData, enemyData);
 
 
-        const pursuitZone = enemyData.enemyData.pursuitZone * 0.5;
+        const pursuitZone = enemyData.pursuitZone * 0.5;
         let persecution = false;
         //TODO не очевидная логика перемещения вероятно связано с последовательностью определения координат
         if (scopeRadius + Math.abs(enemyPositionAxisX) >= Math.abs(Math.abs(persecutionObjectPositionX) - persecutionObjectWidth * 0.5) &&
@@ -429,7 +620,7 @@ export default class AI {
         }
 
         if (checkX && checkZ) {
-            this.attack(playerData.playerData, enemyData.enemyData);
+            this.attack(playerData.playerData, enemyData);
             return true;
         }
 
