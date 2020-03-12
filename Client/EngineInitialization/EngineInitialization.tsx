@@ -274,10 +274,10 @@ export default class EngineInitialization extends React.Component implements pri
     //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
     seeWhichPlayersAreBots(playerInMaps) {
         return {
-            playerX: playerInMaps[0].playerData.colliderPositionX,
-            playerZ: playerInMaps[0].playerData.colliderPositionZ,
-            playerWidth: playerInMaps[0].playerData.colliderWidth,
-            playerHeight: playerInMaps[0].playerData.colliderLength,
+            playerX: playerInMaps[0].collaider.position.x,
+            playerZ: playerInMaps[0].collaider.position.z,
+            playerWidth: playerInMaps[0].colliderWidth,
+            playerHeight: playerInMaps[0].colliderLength,
             playerData: playerInMaps[0]
         };
     }
