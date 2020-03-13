@@ -65,7 +65,7 @@ export default class Room implements BasicProperty {
 			}
 		});
 		this.setNumberTakePlaces(this.getNumberTakePlaces() - 1);
-		console.log(this.playersInTheRoom);
+
 		return this.playersInTheRoom;
 	}
 

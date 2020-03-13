@@ -72,7 +72,7 @@ class PlayerController extends Service {
 
 
     userAuthorization(ctx) {
-        console.log(ctx.params);
+
         return '';
     }
 

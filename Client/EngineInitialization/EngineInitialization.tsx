@@ -132,8 +132,8 @@ export default class EngineInitialization extends React.Component implements pri
                 });
                 removePlayerthis[0].removingPlayerFromScene(scene);
             }
-            this._enemyArray = this.createEnemyArray(room.enemy, scene, 100);
-            if (this.isThereUser) {
+            this._enemyArray = this.createEnemyArray(room.enemy, scene);
+            if (this.isThereUser.length) {
                 const camera = this.createCameraScene(canvas, this.isThereUser);
 
                 this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
@@ -188,7 +188,7 @@ export default class EngineInitialization extends React.Component implements pri
 
     }
 
-    createEnemyArray(enemyData, scene, count) {
+    createEnemyArray(enemyData, scene) {
 
 
 
@@ -213,15 +213,19 @@ export default class EngineInitialization extends React.Component implements pri
             const attackSpeed = enemy.attackSpeed;
             const moveSpeed = enemy.moveSpeed;
 
-            enemyDataArrayTest.push(new Enemy(id, src, collaid,
+            const enemyRoom = new Enemy(id, src, collaid,
                 scope, scopeRadius, colliderPosition,
                 colliderWidth, colliderHeight, colliderLength,
                 pursuitZone, persecutionRadius, health,
                 damage, attackDistance,attackSpeed,
-                moveSpeed));
+                moveSpeed);
+
+            enemyRoom.createEnemy(scene);
+
+            enemyDataArrayTest.push(enemyRoom);
         });
 
-        this._AI = new Enemy(enemyData[0].id, enemyData[0].src, enemyData[0].collaid,
+     /*   this._AI = new Enemy(enemyData[0].id, enemyData[0].src, enemyData[0].collaid,
             enemyData[0].scope, enemyData[0].scopeRadius, enemyData[0].colliderPosition,
             enemyData[0].colliderWidth, enemyData[0].colliderHeight, enemyData[0].colliderLength,
             enemyData[0].pursuitZone, enemyData[0].persecutionRadius, enemyData[0].health,
@@ -231,6 +235,7 @@ export default class EngineInitialization extends React.Component implements pri
         enemyData.forEach((enemy) => {
             enemyArray.push(this._AI.createEnemy(enemy, scene));
         });
+        */
         return enemyDataArrayTest;
     }
 
@@ -261,7 +266,8 @@ export default class EngineInitialization extends React.Component implements pri
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
         for (let key in enemyArray) {
-            this._AI.informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
+            // console.log(enemyArray[0].colliderPosition);
+            enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }
         let userProps = {};
         let cameraProps = {};

@@ -99,6 +99,8 @@ export default class Enemy implements BasicPropertyEnemy {
         this.createEnemySprite(colliderPosition,src,loader);
 
 
+
+
         this._count = 0;
         this.moveCountTest = 0;
         this._animationTimer = 0;
@@ -159,8 +161,8 @@ export default class Enemy implements BasicPropertyEnemy {
     /**
      * генерируем врага на карте
      */
-    createEnemy(enemyData: object, scene: Scene) {
-        const position = enemyData.colliderPosition;
+    createEnemy( scene: Scene) {
+      /*  const position = enemyData.colliderPosition;
         this._testImageMap = this._mapCreator.parserJSON();
         const loader = new THREE.TextureLoader();
 
@@ -197,16 +199,16 @@ export default class Enemy implements BasicPropertyEnemy {
         enemyResultData.EnemyHealthLine = enemyData.healthLine;
         enemyResultData.enemySprite = enemySprite;
         enemyResultData.enemyData = enemyData;
-        enemyResultData.enemyHealth = enemyData.health;
-        scene.add(enemySprite, enemyResultData.EnemyHealthLine);
+        enemyResultData.enemyHealth = enemyData.health;*/
+        scene.add(this.enemySprite, this.EnemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
-            scene.add(enemyResultData.ColliderMesh);
+            scene.add(this.ColliderMesh);
         }
 
         if (globalVariables.collider.additionalData) {
-            scene.add(enemyResultData.scopeCircleMesh, enemyResultData.persecutionRadius);
+            scene.add(this.scopeCircleMesh, this.persecutionRadius);
         }
-        return enemyResultData;
+        // return enemyResultData;
     }
     createEnemySprite(position,src,loader){
         const enemyImg = loader.load(src);

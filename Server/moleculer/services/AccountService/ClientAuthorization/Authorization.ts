@@ -6,7 +6,7 @@ import DB from '../../DatabaseService/DB.service';
 export default class Authorization {
 
     checkAuthorizationData(dataUser) {
-        console.log(dataUser, 'dataUser');
+
         if (dataUser.login === '123' && dataUser.password === '123') {
             return {id: 123, name: 123, status: true}
         }
