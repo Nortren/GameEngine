@@ -32,4 +32,10 @@ export default class BusinessLogic {
             callback(data);
         });
     }
+
+    getTestDataServerConnect(callback){
+        socket.on('getTestServerConnect', (data) => {
+            callback(data);
+        });
+    }
 }

@@ -55,7 +55,9 @@ export default class Enemy implements BasicPropertyEnemy {
     collaid: string;
     scope: string;
     scopeRadius: number;
-    colliderPosition: Array<number>;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
     colliderWidth: number;
     colliderHeight: number;
     colliderLength: number;
@@ -67,7 +69,8 @@ export default class Enemy implements BasicPropertyEnemy {
     attackSpeed: number;
     moveSpeed: number;
 
-    constructor(id: number, src: string, collaid: string, scope: string, scopeRadius: number, colliderPosition: Array<number>,
+    constructor(id: number, src: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
+                colliderPositionY: number,colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 pursuitZone: number, persecutionRadius: string, health: number,
                 damage: number, attackDistance: number,
@@ -78,7 +81,9 @@ export default class Enemy implements BasicPropertyEnemy {
         this.collaid = collaid;
         this.scope = scope;
         this.scopeRadius = scopeRadius;
-        this.colliderPosition = colliderPosition;
+        this.colliderPositionX = colliderPositionX;
+        this.colliderPositionY = colliderPositionY;
+        this.colliderPositionZ = colliderPositionZ;
         this.colliderWidth = colliderWidth;
         this.colliderHeight = colliderHeight;
         this.colliderLength = colliderLength;
@@ -92,13 +97,11 @@ export default class Enemy implements BasicPropertyEnemy {
 
         const loader = new THREE.TextureLoader();
 
-        this.scopeCircleMesh = this.createEnemySupportMeshNew(scopeRadius, scopeRadius, scope, colliderPosition, loader);
-        this.ColliderMesh = this.createEnemyColliderNew(colliderWidth, colliderLength, colliderHeight, collaid, colliderPosition, loader);
-        this.persecutionRadius = this.createEnemySupportMeshNew(pursuitZone, pursuitZone, persecutionRadius, colliderPosition, loader);
-        this.createEnemyHealthLineNew();
-        this.createEnemySprite(colliderPosition,src,loader);
-
-
+        this.scopeCircleMesh = this.createEnemySupportMesh(scopeRadius, scopeRadius, scope, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
+        this.ColliderMesh = this.createEnemyCollider(colliderWidth, colliderLength, colliderHeight, collaid, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
+        this.persecutionRadius = this.createEnemySupportMesh(pursuitZone, pursuitZone, persecutionRadius, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
+        this.createEnemyHealthLine();
+        this.createEnemySprite({x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, src, loader);
 
 
         this._count = 0;
@@ -161,45 +164,7 @@ export default class Enemy implements BasicPropertyEnemy {
     /**
      * генерируем врага на карте
      */
-    createEnemy( scene: Scene) {
-      /*  const position = enemyData.colliderPosition;
-        this._testImageMap = this._mapCreator.parserJSON();
-        const loader = new THREE.TextureLoader();
-
-
-
-        const enemyImg = loader.load(enemyData.src);
-        const scopeTexture = loader.load(enemyData.scope);
-        const colliderTexture = loader.load(enemyData.collaid);
-        const colliderpersecutionRadius = loader.load(enemyData.persecutionRadius);
-
-        enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
-        enemyImg.repeat.set(0.2, 0.25);
-        enemyImg.magFilter = THREE.NearestFilter;
-
-        const enemyColor = 0xff0000;
-
-        const enemyTexture = new THREE.SpriteMaterial({
-            map: enemyImg,
-            color: enemyColor
-        });
-
-        let enemySprite = new THREE.Sprite(enemyTexture);
-        enemySprite.scale.set(2, 2, 1);
-        enemySprite.position.set(position.x, position.y, position.z);
-        enemySprite.center.y = 0;
-
-
-        let enemyResultData = {};
-
-        enemyResultData.scopeCircleMesh = this.createEnemySupportMesh(enemyData.scopeRadius, enemyData.scopeRadius, scopeTexture, position);
-        enemyResultData.ColliderMesh = this.createEnemyCollider(enemyData.colliderWidth, enemyData.colliderLength, enemyData.colliderHeight, colliderTexture, enemyData.colliderPosition);
-        enemyResultData.persecutionRadius = this.createEnemySupportMesh(enemyData.pursuitZone, enemyData.pursuitZone, colliderpersecutionRadius, enemyData.colliderPosition);
-        this.createEnemyHealthLine(enemyData);
-        enemyResultData.EnemyHealthLine = enemyData.healthLine;
-        enemyResultData.enemySprite = enemySprite;
-        enemyResultData.enemyData = enemyData;
-        enemyResultData.enemyHealth = enemyData.health;*/
+    createEnemy(scene: Scene) {
         scene.add(this.enemySprite, this.EnemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
             scene.add(this.ColliderMesh);
@@ -208,9 +173,10 @@ export default class Enemy implements BasicPropertyEnemy {
         if (globalVariables.collider.additionalData) {
             scene.add(this.scopeCircleMesh, this.persecutionRadius);
         }
-        // return enemyResultData;
+
     }
-    createEnemySprite(position,src,loader){
+
+    createEnemySprite(position, src, loader) {
         const enemyImg = loader.load(src);
         enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
         enemyImg.repeat.set(0.2, 0.25);
@@ -227,39 +193,8 @@ export default class Enemy implements BasicPropertyEnemy {
         this.enemySprite.center.y = 0;
     }
 
-    /**
-     * Создание полоски жизни бота
-     * @param playerData
-     */
-    createEnemyHealthLine(enemyData: Object) {
-        const material = new THREE.LineBasicMaterial({
-            color: 0xff0000,
-            linewidth: 10,
-        });
-        const geometry = new THREE.Geometry();
-        geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-        geometry.vertices.push(new THREE.Vector3(1, 0, 0));
-        const line = new THREE.Line(geometry, material);
-        enemyData.healthLine = line;
-        //Линия жизни на основе меша
-        /*               const material = new THREE.MeshPhongMaterial(
-         {
-         color: 0xff0000,
-         // map: playerDataIMG,
-         // side: THREE.DoubleSide
-         });
-         const geometry = new THREE.PlaneBufferGeometry(
-         playerData.colliderWidth,
-         0.25);
 
-
-         const healthLine = new THREE.Mesh(geometry, material);
-         healthLine.rotation.x = Math.PI * -.5;
-         healthLine.position.set(playerData.colliderPositionX, playerData.colliderPositionY, playerData.colliderPositionZ);
-         enemyData.healthLine = healthLine;*/
-    }
-
-    createEnemyHealthLineNew(enemyData: Object) {
+    createEnemyHealthLine() {
         const material = new THREE.LineBasicMaterial({
             color: 0xff0000,
             linewidth: 10,
@@ -287,26 +222,8 @@ export default class Enemy implements BasicPropertyEnemy {
          enemyData.healthLine = healthLine;*/
     }
 
-    createEnemySupportMesh(width: number, height: number, texture: Texture, position: object) {
 
-        const x = position.x || 0;
-        const y = position.y || 0;
-        const z = position.z || 0;
-
-        const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
-        const playerMeshMat = new THREE.MeshPhongMaterial({
-            map: texture,
-            side: THREE.DoubleSide,
-            transparent: true
-        });
-        const Mesh = new THREE.Mesh(playerMeshGeo, playerMeshMat);
-        Mesh.rotation.x = Math.PI * -.5;
-        Mesh.position.set(x, y, z);
-
-        return Mesh;
-    }
-
-    createEnemySupportMeshNew(width: number, height: number, scope: Texture, position: object, loader) {
+    createEnemySupportMesh(width: number, height: number, scope: Texture, position: object, loader) {
         const texture = loader.load(scope);
         const x = position.x || 0;
         const y = position.y || 0;
@@ -325,64 +242,8 @@ export default class Enemy implements BasicPropertyEnemy {
         return Mesh;
     }
 
-    createEnemyColliderNew(width: number, length: number, height: number, collaid: string, position: object, loader) {
+    createEnemyCollider(width: number, length: number, height: number, collaid: string, position: object, loader) {
         const texture = loader.load(collaid);
-        const x = position.x || 0;
-        const y = position.y || 0;
-        const z = position.z || 0;
-
-        const playerMeshGeo = new THREE.BoxBufferGeometry(width, length, height);
-        let materials = [
-            //делаем каждую сторону своего цвета
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
-            new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-        ];
-
-        if (globalVariables.collider.showCollider) {
-            materials = [
-                //делаем каждую сторону своего цвета
-                new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
-                new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
-                new THREE.MeshBasicMaterial({map: texture,}), //зaдняя сторона
-                new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
-                new THREE.MeshBasicMaterial({map: texture,}), // верх
-                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-            ];
-        }
-        const Mesh = new THREE.Mesh(playerMeshGeo, materials);
-        Mesh.rotation.x = Math.PI * -.5;
-        Mesh.position.set(x, y, z);
-        if (globalVariables.shadow.materialShadow) {
-            Mesh.castShadow = true;
-        }
-        return Mesh;
-    }
-
-    createEnemySupportMeshNew(width: number, height: number, persecutionRadius: string, position: object, loader) {
-        const texture = loader.load(persecutionRadius);
-        const x = position.x || 0;
-        const y = position.y || 0;
-        const z = position.z || 0;
-
-        const playerMeshGeo = new THREE.PlaneBufferGeometry(width, height);
-        const playerMeshMat = new THREE.MeshPhongMaterial({
-            map: texture,
-            side: THREE.DoubleSide,
-            transparent: true
-        });
-        const Mesh = new THREE.Mesh(playerMeshGeo, playerMeshMat);
-        Mesh.rotation.x = Math.PI * -.5;
-        Mesh.position.set(x, y, z);
-
-        return Mesh;
-    }
-
-    createEnemyCollider(width: number, length: number, height: number, texture: Texture, position: object) {
-
         const x = position.x || 0;
         const y = position.y || 0;
         const z = position.z || 0;
@@ -504,8 +365,9 @@ export default class Enemy implements BasicPropertyEnemy {
     logicOfMovement(enemy: Mesh, playerData: object, enemySprite: Sprite, arrayAnimationMove: Array<string>, enemyData: object, mapData: MapCreator) {
         const enemyPositionAxisX = enemy.position.x;
         const enemyPositionAxisZ = enemy.position.z;
-        const realStartPositionX = enemyData.colliderPosition.x;
-        const realStartPositionZ = enemyData.colliderPosition.z;
+        const realStartPositionX = enemyData.colliderPositionX;
+        const realStartPositionY = enemyData.colliderPositionY;
+        const realStartPositionZ = enemyData.colliderPositionZ;
         const enemyWidth = enemyData.colliderWidth;
         const enemyHeight = enemyData.colliderHeight;
         const scopeRadius = enemyData.scopeRadius * 0.5;
@@ -663,10 +525,6 @@ export default class Enemy implements BasicPropertyEnemy {
                 while (this.checkCollisionAxis(enemyPositionAxisX - emptySpeed, enemyWidth, collisionX, drawObjectRealWidth)) {
                     return {x: enemy.position.x - emptySpeed, z: enemy.position.z};
                 }
-                /*    while(this.checkCollisionAxis(enemyPositionAxisZ-emptySpeed,enemyHeight,collisionZ,drawObjectRealHeight)){
-                 return {x: enemy.position.x, z: enemy.position.z-emptySpeed};
-                 }*/
-                // return {x: enemy.position.x, z: enemy.position.z};
             }
 
         }

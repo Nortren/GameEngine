@@ -4,7 +4,6 @@ export default class Enemy {
     collaid: string;
     scope: string;
     scopeRadius: number;
-    colliderPosition: object;
     colliderWidth: number;
     colliderHeight: number;
     colliderLength: number;
@@ -14,13 +13,18 @@ export default class Enemy {
     damage: number;
     attackDistance: number;
     attackSpeed: number;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
 
     constructor(id: string,
                 src: string,
                 collaid: string,
                 scope: string,
                 scopeRadius: number,
-                colliderPosition: object,
+                colliderPositionX: number,
+                colliderPositionY: number,
+                colliderPositionZ: number,
                 colliderWidth: number,
                 colliderHeight: number,
                 colliderLength: number,
@@ -36,7 +40,9 @@ export default class Enemy {
         this.collaid = collaid;
         this.scope = scope;
         this.scopeRadius = scopeRadius;
-        this.colliderPosition = colliderPosition;
+        this.colliderPositionX = colliderPositionX;
+        this.colliderPositionY = colliderPositionY;
+        this.colliderPositionZ = colliderPositionZ;
         this.colliderWidth = colliderWidth;
         this.colliderHeight = colliderHeight;
         this.colliderLength = colliderLength;
@@ -59,8 +65,8 @@ export default class Enemy {
 
     }
 
-    move() {
-
+    move(data) {
+        this.colliderPositionX = this.colliderPositionX + 1;
     }
 
     attack() {

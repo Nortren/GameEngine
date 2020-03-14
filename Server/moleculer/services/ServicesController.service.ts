@@ -32,11 +32,14 @@ class ServicesController extends Service {
 
 	serviceCreated() {
 		console.log('Created ServicesController');
+
 	}
 
 	serviceStarted() {
 		this.createClientConnection();
 		console.log('Started ServicesController');
+		//опрашиваем сервер об изменениях
+
 	}
 
 	serviceStopped() {
@@ -47,6 +50,15 @@ class ServicesController extends Service {
 		this.playerArray = [];
 		this.connectionPlayerName;
 		io.on('connection', (client) => {
+
+
+			//Оповещение игроков о состоянии мира в заданый интервал времени
+			setInterval(()=>{
+				this.constantUpdate(client);
+			},3000);
+
+
+
 			console.log('UserConnect');
 			this.checkUserAuthorization(client);
 			this.getRoom(client);
@@ -112,7 +124,8 @@ class ServicesController extends Service {
 					action: 'addPlayer'
 				});
 				this.playerControls(client, room);
-			})
+			});
+
 		});
 		client.on('disconnect', () => {
 			this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
@@ -130,6 +143,7 @@ class ServicesController extends Service {
 				this.playerControls(client, room);
 			})
 		});
+
 	}
 
 	/**
@@ -158,6 +172,18 @@ class ServicesController extends Service {
 		});
 
 		return res[0];
+	}
+	constantUpdate(client){
+		this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
+			this.addUserSocketID(this.connectionPlayerName, room.playersInTheRoom, client.id);
+			client.join(room.id);
+			io.to(room.id).emit('getTestServerConnect', {
+				room,
+				playerName: this.connectionPlayerName,
+				action: 'addPlayer'
+			});
+			this.playerControls(client, room);
+		});
 	}
 }
 

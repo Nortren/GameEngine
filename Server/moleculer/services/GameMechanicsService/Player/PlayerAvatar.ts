@@ -96,19 +96,19 @@ export default class PlayerAvatar extends PlayerMainClass {
 
     updatePosition(keyPress) {
         if (keyPress === 'KeyA') {
-            this.colliderPositionX = this.colliderPositionX - 1;
+            this.colliderPositionX = this.colliderPositionX - 0.1;
             this.moveDirection = 'LEFT';
         }
         if (keyPress === 'KeyD') {
-            this.colliderPositionX = this.colliderPositionX + 1;
+            this.colliderPositionX = this.colliderPositionX + 0.1;
             this.moveDirection = 'RIGHT';
         }
         if (keyPress === 'KeyW') {
-            this.colliderPositionZ = this.colliderPositionZ - 1;
+            this.colliderPositionZ = this.colliderPositionZ - 0.1;
             this.moveDirection = 'UP';
         }
         if (keyPress === 'KeyS') {
-            this.colliderPositionZ = this.colliderPositionZ + 1;
+            this.colliderPositionZ = this.colliderPositionZ + 0.1;
             this.moveDirection = 'DOWN';
         }
         //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации

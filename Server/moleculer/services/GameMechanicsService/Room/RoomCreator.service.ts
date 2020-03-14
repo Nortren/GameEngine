@@ -89,12 +89,14 @@ class RoomCreator extends Service {
                 await this.createRoom(userData);
             }
         }
-       //Получаем комнату где находится пользователь
+        //Получаем комнату где находится пользователь
         this.roomList.forEach((room) => {
             if (room.getPlayerInRoom(userData).length) {
                 userRoom = room;
             }
         });
+        //Обновляем данные врагов
+        this.managingEnemiesInRoom(userRoom);
         return userRoom;
     }
 
@@ -162,12 +164,9 @@ class RoomCreator extends Service {
                         this.collaid = enemyMap.get(enemy.typeEnemy).collaid,
                         this.scope = enemyMap.get(enemy.typeEnemy).scope,
                         this.scopeRadius = enemyMap.get(enemy.typeEnemy).scopeRadius,
-                        //TODO сейчас пока реализовал самый простой способ размещение врагов на карте без учета колайдов зданий и других игроков
-                        this.colliderPosition = {
-                            x: (enemy.startPoint.x + enemy.distanceBetweenEnemies * i),
-                            y: 0.01,
-                            z: (enemy.startPoint.z + enemy.distanceBetweenEnemies * i)
-                        },
+                        this.colliderPositionX = enemy.startPoint.x,
+                        this.colliderPositionY = enemy.startPoint.y,
+                        this.colliderPositionZ = enemy.startPoint.z,
                         this.colliderWidth = enemyMap.get(enemy.typeEnemy).colliderWidth,
                         this.colliderHeight = enemyMap.get(enemy.typeEnemy).colliderHeight,
                         this.colliderLength = enemyMap.get(enemy.typeEnemy).colliderLength,
@@ -184,6 +183,17 @@ class RoomCreator extends Service {
         } catch (e) {
             console.log('ошибка получения данных о противнике из БД', e)
         }
+    }
+
+    /**
+     * Управление врагами в комнате
+     */
+    managingEnemiesInRoom(userRoom) {
+
+        userRoom.enemy.forEach((enemy)=>{
+            enemy.move(userRoom);
+        })
+
     }
 
     serviceCreated() {
