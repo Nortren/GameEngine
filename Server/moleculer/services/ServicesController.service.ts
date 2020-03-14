@@ -118,10 +118,7 @@ class ServicesController extends Service {
 			this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
 				const player = this.getPlayerBySocketIOID(room.playersInTheRoom, client.id);
 				const removePlayerId = player.id;
-
-				// console.log(client.id,player.id,'removePlayer');
-
-				console.log(client.id,removePlayerId, 'removePlayer');
+				
 				room.removePlayerInRoom(removePlayerId);
 				client.leave(room.id);
 
