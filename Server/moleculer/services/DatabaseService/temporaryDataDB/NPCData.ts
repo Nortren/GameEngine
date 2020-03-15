@@ -18,7 +18,8 @@ export const NPCJson = {
         health:100,
         damage:1,
         attackDistance:1,
-        attackSpeed:10
+        attackSpeed:10,
+        moveSpeed:1
     },
     enemy2: {
         src: "./Client/image/hero.png",
@@ -39,7 +40,8 @@ export const NPCJson = {
         health:100,
         damage:1,
         attackDistance:1,
-        attackSpeed:10
+        attackSpeed:10,
+        moveSpeed:1
     },
     enemy3: {
         src: "./Client/image/hero.png",
@@ -60,6 +62,7 @@ export const NPCJson = {
         health:100,
         damage:1,
         attackDistance:1,
-        attackSpeed:10
+        attackSpeed:10,
+        moveSpeed:1
     },
 };

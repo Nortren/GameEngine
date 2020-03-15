@@ -143,7 +143,7 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param props данные от контроллеров управления
      */
     updateEnemyAvatar(enemy, moveDirection) {
-
+        this._count++;
         if (this._count > 3) {
             this._count = 0;
         }

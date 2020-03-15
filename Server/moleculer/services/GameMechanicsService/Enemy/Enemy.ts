@@ -16,6 +16,7 @@ export default class Enemy {
     colliderPositionX: number;
     colliderPositionY: number;
     colliderPositionZ: number;
+    moveSpeed: number;
 
     constructor(id: string,
                 src: string,
@@ -33,7 +34,8 @@ export default class Enemy {
                 health: number,
                 damage: number,
                 attackDistance: number,
-                attackSpeed: number) {
+                attackSpeed: number,
+                moveSpeed: number) {
 
         this.id = id;
         this.src = src;
@@ -52,6 +54,7 @@ export default class Enemy {
         this.damage = damage;
         this.attackDistance = attackDistance;
         this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
 
 
     }
@@ -114,25 +117,25 @@ export default class Enemy {
      * Двигаемся к выбранному игроку
      */
     goToThePlayer(huntedPlayer, enemy) {
-
+        const speedMove = this.moveSpeed * 0.1;
         if (enemy && huntedPlayer) {
             //Движение за игроком по оси X
             if (enemy.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
                 if (enemy.colliderPositionX <= huntedPlayer.colliderPositionX) {
-                    this.colliderPositionX = this.colliderPositionX + 1;
+                    this.colliderPositionX = this.colliderPositionX + speedMove;
                 }
                 if (enemy.colliderPositionX >= huntedPlayer.colliderPositionX) {
-                    this.colliderPositionX = this.colliderPositionX - 1;
+                    this.colliderPositionX = this.colliderPositionX - speedMove;
                 }
             }
 
             //Движение за игроком по оси Z
             if (enemy.colliderPositionZ.toFixed(1) !== huntedPlayer.colliderPositionZ.toFixed(1)) {
                 if (enemy.colliderPositionZ <= huntedPlayer.colliderPositionZ) {
-                    this.colliderPositionZ = this.colliderPositionZ + 1;
+                    this.colliderPositionZ = this.colliderPositionZ + speedMove;
                 }
                 if (enemy.colliderPositionZ >= huntedPlayer.colliderPositionZ) {
-                    this.colliderPositionZ = this.colliderPositionZ - 1;
+                    this.colliderPositionZ = this.colliderPositionZ - speedMove;
                 }
             }
         }

@@ -177,7 +177,8 @@ class RoomCreator extends Service {
                         this.health = enemyMap.get(enemy.typeEnemy).health,
                         this.damage = enemyMap.get(enemy.typeEnemy).damage,
                         this.attackDistance = enemyMap.get(enemy.typeEnemy).attackDistance,
-                        this.attackSpeed = enemyMap.get(enemy.typeEnemy).attackSpeed
+                        this.attackSpeed = enemyMap.get(enemy.typeEnemy).attackSpeed,
+                        this.moveSpeed = enemyMap.get(enemy.typeEnemy).moveSpeed
                     ));
                 }
             });
