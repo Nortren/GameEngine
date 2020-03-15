@@ -56,6 +56,8 @@ export default class EngineInitialization extends React.Component implements pri
 
         this.createUserRoom(scene, renderer, canvas);
 
+
+
     }
 
     /**
@@ -136,6 +138,23 @@ export default class EngineInitialization extends React.Component implements pri
             this._enemyArray = this.createEnemyArray(room.enemy, scene);
             if (this.isThereUser.length) {
                 const camera = this.createCameraScene(canvas, this.isThereUser);
+
+
+                this.blData.getTestDataServerConnect((data) => {
+                    data.room.enemy.forEach((enemy)=>{
+                        let thisEnemy =   this._enemyArray.filter((enemyClient)=>{
+
+                            return enemy.id === enemyClient.id
+                        })[0];
+                        thisEnemy.colliderPositionX = enemy.colliderPositionX;
+                        thisEnemy.colliderPositionY = enemy.colliderPositionY;
+                        thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
+
+
+                        thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
+                    });
+                });
+
 
                 this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
             }
@@ -250,20 +269,7 @@ export default class EngineInitialization extends React.Component implements pri
      */
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
 
-        this.blData.getTestDataServerConnect((data) => {
-            data.room.enemy.forEach((enemy)=>{
-             let thisEnemy =   enemyArray.filter((enemyClient)=>{
 
-                    return enemy.id === enemyClient.id
-                })[0];
-               thisEnemy.colliderPositionX = enemy.colliderPositionX;
-               thisEnemy.colliderPositionY = enemy.colliderPositionY;
-               thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
-
-
-                thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
-            });
-        });
 
         let now = performance.now();
         let duration = now - timeStart;

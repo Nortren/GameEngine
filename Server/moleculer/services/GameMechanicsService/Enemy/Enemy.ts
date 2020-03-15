@@ -62,13 +62,13 @@ export default class Enemy {
     }
 
     update(roomData) {
-      this.move(roomData);
+        this.move(roomData);
     }
 
     move(roomData) {
         const enemy = this;
         const playersInTheRoom = roomData.playersInTheRoom;
-        this.persecutionObjectOld(enemy,playersInTheRoom);
+        this.persecutionObjectOld(enemy, playersInTheRoom);
 
     }
 
@@ -83,14 +83,15 @@ export default class Enemy {
     persecutionObjectOld(enemy: object, playersInTheRoom: Array<object>) {
 
 
-        //Вычисляем ближайшего к нам игрока
-        let huntedPlayer = playersInTheRoom.filter((player) => {
-            return this.nearestPlayer(player, enemy)
-        })[0];
+        if (playersInTheRoom) {
+            //Вычисляем ближайшего к нам игрока
+            let huntedPlayer = playersInTheRoom.filter((player) => {
+                return this.nearestPlayer(player, enemy)
+            })[0];
 
 
-        this.goToThePlayer(huntedPlayer, enemy);
-
+            this.goToThePlayer(huntedPlayer, enemy);
+        }
     }
 
     /**
@@ -113,28 +114,29 @@ export default class Enemy {
      * Двигаемся к выбранному игроку
      */
     goToThePlayer(huntedPlayer, enemy) {
-        console.log(this.colliderPositionX,this.colliderPositionZ, 'Move');
-        //Движение за игроком по оси X
-        if (enemy.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
-            if (enemy.colliderPositionX <= huntedPlayer.colliderPositionX) {
-                this.colliderPositionX = this.colliderPositionX + 1;
-            }
-            if (enemy.colliderPositionX >= huntedPlayer.colliderPositionX) {
-                this.colliderPositionX = this.colliderPositionX - 1;
-            }
-        }
 
-        //Движение за игроком по оси Z
-        if (enemy.colliderPositionZ.toFixed(1) !== huntedPlayer.colliderPositionZ.toFixed(1)) {
-            if (enemy.colliderPositionZ <= huntedPlayer.colliderPositionZ) {
-                this.colliderPositionZ = this.colliderPositionZ + 1;
+        if (enemy && huntedPlayer) {
+            //Движение за игроком по оси X
+            if (enemy.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
+                if (enemy.colliderPositionX <= huntedPlayer.colliderPositionX) {
+                    this.colliderPositionX = this.colliderPositionX + 1;
+                }
+                if (enemy.colliderPositionX >= huntedPlayer.colliderPositionX) {
+                    this.colliderPositionX = this.colliderPositionX - 1;
+                }
             }
-            if (enemy.colliderPositionZ >= huntedPlayer.colliderPositionZ) {
-                this.colliderPositionZ = this.colliderPositionZ - 1;
+
+            //Движение за игроком по оси Z
+            if (enemy.colliderPositionZ.toFixed(1) !== huntedPlayer.colliderPositionZ.toFixed(1)) {
+                if (enemy.colliderPositionZ <= huntedPlayer.colliderPositionZ) {
+                    this.colliderPositionZ = this.colliderPositionZ + 1;
+                }
+                if (enemy.colliderPositionZ >= huntedPlayer.colliderPositionZ) {
+                    this.colliderPositionZ = this.colliderPositionZ - 1;
+                }
             }
         }
     }
-
 
 }
 
