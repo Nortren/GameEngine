@@ -61,12 +61,15 @@ export default class Enemy {
 
     }
 
-    update(newData: Array<object>, oldData: Array<object>) {
-
+    update(roomData) {
+      this.move(roomData);
     }
 
-    move(data) {
-        this.colliderPositionX = this.colliderPositionX + 1;
+    move(roomData) {
+        const enemy = this;
+        const playersInTheRoom = roomData.playersInTheRoom;
+        this.persecutionObjectOld(enemy,playersInTheRoom);
+
     }
 
     attack() {
@@ -76,6 +79,62 @@ export default class Enemy {
     death() {
 
     }
+
+    persecutionObjectOld(enemy: object, playersInTheRoom: Array<object>) {
+
+
+        //Вычисляем ближайшего к нам игрока
+        let huntedPlayer = playersInTheRoom.filter((player) => {
+            return this.nearestPlayer(player, enemy)
+        })[0];
+
+
+        this.goToThePlayer(huntedPlayer, enemy);
+
+    }
+
+    /**
+     * Определяем ближайшего к врагу игрока
+     * @param player
+     * @param enemy
+     * @returns {boolean}
+     */
+    nearestPlayer(player, enemy) {
+        /*TODO в дальнейшем надол сделать так чтоб определялся самый ближайший игрок а не первый попавшийся в радиусе видимости из массива с игроками плюс учет количества жизней игрока(в зависимости от типа монстра
+         кто-то будет за самым побитым кто-то за самым сильным и т.д)*/
+        //Тут идёт умножение ширины и длинны на 0.5 т.к они считаются от центра т.е половину откладываем в одну сторону половину в другую
+        if (enemy.scopeRadius + Math.abs(enemy.colliderPositionX) >= Math.abs(Math.abs(player.colliderPositionX) - player.colliderWidth * 0.5) &&
+            enemy.scopeRadius + Math.abs(enemy.colliderPositionZ) >= Math.abs(Math.abs(player.colliderPositionZ) - player.colliderLength * 0.5)) {
+            return true;
+        }
+    }
+
+    /**
+     * Двигаемся к выбранному игроку
+     */
+    goToThePlayer(huntedPlayer, enemy) {
+        console.log(this.colliderPositionX,this.colliderPositionZ, 'Move');
+        //Движение за игроком по оси X
+        if (enemy.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
+            if (enemy.colliderPositionX <= huntedPlayer.colliderPositionX) {
+                this.colliderPositionX = this.colliderPositionX + 1;
+            }
+            if (enemy.colliderPositionX >= huntedPlayer.colliderPositionX) {
+                this.colliderPositionX = this.colliderPositionX - 1;
+            }
+        }
+
+        //Движение за игроком по оси Z
+        if (enemy.colliderPositionZ.toFixed(1) !== huntedPlayer.colliderPositionZ.toFixed(1)) {
+            if (enemy.colliderPositionZ <= huntedPlayer.colliderPositionZ) {
+                this.colliderPositionZ = this.colliderPositionZ + 1;
+            }
+            if (enemy.colliderPositionZ >= huntedPlayer.colliderPositionZ) {
+                this.colliderPositionZ = this.colliderPositionZ - 1;
+            }
+        }
+    }
+
 
 }
 

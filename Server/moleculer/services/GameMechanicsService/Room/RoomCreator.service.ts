@@ -29,6 +29,9 @@ class RoomCreator extends Service {
     }
 
     getRoomList(ctx) {
+
+        return this.roomList;
+
     }
 
     /**
@@ -39,7 +42,7 @@ class RoomCreator extends Service {
         const idRoom = this.roomList ? this.roomList.length + 1 : 1;
         //Создаём комнату того типа где последний раз был пользователь
         const typeRoom = userData.lastRoomType;
-        const numberPlaces = 5;
+        const numberPlaces = 2;
         //Дожидаемся получения карты  из базы
 
         const map = await this.addMapToRoom(typeRoom);
@@ -95,8 +98,7 @@ class RoomCreator extends Service {
                 userRoom = room;
             }
         });
-        //Обновляем данные врагов
-        this.managingEnemiesInRoom(userRoom);
+
         return userRoom;
     }
 
@@ -183,17 +185,6 @@ class RoomCreator extends Service {
         } catch (e) {
             console.log('ошибка получения данных о противнике из БД', e)
         }
-    }
-
-    /**
-     * Управление врагами в комнате
-     */
-    managingEnemiesInRoom(userRoom) {
-
-        userRoom.enemy.forEach((enemy)=>{
-            enemy.move(userRoom);
-        })
-
     }
 
     serviceCreated() {

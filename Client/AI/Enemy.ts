@@ -70,7 +70,7 @@ export default class Enemy implements BasicPropertyEnemy {
     moveSpeed: number;
 
     constructor(id: number, src: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
-                colliderPositionY: number,colliderPositionZ: number,
+                colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 pursuitZone: number, persecutionRadius: string, health: number,
                 damage: number, attackDistance: number,
@@ -97,11 +97,23 @@ export default class Enemy implements BasicPropertyEnemy {
 
         const loader = new THREE.TextureLoader();
 
-        this.scopeCircleMesh = this.createEnemySupportMesh(scopeRadius, scopeRadius, scope, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
-        this.ColliderMesh = this.createEnemyCollider(colliderWidth, colliderLength, colliderHeight, collaid, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
-        this.persecutionRadius = this.createEnemySupportMesh(pursuitZone, pursuitZone, persecutionRadius, {x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, loader);
+        this.scopeCircleMesh = this.createEnemySupportMesh(scopeRadius, scopeRadius, scope, {
+            x: colliderPositionX,
+            y: colliderPositionY,
+            z: colliderPositionZ
+        }, loader);
+        this.ColliderMesh = this.createEnemyCollider(colliderWidth, colliderLength, colliderHeight, collaid, {
+            x: colliderPositionX,
+            y: colliderPositionY,
+            z: colliderPositionZ
+        }, loader);
+        this.persecutionRadius = this.createEnemySupportMesh(pursuitZone, pursuitZone, persecutionRadius, {
+            x: colliderPositionX,
+            y: colliderPositionY,
+            z: colliderPositionZ
+        }, loader);
         this.createEnemyHealthLine();
-        this.createEnemySprite({x:colliderPositionX,y:colliderPositionY,z:colliderPositionZ}, src, loader);
+        this.createEnemySprite({x: colliderPositionX, y: colliderPositionY, z: colliderPositionZ}, src, loader);
 
 
         this._count = 0;
@@ -281,8 +293,8 @@ export default class Enemy implements BasicPropertyEnemy {
 
     //Метод который обновляет позицию item привязанных к боту
     updateEnemVisualDate(enemyData: Mesh, enemy: Mesh) {
-        enemyData.position.x = enemy.position.x;
-        enemyData.position.z = enemy.position.z;
+        enemyData.position.x = enemy.colliderPositionX;
+        enemyData.position.z = enemy.colliderPositionZ;
     }
 
     /**
@@ -292,19 +304,47 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param mapData
      */
     informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator, scene) {
-        this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData.ColliderMesh);
-        this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData.ColliderMesh);
-        this.updateEnemVisualDate(enemyData.enemySprite, enemyData.ColliderMesh);
+        this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData);
+        this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData);
+        this.updateEnemVisualDate(enemyData.enemySprite, enemyData);
         this.updateHealthLine(enemyData);
 
-        if (enemyData.health > 0) {
-            this.persecutionObject(enemyData, playerInformation, mapData);
-        }
-        else {
+        //TODO Старая логика анимации и перемещения которая считалась на клиенте
+        /*     if (enemyData.health > 0) {
+         this.persecutionObject(enemyData, playerInformation, mapData);
+         }
+         else {
+         scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
+         }*/
+        this.animationEnemyAvatarforPositionServer(enemyData,playerInformation);
+
+        if (enemyData.health <= 0) {
             scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
         }
+
     }
 
+
+    animationEnemyAvatarforPositionServer(enemyData,playerInformation){
+        const arrayAnimationMove = ['moveLeft', 'moveRight', 'moveUP', 'moveDown'];
+        if (enemyData.colliderPositionX.toFixed(1) !== playerInformation.colliderPositionX.toFixed(1)) {
+            if (enemyData.colliderPositionX <= playerInformation.colliderPositionX) {
+                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[1]);
+            }
+            if (enemyData.colliderPositionX >= playerInformation.colliderPositionX) {
+                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[0]);
+            }
+        }
+
+        if (enemyData.colliderPositionZ.toFixed(1) !== playerInformation.colliderPositionZ.toFixed(1)) {
+            if (enemyData.colliderPositionZ <= playerInformation.colliderPositionZ) {
+                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[3]);
+            }
+            if (enemyData.colliderPositionZ >= playerInformation.colliderPositionZ) {
+                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[2]);
+            }
+        }
+    }
 
     updateHealthLine(enemyData) {
 

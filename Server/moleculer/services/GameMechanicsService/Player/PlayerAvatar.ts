@@ -51,7 +51,6 @@ export default class PlayerAvatar extends PlayerMainClass {
         }
 
         if (keyPress.event) {
-            console.log(keyPress,'EVENT');
             this.updateTouchPosition(keyPress);
         }
 

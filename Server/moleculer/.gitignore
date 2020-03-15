@@ -63,4 +63,5 @@ typings/
 # JetBrains IDE
 .idea
 
-.js
+*.js
+*.map

@@ -255,8 +255,13 @@ export default class EngineInitialization extends React.Component implements pri
              let thisEnemy =   enemyArray.filter((enemyClient)=>{
 
                     return enemy.id === enemyClient.id
-                });
-                console.log(thisEnemy);
+                })[0];
+               thisEnemy.colliderPositionX = enemy.colliderPositionX;
+               thisEnemy.colliderPositionY = enemy.colliderPositionY;
+               thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
+
+
+                thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
             });
         });
 
@@ -277,9 +282,9 @@ export default class EngineInitialization extends React.Component implements pri
         });
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
-        for (let key in enemyArray) {
+     /*   for (let key in enemyArray) {
             enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
-        }
+        }*/
         let userProps = {};
         let cameraProps = {};
         this.updateUsersPositionInRoom(userProps, playerInMaps, camera, cameraProps, enemyArray);
