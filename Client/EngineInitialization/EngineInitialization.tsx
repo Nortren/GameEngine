@@ -99,6 +99,7 @@ export default class EngineInitialization extends React.Component implements pri
             if (!this.userID) {
                 this.userID = data.playerName;
                 this._mapCreator.createGameLocation(scene, room.map);
+                this._enemyArray = this.createEnemyArray(room.enemy, scene);
             }
 
             if (data.room.playersInTheRoom.length) {
@@ -135,7 +136,7 @@ export default class EngineInitialization extends React.Component implements pri
                 });
                 removePlayerthis[0].removingPlayerFromScene(scene);
             }
-            this._enemyArray = this.createEnemyArray(room.enemy, scene);
+
             if (this.isThereUser.length) {
                 const camera = this.createCameraScene(canvas, this.isThereUser);
 
