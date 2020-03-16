@@ -1,6 +1,6 @@
 export const PlayerJson = {
     123: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/testMarine.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
@@ -15,7 +15,7 @@ export const PlayerJson = {
         moveSpeed:1
     },
     1: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/Player_v0.0.4.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
@@ -30,7 +30,7 @@ export const PlayerJson = {
         moveSpeed:1
     },
     2: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/Player_v0.0.4.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
@@ -45,7 +45,7 @@ export const PlayerJson = {
         moveSpeed:1
     },
     3: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/Player_v0.0.4.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
@@ -60,7 +60,7 @@ export const PlayerJson = {
         moveSpeed:1
     },
     4: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/Player_v0.0.4.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
@@ -75,7 +75,7 @@ export const PlayerJson = {
         moveSpeed:1
     },
     5: {
-        src: "./Client/image/Player_v0.0.3.png",
+        src: "./Client/image/Player_v0.0.4.png",
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
