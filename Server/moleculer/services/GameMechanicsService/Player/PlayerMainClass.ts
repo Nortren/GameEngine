@@ -22,6 +22,17 @@ interface BasicProperty {
     death();
     changeSocketIOID();
 }
+interface ISprite{
+	src: string,
+	numberOfFramesX: number,
+	numberOfFramesY: number,
+	firstFrameMove: number,
+	lastFrameMove: number,
+	firstFrameAttack: number,
+	lastFrameAttack: number,
+	firstFrameDeath: number,
+	lastFrameDeath: number,
+}
 
 export default class PlayerMainClass implements BasicProperty {
 
@@ -38,7 +49,7 @@ export default class PlayerMainClass implements BasicProperty {
     colliderWidth: number;
     colliderHeight: number;
     colliderLength: number;
-    src: string;
+    sprite: ISprite;
     collaid: string;
     moveDirection: string;
     clientSocketIOID: string;
@@ -47,7 +58,7 @@ export default class PlayerMainClass implements BasicProperty {
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
-                src: string, collaid: string) {
+				sprite: ISprite, collaid: string) {
         this.id = id;
         this.health = health;
         this.damage = damage;
@@ -61,7 +72,7 @@ export default class PlayerMainClass implements BasicProperty {
         this.colliderWidth = colliderWidth;
         this.colliderHeight = colliderHeight;
         this.colliderLength = colliderLength;
-        this.src = src;
+        this.sprite = sprite;
         this.collaid = collaid;
     }
 

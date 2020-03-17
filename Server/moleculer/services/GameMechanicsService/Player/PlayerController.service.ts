@@ -47,14 +47,14 @@ class PlayerController extends Service {
         const colliderWidth = player.colliderWidth;
         const colliderHeight = player.colliderHeight;
         const colliderLength = player.colliderLength;
-        const src = player.src;
+        const sprite = player.sprite;
         const collaid = player.collaid;
 
         const playerAvatar = new PlayerAvatar(id,health,damage,
             attackSpeed,moveSpeed,attackDistance,
             colliderPositionX,colliderPositionY,colliderPositionZ,
             colliderWidth,colliderHeight,colliderLength,
-            src,collaid
+			sprite,collaid
         );
 
         return playerAvatar;

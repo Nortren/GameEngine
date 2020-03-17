@@ -1,4 +1,18 @@
 import PlayerMainClass from "./PlayerMainClass";
+
+
+interface ISprite{
+	src: string,
+	numberOfFramesX: number,
+	numberOfFramesY: number,
+	firstFrameMove: number,
+	lastFrameMove: number,
+	firstFrameAttack: number,
+	lastFrameAttack: number,
+	firstFrameDeath: number,
+	lastFrameDeath: number,
+}
+
 export default class PlayerAvatar extends PlayerMainClass {
 
 
@@ -6,13 +20,13 @@ export default class PlayerAvatar extends PlayerMainClass {
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
-                src: string, collaid: string) {
+				sprite: ISprite, collaid: string) {
 
         super(id, health, damage,
             attackSpeed, moveSpeed, attackDistance,
             colliderPositionX, colliderPositionY, colliderPositionZ,
             colliderWidth, colliderHeight, colliderLength,
-            src, collaid
+			sprite, collaid
         );
 
         this.id = id;
@@ -28,7 +42,7 @@ export default class PlayerAvatar extends PlayerMainClass {
         this.colliderWidth = colliderWidth;
         this.colliderHeight = colliderHeight;
         this.colliderLength = colliderLength;
-        this.src = src;
+        this.sprite = sprite;
         this.collaid = collaid;
     }
 

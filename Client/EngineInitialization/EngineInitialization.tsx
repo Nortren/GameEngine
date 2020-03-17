@@ -180,7 +180,7 @@ export default class EngineInitialization extends React.Component implements pri
         const colliderWidth = item.colliderWidth;
         const colliderHeight = item.colliderHeight;
         const colliderLength = item.colliderLength;
-        const src = item.src;
+        const sprite = item.sprite;
         const collaid = item.collaid;
 
 
@@ -188,7 +188,7 @@ export default class EngineInitialization extends React.Component implements pri
             attackSpeed, moveSpeed, attackDistance,
             colliderPositionX, colliderPositionY, colliderPositionZ,
             colliderWidth, colliderHeight, colliderLength,
-            src, collaid
+            sprite, collaid
         );
         const playerData = player.createPlayer(item);
 
