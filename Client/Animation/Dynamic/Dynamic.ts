@@ -5,7 +5,7 @@ export default class Dynamic {
     fixPoint: number;
 
     constructor() {
-        this._count = 0;
+        this._count = 1;
 
 
         this._animationTimer = 0;
@@ -26,13 +26,23 @@ export default class Dynamic {
         return spriteOffsets;
     }
 
+    animationSpriteNew(titleCountX, titleCountY, numberOfFrames) {
+        let spriteOffsets = [];
+        let xPosition = numberOfFrames/titleCountX;
+        let yPosition = numberOfFrames/titleCountY;
+        spriteOffsets.push({x: xPosition, y: titleCountY});
+
+        return spriteOffsets[0];
+    }
+
     /**
      * Обновления sprite анимации
      * @param props данные от контроллеров управления
      */
     updateUserAvatar(props) {
         //y = 0.08
-        let rect = this.animationSprite(-0.011, 0.07, 0, 0.05, 14)[this._count];
+        // let rect = this.animationSprite(-0.011, 0.07, 0, 0.05, 14)[this._count];
+        let rect = this.animationSpriteNew(8, 8,  this._count);
         //Если нет props значит это первичная инициализация игрока
         if (props) {
             //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
@@ -41,21 +51,21 @@ export default class Dynamic {
                 this._count++;
             }
             //||  this.lastDirectionMove !== props.moveDirection
-            if (this._count > 13 ) {
-                this._count = 0;
+            if (this._count > 9 ) {
+                this._count = 1;
             }
 
             if (this._pressKey === "A" || ( this.lastDirectionMove === "LEFT")) {
-                rect = this.animationSprite(0.03, 0.39, 0.25, null, 14)[this._count];
+                rect = this.animationSpriteNew(8, 0.875,  this._count);
             }
             if (this._pressKey === "D" || (this.lastDirectionMove === "RIGHT")) {
-                rect = this.animationSprite(0.03, 0.59, 0.25, null, 14)[this._count];
+                rect = this.animationSpriteNew(8, 0.375,  this._count);
             }
             if (this._pressKey === "W" || (this.lastDirectionMove === "UP")) {
-                rect = this.animationSprite(0.05, 0.66, 0, 0.073, 14)[this._count];
+                rect = this.animationSpriteNew(8, 0.625,  this._count);
             }
             if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
-                rect = this.animationSprite(0.95, 0.88, 0, 0.08, 14)[this._count];
+                rect = this.animationSpriteNew(8, 0.125,  this._count);
             }
         }
         return rect

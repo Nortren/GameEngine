@@ -107,17 +107,20 @@ export default class Player implements BasicProperty {
      */
     createEngineUserObject(playerData: Object, playerImg: Texture, position) {
         playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
-        playerImg.offset.x = 0.5;
-        playerImg.offset.y = 0.5;
-        playerImg.repeat.set(0.05, 0.05);
+        playerImg.repeat.set(1 / 8, 1 / 8);
+        // playerImg.offset.x = 0.5;
+        // playerImg.offset.y = 0.5;
+        // playerImg.repeat.set(0.05, 0.05);
         //Фильтр который создаёт эфект пикселя
         playerImg.magFilter = THREE.NearestFilter;
         let playerAvatarSprite;
         const heroTexture = new THREE.SpriteMaterial({
-            map: playerImg
+            map: playerImg,
+            //Посмотреть доку на это
+            useScreenCoordinates: false, transparent: true
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
-        playerAvatarSprite.scale.set(7, 5, 1);
+        playerAvatarSprite.scale.set(5, 5, 1.0);
         playerAvatarSprite.position.set(position.x, 0, position.z);
         playerAvatarSprite.center.y = 0;
         playerData.playerAvatarSprite = playerAvatarSprite;

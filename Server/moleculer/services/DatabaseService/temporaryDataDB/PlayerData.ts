@@ -1,6 +1,14 @@
 export const PlayerJson = {
     123: {
-        src: "./Client/image/testMarine.png",
+        src: "./Client/image/spriteTest.png",
+		numberOfFramesX:8,
+		numberOfFramesY:8,
+		firstFrameMove:1,
+		lastFrameMove:8,
+		firstFrameAttack:null,
+		lastFrameAttack :null,
+		firstFrameDeath:null,
+		lastFrameDeath:null,
         collaid:"./Client/image/collaid.png",
         colliderPositionX: 0,
         colliderPositionY: 0,
