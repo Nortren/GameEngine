@@ -142,6 +142,8 @@ export default class EngineInitialization extends React.Component implements pri
 
 
                 this.blData.getTestDataServerConnect((data) => {
+                    console.log('sec');
+
                     data.room.enemy.forEach((enemy)=>{
                         let thisEnemy =   this._enemyArray.filter((enemyClient)=>{
 
@@ -156,7 +158,9 @@ export default class EngineInitialization extends React.Component implements pri
                     });
                 });
 
-
+                let userProps = {};
+                let cameraProps = {};
+                this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
                 this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
             }
         });
@@ -245,18 +249,6 @@ export default class EngineInitialization extends React.Component implements pri
 
             enemyDataArrayTest.push(enemyRoom);
         });
-
-        /*   this._AI = new Enemy(enemyData[0].id, enemyData[0].src, enemyData[0].collaid,
-         enemyData[0].scope, enemyData[0].scopeRadius, enemyData[0].colliderPosition,
-         enemyData[0].colliderWidth, enemyData[0].colliderHeight, enemyData[0].colliderLength,
-         enemyData[0].pursuitZone, enemyData[0].persecutionRadius, enemyData[0].health,
-         enemyData[0].damage, enemyData[0].attackDistance,enemyData[0].attackSpeed,
-         enemyData[0].moveSpeed);
-         let enemyArray = [];
-         enemyData.forEach((enemy) => {
-         enemyArray.push(this._AI.createEnemy(enemy, scene));
-         });
-         */
         return enemyDataArrayTest;
     }
 
@@ -292,9 +284,7 @@ export default class EngineInitialization extends React.Component implements pri
      /*   for (let key in enemyArray) {
             enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
         }*/
-        let userProps = {};
-        let cameraProps = {};
-        this.updateUsersPositionInRoom(userProps, playerInMaps, camera, cameraProps, enemyArray);
+
 
         this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
             playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
@@ -327,6 +317,7 @@ export default class EngineInitialization extends React.Component implements pri
                         userProps.moveX = data.arrayUser[i].colliderPositionX;
                         userProps.moveZ = data.arrayUser[i].colliderPositionZ;
                         userProps.moveDirection = data.arrayUser[i].moveDirection;
+                        userProps.attackStatus = data.arrayUser[i].attackStatus;
                         if (playerInMaps[i]) {
                             if (!globalVariables.camera.cameraControl && (data.arrayUser[i].id === this.userID)) {
                                 this.updateCameraClientPosition(camera, i, cameraProps, data);

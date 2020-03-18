@@ -14,6 +14,7 @@ interface BasicProperty {
     src: string;
     collaid: string;
     moveDirection: string;
+    attackStatus: boolean;
     clientSocketIOID: string;
     create();
     update();
@@ -52,6 +53,7 @@ export default class PlayerMainClass implements BasicProperty {
     sprite: ISprite;
     collaid: string;
     moveDirection: string;
+	attackStatus: boolean;
     clientSocketIOID: string;
 
     constructor(id: number, health: number, damage: number,

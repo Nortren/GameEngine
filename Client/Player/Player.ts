@@ -2,6 +2,7 @@ import * as THREE from "three";
 import {globalVariables} from "../GlobalVariables";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {Texture} from "three";
+
 interface BasicProperty {
     id: number;
     health: number;
@@ -18,14 +19,21 @@ interface BasicProperty {
     src: string;
     collaid: string;
     clientSocketIOID: string;
+
     create();
+
     update();
+
     move();
+
     attack();
+
     death();
+
     changeSocketIOID();
 }
-interface ISprite{
+
+interface ISprite {
     src: string,
     numberOfFramesX: number,
     numberOfFramesY: number,
@@ -102,14 +110,15 @@ export default class Player implements BasicProperty {
      */
     createPlayer() {
         //Припервичной инициализации нужно корректно отрисовать спрайт игрока
-        let rect = this.animation.updateUserAvatar(null,this.sprite);
-        this.playerData.playerAvatarSprite.material.map.offset.x = rect.x;
-        this.playerData.playerAvatarSprite.material.map.offset.y = rect.y;
+        const userSpriteTextureFrames = this.playerData.playerAvatarSprite.material.map;
+        this.animation.updateUserAvatar(null, this.sprite, userSpriteTextureFrames);
+
+
         return this.playerData;
     }
 
-    removingPlayerFromScene(scene){
-        scene.remove(this.playerAvatarSprite,this.playerAvatarSprite,this.collaider)
+    removingPlayerFromScene(scene) {
+        scene.remove(this.playerAvatarSprite, this.playerAvatarSprite, this.collaider)
     }
 
     /**
@@ -118,13 +127,15 @@ export default class Player implements BasicProperty {
      * @param userImg
      */
     createEngineUserObject(playerData: Object, playerImg: Texture, position) {
-        playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
+        // playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
+        //Зеркально отражение
+         playerImg.wrapS = playerImg.wrapT = THREE.MirroredRepeatWrapping;
         playerImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
         // playerImg.offset.x = 0.5;
         // playerImg.offset.y = 0.5;
-        // playerImg.repeat.set(0.05, 0.05);
+        // playerImg.repeat.set(2, 2);
         //Фильтр который создаёт эфект пикселя
-        playerImg.magFilter = THREE.NearestFilter;
+        // playerImg.magFilter = THREE.NearestFilter;
         let playerAvatarSprite;
         const heroTexture = new THREE.SpriteMaterial({
             map: playerImg,
@@ -132,7 +143,7 @@ export default class Player implements BasicProperty {
             useScreenCoordinates: false, transparent: true
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
-        playerAvatarSprite.scale.set(5, 5, 1.0);
+        playerAvatarSprite.scale.set(3, 3, 1.0);
         playerAvatarSprite.position.set(position.x, 0, position.z);
         playerAvatarSprite.center.y = 0;
         playerData.playerAvatarSprite = playerAvatarSprite;
@@ -265,9 +276,11 @@ export default class Player implements BasicProperty {
      * @param rect
      */
     update(playerData: Object, props: Object, enemyArray) {
+        //Текстура спрайта по которой нам нужно отрисовывать Frame
+        const userSpriteTextureFrames = playerData.playerAvatarSprite.material.map;
 
+        this.animation.updateUserAvatar(props, this.sprite, userSpriteTextureFrames);
 
-        let rect = this.animation.updateUserAvatar(props,this.sprite);
 
         playerData = playerData.playerData;
         let positionPlayer = {x: playerData.colliderPosit, z: playerData.colliderPositionZ};
@@ -282,10 +295,9 @@ export default class Player implements BasicProperty {
         positionHealthLine.y = 0;
 
         //рисуем героя по центру картинки
-        playerData.playerAvatarSprite.material.map.offset.x = rect.x;
-        playerData.playerAvatarSprite.material.map.offset.y = rect.y;
         playerData.playerAvatarSprite.position.x = props.moveX;
         playerData.playerAvatarSprite.position.z = props.moveZ;
+
         playerData.collaider.position.x = playerData.playerAvatarSprite.position.x;
         playerData.collaider.position.z = playerData.playerAvatarSprite.position.z;
         playerData.healthLine.position.x = playerData.playerAvatarSprite.position.x;

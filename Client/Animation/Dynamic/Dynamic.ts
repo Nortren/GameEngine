@@ -35,11 +35,20 @@ export default class Dynamic {
         return spriteOffsets[0];
     }
 
+    animationSpriteAttack(titleCountX, titleCountY, numberOfFrames) {
+        let spriteOffsets = [];
+        let xPosition = numberOfFrames * titleCountX;
+        let yPosition = numberOfFrames * titleCountY;
+        spriteOffsets.push({x: titleCountX, y: yPosition});
+
+        return spriteOffsets[0];
+    }
+
     /**
      * Обновления sprite анимации
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(props,spriteData) {
+    updateUserAvatar(props,spriteData,userSpriteTextureFrames) {
         //Шаг фрэйма по оси X и Y
         const frameToX = 1/spriteData.numberOfFramesX;
         const frameToY = 1/spriteData.numberOfFramesY;
@@ -50,6 +59,10 @@ export default class Dynamic {
             if (props.moveDirection !== "STOP") {
                 this.lastDirectionMove = props.moveDirection;
                 this._count++;
+            }
+
+            if (props.attackStatus) {
+                rect = this.animationSpriteAttack(frameToX*1, frameToY*spriteData.frameMoveLeft,  this._count);
             }
 
             if (this._count > spriteData.lastFrameMove ) {
@@ -66,10 +79,14 @@ export default class Dynamic {
                 rect = this.animationSpriteNew(frameToX*spriteData.frameMoveUp, frameToY,  this._count);
             }
             if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
-                rect = this.animationSpriteNew(frameToX*16, frameToY,  this._count);
+                rect = this.animationSpriteNew(frameToX*spriteData.frameMoveDown, frameToY,  this._count);
             }
         }
-        return rect
+
+        userSpriteTextureFrames.offset.x = rect.x;
+        userSpriteTextureFrames.offset.y = rect.y;
+
+        // return rect
 
     }
 }

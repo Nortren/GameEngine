@@ -1,3 +1,5 @@
+import * as THREE from "three";
+
 export const PlayerJson = {
 	123: {
 		sprite:{
@@ -8,10 +10,11 @@ export const PlayerJson = {
 			lastFrameMove: 9,
 			frameMoveUp: 1,
 			frameMoveDown: 17,
-			frameMoveLeft: 9,
+			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
+			frameMoveLeft: 27,
 			frameMoveRight: 9,
-			firstFrameAttack: null,
-			lastFrameAttack: null,
+			firstFrameAttack: 10,
+			lastFrameAttack: 10,
 			firstFrameDeath: null,
 			lastFrameDeath: null,
 		},
@@ -30,11 +33,16 @@ export const PlayerJson = {
 	},
 	1: {
 		sprite:{
-			src: "./Client/image/spriteTest.png",
-			numberOfFramesX: 8,
-			numberOfFramesY: 8,
-			firstFrameMove: 1,
-			lastFrameMove: 8,
+			src: "./Client/image/Player_v0_0_4.png",
+			numberOfFramesX: 17,
+			numberOfFramesY: 14,
+			firstFrameMove: 2,
+			lastFrameMove: 9,
+			frameMoveUp: 1,
+			frameMoveDown: 17,
+			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
+			frameMoveLeft: 27,
+			frameMoveRight: 9,
 			firstFrameAttack: null,
 			lastFrameAttack: null,
 			firstFrameDeath: null,
