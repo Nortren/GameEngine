@@ -38,7 +38,7 @@ export default class Dynamic {
     animationSpriteAttack(titleCountX, titleCountY, numberOfFrames) {
         let spriteOffsets = [];
         let xPosition = numberOfFrames * titleCountX;
-        let yPosition = numberOfFrames * titleCountY;
+        let yPosition = (numberOfFrames) * titleCountY;
         spriteOffsets.push({x: titleCountX, y: yPosition});
 
         return spriteOffsets[0];
@@ -50,22 +50,40 @@ export default class Dynamic {
      */
     updateUserAvatar(props,spriteData,userSpriteTextureFrames) {
         //Шаг фрэйма по оси X и Y
+
         const frameToX = 1/spriteData.numberOfFramesX;
         const frameToY = 1/spriteData.numberOfFramesY;
-        let rect = this.animationSpriteNew(0.0588, 0.0714,  this._count);
+        let rect = this.animationSpriteNew(0.0588, 0.0714,  1);
         //Если нет props значит это первичная инициализация игрока
         if (props) {
+            if(props.attackStatus && this._count >= spriteData.firstFrameAttack + 1){
+                this._count = spriteData.firstFrameAttack-1;
+            }
             //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
-            if (props.moveDirection !== "STOP") {
+            if (props.moveDirection !== "STOP" || props.attackStatus) {
                 this.lastDirectionMove = props.moveDirection;
                 this._count++;
             }
 
-            if (props.attackStatus) {
-                rect = this.animationSpriteAttack(frameToX*1, frameToY*spriteData.frameMoveLeft,  this._count);
+            if(props.attackStatus && !this.animationAttack) {
+                this._count = spriteData.firstFrameAttack-1;
+                this.animationAttack = setInterval(() => {
+                    this.updateUserAvatar(props,spriteData,userSpriteTextureFrames);
+                }, 60);
+                console.log(this._count);
+            }
+            if(!props.attackStatus){
+                clearInterval(this.animationAttack);
+                this.animationAttack = 0;
             }
 
-            if (this._count > spriteData.lastFrameMove ) {
+            if (props.attackStatus) {
+                rect = this.animationSpriteAttack(frameToX*1, frameToY,  this._count);
+            }
+
+
+
+            if (this._count > spriteData.lastFrameMove && !props.attackStatus) {
                 this._count = spriteData.firstFrameMove;
             }
 
