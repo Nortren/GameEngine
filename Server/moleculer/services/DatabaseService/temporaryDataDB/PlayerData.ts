@@ -14,7 +14,7 @@ export const PlayerJson = {
 			frameMoveLeft: 27,
 			frameMoveRight: 9,
 			firstFrameAttack: 10,
-			lastFrameAttack: 10,
+			lastFrameAttack: 11,
 			firstFrameDeath: null,
 			lastFrameDeath: null,
 		},

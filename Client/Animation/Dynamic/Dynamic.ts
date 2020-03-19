@@ -56,17 +56,18 @@ export default class Dynamic {
         let rect = this.animationSpriteNew(0.0588, 0.0714,  1);
         //Если нет props значит это первичная инициализация игрока
         if (props) {
-            if(props.attackStatus && this._count >= spriteData.firstFrameAttack + 1){
-                this._count = spriteData.firstFrameAttack-1;
-            }
             //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
             if (props.moveDirection !== "STOP" || props.attackStatus) {
                 this.lastDirectionMove = props.moveDirection;
                 this._count++;
             }
+            if(props.attackStatus && this._count > spriteData.lastFrameAttack){
+                this._count = spriteData.firstFrameAttack;
+            }
 
+            //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
             if(props.attackStatus && !this.animationAttack) {
-                this._count = spriteData.firstFrameAttack-1;
+                this._count = spriteData.firstFrameAttack;
                 this.animationAttack = setInterval(() => {
                     this.updateUserAvatar(props,spriteData,userSpriteTextureFrames);
                 }, 60);
