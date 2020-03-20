@@ -48,40 +48,46 @@ export default class Dynamic {
      * Обновления sprite анимации
      * @param props данные от контроллеров управления
      */
-    updateUserAvatar(props,spriteData,userSpriteTextureFrames) {
+    updateUserAvatar(props, spriteData, userSpriteTextureFrames) {
         //Шаг фрэйма по оси X и Y
 
-        const frameToX = 1/spriteData.numberOfFramesX;
-        const frameToY = 1/spriteData.numberOfFramesY;
-        let rect = this.animationSpriteNew(0.0588, 0.0714,  1);
+        const frameToX = 1 / spriteData.numberOfFramesX;
+        const frameToY = 1 / spriteData.numberOfFramesY;
+        let rect = null;
         //Если нет props значит это первичная инициализация игрока
         if (props) {
             //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
             if (props.moveDirection !== "STOP" || props.attackStatus) {
                 this.lastDirectionMove = props.moveDirection;
                 this._count++;
+
             }
-            if(props.attackStatus && this._count > spriteData.lastFrameAttack){
+
+            if (!props.attackStatus) {
+                this.lastStatusAttack = spriteData.frameMoveDown;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
+            }
+
+            if (props.attackStatus && this._count > spriteData.lastFrameAttack) {
                 this._count = spriteData.firstFrameAttack;
             }
 
             //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
-            if(props.attackStatus && !this.animationAttack) {
+            if (props.attackStatus && !this.animationAttack) {
                 this._count = spriteData.firstFrameAttack;
                 this.animationAttack = setInterval(() => {
-                    this.updateUserAvatar(props,spriteData,userSpriteTextureFrames);
+                    this.updateUserAvatar(props, spriteData, userSpriteTextureFrames);
                 }, 60);
-                console.log(this._count);
+
             }
-            if(!props.attackStatus){
+            if (!props.attackStatus) {
                 clearInterval(this.animationAttack);
                 this.animationAttack = 0;
             }
 
             if (props.attackStatus) {
-                rect = this.animationSpriteAttack(frameToX*1, frameToY,  this._count);
+                rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
             }
-
 
 
             if (this._count > spriteData.lastFrameMove && !props.attackStatus) {
@@ -89,19 +95,26 @@ export default class Dynamic {
             }
 
             if (this._pressKey === "A" || ( this.lastDirectionMove === "LEFT")) {
-                rect = this.animationSpriteNew(frameToX*spriteData.frameMoveLeft, frameToY,  this._count);
+                this.lastStatusAttack = spriteData.frameMoveLeft;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveLeft, frameToY, this._count);
             }
             if (this._pressKey === "D" || (this.lastDirectionMove === "RIGHT")) {
-                rect = this.animationSpriteNew(frameToX*spriteData.frameMoveRight, frameToY,  this._count);
+                this.lastStatusAttack = spriteData.frameMoveRight;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveRight, frameToY, this._count);
             }
             if (this._pressKey === "W" || (this.lastDirectionMove === "UP")) {
-                rect = this.animationSpriteNew(frameToX*spriteData.frameMoveUp, frameToY,  this._count);
+                this.lastStatusAttack = spriteData.frameMoveUp;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUp, frameToY, this._count);
             }
             if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
-                rect = this.animationSpriteNew(frameToX*spriteData.frameMoveDown, frameToY,  this._count);
+                this.lastStatusAttack = spriteData.frameMoveDown;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
             }
         }
-
+        else {
+            this.lastStatusAttack = spriteData.frameMoveDown;
+            rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
+        }
         userSpriteTextureFrames.offset.x = rect.x;
         userSpriteTextureFrames.offset.y = rect.y;
 
