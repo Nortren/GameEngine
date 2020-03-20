@@ -64,7 +64,7 @@ export default class Dynamic {
             }
 
             if (!props.attackStatus) {
-                this.lastStatusAttack = spriteData.frameMoveDown;
+                // lastStatusAttack = spriteData.frameMoveDown;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
             }
 
@@ -107,7 +107,7 @@ export default class Dynamic {
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUp, frameToY, this._count);
             }
             if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
-                this.lastStatusAttack = spriteData.frameMoveDown;
+                this.lastStatusAttack= spriteData.frameMoveDown;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
             }
         }

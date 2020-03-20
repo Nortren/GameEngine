@@ -43,8 +43,8 @@ export const PlayerJson = {
 			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
 			frameMoveLeft: 27,
 			frameMoveRight: 9,
-			firstFrameAttack: null,
-			lastFrameAttack: null,
+			firstFrameAttack: 10,
+			lastFrameAttack: 11,
 			firstFrameDeath: null,
 			lastFrameDeath: null,
 		},
