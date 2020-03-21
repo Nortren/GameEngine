@@ -3,11 +3,12 @@ export default class Dynamic {
     _pressKey: string;
     _animationTimer: number;
     fixPoint: number;
-
-    constructor() {
+    animationAttackLoop: number;
+    player: number;
+    constructor(player) {
         this._count = 1;
-
-
+        this.animationAttackLoop = 0;
+        this.player = player;
         this._animationTimer = 0;
         this.fixPoint = 0;
     }
@@ -50,7 +51,6 @@ export default class Dynamic {
      */
     updateUserAvatar(props, spriteData, userSpriteTextureFrames) {
         //Шаг фрэйма по оси X и Y
-
         const frameToX = 1 / spriteData.numberOfFramesX;
         const frameToY = 1 / spriteData.numberOfFramesY;
         let rect = null;
@@ -73,16 +73,17 @@ export default class Dynamic {
             }
 
             //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
-            if (props.attackStatus && !this.animationAttack) {
+            if (props.attackStatus && !this.animationAttackLoop) {
                 this._count = spriteData.firstFrameAttack;
-                this.animationAttack = setInterval(() => {
+
+                this.animationAttackLoop = setInterval(() => {
                     this.updateUserAvatar(props, spriteData, userSpriteTextureFrames);
                 }, 60);
 
             }
             if (!props.attackStatus) {
-                clearInterval(this.animationAttack);
-                this.animationAttack = 0;
+                clearInterval(this.animationAttackLoop);
+                this.animationAttackLoop = 0;
             }
 
             if (props.attackStatus) {
@@ -107,7 +108,7 @@ export default class Dynamic {
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUp, frameToY, this._count);
             }
             if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
-                this.lastStatusAttack= spriteData.frameMoveDown;
+                this.lastStatusAttack = spriteData.frameMoveDown;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
             }
         }

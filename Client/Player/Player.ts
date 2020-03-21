@@ -19,6 +19,9 @@ interface BasicProperty {
     src: string;
     collaid: string;
     clientSocketIOID: string;
+    moveDirection: string;
+    attackStatus: boolean;
+
 
     create();
 
@@ -46,14 +49,14 @@ interface ISprite {
 }
 
 export default class Player implements BasicProperty {
-    animation: Dynamic = new Dynamic();
+    animation: Dynamic;
     health: number;
     damage: number;
     attackSpeed: number;
     moveSpeed: number;
     attackDistance: number;
     id: number;
-
+    props: object;
     colliderPositionX: number;
     colliderPositionY: number;
     colliderPositionZ: number;
@@ -63,6 +66,8 @@ export default class Player implements BasicProperty {
     sprite: ISprite;
     collaid: string;
     clientSocketIOID: string;
+    moveDirection: string;
+    attackStatus: boolean;
 
     constructor(id: number, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
@@ -70,14 +75,14 @@ export default class Player implements BasicProperty {
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 sprite: ISprite, collaid: string) {
 
-
+        this.props = {};
         this.id = id;
         this.health = health;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
         this.moveSpeed = moveSpeed;
         this.attackDistance = attackDistance;
-
+        this.animation = new Dynamic(this);
         this.colliderPositionX = colliderPositionX;
         this.colliderPositionY = colliderPositionY;
         this.colliderPositionZ = colliderPositionZ;
@@ -88,7 +93,6 @@ export default class Player implements BasicProperty {
         this.collaid = collaid;
 
 
-        this.playerData = this;
         const loader = new THREE.TextureLoader();
 
         const userImg = loader.load(sprite.src);
@@ -100,9 +104,9 @@ export default class Player implements BasicProperty {
             y: colliderPositionY,
             z: colliderPositionZ
         };
-        this.createEngineUserObject(this.playerData, userImg, position);
-        this.createEngineUserCollaid(this.playerData, playerColliderImg, position);
-        this.createEngineUserHealthLine(this.playerData);
+        this.createEngineUserObject(userImg, position);
+        this.createEngineUserCollaid(playerColliderImg, position);
+        this.createEngineUserHealthLine();
     }
 
     /**
@@ -110,12 +114,13 @@ export default class Player implements BasicProperty {
      */
     createPlayer() {
         //Припервичной инициализации нужно корректно отрисовать спрайт игрока
-        const userSpriteTextureFrames = this.playerData.playerAvatarSprite.material.map;
-        this.animation.updateUserAvatar(null, this.sprite, userSpriteTextureFrames);
+        const userSpriteTextureFrames = this.playerAvatarSprite.material.map;
+        this.animation.updateUserAvatar(this.props, this.sprite, userSpriteTextureFrames, this.id);
 
 
-        return this.playerData;
+        return this;
     }
+
 
     removingPlayerFromScene(scene) {
         scene.remove(this.playerAvatarSprite, this.playerAvatarSprite, this.collaider)
@@ -126,10 +131,10 @@ export default class Player implements BasicProperty {
      * @param userData
      * @param userImg
      */
-    createEngineUserObject(playerData: Object, playerImg: Texture, position) {
+    createEngineUserObject(playerImg: Texture, position) {
         // playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
         //Зеркально отражение
-         playerImg.wrapS = playerImg.wrapT = THREE.MirroredRepeatWrapping;
+        playerImg.wrapS = playerImg.wrapT = THREE.MirroredRepeatWrapping;
         playerImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
         // playerImg.offset.x = 0.5;
         // playerImg.offset.y = 0.5;
@@ -146,16 +151,15 @@ export default class Player implements BasicProperty {
         playerAvatarSprite.scale.set(3, 3, 1.0);
         playerAvatarSprite.position.set(position.x, 0, position.z);
         playerAvatarSprite.center.y = 0;
-        playerData.playerAvatarSprite = playerAvatarSprite;
+        this.playerAvatarSprite = playerAvatarSprite;
     }
 
     /**
      * Создаём колайдер игрока для дальнейшего расчета  физики
-     * @param playerData
      * @param playerColliderImg
      */
-    createEngineUserCollaid(playerData: Object, playerColliderImg: Texture, position: object) {
-        const playerCollaiderGeo = new THREE.BoxBufferGeometry(playerData.colliderWidth, playerData.colliderLength, playerData.colliderHeight);
+    createEngineUserCollaid(playerColliderImg: Texture, position: object) {
+        const playerCollaiderGeo = new THREE.BoxBufferGeometry(this.colliderWidth, this.colliderLength, this.colliderHeight);
 
 
         let materials = [
@@ -182,8 +186,8 @@ export default class Player implements BasicProperty {
 
         const playerCollaider = new THREE.Mesh(playerCollaiderGeo, materials);
         playerCollaider.rotation.x = Math.PI * -.5;
-        playerCollaider.position.set(position.x, playerData.colliderPositionY, position.z);
-        playerData.collaider = playerCollaider;
+        playerCollaider.position.set(position.x, this.colliderPositionY, position.z);
+        this.collaider = playerCollaider;
         if (globalVariables.shadow.materialShadow) {
             playerCollaider.castShadow = true;
         }
@@ -193,13 +197,13 @@ export default class Player implements BasicProperty {
      * Игрок атакует или использует скилы
      * @param skill
      */
-    playerSkillUse(props, playerData, enemyArray) {
+    playerSkillUse(props, enemyArray) {
         if (!props.skillButton) {
             return;
         }
         switch (props.skillButton.nameButton) {
             case 'ButtonAttack':
-                this.attack(props, playerData, enemyArray);
+                this.attack(props, enemyArray);
                 break;
             case 'ButtonSkills_1':
                 this.useSkill(props);
@@ -215,23 +219,23 @@ export default class Player implements BasicProperty {
 
     }
 
-    attack(props, playerData, enemyArray) {
+    attack(props, enemyArray) {
         if (props.skillButton.press) {
             for (let key in enemyArray) {
                 let collider = enemyArray[key].ColliderMesh;
 
-                let checkX = this.checkDistanceCollisionAxis(playerData.collaider.position.x, playerData.colliderWidth, collider.position.x, collider.scale.x, playerData.attackDistance);
-                let checkZ = this.checkDistanceCollisionAxis(playerData.collaider.position.z, playerData.colliderHeight, collider.position.z, collider.scale.z, playerData.attackDistance);
+                let checkX = this.checkDistanceCollisionAxis(this.collaider.position.x, this.colliderWidth, collider.position.x, collider.scale.x, this.attackDistance);
+                let checkZ = this.checkDistanceCollisionAxis(this.collaider.position.z, this.colliderHeight, collider.position.z, collider.scale.z, this.attackDistance);
 
                 if (checkX && checkZ) {
                     if (enemyArray[key].enemyHealth <= 0) {
                         enemyArray.splice(key, 1);
                     }
                     if (enemyArray[key]) {
-                        enemyArray[key].enemyHealth -= playerData.damage;
+                        enemyArray[key].enemyHealth -= this.damage;
                     }
                 }
-                if (props.moveX + playerData.attackDistance || props.moveX + playerData.attackDistance) {
+                if (props.moveX + this.attackDistance || props.moveX + this.attackDistance) {
 
                 }
             }
@@ -257,7 +261,7 @@ export default class Player implements BasicProperty {
      * Создание полоски жизни персоонажа
      * @param playerData
      */
-    createEngineUserHealthLine(playerData: Object) {
+    createEngineUserHealthLine() {
         const material = new THREE.LineBasicMaterial({
             color: 0xff0000,
             linewidth: 10,
@@ -266,7 +270,7 @@ export default class Player implements BasicProperty {
         geometry.vertices.push(new THREE.Vector3(0, 0, 0));
         geometry.vertices.push(new THREE.Vector3(1, 0, 0));
         const line = new THREE.Line(geometry, material);
-        playerData.healthLine = line;
+        this.healthLine = line;
     }
 
     /**
@@ -275,36 +279,37 @@ export default class Player implements BasicProperty {
      * @param props
      * @param rect
      */
-    update(playerData: Object, props: Object, enemyArray) {
+    update(playerServerData: Object, enemyArray) {
         //Текстура спрайта по которой нам нужно отрисовывать Frame
-        const userSpriteTextureFrames = playerData.playerAvatarSprite.material.map;
+        const userSpriteTextureFrames = this.playerAvatarSprite.material.map;
+        this.moveDirection = playerServerData.moveDirection;
+        this.attackStatus = playerServerData.attackStatus;
 
-        this.animation.updateUserAvatar(props, this.sprite, userSpriteTextureFrames);
+        this.animation.updateUserAvatar(this, this.sprite, userSpriteTextureFrames);
 
 
-        playerData = playerData.playerData;
-        let positionPlayer = {x: playerData.colliderPosit, z: playerData.colliderPositionZ};
-        let positionHealthLine = playerData.healthLine.position;
-        let playerHealth = playerData.health;
+        let positionPlayer = {x: this.colliderPositionX, z: this.colliderPositionZ};
+        let positionHealthLine = this.healthLine.position;
+        let playerHealth = this.health;
         let healthLenght = this.calculationHealthLine(playerHealth);
-        playerData.healthLine.scale.x = healthLenght;
-        playerData.healthLine.scale.z = 2;
+        this.healthLine.scale.x = healthLenght;
+        this.healthLine.scale.z = 2;
 
         positionHealthLine.x = positionPlayer.x;
         positionHealthLine.z = positionPlayer.z;
         positionHealthLine.y = 0;
 
         //рисуем героя по центру картинки
-        playerData.playerAvatarSprite.position.x = props.moveX;
-        playerData.playerAvatarSprite.position.z = props.moveZ;
+        this.playerAvatarSprite.position.x = playerServerData.colliderPositionX;
+        this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ;
 
-        playerData.collaider.position.x = playerData.playerAvatarSprite.position.x;
-        playerData.collaider.position.z = playerData.playerAvatarSprite.position.z;
-        playerData.healthLine.position.x = playerData.playerAvatarSprite.position.x;
-        playerData.healthLine.position.z = playerData.playerAvatarSprite.position.z;
+        this.collaider.position.x = this.playerAvatarSprite.position.x;
+        this.collaider.position.z = this.playerAvatarSprite.position.z;
+        this.healthLine.position.x = this.playerAvatarSprite.position.x;
+        this.healthLine.position.z = this.playerAvatarSprite.position.z;
 
 
-        this.playerSkillUse(props, playerData, enemyArray);
+        this.playerSkillUse(playerServerData, enemyArray);
     }
 
     /**

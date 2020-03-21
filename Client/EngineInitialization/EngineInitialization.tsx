@@ -93,6 +93,8 @@ export default class EngineInitialization extends React.Component implements pri
         this.isThereUser = false;
         this.userID = null;
         this.playerInMaps = [];
+        //TODO проверка на первое подключение
+        this.init = false;
         this.blData.getUserRoom((data) => {
             const room = data.room;
             //Если userID клиента нет значит это первый вход и надо создать локацию комнаты
@@ -138,12 +140,11 @@ export default class EngineInitialization extends React.Component implements pri
             }
 
             if (this.isThereUser.length) {
+
                 const camera = this.createCameraScene(canvas, this.isThereUser);
 
 
                 this.blData.getTestDataServerConnect((data) => {
-                    console.log('sec');
-
                     data.room.enemy.forEach((enemy)=>{
                         let thisEnemy =   this._enemyArray.filter((enemyClient)=>{
 
@@ -160,8 +161,12 @@ export default class EngineInitialization extends React.Component implements pri
 
                 let userProps = {};
                 let cameraProps = {};
-                this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
+                if (!this.init) {
+                    this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
+                    this.init = true;
+
                 this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
+                }
             }
         });
     }
@@ -314,15 +319,12 @@ export default class EngineInitialization extends React.Component implements pri
         this.blData.getUserPosition((data) => {
             if (data.thisUser) {
                 data.arrayUser.forEach((item, i) => {
-                        userProps.moveX = data.arrayUser[i].colliderPositionX;
-                        userProps.moveZ = data.arrayUser[i].colliderPositionZ;
-                        userProps.moveDirection = data.arrayUser[i].moveDirection;
-                        userProps.attackStatus = data.arrayUser[i].attackStatus;
+                        userProps.id = data.arrayUser[i].id;
                         if (playerInMaps[i]) {
-                            if (!globalVariables.camera.cameraControl && (data.arrayUser[i].id === this.userID)) {
-                                this.updateCameraClientPosition(camera, i, cameraProps, data);
+                            if (!globalVariables.camera.cameraControl && (data.thisUser.id === this.userID)) {
+                                this.updateCameraClientPosition(camera, i, cameraProps, data.thisUser);
                             }
-                            playerInMaps[i].update(playerInMaps[i], userProps, enemyArray);
+                            playerInMaps[i].update(data.arrayUser[i], enemyArray);
                         }
                     }
                 )
@@ -339,8 +341,8 @@ export default class EngineInitialization extends React.Component implements pri
      */
     updateCameraClientPosition(camera, i, cameraProps, data) {
         this._cameraControls.cameraControl(camera);
-        cameraProps.moveX = data.arrayUser[i].colliderPositionX;
-        cameraProps.moveZ = data.arrayUser[i].colliderPositionZ;
+        cameraProps.moveX = data.colliderPositionX;
+        cameraProps.moveZ = data.colliderPositionZ;
         this._camera.updateCameraGame(camera, cameraProps);
     }
 

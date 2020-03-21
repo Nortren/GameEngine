@@ -62,7 +62,22 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	2: {
-		src: "./Client/image/Player_v0.0.4.png",
+		sprite:{
+			src: "./Client/image/Player_v0_0_4.png",
+			numberOfFramesX: 17,
+			numberOfFramesY: 14,
+			firstFrameMove: 2,
+			lastFrameMove: 9,
+			frameMoveUp: 1,
+			frameMoveDown: 17,
+			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
+			frameMoveLeft: 27,
+			frameMoveRight: 9,
+			firstFrameAttack: 10,
+			lastFrameAttack: 11,
+			firstFrameDeath: null,
+			lastFrameDeath: null,
+		},
 		collaid: "./Client/image/collaid.png",
 		colliderPositionX: 0,
 		colliderPositionY: 0,

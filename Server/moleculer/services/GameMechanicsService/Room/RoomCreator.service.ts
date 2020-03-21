@@ -42,7 +42,7 @@ class RoomCreator extends Service {
         const idRoom = this.roomList ? this.roomList.length + 1 : 1;
         //Создаём комнату того типа где последний раз был пользователь
         const typeRoom = userData.lastRoomType;
-        const numberPlaces = 2;
+        const numberPlaces = 3;
         //Дожидаемся получения карты  из базы
 
         const map = await this.addMapToRoom(typeRoom);

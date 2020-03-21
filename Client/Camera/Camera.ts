@@ -42,10 +42,8 @@ export default class Camera {
      * @param props данные с контролов управления для перемещения карты относительно персоонажа
      */
     updateCameraGame(camera, props) {
-        // camera.position.z = 10;
         camera.position.x = props.moveX;
         camera.position.z = props.moveZ;
-        // camera.rotation.x += 0.01;
         this.cameraControl(camera);
     }
 
