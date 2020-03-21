@@ -43,8 +43,6 @@ export default class StickController extends React.Component {
     }
 
 
-
-
     createCanvas(id, width, height, radius, startPositionX, startPositionY) {
         let canvas = document.getElementById(id);
         canvas.width = width;
@@ -70,6 +68,29 @@ export default class StickController extends React.Component {
     controlOfManagement() {
         this.touchControl();
         this.keyBoardControl();
+        this.mouseControl();
+    }
+
+    /**
+     * Контроллер мышки
+     */
+    mouseControl() {
+        document.addEventListener('mousedown', (event) => {
+            this.blData.setUserPosition({nameButton: 'ButtonAttack', press: true});
+        });
+
+        document.addEventListener('mousemove', (event) => {
+            this.startPositionX = event.clientX;
+            this.startPositionZ = event.clientY;
+            this.blData.setUserPosition({
+                event: 'mouseMove',
+                x: this.startPositionX,
+                z: this.startPositionZ,
+                windowSize: {width: window.innerWidth, height: window.innerHeight}});
+        });
+        document.addEventListener('mouseup', (event) => {
+            this.blData.setUserPosition({nameButton: 'ButtonAttack', press: false});
+        });
     }
 
     /**
