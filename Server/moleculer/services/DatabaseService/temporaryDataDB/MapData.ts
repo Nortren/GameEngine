@@ -122,7 +122,7 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 0,
+                count: 1,
                 startPoint: {x:0,y:0,z:0},
                 distanceBetweenEnemies: 1
             },

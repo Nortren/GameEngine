@@ -67,6 +67,7 @@ export default class Player implements BasicProperty {
     collaid: string;
     clientSocketIOID: string;
     moveDirection: string;
+    moveContinue: boolean;
     attackStatus: boolean;
 
     constructor(id: number, health: number, damage: number,
@@ -283,6 +284,7 @@ export default class Player implements BasicProperty {
         //Текстура спрайта по которой нам нужно отрисовывать Frame
         const userSpriteTextureFrames = this.playerAvatarSprite.material.map;
         this.moveDirection = playerServerData.moveDirection;
+        this.moveContinue = playerServerData.moveContinue;
         this.attackStatus = playerServerData.attackStatus;
 
         this.animation.updateUserAvatar(this, this.sprite, userSpriteTextureFrames);

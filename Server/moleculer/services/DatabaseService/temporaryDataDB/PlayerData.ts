@@ -9,7 +9,12 @@ export const PlayerJson = {
 			firstFrameMove: 2,
 			lastFrameMove: 9,
 			frameMoveUp: 1,
+			frameMoveUpRight: 3,
+			frameMoveUpLeft: 31,
+
 			frameMoveDown: 17,
+			frameMoveDownRight: 14,
+			frameMoveDownLeft: 20,
 			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
 			frameMoveLeft: 27,
 			frameMoveRight: 9,
@@ -39,7 +44,12 @@ export const PlayerJson = {
 			firstFrameMove: 2,
 			lastFrameMove: 9,
 			frameMoveUp: 1,
+			frameMoveUpRight: 3,
+			frameMoveUpLeft: 31,
+
 			frameMoveDown: 17,
+			frameMoveDownRight: 14,
+			frameMoveDownLeft: 20,
 			//Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
 			frameMoveLeft: 27,
 			frameMoveRight: 9,

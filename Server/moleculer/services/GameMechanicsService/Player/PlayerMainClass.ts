@@ -15,6 +15,7 @@ interface BasicProperty {
     collaid: string;
     moveDirection: string;
     attackStatus: boolean;
+    moveContinue: boolean;
     clientSocketIOID: string;
     create();
     update();
@@ -54,6 +55,7 @@ export default class PlayerMainClass implements BasicProperty {
     collaid: string;
     moveDirection: string;
 	attackStatus: boolean;
+    moveContinue: boolean;
     clientSocketIOID: string;
 
     constructor(id: number, health: number, damage: number,

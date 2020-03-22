@@ -59,7 +59,9 @@ export default class Dynamic {
             //Проверяем отпустил ли пользователь клавишу ,что бы прекратить анимацию
             if (props.moveDirection !== "STOP" || props.attackStatus) {
                 this.lastDirectionMove = props.moveDirection;
-                this._count++;
+                if(props.moveContinue) {
+                    this._count++;
+                }
 
             }
 
@@ -95,21 +97,37 @@ export default class Dynamic {
                 this._count = spriteData.firstFrameMove;
             }
 
-            if (this._pressKey === "A" || ( this.lastDirectionMove === "LEFT")) {
+            if ( this.lastDirectionMove === "LEFT") {
                 this.lastStatusAttack = spriteData.frameMoveLeft;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveLeft, frameToY, this._count);
             }
-            if (this._pressKey === "D" || (this.lastDirectionMove === "RIGHT")) {
+            if (this.lastDirectionMove === "RIGHT") {
                 this.lastStatusAttack = spriteData.frameMoveRight;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveRight, frameToY, this._count);
             }
-            if (this._pressKey === "W" || (this.lastDirectionMove === "UP")) {
+            if (this.lastDirectionMove === "UP") {
                 this.lastStatusAttack = spriteData.frameMoveUp;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUp, frameToY, this._count);
             }
-            if (this._pressKey === "S" || (this.lastDirectionMove === "DOWN")) {
+            if (this.lastDirectionMove === "UP_LEFT") {
+                this.lastStatusAttack = spriteData.frameMoveUpLeft;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUpLeft, frameToY, this._count);
+            }
+            if (this.lastDirectionMove === "UP_RIGHT") {
+                this.lastStatusAttack = spriteData.frameMoveUpRight;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveUpRight, frameToY, this._count);
+            }
+            if (this.lastDirectionMove === "DOWN") {
                 this.lastStatusAttack = spriteData.frameMoveDown;
                 rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDown, frameToY, this._count);
+            }
+            if (this.lastDirectionMove === "DOWN_LEFT") {
+                this.lastStatusAttack = spriteData.frameMoveDownLeft;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDownLeft, frameToY, this._count);
+            }
+            if (this.lastDirectionMove === "DOWN_RIGHT") {
+                this.lastStatusAttack = spriteData.frameMoveDownRight;
+                rect = this.animationSpriteNew(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
             }
         }
         else {

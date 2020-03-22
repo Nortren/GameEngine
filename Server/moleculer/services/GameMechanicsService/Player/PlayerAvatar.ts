@@ -60,15 +60,17 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
     updateViaController(keyPress) {
-        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp' || keyPress.nameButton) {
-            this.updatePosition(keyPress);
-        }
+
 
         if (keyPress.event !== "mouseMove") {
             this.updateTouchPosition(keyPress);
         }
         if (keyPress.event === "mouseMove") {
             this.updateMousePosition(keyPress);
+        }
+
+        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp' || keyPress.nameButton) {
+            this.updatePosition(keyPress);
         }
 
     }
@@ -84,63 +86,128 @@ export default class PlayerAvatar extends PlayerMainClass {
         if (keyPress.nameButton === 'ButtonAttack') {
             this.attackStatus = keyPress.press;
         }
-        const windowWidthCenter = keyPress.windowSize.width/2;
-        const windowHeightCenter = keyPress.windowSize.height/2;
+        const windowWidthCenter = keyPress.windowSize.width;
+        const windowHeightCenter = keyPress.windowSize.height;
 
-        console.log(windowWidthCenter,windowHeightCenter,'_______',keyPress.x,keyPress.z);
-
-
+        let testQuareWidth = windowWidthCenter / 3;
+        let testQuareHeight = windowHeightCenter / 3;
         this.mouseDirection = 'DOWN';
-        if (windowWidthCenter > keyPress.x) {
-            // this.colliderPositionX = this.colliderPositionX;
-            this.mouseDirection = 'LEFT';
+
+        if (keyPress.x <= testQuareWidth && keyPress.z <= testQuareHeight) {
+            this.mouseDirection = 'UP_LEFT';
+
         }
-        if (windowWidthCenter < keyPress.x) {
-            // this.colliderPositionX = this.colliderPositionX;
-            this.mouseDirection = 'RIGHT';
-        }
-        if (windowHeightCenter > keyPress.z) {
-            // this.colliderPositionZ = this.colliderPositionZ;
+        else if (keyPress.x <= testQuareWidth * 2 && keyPress.z <= testQuareHeight) {
             this.mouseDirection = 'UP';
+
         }
-        if (windowHeightCenter < keyPress.z) {
-            // this.colliderPositionZ = this.colliderPositionZ;
+        else if (keyPress.x <= testQuareWidth * 3 && keyPress.z <= testQuareHeight) {
+            this.mouseDirection = 'UP_RIGHT';
+
+        }
+        else if (keyPress.x <= testQuareWidth && keyPress.z <= testQuareHeight * 2) {
+            this.mouseDirection = 'LEFT';
+
+        }
+        else if (keyPress.x <= testQuareWidth * 2 && keyPress.z <= testQuareHeight * 2) {
+            this.mouseDirection = 'UP';
+
+        }
+        else if (keyPress.x <= testQuareWidth * 3 && keyPress.z <= testQuareHeight * 2) {
+            this.mouseDirection = 'RIGHT';
+
+        }
+        else if (keyPress.x <= testQuareWidth && keyPress.z <= testQuareHeight * 3) {
+            this.mouseDirection = 'DOWN_LEFT';
+
+        }
+        else if (keyPress.x <= testQuareWidth * 2 && keyPress.z <= testQuareHeight * 3) {
             this.mouseDirection = 'DOWN';
+
         }
-        this.moveDirection = this.mouseDirection ;
+        else if (keyPress.x <= testQuareWidth * 3 && keyPress.z <= testQuareWidth * 3) {
+            this.mouseDirection = 'DOWN_RIGHT';
+
+        }
+
+        this.moveDirection = this.mouseDirection;
     }
 
 
-
     updatePosition(keyPress) {
+        this.moveContinue = true;
         if (keyPress.nameButton === 'ButtonAttack') {
             this.attackStatus = keyPress.press;
+            if (!keyPress.press) {
+                this.moveContinue = false;
+            }
+        }
+
+        let reverseDirectionMove = 0.1;
+
+        if (keyPress === 'KeyS') {
+            reverseDirectionMove = -0.1;
+        }
+
+        if (keyPress !== 'KeyA' && keyPress !== 'KeyD') {
+            if (this.mouseDirection === 'UP_LEFT') {
+                this.colliderPositionZ = this.colliderPositionZ - reverseDirectionMove;
+                this.colliderPositionX = this.colliderPositionX - reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+            else if (this.mouseDirection === 'UP') {
+                this.colliderPositionZ = this.colliderPositionZ - reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+            else if (this.mouseDirection === 'UP_RIGHT') {
+                this.colliderPositionZ = this.colliderPositionZ - reverseDirectionMove;
+                this.colliderPositionX = this.colliderPositionX + reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+            else if (this.mouseDirection === 'DOWN_LEFT') {
+                this.colliderPositionZ = this.colliderPositionZ + reverseDirectionMove;
+                this.colliderPositionX = this.colliderPositionX - reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+            else if (this.mouseDirection === 'DOWN') {
+                this.colliderPositionZ = this.colliderPositionZ + reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+
+            else if (this.mouseDirection === 'DOWN_RIGHT') {
+                this.colliderPositionZ = this.colliderPositionZ + reverseDirectionMove;
+                this.colliderPositionX = this.colliderPositionX + reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+
+            else if (this.mouseDirection === 'LEFT') {
+                this.colliderPositionX = this.colliderPositionX - reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+            else if (this.mouseDirection === 'RIGHT') {
+                this.colliderPositionX = this.colliderPositionX + reverseDirectionMove;
+                this.moveDirection = this.mouseDirection;
+            }
+
         }
 
         if (keyPress === 'KeyA') {
             this.colliderPositionX = this.colliderPositionX - 0.1;
-            this.moveDirection = this.mouseDirection ;
+            this.moveDirection = this.mouseDirection;
         }
         if (keyPress === 'KeyD') {
             this.colliderPositionX = this.colliderPositionX + 0.1;
-            this.moveDirection = this.mouseDirection ;
+            this.moveDirection = this.mouseDirection;
         }
-        if (keyPress === 'KeyW') {
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
-            this.moveDirection = this.mouseDirection ;
-        }
-        if (keyPress === 'KeyS') {
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
-            this.moveDirection = this.mouseDirection ;
-        }
+
         //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации
         if (keyPress === 'keyUp') {
             this.moveDirection = 'STOP';
+            this.moveContinue = false;
         }
 
 
     }
-
 
 
     /**
