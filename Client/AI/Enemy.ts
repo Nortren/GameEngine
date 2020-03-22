@@ -20,7 +20,7 @@ interface BasicPropertyEnemy {
     src: string;
     collaid: string;
     clientSocketIOID: string;
-
+    directionMove: string;
     create();
 
     update();
@@ -51,7 +51,7 @@ export default class Enemy implements BasicPropertyEnemy {
     private _mapCreator: MapCreator = new MapCreator();
 
     id: number;
-    src: string;
+    sprite: string;
     collaid: string;
     scope: string;
     scopeRadius: number;
@@ -68,8 +68,8 @@ export default class Enemy implements BasicPropertyEnemy {
     attackDistance: number;
     attackSpeed: number;
     moveSpeed: number;
-
-    constructor(id: number, src: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
+    directionMove: string;
+    constructor(id: number, sprite: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
                 colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 pursuitZone: number, persecutionRadius: string, health: number,
@@ -77,7 +77,7 @@ export default class Enemy implements BasicPropertyEnemy {
                 attackSpeed: number, moveSpeed: number) {
 
         this.id = id;
-        this.src = src;
+        this.sprite = sprite;
         this.collaid = collaid;
         this.scope = scope;
         this.scopeRadius = scopeRadius;
@@ -113,7 +113,7 @@ export default class Enemy implements BasicPropertyEnemy {
             z: colliderPositionZ
         }, loader);
         this.createEnemyHealthLine();
-        this.createEnemySprite({x: colliderPositionX, y: colliderPositionY, z: colliderPositionZ}, src, loader);
+        this.createEnemySprite({x: colliderPositionX, y: colliderPositionY, z: colliderPositionZ}, sprite, loader);
 
 
         this._count = 0;
@@ -135,43 +135,6 @@ export default class Enemy implements BasicPropertyEnemy {
         this._animationTimer++;
     }
 
-    /**
-     * Обновления sprite анимации
-     * @param context
-     * @param canvas
-     * @param imgHero картинка отображения гавного героя
-     * @param props данные от контроллеров управления
-     */
-    updateEnemyAvatar(enemy, moveDirection) {
-        this._count++;
-        if (this._count > 3) {
-            this._count = 0;
-        }
-
-        let spriteOffsetsD = this.animation.animationSprite(0.03, 0.25, 0.25, null, 4);
-        let spriteOffsetsA = this.animation.animationSprite(0.03, 0.5, 0.25, null, 4);
-        let spriteOffsetsW = this.animation.animationSprite(0.03, 0, 0.25, null, 4);
-        let spriteOffsetsS = this.animation.animationSprite(0.03, 0.75, 0.25, null, 4);
-        let rect = spriteOffsetsS[this._count];
-        if (moveDirection === "moveLeft") {
-            rect = spriteOffsetsA[this._count];
-        }
-        if (moveDirection === "moveRight") {
-            rect = spriteOffsetsD[this._count];
-        }
-        if (moveDirection === "moveUP") {
-            rect = spriteOffsetsW[this._count];
-        }
-        if (moveDirection === "moveDown") {
-            rect = spriteOffsetsS[this._count];
-        }
-
-
-        //рисуем героя по центру картинки
-        enemy.material.map.offset.x = rect.x;
-        enemy.material.map.offset.y = rect.y;
-
-    }
 
     /**
      * генерируем врага на карте
@@ -188,19 +151,20 @@ export default class Enemy implements BasicPropertyEnemy {
 
     }
 
-    createEnemySprite(position, src, loader) {
-        const enemyImg = loader.load(src);
-        enemyImg.wrapS = enemyImg.wrapT = THREE.RepeatWrapping;
-        enemyImg.repeat.set(0.2, 0.25);
+    createEnemySprite(position, sprite, loader) {
+        const enemyImg = loader.load(sprite.src);
+        enemyImg.wrapS = enemyImg.wrapT = THREE.MirroredRepeatWrapping;
+        enemyImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
         enemyImg.magFilter = THREE.NearestFilter;
 
         const enemyColor = 0xff0000;
         const enemyTexture = new THREE.SpriteMaterial({
             map: enemyImg,
-            color: enemyColor
+            color: enemyColor,
+            useScreenCoordinates: false, transparent: true
         });
         this.enemySprite = new THREE.Sprite(enemyTexture);
-        this.enemySprite.scale.set(2, 2, 1);
+        this.enemySprite.scale.set(3, 3, 1.0);
         this.enemySprite.position.set(position.x, position.y, position.z);
         this.enemySprite.center.y = 0;
     }
@@ -316,7 +280,7 @@ export default class Enemy implements BasicPropertyEnemy {
          else {
          scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
          }*/
-        this.animationEnemyAvatarforPositionServer(enemyData,playerInformation);
+        this.animationEnemyAvatarForPositionServer(enemyData, playerInformation);
 
         if (enemyData.health <= 0) {
             scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
@@ -324,26 +288,115 @@ export default class Enemy implements BasicPropertyEnemy {
 
     }
 
+    /*
+     /!**
+     * Обновления sprite анимации
+     * @param context
+     * @param canvas
+     * @param imgHero картинка отображения гавного героя
+     * @param props данные от контроллеров управления
+     *!/
+     updateEnemyAvatar(enemy, moveDirection) {
+     this._count++;
+     if (this._count > 3) {
+     this._count = 0;
+     }
 
-    animationEnemyAvatarforPositionServer(enemyData,playerInformation){
-        const arrayAnimationMove = ['moveLeft', 'moveRight', 'moveUP', 'moveDown'];
-        if (enemyData.colliderPositionX.toFixed(1) !== playerInformation.colliderPositionX.toFixed(1)) {
-            if (enemyData.colliderPositionX <= playerInformation.colliderPositionX) {
-                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[1]);
-            }
-            if (enemyData.colliderPositionX >= playerInformation.colliderPositionX) {
-                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[0]);
-            }
+     let spriteOffsetsD = this.animation.animationSprite(0.03, 0.25, 0.25, null, 4);
+     let spriteOffsetsA = this.animation.animationSprite(0.03, 0.5, 0.25, null, 4);
+     let spriteOffsetsW = this.animation.animationSprite(0.03, 0, 0.25, null, 4);
+     let spriteOffsetsS = this.animation.animationSprite(0.03, 0.75, 0.25, null, 4);
+     let rect = spriteOffsetsS[this._count];
+     if (moveDirection === "moveLeft") {
+     rect = spriteOffsetsA[this._count];
+     }
+     if (moveDirection === "moveRight") {
+     rect = spriteOffsetsD[this._count];
+     }
+     if (moveDirection === "moveUP") {
+     rect = spriteOffsetsW[this._count];
+     }
+     if (moveDirection === "moveDown") {
+     rect = spriteOffsetsS[this._count];
+     }
+
+
+     //рисуем героя по центру картинки
+     enemy.material.map.offset.x = rect.x;
+     enemy.material.map.offset.y = rect.y;
+
+     }*/
+
+
+    animationSpriteMove(titleCountX, titleCountY, numberOfFrames) {
+        let spriteOffsets = [];
+        let xPosition = numberOfFrames * titleCountX;
+        let yPosition = numberOfFrames * titleCountY;
+        spriteOffsets.push({x: titleCountX, y: yPosition});
+
+        return spriteOffsets[0];
+    }
+
+
+    /**
+     * Анимация врагов
+     * @param enemyData
+     * @param playerInformation
+     */
+    animationEnemyAvatarForPositionServer(enemyData, playerInformation) {
+        //Шаг фрэйма по оси X и Y
+        const spriteData = enemyData.sprite;
+        const frameToX = 1 / spriteData.numberOfFramesX;
+        const frameToY = 1 / spriteData.numberOfFramesY;
+
+
+        this._count++;
+        if (this._count > enemyData.sprite.lastFrameMove) {
+            this._count = enemyData.sprite.firstFrameMove;
         }
 
-        if (enemyData.colliderPositionZ.toFixed(1) !== playerInformation.colliderPositionZ.toFixed(1)) {
-            if (enemyData.colliderPositionZ <= playerInformation.colliderPositionZ) {
-                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[3]);
-            }
-            if (enemyData.colliderPositionZ >= playerInformation.colliderPositionZ) {
-                this.updateEnemyAvatar(enemyData.enemySprite, arrayAnimationMove[2]);
-            }
+        let move = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
+
+        let rect = move;
+        if (this.directionMove === "LEFT") {
+            this.lastStatusAttack = spriteData.frameMoveLeft;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveLeft, frameToY, this._count);
         }
+        if (this.directionMove === "RIGHT") {
+            this.lastStatusAttack = spriteData.frameMoveRight;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
+        }
+        if (this.directionMove === "UP") {
+            this.lastStatusAttack = spriteData.frameMoveUp;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUp, frameToY, this._count);
+        }
+        if (this.directionMove === "UP_LEFT") {
+            this.lastStatusAttack = spriteData.frameMoveUpLeft;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUpLeft, frameToY, this._count);
+        }
+        if (this.directionMove === "UP_RIGHT") {
+            this.lastStatusAttack = spriteData.frameMoveUpRight;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUpRight, frameToY, this._count);
+        }
+        if (this.directionMove === "DOWN") {
+            this.lastStatusAttack = spriteData.frameMoveDown;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDown, frameToY, this._count);
+        }
+        if (this.directionMove === "DOWN_LEFT") {
+            this.lastStatusAttack = spriteData.frameMoveDownLeft;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownLeft, frameToY, this._count);
+        }
+        if (this.directionMove === "DOWN_RIGHT") {
+            this.lastStatusAttack = spriteData.frameMoveDownRight;
+            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
+        }
+
+
+
+
+        enemyData.enemySprite.material.map.offset.x = rect.x;
+        enemyData.enemySprite.material.map.offset.y = rect.y;
+
     }
 
     updateHealthLine(enemyData) {

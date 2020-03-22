@@ -162,7 +162,7 @@ class RoomCreator extends Service {
                     let enemyID = enemy.typeEnemy + '_' + (i + 1);
                     roomEnemyArray.push(new Enemy(
                         this.id = enemyID,
-                        this.src = enemyMap.get(enemy.typeEnemy).src,
+                        this.sprite = enemyMap.get(enemy.typeEnemy).sprite,
                         this.collaid = enemyMap.get(enemy.typeEnemy).collaid,
                         this.scope = enemyMap.get(enemy.typeEnemy).scope,
                         this.scopeRadius = enemyMap.get(enemy.typeEnemy).scopeRadius,

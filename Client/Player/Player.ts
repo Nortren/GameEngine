@@ -106,6 +106,8 @@ export default class Player implements BasicProperty {
             z: colliderPositionZ
         };
         this.createEngineUserObject(userImg, position);
+
+        //TODO Это коллайдер от которого по задумке должны были быть тени
         this.createEngineUserCollaid(playerColliderImg, position);
         this.createEngineUserHealthLine();
     }
@@ -150,7 +152,7 @@ export default class Player implements BasicProperty {
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
         playerAvatarSprite.scale.set(3, 3, 1.0);
-        playerAvatarSprite.position.set(position.x, 0, position.z);
+        playerAvatarSprite.position.set(position.x,position.y, position.z);
         playerAvatarSprite.center.y = 0;
         this.playerAvatarSprite = playerAvatarSprite;
     }

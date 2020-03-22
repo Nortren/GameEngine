@@ -1,6 +1,6 @@
 export default class Enemy {
     id: string;
-    src: string;
+    sprite: string;
     collaid: string;
     scope: string;
     scopeRadius: number;
@@ -17,9 +17,9 @@ export default class Enemy {
     colliderPositionY: number;
     colliderPositionZ: number;
     moveSpeed: number;
-
+    directionMove: string;
     constructor(id: string,
-                src: string,
+                sprite: string,
                 collaid: string,
                 scope: string,
                 scopeRadius: number,
@@ -38,7 +38,7 @@ export default class Enemy {
                 moveSpeed: number) {
 
         this.id = id;
-        this.src = src;
+        this.sprite = sprite;
         this.collaid = collaid;
         this.scope = scope;
         this.scopeRadius = scopeRadius;
@@ -117,6 +117,7 @@ export default class Enemy {
      * Двигаемся к выбранному игроку
      */
     goToThePlayer(huntedPlayer, enemy) {
+
         const speedMove = this.moveSpeed * 0.1;
         if (enemy && huntedPlayer) {
             //Движение за игроком по оси X
@@ -138,6 +139,63 @@ export default class Enemy {
                     this.colliderPositionZ = this.colliderPositionZ - speedMove;
                 }
             }
+
+
+            //Направление в которое следуем(для правильной анимации)
+
+            let squareWidth = (enemy.colliderPositionX + enemy.scopeRadius) / 3;
+            let squareHeight = (enemy.colliderPositionZ + enemy.scopeRadius) / 3;
+
+
+            this.directionMove = 'DOWN';
+
+
+            if (huntedPlayer.colliderPositionX === enemy.colliderPositionX && huntedPlayer.colliderPositionZ >= enemy.colliderPositionZ) {
+                this.directionMove = 'DOWN';
+
+            }
+
+
+            else if (huntedPlayer.colliderPositionX < enemy.colliderPositionX && huntedPlayer.colliderPositionZ >enemy.colliderPositionZ) {
+                this.directionMove = 'DOWN_LEFT';
+
+            }
+
+            else if (huntedPlayer.colliderPositionX > enemy.colliderPositionX && huntedPlayer.colliderPositionZ > enemy.colliderPositionZ) {
+                this.directionMove = 'DOWN_RIGHT';
+
+            }
+
+
+            else if (huntedPlayer.colliderPositionX === enemy.colliderPositionX && huntedPlayer.colliderPositionZ <= enemy.colliderPositionZ) {
+
+                this.directionMove = 'UP';
+            }
+
+
+            else if (huntedPlayer.colliderPositionX < enemy.colliderPositionX && huntedPlayer.colliderPositionZ < enemy.colliderPositionZ) {
+                this.directionMove = 'UP_LEFT';
+
+            }
+
+            else if (huntedPlayer.colliderPositionX > enemy.colliderPositionX && huntedPlayer.colliderPositionZ < enemy.colliderPositionZ) {
+                this.directionMove = 'UP_RIGHT';
+
+            }
+
+
+            else if (huntedPlayer.colliderPositionX >= enemy.colliderPositionX && huntedPlayer.colliderPositionZ === enemy.colliderPositionZ) {
+                this.directionMove = 'RIGHT';
+
+            }
+            else if (huntedPlayer.colliderPositionX <= enemy.colliderPositionX && huntedPlayer.colliderPositionZ === enemy.colliderPositionZ) {
+
+                this.directionMove = 'LEFT';
+
+            }
+
+            console.log(this.directionMove );
+
         }
     }
 

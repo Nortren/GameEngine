@@ -189,7 +189,7 @@ class ServicesController extends Service {
 
 				}
 			});
-		}, 1000);
+		}, 60);
 	}
 }
 

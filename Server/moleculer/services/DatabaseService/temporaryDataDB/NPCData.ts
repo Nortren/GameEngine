@@ -1,6 +1,26 @@
 export const NPCJson = {
     enemy1: {
-        src: "./Client/image/hero.png",
+        sprite:{
+            src: "./Client/image/Player_v0_0_4.png",
+            numberOfFramesX: 17,
+            numberOfFramesY: 14,
+            firstFrameMove: 2,
+            lastFrameMove: 9,
+            frameMoveUp: 1,
+            frameMoveUpRight: 3,
+            frameMoveUpLeft: 31,
+
+            frameMoveDown: 17,
+            frameMoveDownRight: 14,
+            frameMoveDownLeft: 20,
+            //Нам нужен реверс кадра в клиенте у нас выставленна опция THREE.MirroredRepeatWrapping которая делает зеркальное отражения и нам просто нужно посчитать номер кадра по зеркалу
+            frameMoveLeft: 27,
+            frameMoveRight: 9,
+            firstFrameAttack: 10,
+            lastFrameAttack: 11,
+            firstFrameDeath: null,
+            lastFrameDeath: null,
+        },
         collaid:"./Client/image/collaid.png",
         scope:"./Client/image/persecutionRadius.png",
         scopeRadius:10,

@@ -153,6 +153,7 @@ export default class EngineInitialization extends React.Component implements pri
                         thisEnemy.colliderPositionX = enemy.colliderPositionX;
                         thisEnemy.colliderPositionY = enemy.colliderPositionY;
                         thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
+                        thisEnemy.directionMove = enemy.directionMove;
 
 
                         thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
@@ -203,7 +204,8 @@ export default class EngineInitialization extends React.Component implements pri
 
         const playerAvatarSprite = playerData.playerAvatarSprite;
         const healthLine = playerData.healthLine;
-        const userCollaider = playerData.collaider;
+        //TODO это коллайдер от которого по задумке должны были быть тени если нужно для эксперимента то добавь на сцену
+        // const userCollaider = playerData.collaider;
 
         //Проверяем есть ли такой игрок на карте
         let thisIdOnMap = this.playerInMaps.filter((data) => {
@@ -213,7 +215,7 @@ export default class EngineInitialization extends React.Component implements pri
         if (thisIdOnMap.length === 0) {
             this.playerInMaps.push(player);
             //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
-            scene.add(playerAvatarSprite, healthLine, userCollaider);
+            scene.add(playerAvatarSprite, healthLine);
         }
 
     }
@@ -224,7 +226,7 @@ export default class EngineInitialization extends React.Component implements pri
         let enemyDataArrayTest = [];
         enemyData.forEach((enemy) => {
             const id = enemy.id;
-            const src = enemy.src;
+            const sprite = enemy.sprite;
             const collaid = enemy.collaid;
             const scope = enemy.scope;
             const scopeRadius = enemy.scopeRadius;
@@ -243,7 +245,7 @@ export default class EngineInitialization extends React.Component implements pri
             const attackSpeed = enemy.attackSpeed;
             const moveSpeed = enemy.moveSpeed;
 
-            const enemyRoom = new Enemy(id, src, collaid,
+            const enemyRoom = new Enemy(id, sprite, collaid,
                 scope, scopeRadius, colliderPositionX, colliderPositionY, colliderPositionZ,
                 colliderWidth, colliderHeight, colliderLength,
                 pursuitZone, persecutionRadius, health,
