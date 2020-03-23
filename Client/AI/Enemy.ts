@@ -155,7 +155,8 @@ export default class Enemy implements BasicPropertyEnemy {
         const enemyImg = loader.load(sprite.src);
         enemyImg.wrapS = enemyImg.wrapT = THREE.MirroredRepeatWrapping;
         enemyImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
-        enemyImg.magFilter = THREE.NearestFilter;
+        //Пиксельный фильтр
+        // enemyImg.magFilter = THREE.NearestFilter;
 
         const enemyColor = 0xff0000;
         const enemyTexture = new THREE.SpriteMaterial({
