@@ -215,11 +215,13 @@ export default class PlayerAvatar extends PlayerMainClass {
      */
     updateTouchPosition(keyPress) {
         //TODO Временная функция атаки для тестирования
+		this.moveContinue = true;
         if (keyPress.nameButton === 'ButtonAttack') {
             this.attackStatus = keyPress.press;
+			this.moveContinue = false;
         }
 
-        if (keyPress.event === 'touchstart') {
+      if (keyPress.event === 'touchstart') {
             this.touchStartPointX = keyPress.x;
             this.touchStartPointZ = keyPress.z;
         }
@@ -229,24 +231,80 @@ export default class PlayerAvatar extends PlayerMainClass {
             //Если пользователь прекратил нажатия на экран Touch устройства то нужно оповестить об этом чтоб прекратить анимации
             this.moveDirection = 'STOP';
         }
+		/*
+               if (this.touchStartPointX > keyPress.x) {
+                   this.colliderPositionX = this.colliderPositionX - 0.1;
+                   this.moveDirection = 'LEFT';
+               }
+               if (this.touchStartPointX < keyPress.x) {
+                   this.colliderPositionX = this.colliderPositionX + 0.1;
+                   this.moveDirection = 'RIGHT';
+               }
+               if (this.touchStartPointZ > keyPress.z) {
+                   this.colliderPositionZ = this.colliderPositionZ - 0.1;
+                   this.moveDirection = 'UP';
+               }
+               if (this.touchStartPointZ < keyPress.z) {
+                   this.colliderPositionZ = this.colliderPositionZ + 0.1;
+                   this.moveDirection = 'DOWN';
+               }*/
 
-        if (this.touchStartPointX > keyPress.x) {
-            this.colliderPositionX = this.colliderPositionX - 0.1;
-            this.moveDirection = 'LEFT';
-        }
-        if (this.touchStartPointX < keyPress.x) {
-            this.colliderPositionX = this.colliderPositionX + 0.1;
-            this.moveDirection = 'RIGHT';
-        }
-        if (this.touchStartPointZ > keyPress.z) {
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
-            this.moveDirection = 'UP';
-        }
-        if (this.touchStartPointZ < keyPress.z) {
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
-            this.moveDirection = 'DOWN';
-        }
 
+		this.directionMove = 'DOWN';
+
+
+		if (this.touchStartPointZ < keyPress.z && (keyPress.x-10 <= this.touchStartPointX && this.touchStartPointX <= keyPress.x + 10)) {
+			this.colliderPositionZ = this.colliderPositionZ + 0.1;
+			this.moveDirection = 'DOWN';
+
+		}
+		else if (this.touchStartPointX < keyPress.x && (keyPress.z-10 <= this.touchStartPointZ && this.touchStartPointZ <= keyPress.z + 10)) {
+			this.colliderPositionX = this.colliderPositionX + 0.1;
+			this.moveDirection = 'RIGHT';
+
+		}
+		else if (this.touchStartPointX > keyPress.x && (keyPress.z-10 <= this.touchStartPointZ && this.touchStartPointZ <= keyPress.z + 10)) {
+			this.colliderPositionX = this.colliderPositionX - 0.1;
+			this.moveDirection = 'LEFT';
+
+		}
+
+		else if (this.touchStartPointX > keyPress.x && this.touchStartPointZ < keyPress.z) {
+			this.colliderPositionX = this.colliderPositionX - 0.1;
+			this.colliderPositionZ = this.colliderPositionZ + 0.1;
+			this.moveDirection = 'DOWN_LEFT';
+		}
+
+		else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ < keyPress.z) {
+			this.colliderPositionX = this.colliderPositionX + 0.1;
+			this.colliderPositionZ = this.colliderPositionZ + 0.1;
+			this.moveDirection = 'DOWN_RIGHT';
+
+		}
+
+
+		else if (this.touchStartPointZ > keyPress.z && (keyPress.x-10 <= this.touchStartPointX && this.touchStartPointX <= keyPress.x + 10)) {
+			this.colliderPositionZ = this.colliderPositionZ - 0.1;
+			this.moveDirection = 'UP';
+		}
+
+
+		else if (this.touchStartPointX > keyPress.x && this.touchStartPointZ > keyPress.z) {
+			this.colliderPositionX = this.colliderPositionX - 0.1;
+			this.colliderPositionZ = this.colliderPositionZ - 0.1;
+			this.moveDirection = 'UP_LEFT';
+		}
+
+		else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ > keyPress.z) {
+			this.colliderPositionX = this.colliderPositionX + 0.1;
+			this.colliderPositionZ = this.colliderPositionZ - 0.1;
+			this.moveDirection = 'UP_RIGHT';
+
+		}
+
+
+
+		console.log(keyPress,this.moveDirection);
 
     }
 

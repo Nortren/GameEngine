@@ -194,7 +194,6 @@ export default class Enemy {
 
             }
 
-            console.log(this.directionMove );
 
         }
     }
