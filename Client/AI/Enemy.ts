@@ -362,27 +362,29 @@ export default class Enemy implements BasicPropertyEnemy {
 
         let rect = move;
 
+
         this._count++;
-        if (this._count > enemyData.sprite.lastFrameMove && !this.attackStatus) {
-            this._count = enemyData.sprite.firstFrameMove;
-        }
+
+
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
             this._count = spriteData.firstFrameAttack;
         }
+        if (this._count > enemyData.sprite.lastFrameMove && !this.attackStatus) {
+            this._count = enemyData.sprite.firstFrameMove;
+        }
 
         //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
-        if (this.attackStatus && !this.animationAttackLoop) {
-            this._count = spriteData.firstFrameAttack;
+        if (this.attackStatus) {
 
-            this.animationAttackLoop = setInterval(() => {
+            requestAnimationFrame(() => {
                 this.animationEnemyAvatarForPositionServer(enemyData);
-            }, 60);
-
+            });
+            // this._count = spriteData.firstFrameAttack;
         }
-        if (!this.attackStatus) {
+      /*  if (!this.attackStatus) {
             clearInterval(this.animationAttackLoop);
             this.animationAttackLoop = 0;
-        }
+        }*/
 
         if (this.attackStatus) {
             rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
