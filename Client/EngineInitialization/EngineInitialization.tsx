@@ -154,6 +154,7 @@ export default class EngineInitialization extends React.Component implements pri
                         thisEnemy.colliderPositionY = enemy.colliderPositionY;
                         thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
                         thisEnemy.directionMove = enemy.directionMove;
+                        thisEnemy.attackStatus = enemy.attackStatus;
 
 
                         thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);

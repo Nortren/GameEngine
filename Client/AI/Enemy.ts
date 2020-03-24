@@ -21,6 +21,7 @@ interface BasicPropertyEnemy {
     collaid: string;
     clientSocketIOID: string;
     directionMove: string;
+    attackStatus: boolean;
     create();
 
     update();
@@ -69,6 +70,7 @@ export default class Enemy implements BasicPropertyEnemy {
     attackSpeed: number;
     moveSpeed: number;
     directionMove: string;
+    attackStatus: boolean;
     constructor(id: number, sprite: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
                 colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
@@ -161,7 +163,7 @@ export default class Enemy implements BasicPropertyEnemy {
         const enemyColor = 0xff0000;
         const enemyTexture = new THREE.SpriteMaterial({
             map: enemyImg,
-            color: enemyColor,
+            // color: enemyColor,
             useScreenCoordinates: false, transparent: true
         });
         this.enemySprite = new THREE.Sprite(enemyTexture);
@@ -337,28 +339,57 @@ export default class Enemy implements BasicPropertyEnemy {
 
         return spriteOffsets[0];
     }
+    animationSpriteAttack(titleCountX, titleCountY, numberOfFrames) {
+        let spriteOffsets = [];
+        let xPosition = numberOfFrames * titleCountX;
+        let yPosition = (numberOfFrames) * titleCountY;
+        spriteOffsets.push({x: titleCountX, y: yPosition});
 
+        return spriteOffsets[0];
+    }
 
     /**
      * Анимация врагов
      * @param enemyData
      * @param playerInformation
      */
-    animationEnemyAvatarForPositionServer(enemyData, playerInformation) {
+    animationEnemyAvatarForPositionServer(enemyData) {
         //Шаг фрэйма по оси X и Y
         const spriteData = enemyData.sprite;
         const frameToX = 1 / spriteData.numberOfFramesX;
         const frameToY = 1 / spriteData.numberOfFramesY;
-
-
-        this._count++;
-        if (this._count > enemyData.sprite.lastFrameMove) {
-            this._count = enemyData.sprite.firstFrameMove;
-        }
-
         let move = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
 
         let rect = move;
+
+        this._count++;
+        if (this._count > enemyData.sprite.lastFrameMove && !this.attackStatus) {
+            this._count = enemyData.sprite.firstFrameMove;
+        }
+        if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
+            this._count = spriteData.firstFrameAttack;
+        }
+
+        //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
+        if (this.attackStatus && !this.animationAttackLoop) {
+            this._count = spriteData.firstFrameAttack;
+
+            this.animationAttackLoop = setInterval(() => {
+                this.animationEnemyAvatarForPositionServer(enemyData);
+            }, 60);
+
+        }
+        if (!this.attackStatus) {
+            clearInterval(this.animationAttackLoop);
+            this.animationAttackLoop = 0;
+        }
+
+        if (this.attackStatus) {
+            rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
+        }
+
+
+
         if (this.directionMove === "LEFT") {
             this.lastStatusAttack = spriteData.frameMoveLeft;
             rect = this.animationSpriteMove(frameToX * spriteData.frameMoveLeft, frameToY, this._count);

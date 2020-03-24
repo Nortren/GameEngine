@@ -18,7 +18,7 @@ export default class Enemy {
     colliderPositionZ: number;
     moveSpeed: number;
     directionMove: string;
-
+    attackStatus: boolean;
     constructor(id: string,
                 sprite: string,
                 collaid: string,
@@ -74,9 +74,6 @@ export default class Enemy {
         this.persecutionObjectOld(playersInTheRoom);
     }
 
-    attack() {
-
-    }
 
     death() {
 
@@ -103,6 +100,7 @@ export default class Enemy {
      * @returns {boolean}
      */
     nearestPlayer(player) {
+        this.attackStatus = false;
         /*TODO в дальнейшем надол сделать так чтоб определялся самый ближайший игрок а не первый попавшийся в радиусе видимости из массива с игроками плюс учет количества жизней игрока(в зависимости от типа монстра
          кто-то будет за самым побитым кто-то за самым сильным и т.д)*/
         //Тут идёт умножение ширины и длинны на 0.5 т.к они считаются от центра т.е половину откладываем в одну сторону половину в другую
@@ -119,8 +117,9 @@ export default class Enemy {
 
         const speedMove = this.moveSpeed * 0.1;
         if (this && huntedPlayer) {
+            console.log(this.collisionStatus(huntedPlayer) ,!this.attack(huntedPlayer));
+            if (this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
 
-            if ( this.collisionStatus(huntedPlayer) ) {
                 //Движение за игроком по оси X
                 if (this.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
                     if (this.colliderPositionX < huntedPlayer.colliderPositionX) {
@@ -150,6 +149,20 @@ export default class Enemy {
 
     }
 
+    attack(huntedPlayer) {
+
+        let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
+        let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength, this.attackDistance);
+
+        if (CollisionZ && CollisionX) {
+            this.attackStatus = true;
+
+            return true;
+        }
+        this.attackStatus = false;
+        return false;
+    }
+
     collisionStatus(huntedPlayer) {
         let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth);
         let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength);
@@ -168,10 +181,10 @@ export default class Enemy {
      * @param sizeCollision Размер объекта столкновения (Width,Length)
      * @returns {boolean}
      */
-    checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
-        console.log(enemyPositionAxis, enemySize, positionCollision, sizeCollision);
-        if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
-            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
+    checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision, attackDistance: number = 0) {
+
+        if ((enemyPositionAxis + enemySize * 0.5 + attackDistance >= positionCollision - sizeCollision) &&
+            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision + attackDistance)) {
             return true;
         }
         return false;
