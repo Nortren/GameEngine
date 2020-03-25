@@ -298,11 +298,11 @@ export default class PlayerAvatar extends PlayerMainClass {
 
 	}
 
+
 	attack(enemy) {
 		if (this.attackStatus) {
 
 			enemy.forEach((target) => {
-				// console.log(this.colliderPositionX,this.colliderPositionZ,target.colliderPositionX , target.colliderPositionZ ,'PLAYER');
 				if(this.immediateObjective(target)){
 					target.health = target.health - this.damage;
 					console.log(target.health);
