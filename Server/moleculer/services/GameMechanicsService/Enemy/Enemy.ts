@@ -234,7 +234,6 @@ export default class Enemy {
 
         }
 
-
         else if (huntedPlayer.colliderPositionX >= this.colliderPositionX && huntedPlayer.colliderPositionZ === this.colliderPositionZ) {
             this.directionMove = 'RIGHT';
 
