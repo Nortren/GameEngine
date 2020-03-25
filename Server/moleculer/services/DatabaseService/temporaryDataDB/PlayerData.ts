@@ -32,7 +32,7 @@ export const PlayerJson = {
 		colliderLength: 1,
 		health: 100,
 		damage: 2,
-		attackDistance: 1,
+		attackDistance: 5,
 		attackSpeed: 10,
 		moveSpeed: 1
 	},
@@ -67,7 +67,7 @@ export const PlayerJson = {
 		colliderLength: 1,
 		health: 100,
 		damage: 2,
-		attackDistance: 1,
+		attackDistance: 5,
 		attackSpeed: 10,
 		moveSpeed: 1
 	},

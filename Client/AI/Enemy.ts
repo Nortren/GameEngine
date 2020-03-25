@@ -22,6 +22,7 @@ interface BasicPropertyEnemy {
     clientSocketIOID: string;
     directionMove: string;
     attackStatus: boolean;
+
     create();
 
     update();
@@ -71,6 +72,7 @@ export default class Enemy implements BasicPropertyEnemy {
     moveSpeed: number;
     directionMove: string;
     attackStatus: boolean;
+
     constructor(id: number, sprite: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
                 colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
@@ -158,7 +160,7 @@ export default class Enemy implements BasicPropertyEnemy {
         enemyImg.wrapS = enemyImg.wrapT = THREE.MirroredRepeatWrapping;
         enemyImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
         //Пиксельный фильтр
-        enemyImg.magFilter = THREE.NearestFilter;
+        // enemyImg.magFilter = THREE.NearestFilter;
 
         const enemyColor = 0xff0000;
         const enemyTexture = new THREE.SpriteMaterial({
@@ -339,6 +341,7 @@ export default class Enemy implements BasicPropertyEnemy {
 
         return spriteOffsets[0];
     }
+
     animationSpriteAttack(titleCountX, titleCountY, numberOfFrames) {
         let spriteOffsets = [];
         let xPosition = numberOfFrames * titleCountX;
@@ -381,15 +384,14 @@ export default class Enemy implements BasicPropertyEnemy {
             });
             // this._count = spriteData.firstFrameAttack;
         }
-      /*  if (!this.attackStatus) {
-            clearInterval(this.animationAttackLoop);
-            this.animationAttackLoop = 0;
-        }*/
+        /*  if (!this.attackStatus) {
+              clearInterval(this.animationAttackLoop);
+              this.animationAttackLoop = 0;
+          }*/
 
         if (this.attackStatus) {
             rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
         }
-
 
 
         if (this.directionMove === "LEFT") {
@@ -424,8 +426,6 @@ export default class Enemy implements BasicPropertyEnemy {
             this.lastStatusAttack = spriteData.frameMoveDownRight;
             rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
         }
-
-
 
 
         enemyData.enemySprite.material.map.offset.x = rect.x;
@@ -659,8 +659,8 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
     checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
-        if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
-            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
+        if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision * 0.5) &&
+            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision * 0.5)) {
             return true;
         }
         return false;
