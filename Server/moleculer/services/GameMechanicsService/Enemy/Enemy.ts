@@ -117,7 +117,6 @@ export default class Enemy {
 
         const speedMove = this.moveSpeed * 0.1;
         if (this && huntedPlayer) {
-            console.log(this.collisionStatus(huntedPlayer) ,!this.attack(huntedPlayer));
             if (this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
 
                 //Движение за игроком по оси X
@@ -183,8 +182,8 @@ export default class Enemy {
      */
     checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision, attackDistance: number = 0) {
 
-        if ((enemyPositionAxis + enemySize * 0.5 + attackDistance >= positionCollision - sizeCollision) &&
-            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision + attackDistance)) {
+        if ((enemyPositionAxis + enemySize * 0.5 + attackDistance >= positionCollision - sizeCollision * 0.5) &&
+            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision * 0.5 + attackDistance)) {
             return true;
         }
         return false;

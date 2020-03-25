@@ -96,7 +96,10 @@ export default class Room implements BasicProperty {
         const room = this;
         this.enemy.forEach((enemy)=>{
             enemy.update(room);
-        })
+        });
+		this.playersInTheRoom.forEach(( playerAvatar )=>{
+			playerAvatar.update(room);
+		})
 
     }
 
