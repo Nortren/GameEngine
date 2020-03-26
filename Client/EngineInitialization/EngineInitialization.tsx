@@ -57,7 +57,6 @@ export default class EngineInitialization extends React.Component implements pri
         this.createUserRoom(scene, renderer, canvas);
 
 
-
     }
 
     /**
@@ -145,8 +144,8 @@ export default class EngineInitialization extends React.Component implements pri
 
 
                 this.blData.getTestDataServerConnect((data) => {
-                    data.room.enemy.forEach((enemy)=>{
-                        let thisEnemy =   this._enemyArray.filter((enemyClient)=>{
+                    data.room.enemy.forEach((enemy) => {
+                        let thisEnemy = this._enemyArray.filter((enemyClient) => {
 
                             return enemy.id === enemyClient.id
                         })[0];
@@ -155,7 +154,7 @@ export default class EngineInitialization extends React.Component implements pri
                         thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
                         thisEnemy.directionMove = enemy.directionMove;
                         thisEnemy.attackStatus = enemy.attackStatus;
-
+                        thisEnemy.health = enemy.health;
 
                         thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
                     });
@@ -167,7 +166,7 @@ export default class EngineInitialization extends React.Component implements pri
                     this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
                     this.init = true;
 
-                this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
+                    this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
                 }
             }
         });
@@ -271,7 +270,6 @@ export default class EngineInitialization extends React.Component implements pri
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
 
 
-
         let now = performance.now();
         let duration = now - timeStart;
 
@@ -289,9 +287,9 @@ export default class EngineInitialization extends React.Component implements pri
         });
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
-     /*   for (let key in enemyArray) {
-            enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
-        }*/
+        /*   for (let key in enemyArray) {
+               enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
+           }*/
 
 
         this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,

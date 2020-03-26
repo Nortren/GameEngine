@@ -18,8 +18,9 @@ export const NPCJson = {
             frameMoveRight: 9,
             firstFrameAttack: 10,
             lastFrameAttack: 11,
-            firstFrameDeath: null,
-            lastFrameDeath: null,
+            firstFrameDeath: 0,
+			//Тут надо перемещать по X а Y остаётся прежним
+            lastFrameDeathX: 8,
         },
         collaid:"./Client/image/collaid.png",
         scope:"./Client/image/persecutionRadius.png",
