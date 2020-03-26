@@ -38,6 +38,7 @@ interface BasicPropertyEnemy {
 
 export default class Enemy implements BasicPropertyEnemy {
     _count: number;
+    _counterOfDeath: number;
     props: object;
     animation: Dynamic = new Dynamic();
     _animationTimer: number;
@@ -121,6 +122,7 @@ export default class Enemy implements BasicPropertyEnemy {
 
 
         this._count = 0;
+        this._counterOfDeath = 1;
         this.moveCountTest = 0;
         this._animationTimer = 0;
         this._eventCount = 0;
@@ -278,18 +280,8 @@ export default class Enemy implements BasicPropertyEnemy {
         this.updateEnemVisualDate(enemyData.enemySprite, enemyData);
         this.updateHealthLine(enemyData);
 
-        //TODO Старая логика анимации и перемещения которая считалась на клиенте
-        /*     if (enemyData.health > 0) {
-         this.persecutionObject(enemyData, playerInformation, mapData);
-         }
-         else {
-         scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
-         }*/
-        this.animationEnemyAvatarForPositionServer(enemyData, playerInformation);
 
-        if (enemyData.health <= 0) {
-            scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
-        }
+        this.animationEnemyAvatarForPositionServer(enemyData, scene);
 
     }
 
@@ -351,12 +343,22 @@ export default class Enemy implements BasicPropertyEnemy {
         return spriteOffsets[0];
     }
 
+    animationSpriteDeatch(titleCountX, titleCountY, numberOfFrames) {
+        let spriteOffsets = [];
+        let xPosition = numberOfFrames * titleCountX;
+        let yPosition = (numberOfFrames) * titleCountY;
+        spriteOffsets.push({x: xPosition, y: titleCountY});
+
+        return spriteOffsets[0];
+    }
+
     /**
      * Анимация врагов
      * @param enemyData
      * @param playerInformation
      */
-    animationEnemyAvatarForPositionServer(enemyData) {
+    animationEnemyAvatarForPositionServer(enemyData,scene) {
+
         //Шаг фрэйма по оси X и Y
         const spriteData = enemyData.sprite;
         const frameToX = 1 / spriteData.numberOfFramesX;
@@ -369,6 +371,10 @@ export default class Enemy implements BasicPropertyEnemy {
         this._count++;
 
 
+        // if(this.health > 0){
+        //     this._counterOfDeath = spriteData.firstFrameDeath;
+        // }
+
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
             this._count = spriteData.firstFrameAttack;
         }
@@ -377,20 +383,18 @@ export default class Enemy implements BasicPropertyEnemy {
         }
 
         //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
-        if (this.attackStatus) {
+        if (this.attackStatus && this.health > 0) {
 
             requestAnimationFrame(() => {
-                this.animationEnemyAvatarForPositionServer(enemyData);
+                this.animationEnemyAvatarForPositionServer(enemyData,scene);
             });
-            // this._count = spriteData.firstFrameAttack;
+
         }
-        /*  if (!this.attackStatus) {
-              clearInterval(this.animationAttackLoop);
-              this.animationAttackLoop = 0;
-          }*/
+
 
         if (this.attackStatus) {
             rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
+
         }
 
 
@@ -427,6 +431,22 @@ export default class Enemy implements BasicPropertyEnemy {
             rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
         }
 
+
+        if (this.health <= 0) {
+
+            if (this._counterOfDeath < spriteData.lastFrameDeathX) {
+                this._counterOfDeath++;
+                requestAnimationFrame(() => {
+                    this.animationEnemyAvatarForPositionServer(enemyData,scene);
+                });
+            }
+            else {
+                // this._counterOfDeath = spriteData.firstFrameDeath;
+                this.death(scene,enemyData);
+            }
+            rect = this.animationSpriteDeatch(frameToX, frameToY * spriteData.firstFrameDeath, this._counterOfDeath);
+
+        }
 
         enemyData.enemySprite.material.map.offset.x = rect.x;
         enemyData.enemySprite.material.map.offset.y = rect.y;
@@ -666,8 +686,8 @@ export default class Enemy implements BasicPropertyEnemy {
         return false;
     }
 
-    checkCollision() {
-
+    death(scene,enemyData) {
+        scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
     }
 }
 
