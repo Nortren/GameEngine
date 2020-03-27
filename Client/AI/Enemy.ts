@@ -441,8 +441,8 @@ export default class Enemy implements BasicPropertyEnemy {
                 });
             }
             else {
-                // this._counterOfDeath = spriteData.firstFrameDeath;
-                this.death(scene,enemyData);
+                this._counterOfDeath = spriteData.firstFrameDeath;
+                // this.death(scene,enemyData);
             }
             rect = this.animationSpriteDeatch(frameToX, frameToY * spriteData.firstFrameDeath, this._counterOfDeath);
 
