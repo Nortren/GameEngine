@@ -305,7 +305,6 @@ export default class PlayerAvatar extends PlayerMainClass {
 			enemy.forEach((target) => {
 				if(this.immediateObjective(target)){
 					target.health = target.health - this.damage;
-					console.log(target.health);
 				}
 			})
 

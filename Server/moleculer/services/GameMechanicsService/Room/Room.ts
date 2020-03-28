@@ -83,7 +83,6 @@ export default class Room implements BasicProperty {
 				this.enemy.splice(i, 1)
 			}
 		});
-		console.log(this.enemy, 'REMOVE ENEMY');
 		return this.enemy;
 	}
 

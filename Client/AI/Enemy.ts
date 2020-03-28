@@ -357,12 +357,25 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param enemyData
      * @param playerInformation
      */
-    animationEnemyAvatarForPositionServer(enemyData,scene) {
+    animationEnemyAvatarForPositionServer(enemyData, scene) {
 
         //Шаг фрэйма по оси X и Y
         const spriteData = enemyData.sprite;
         const frameToX = 1 / spriteData.numberOfFramesX;
         const frameToY = 1 / spriteData.numberOfFramesY;
+
+
+        //Задержка анимации в данном случае используем ее чтоб красиво отобразить анимацию смерти бота
+        let delay = 10;
+
+        //TODO В данном случаи цифра три показывает что последние 3 кадра будут выполняться с гигантской задержкой(Надо чтоб это значение было указанно на сервере)
+        if(spriteData.lastFrameDeathX - 3 <=this._counterOfDeath){
+            delay = 100;
+        }
+
+
+        this._animationTimer++;
+
         let move = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
 
         let rect = move;
@@ -370,10 +383,6 @@ export default class Enemy implements BasicPropertyEnemy {
 
         this._count++;
 
-
-        // if(this.health > 0){
-        //     this._counterOfDeath = spriteData.firstFrameDeath;
-        // }
 
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
             this._count = spriteData.firstFrameAttack;
@@ -386,11 +395,10 @@ export default class Enemy implements BasicPropertyEnemy {
         if (this.attackStatus && this.health > 0) {
 
             requestAnimationFrame(() => {
-                this.animationEnemyAvatarForPositionServer(enemyData,scene);
+                this.animationEnemyAvatarForPositionServer(enemyData, scene);
             });
 
         }
-
 
         if (this.attackStatus) {
             rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
@@ -435,15 +443,19 @@ export default class Enemy implements BasicPropertyEnemy {
         if (this.health <= 0) {
 
             if (this._counterOfDeath < spriteData.lastFrameDeathX) {
-                this._counterOfDeath++;
+              //Мы инкрементируем счетчик смерти если выполняется условие(т.е соответствие с указанной задержкой)
+                if (this._animationTimer % delay === 0) {
+                    this._counterOfDeath++;
+                }
                 requestAnimationFrame(() => {
-                    this.animationEnemyAvatarForPositionServer(enemyData,scene);
+                    this.animationEnemyAvatarForPositionServer(enemyData, scene);
                 });
             }
             else {
-                this._counterOfDeath = spriteData.firstFrameDeath;
-                // this.death(scene,enemyData);
+                // this._counterOfDeath = spriteData.firstFrameDeath;
+                this.death(scene, enemyData);
             }
+
             rect = this.animationSpriteDeatch(frameToX, frameToY * spriteData.firstFrameDeath, this._counterOfDeath);
 
         }
@@ -686,7 +698,7 @@ export default class Enemy implements BasicPropertyEnemy {
         return false;
     }
 
-    death(scene,enemyData) {
+    death(scene, enemyData) {
         scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
     }
 }

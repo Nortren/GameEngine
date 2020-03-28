@@ -9,7 +9,7 @@ export const MapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement: {
-            home1: {
+/*            home1: {
                 src: "./Client/image/home.png",
                 startPositionX: 7,
                 startPositionY: 0,
@@ -40,7 +40,7 @@ export const MapJSON = {
                 colliderHeight: 3,
                 colliderLength: 1,
                 zIndex: 1,
-            },
+            },*/
             /*    tree2: {
              src: "./Client/image/treeTest.png",
              startPositionX: 0,
@@ -70,9 +70,9 @@ export const MapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement: {
-            home1: {
+  /*          home1: {
                 src: "./Client/image/home.png",
-                startPositionX: 7,
+                startPositionX: 70,
                 startPositionY: 0,
                 startPositionZ: 3,
                 width: 10,
@@ -101,7 +101,7 @@ export const MapJSON = {
                 colliderHeight: 3,
                 colliderLength: 1,
                 zIndex: 1,
-            },
+            },*/
             /*    tree2: {
              src: "./Client/image/treeTest.png",
              startPositionX: 0,
@@ -122,7 +122,7 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 2,
+                count: 100,
                 startPoint: {x:0,y:0,z:0},
                 distanceBetweenEnemies: 1
             },

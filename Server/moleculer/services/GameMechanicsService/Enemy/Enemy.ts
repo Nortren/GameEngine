@@ -67,21 +67,42 @@ export default class Enemy {
 	}
 
 	update(roomData) {
-		console.log(roomData,'ENEMY IN ROOM');
 		this.move(roomData);
 		this.health <= 0 ? this.death(roomData) : null;
 	}
 
 	move(roomData) {
 		const playersInTheRoom = roomData.playersInTheRoom;
+		const enemyInTheRoom = roomData.enemy;
 		this.persecutionObjectOld(playersInTheRoom);
+		this.correctMove(enemyInTheRoom);
 	}
 
 
 	death(roomData) {
 
-		// roomData.removeEnemyInRoom(this.id);
+		roomData.removeEnemyInRoom(this.id);
 
+
+	}
+
+	/**
+	 * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
+	 * @param enemyInTheRoom
+	 */
+	correctMove(enemyInTheRoom){
+		enemyInTheRoom.forEach((enemy)=>{
+
+			if(this.id !== enemy.id){
+				if(this.collisionStatus(enemy)){
+				this.colliderPositionX+=0.1+this.colliderWidth;
+				this.colliderPositionZ+=0.1+this.colliderHeight;
+
+				}
+
+			}
+
+		});
 
 	}
 
@@ -123,7 +144,7 @@ export default class Enemy {
 
 		const speedMove = this.moveSpeed * 0.1;
 		if (this && huntedPlayer) {
-			if (this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
+			if (!this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
 
 				//Движение за игроком по оси X
 				if (this.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
@@ -168,14 +189,19 @@ export default class Enemy {
 		return false;
 	}
 
-	collisionStatus(huntedPlayer) {
-		let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth);
-		let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength);
+	/**
+	 * Определяем есть ли пересечение с объектом по обеим точкам если да значит обьекты столкнулись
+	 * @param colliderObject
+	 * @returns {boolean}
+	 */
+	collisionStatus(colliderObject) {
+		let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, colliderObject.colliderPositionX, colliderObject.colliderWidth);
+		let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, colliderObject.colliderPositionZ, colliderObject.colliderLength);
 
 		if (!CollisionZ || !CollisionX) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
