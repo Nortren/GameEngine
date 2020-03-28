@@ -366,22 +366,23 @@ export default class Enemy implements BasicPropertyEnemy {
 
 
         //Задержка анимации в данном случае используем ее чтоб красиво отобразить анимацию смерти бота
-        let delay = 10;
+        let delay = 2;
 
         //TODO В данном случаи цифра три показывает что последние 3 кадра будут выполняться с гигантской задержкой(Надо чтоб это значение было указанно на сервере)
         if(spriteData.lastFrameDeathX - 3 <=this._counterOfDeath){
-            delay = 100;
+            delay = 5;
         }
 
 
         this._animationTimer++;
+        this._count++;
 
         let move = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
 
         let rect = move;
 
 
-        this._count++;
+
 
 
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
@@ -394,9 +395,9 @@ export default class Enemy implements BasicPropertyEnemy {
         //Тут вызываем цикл анимаций для стрельбы т.к с сервера к нам приходит либо нажата клавиша либо отпущена и это происходит не циклично
         if (this.attackStatus && this.health > 0) {
 
-            requestAnimationFrame(() => {
-                this.animationEnemyAvatarForPositionServer(enemyData, scene);
-            });
+            // requestAnimationFrame(() => {
+            //     this.animationEnemyAvatarForPositionServer(enemyData, scene);
+            // });
 
         }
 
