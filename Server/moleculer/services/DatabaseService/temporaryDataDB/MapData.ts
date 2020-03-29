@@ -70,7 +70,7 @@ export const MapJSON = {
         mapSizeX: 1000,
         mapSizeY: 1000,
         mapElement: {
-  /*          home1: {
+            home1: {
                 src: "./Client/image/home.png",
                 startPositionX: 70,
                 startPositionY: 0,
@@ -78,69 +78,53 @@ export const MapJSON = {
                 width: 10,
                 height: 10,
                 collaid: "./Client/image/collaid.png",
-                colliderPositionX: 7,
-                colliderPositionY: 2,
-                colliderPositionZ: 0,
-                colliderWidth: 10,
-                colliderHeight: 5,
-                colliderLength: 3,
+                colliderPositionX: 3,
+                colliderPositionY: 0,
+                colliderPositionZ: 2,
+                colliderWidth: 0.5,
+                colliderHeight: 0.5,
+                colliderLength: 5,
                 zIndex: 1,
             },
             tree1: {
                 src: "./Client/image/treeTest.png",
-                startPositionX: -5,
+                startPositionX: -3,
                 startPositionY: 0,
-                startPositionZ: -5,
+                startPositionZ: 0,
                 width: 3,
                 height: 3,
                 collaid: "./Client/image/collaid.png",
-                colliderPositionX: -5,
+                colliderPositionX: -3,
                 colliderPositionY: 0,
-                colliderPositionZ: -5,
-                colliderWidth: 3,
-                colliderHeight: 3,
-                colliderLength: 1,
+                colliderPositionZ: 0,
+                colliderWidth: 5,
+                colliderHeight: 0.5,
+                colliderLength: 0.5,
                 zIndex: 1,
-            },*/
-            /*    tree2: {
-             src: "./Client/image/treeTest.png",
-             startPositionX: 0,
-             startPositionY: 0,
-             startPositionZ: -8,
-             width: 5,
-             height: 5,
-             collaid: "./Client/image/collaid.png",
-             colliderPositionX: 0,
-             colliderPositionY: 0.01,
-             colliderPositionZ: -8,
-             colliderWidth: 0.5,
-             colliderHeight: 0.5,
-             zIndex: 1,
-             },
-             */
+            }
         },
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 125,
-                startPoint: {x:-40,y:0,z:0},
+                count: 1,
+                startPoint: {x:-10,y:0,z:0},
                 distanceBetweenEnemies: 1
             },
             {
                 typeEnemy: 'enemy2',
-                count: 125,
+                count: 0,
                 startPoint:{x:40,y:0,z:0},
                 distanceBetweenEnemies: 2
             },
             {
                 typeEnemy: 'enemy3',
-                count: 125,
+                count: 0,
                 startPoint: {x:0,y:0,z:-40},
                 distanceBetweenEnemies: 0.5
             },
             {
                 typeEnemy: 'enemy4',
-                count: 125,
+                count: 0,
                 startPoint: {x:0,y:0,z:40},
                 distanceBetweenEnemies: 0.5
             },

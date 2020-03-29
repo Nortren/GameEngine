@@ -74,8 +74,13 @@ export default class Enemy {
     move(roomData) {
         const playersInTheRoom = roomData.playersInTheRoom;
         const enemyInTheRoom = roomData.enemy;
-        this.persecutionObjectOld(playersInTheRoom);
+        const collisionInTheRoom = roomData.map.mapElement;
+
+
         this.correctMove(enemyInTheRoom);
+
+
+        this.persecutionObjectOld(playersInTheRoom,collisionInTheRoom);
     }
 
 
@@ -95,6 +100,60 @@ export default class Enemy {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
+
+    /**
+     * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
+     * @param enemyInTheRoom
+     */
+    correctMoveStatic(staticElement,huntedPlayer) {
+
+        let currentEnemypositionX = this.colliderPositionX;
+        let currentEnemypositionZ = this.colliderPositionZ;
+
+        for (var key in staticElement) {
+            if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX, currentEnemypositionZ)) {
+                console.log(1);
+                this.colliderPositionX=currentEnemypositionX;
+                this.colliderPositionZ=currentEnemypositionZ;
+            }
+            else  if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX+this.moveSpeed, currentEnemypositionZ)) {
+                console.log(2);
+                this.colliderPositionX=currentEnemypositionX+this.moveSpeed;
+                this.colliderPositionZ=currentEnemypositionZ;
+            }
+            else  if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX-this.moveSpeed, currentEnemypositionZ)) {
+                console.log(3);
+                this.colliderPositionX=currentEnemypositionX-this.moveSpeed;
+                this.colliderPositionZ=currentEnemypositionZ;
+            }
+            else  if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX, currentEnemypositionZ+this.moveSpeed)) {
+                console.log(4);
+                this.colliderPositionX+=this.moveSpeed*2;
+                this.colliderPositionZ=currentEnemypositionZ+this.moveSpeed;
+            }
+            else  if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX, currentEnemypositionZ-this.moveSpeed)) {
+                console.log(5);
+                this.colliderPositionX-=this.moveSpeed*2;
+                this.colliderPositionZ=currentEnemypositionZ-this.moveSpeed;
+            }
+        }
+    }
+
+    /**
+     * Определяем есть ли пересечение с объектом по обеим точкам если да значит обьекты столкнулись
+     * @param colliderObject
+     * @returns {boolean}
+     */
+    collisionStatusMapElement(colliderObject, currentEnemypositionX, currentEnemypositionZ) {
+
+        let CollisionX = this.checkCollisionAxis(currentEnemypositionX, this.colliderWidth, colliderObject.colliderPositionX, colliderObject.colliderWidth);
+        let CollisionZ = this.checkCollisionAxis(currentEnemypositionZ, this.colliderLength, colliderObject.colliderPositionZ, colliderObject.colliderLength);
+
+        if (!CollisionZ || !CollisionX) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
@@ -132,7 +191,7 @@ export default class Enemy {
 
     }
 
-    persecutionObjectOld(playersInTheRoom: Array<object>) {
+    persecutionObjectOld(playersInTheRoom: Array<object>,collisionInTheRoom) {
 
 
         if (playersInTheRoom) {
@@ -140,7 +199,7 @@ export default class Enemy {
             let huntedPlayer = playersInTheRoom.filter((player) => {
                 return this.nearestPlayer(player)
             })[0];
-
+            this.correctMoveStatic(collisionInTheRoom,huntedPlayer);
 
             this.goToThePlayer(huntedPlayer);
         }
@@ -168,7 +227,7 @@ export default class Enemy {
      */
     goToThePlayer(huntedPlayer) {
 
-        const speedMove = this.moveSpeed ;
+        const speedMove = this.moveSpeed;
         if (this && huntedPlayer) {
             if (!this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
 
@@ -221,6 +280,7 @@ export default class Enemy {
      * @returns {boolean}
      */
     collisionStatus(colliderObject) {
+
         let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, colliderObject.colliderPositionX, colliderObject.colliderWidth);
         let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, colliderObject.colliderPositionZ, colliderObject.colliderLength);
 
@@ -229,6 +289,7 @@ export default class Enemy {
         }
         return true;
     }
+
 
     /**
      * Метод проверки столкновения с чем-либо
