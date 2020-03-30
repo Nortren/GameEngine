@@ -205,7 +205,7 @@ export default class EngineInitialization extends React.Component implements pri
         const playerAvatarSprite = playerData.playerAvatarSprite;
         const healthLine = playerData.healthLine;
         //TODO это коллайдер от которого по задумке должны были быть тени если нужно для эксперимента то добавь на сцену
-        // const userCollaider = playerData.collaider;
+        const userCollaider = playerData.collaider;
 
         //Проверяем есть ли такой игрок на карте
         let thisIdOnMap = this.playerInMaps.filter((data) => {
@@ -215,7 +215,7 @@ export default class EngineInitialization extends React.Component implements pri
         if (thisIdOnMap.length === 0) {
             this.playerInMaps.push(player);
             //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
-            scene.add(playerAvatarSprite, healthLine);
+            scene.add(playerAvatarSprite, healthLine,userCollaider);
         }
 
     }

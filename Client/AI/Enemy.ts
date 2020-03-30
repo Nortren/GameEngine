@@ -173,7 +173,7 @@ export default class Enemy implements BasicPropertyEnemy {
         this.enemySprite = new THREE.Sprite(enemyTexture);
         this.enemySprite.scale.set(3, 3, 1.0);
         this.enemySprite.position.set(position.x, position.y, position.z);
-        this.enemySprite.center.y = 0;
+        // this.enemySprite.center.y = 0;
     }
 
 

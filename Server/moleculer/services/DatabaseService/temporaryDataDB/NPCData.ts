@@ -27,9 +27,9 @@ export const NPCJson = {
         scopeRadius: 10,
 
         colliderPosition: {
-            x: 3,
+            x: 0,
             y: 0.01,
-            z: 3,
+            z: 0,
         },
         colliderWidth: 1,
         colliderHeight: 1,
