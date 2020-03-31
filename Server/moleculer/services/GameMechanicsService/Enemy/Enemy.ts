@@ -117,7 +117,6 @@ export default class Enemy {
 
         for (var key in staticElement) {
             if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX, currentEnemypositionZ)) {
-
                 this.colliderPositionX = currentEnemypositionX;
                 this.colliderPositionZ = currentEnemypositionZ;
             }
