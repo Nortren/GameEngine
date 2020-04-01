@@ -167,6 +167,7 @@ export default class MapCreator {
         texture.repeat.set(repeats, repeats);
 
         const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+        const planeAlgoritm= new THREE.PlaneBufferGeometry(planeSize, planeSize);
         const planeMat = new THREE.MeshPhongMaterial({
             // color: mapColor,
             side: THREE.DoubleSide,
@@ -181,7 +182,7 @@ export default class MapCreator {
 
         this.creatingMapGrid(mapStaticData, scene, planeGeo, planeMat);
 
-        this.waveAlgorithmLee(scene, planeGeo, planeMatStep, mapStaticData);
+        this.waveAlgorithmLee(scene, planeAlgoritm, planeMatStep, mapStaticData);
 
 
         // Добавление статических объектов на карту
@@ -254,13 +255,8 @@ export default class MapCreator {
     waveAlgorithmLee(scene, planeGeo, planeMatStep, mapStaticData) {
         let stepX = 0;
         let stepZ = 0;
-        let newStepZ = 0;
         let takePosition = [];
 
-        for (let key in mapStaticData.mapElement) {
-            let element = mapStaticData.mapElement[key];
-            takePosition.push({x: element.colliderPositionX, z: element.colliderPositionZ});
-        }
 
 
         //Точка к которой нам нужно придти
@@ -274,19 +270,42 @@ export default class MapCreator {
 
         let pointArray = [{x: 0, z: 0}];
 
+        for (let key in mapStaticData.mapElement) {
+            let element = mapStaticData.mapElement[key];
+            //точка старта координат
+            takePosition.push({x: element.colliderPositionX, z: element.colliderPositionZ});
+
+            for(let i = 1; i < element.colliderWidth; i++){
+                takePosition.push({x: element.colliderPositionX+i, z: element.colliderPositionZ});
+            }
+            for(let i = 1; i < element.colliderLength; i++){
+                takePosition.push({x: element.colliderPositionX, z: element.colliderPositionZ+i});
+            }
+
+        }
+
+
         let interval = setInterval(() => {
 
-                        if(!this.checkArray(pointArray,stepX,stepZ)){
-                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ));
+                        if(this.checkArray(pointArray,stepX+1,stepZ) ){
+                            if(!this.checkCollisionStatickObject(takePosition,stepX,stepZ)) {
+                                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ));
+                            }
                         }
-                        if(!this.checkArray(pointArray,-stepX,stepZ)){
-                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ));
+                        if(this.checkArray(pointArray,stepX-1,stepZ)){
+                            if(!this.checkCollisionStatickObject(takePosition,-stepX,stepZ)) {
+                                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ));
+                            }
                         }
-                        if(!this.checkArray(pointArray,stepX,-stepZ)){
-                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ));
+                        if(this.checkArray(pointArray,stepX,stepZ+1)){
+                            if(!this.checkCollisionStatickObject(takePosition,stepX,-stepZ)) {
+                                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ));
+                            }
                         }
-                        if(!this.checkArray(pointArray,-stepX,-stepZ)){
-                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ));
+                        if(this.checkArray(pointArray,stepX,stepZ-1)){
+                            if(!this.checkCollisionStatickObject(takePosition,-stepX,-stepZ)) {
+                                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ));
+                            }
                         }
 
             stepZ++;
@@ -297,20 +316,26 @@ export default class MapCreator {
             if(stepX === mapStaticData.width/2){
                 clearInterval(interval);
             }
-        }, 1);
+        }, 100);
 
 
     }
+
     checkArray(arr,x,z){
-
-        arr.forEach((element)=>{
-            if(element.x === x && element.z === z){
-                return true;
-            }
-            return false;
-        })
-
+        let res = (x<0 || z< 0 || x>arr.length ||z>=arr[arr.length-1]) ? false : true;
+        return res;
     }
+
+    checkCollisionStatickObject(arr,x,z){
+        let status = false;
+        arr.forEach((element)=>{
+           if(element.x === x && element.z === z){
+               status = true;
+           }
+        });
+        return status
+    }
+
 
     createPoint(scene, planeGeo, planeMatStep, stepX, stepZ) {
         let map = new THREE.Mesh(planeGeo, planeMatStep);
