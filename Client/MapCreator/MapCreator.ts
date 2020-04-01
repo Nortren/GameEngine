@@ -126,7 +126,7 @@ export default class MapCreator {
     // }
 
 
-    createGameLocation(scene,mapStaticData) {
+    createGameLocation(scene, mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
         const planeSize = 1;
@@ -134,10 +134,15 @@ export default class MapCreator {
 
         const loader = new THREE.TextureLoader();
         const texture = loader.load(mapStaticData.src);
-        const mapColor = 0xf3f3f3;
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.magFilter = THREE.NearestFilter;
+
+
+        const textureStep = loader.load("./Client/image/step.png");
+        textureStep.wrapS = THREE.RepeatWrapping;
+        textureStep.wrapT = THREE.RepeatWrapping;
+        textureStep.magFilter = THREE.NearestFilter;
 
         //добавлям свет
         const skyColor = 0xB1E1FF;  // light blue
@@ -146,17 +151,17 @@ export default class MapCreator {
         const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
         scene.add(light);
 
-            //добавлям свет
-            // const color = 0xFFFFFF;
-            // const intensity = 1;
-            // const colorLight = 0xFFFFFF;
-            // const intensityLight = 0.4;
-            // const light = new THREE.PointLight(colorLight, intensityLight);
-            // if (globalVariables.shadow.materialShadow) {
-            //     light.castShadow = true;
-            // }
-            // light.position.set(0, 11, 0);
-            // scene.add(light, light.target);
+        //добавлям свет
+        // const color = 0xFFFFFF;
+        // const intensity = 1;
+        // const colorLight = 0xFFFFFF;
+        // const intensityLight = 0.4;
+        // const light = new THREE.PointLight(colorLight, intensityLight);
+        // if (globalVariables.shadow.materialShadow) {
+        //     light.castShadow = true;
+        // }
+        // light.position.set(0, 11, 0);
+        // scene.add(light, light.target);
 
         const repeats = planeSize / 2;
         texture.repeat.set(repeats, repeats);
@@ -167,15 +172,165 @@ export default class MapCreator {
             side: THREE.DoubleSide,
             map: texture,
         });
+        const planeMatStep = new THREE.MeshPhongMaterial({
+            // color: mapColor,
+            side: THREE.DoubleSide,
+            map: textureStep,
+        });
 
 
+        this.creatingMapGrid(mapStaticData, scene, planeGeo, planeMat);
+
+        this.waveAlgorithmLee(scene, planeGeo, planeMatStep, mapStaticData);
 
 
+        // Добавление статических объектов на карту
+        for (let key in mapStaticData.mapElement) {
+            let mapElementObject = mapStaticData.mapElement[key];
 
-        // Метод создания тестовой локации по ячейкам (для реализации волнового алгоритма Ли)
-        //Мы создаём карту по квадратам (размер квадрата 1x1)
-        for(let i = -mapStaticData.width/2 ; i < mapStaticData.width/2; i++){
-            for(let j = -mapStaticData.length/2 ; j < mapStaticData.length/2; j++){
+            if (globalVariables.models.sprite) {
+                let mapElementObjectIMG = loader.load(mapElementObject.src);
+                mapElementObjectIMG.magFilter = THREE.NearestFilter;
+                let mapElementObjectTexture = new THREE.SpriteMaterial({
+                    map: mapElementObjectIMG,
+                });
+
+                const elementObj = new THREE.Sprite(mapElementObjectTexture);
+                elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
+                elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
+                scene.add(elementObj);
+                mapObject.push(elementObj);
+            }
+
+            let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
+            const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
+            const planeCollaiderMat = new THREE.MeshPhongMaterial({
+                map: mapElementObjectCollaider,
+                side: THREE.DoubleSide,
+            });
+            let materials = [
+                //делаем каждую сторону своего цвета
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
+                new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+            ];
+
+            if (globalVariables.collider.showCollider) {
+                materials = [
+                    //делаем каждую сторону своего цвета
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
+                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), //зaдняя сторона
+                    new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
+                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), // верх
+                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
+                ];
+            }
+
+            const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
+            elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
+            if (globalVariables.shadow.materialShadow) {
+                elementObjCollaider.castShadow = true;
+            }
+            elementObjCollaider.rotation.x = Math.PI * -.5;
+            this.createObjectCollision('mapElement' + key,
+                mapElementObject.colliderPositionX,
+                mapElementObject.colliderPositionY,
+                mapElementObject.colliderPositionZ,
+                mapElementObject.colliderWidth,
+                mapElementObject.colliderLength,
+                'mapElement');
+            scene.add(elementObjCollaider);
+
+
+        }
+
+        // scene.add(map);
+    }
+
+    waveAlgorithmLee(scene, planeGeo, planeMatStep, mapStaticData) {
+        let stepX = 0;
+        let stepZ = 0;
+        let newStepZ = 0;
+        let takePosition = [];
+
+        for (let key in mapStaticData.mapElement) {
+            let element = mapStaticData.mapElement[key];
+            takePosition.push({x: element.colliderPositionX, z: element.colliderPositionZ});
+        }
+
+
+        //Точка к которой нам нужно придти
+        let map = new THREE.Mesh(planeGeo, planeMatStep);
+        map.rotation.x = Math.PI * -.5;
+        map.position.set(7, 0, 3);
+        map.receiveShadow = true;
+        // mapObject.push(map);
+        scene.add(map);
+
+
+        let pointArray = [{x: 0, z: 0}];
+
+        let interval = setInterval(() => {
+
+                        if(!this.checkArray(pointArray,stepX,stepZ)){
+                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ));
+                        }
+                        if(!this.checkArray(pointArray,-stepX,stepZ)){
+                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ));
+                        }
+                        if(!this.checkArray(pointArray,stepX,-stepZ)){
+                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ));
+                        }
+                        if(!this.checkArray(pointArray,-stepX,-stepZ)){
+                            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ));
+                        }
+
+            stepZ++;
+            if(stepZ === mapStaticData.length/2){
+                stepZ = 0;
+                stepX++;
+            }
+            if(stepX === mapStaticData.width/2){
+                clearInterval(interval);
+            }
+        }, 1);
+
+
+    }
+    checkArray(arr,x,z){
+
+        arr.forEach((element)=>{
+            if(element.x === x && element.z === z){
+                return true;
+            }
+            return false;
+        })
+
+    }
+
+    createPoint(scene, planeGeo, planeMatStep, stepX, stepZ) {
+        let map = new THREE.Mesh(planeGeo, planeMatStep);
+        map.rotation.x = Math.PI * -.5;
+        map.position.set(stepX, 0, stepZ);
+        map.receiveShadow = true;
+        scene.add(map);
+        return {x: stepX, z: stepZ}
+    }
+
+    /**
+     * Метод создания тестовой локации по ячейкам (для реализации волнового алгоритма Ли)
+     * Мы создаём карту по квадратам (размер квадрата 1x1)
+     * @param mapStaticData
+     * @param scene
+     */
+    creatingMapGrid(mapStaticData, scene, planeGeo, planeMat) {
+
+        for (let i = -mapStaticData.width / 2; i < mapStaticData.width / 2; i++) {
+            for (let j = -mapStaticData.length / 2; j < mapStaticData.length / 2; j++) {
                 let map = new THREE.Mesh(planeGeo, planeMat);
                 map.rotation.x = Math.PI * -.5;
                 map.position.set(i, 0, j);
@@ -185,72 +340,6 @@ export default class MapCreator {
             }
         }
 
-
-            // Добавление статических объектов на карту
-            for (let key in mapStaticData.mapElement) {
-                let mapElementObject = mapStaticData.mapElement[key];
-
-                if (globalVariables.models.sprite) {
-                    let mapElementObjectIMG = loader.load(mapElementObject.src);
-                    mapElementObjectIMG.magFilter = THREE.NearestFilter;
-                    let mapElementObjectTexture = new THREE.SpriteMaterial({
-                        map: mapElementObjectIMG,
-                    });
-
-                    const elementObj = new THREE.Sprite(mapElementObjectTexture);
-                    elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
-                    elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
-                    scene.add(elementObj);
-                    mapObject.push(elementObj);
-                }
-
-                let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
-                const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
-                const planeCollaiderMat = new THREE.MeshPhongMaterial({
-                    map: mapElementObjectCollaider,
-                    side: THREE.DoubleSide,
-                });
-                let materials = [
-                    //делаем каждую сторону своего цвета
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
-                    new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-                ];
-
-                if (globalVariables.collider.showCollider) {
-                    materials = [
-                        //делаем каждую сторону своего цвета
-                        new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
-                        new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
-                        new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), //зaдняя сторона
-                        new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
-                        new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), // верх
-                        new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-                    ];
-                }
-
-                const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
-                elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
-                if (globalVariables.shadow.materialShadow) {
-                    elementObjCollaider.castShadow = true;
-                }
-                elementObjCollaider.rotation.x = Math.PI * -.5;
-                this.createObjectCollision('mapElement' + key,
-                    mapElementObject.colliderPositionX,
-                    mapElementObject.colliderPositionY,
-                    mapElementObject.colliderPositionZ,
-                    mapElementObject.colliderWidth,
-                    mapElementObject.colliderLength,
-                    'mapElement');
-                scene.add(elementObjCollaider);
-
-
-            }
-
-            // scene.add(map);
     }
 
     createObjectCollision(id: number, X: number, Y: number, Z: number, Width: number, Length: number, objectType: string): void {
@@ -259,14 +348,14 @@ export default class MapCreator {
         let item = this.collisionPoint.find(b => b.id === id);
         if (this.collisionPoint.find(b => b.id === id)) {
             item.id = id;
-                item.x = X;
-                item.y = Y;
-                item.z = Z;
-                //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
-                item.width = Width * 0.5;
-                //TODO тут нужно указать не высату а длинну
-                item.height =Length * 0.5;
-                item.type = objectType;
+            item.x = X;
+            item.y = Y;
+            item.z = Z;
+            //Поскольку ширина и высота откладываются по половине от стартовых точек то колизию нужно расчитывать так
+            item.width = Width * 0.5;
+            //TODO тут нужно указать не высату а длинну
+            item.height = Length * 0.5;
+            item.type = objectType;
         } else {
             this.collisionPoint.push({
                 id: id,
