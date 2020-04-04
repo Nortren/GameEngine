@@ -7,7 +7,7 @@ export const globalVariables = {
         collider: {
             shadow:true,
             showShadow: true,
-            showCollider: true,
+            showCollider: false,
             showColliderDynamick: true,
             additionalData: false
         },

@@ -129,7 +129,7 @@ export default class MapCreator {
     createGameLocation(scene, mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
-        const planeSize = 0.5;
+        const planeSize = 1;
 
 
         const loader = new THREE.TextureLoader();
@@ -180,9 +180,9 @@ export default class MapCreator {
         });
 
 
-        this.creatingMapGrid(planeSize,mapStaticData, scene, planeGeo, planeMat);
+        this.creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat);
 
-        this.waveAlgorithmLee(planeSize,scene, planeAlgoritm, planeMatStep, mapStaticData);
+        this.waveAlgorithmLee(planeSize, scene, planeAlgoritm, planeMatStep, mapStaticData);
 
 
         // Добавление статических объектов на карту
@@ -252,9 +252,9 @@ export default class MapCreator {
         // scene.add(map);
     }
 
-    waveAlgorithmLee(planeSize,scene, planeGeo, planeMatStep, mapStaticData) {
-        let stepX = planeSize*0.5;
-        let stepZ = planeSize*0.5;
+    waveAlgorithmLee(planeSize, scene, planeGeo, planeMatStep, mapStaticData) {
+        let stepX = planeSize * 0.5;
+        let stepZ = planeSize * 0.5;
         let takePosition = [];
 
 
@@ -274,51 +274,63 @@ export default class MapCreator {
             //точка старта координат
             // takePosition.push({x: element.colliderPositionX, z: element.colliderPositionZ});
 
-            for (let i = 0; i <= element.colliderWidth / 2; i++) {
-                takePosition.push({x: element.colliderPositionX / 2 + i, z: element.colliderPositionZ / 2});
-                takePosition.push({x: element.colliderPositionX / 2 - i, z: -element.colliderPositionZ / 2});
-            }
+            // for (let x = planeSize*0.5; x <= element.colliderWidth/2; x+=planeSize) {
+            //     takePosition.push({x: element.colliderPositionX  + x, z: element.colliderPositionZ+planeSize*0.5});
+            //     takePosition.push({x: element.colliderPositionX  - x, z: element.colliderPositionZ-planeSize*0.5});
+            //     takePosition.push({x: element.colliderPositionX  + x, z: element.colliderPositionZ-planeSize*0.5});
+            //     takePosition.push({x: element.colliderPositionX  - x, z: element.colliderPositionZ+planeSize*0.5});
+            // }
+            //
+            // for (let z = planeSize*0.5; z <= element.colliderLength/2; z+=planeSize) {
+            //     takePosition.push({x: element.colliderPositionX+planeSize*0.5, z: element.colliderPositionZ + z });
+            //     takePosition.push({x: element.colliderPositionX-planeSize*0.5, z: element.colliderPositionZ - z });
+            //     takePosition.push({x: element.colliderPositionX+planeSize*0.5, z: element.colliderPositionZ - z });
+            //     takePosition.push({x: element.colliderPositionX-planeSize*0.5, z: element.colliderPositionZ + z });
+            // }
 
-            for (let i = 1; i < element.colliderLength; i++) {
-                takePosition.push({x: element.colliderPositionX / 2, z: element.colliderPositionZ / 2 + i});
-                takePosition.push({x: -element.colliderPositionX / 2, z: element.colliderPositionZ / 2 - i});
-            }
+            takePosition.push({
+                colliderPositionX: element.colliderPositionX,
+                colliderPositionZ: element.colliderPositionZ,
+                colliderWidth: element.colliderWidth,
+                colliderLength: element.colliderLength
+            });
+
 
         }
 
 
         let interval = setInterval(() => {
 
-            if (this.checkArray(pointArray, stepX + planeSize*0.5, stepZ)) {
-                if (!this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
+            if (this.checkArray(pointArray, stepX + planeSize * 0.5, stepZ)) {
+                if (this.checkCollisionStatickObjectNew(takePosition, stepX, stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ));
                 }
             }
-            if (this.checkArray(pointArray, stepX - planeSize*0.5, stepZ)) {
-                if (!this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
+            if (this.checkArray(pointArray, stepX - planeSize * 0.5, stepZ)) {
+                if (this.checkCollisionStatickObjectNew(takePosition, -stepX, stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ));
                 }
             }
-            if (this.checkArray(pointArray, stepX, stepZ + planeSize*0.5)) {
-                if (!this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
+            if (this.checkArray(pointArray, stepX, stepZ + planeSize * 0.5)) {
+                if (this.checkCollisionStatickObjectNew(takePosition, stepX, -stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ));
                 }
             }
-            if (this.checkArray(pointArray, stepX, stepZ - planeSize*0.5)) {
-                if (!this.checkCollisionStatickObject(takePosition, -stepX, -stepZ)) {
+            if (this.checkArray(pointArray, stepX, stepZ - planeSize * 0.5)) {
+                if (this.checkCollisionStatickObjectNew(takePosition, -stepX, -stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ));
                 }
             }
 
-            stepZ+=planeSize;
-            if (stepZ >mapStaticData.length/2) {
-                stepZ = planeSize*0.5;
-                stepX+=planeSize;
+            stepZ += planeSize;
+            if (stepZ > mapStaticData.length / 2) {
+                stepZ = planeSize * 0.5;
+                stepX += planeSize;
             }
-            if (stepX > mapStaticData.width/2) {
+            if (stepX > mapStaticData.width / 2) {
                 clearInterval(interval);
             }
-        }, 10);
+        }, 100);
 
 
     }
@@ -337,6 +349,31 @@ export default class MapCreator {
         });
         return status
     }
+
+    //TODO подумать как сделать обход всех статических препятствий..с одним всеработает
+    checkCollisionStatickObjectNew(elementArray, x, z) {
+        let status = false;
+         elementArray.forEach((element)=>{
+        let CollisionX = this.checkCollisionAxis(x, 1, element.colliderPositionX, element.colliderWidth/2);
+        let CollisionZ = this.checkCollisionAxis(z, 1, element.colliderPositionZ, element.colliderLength/2);
+            if (!CollisionZ || !CollisionX) {
+                status = true;
+            }
+            return;
+        });
+        return status;
+    }
+
+    checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
+
+        if ((enemyPositionAxis + enemySize* 0.5 >= positionCollision - sizeCollision* 0.5) &&
+            (enemyPositionAxis - enemySize* 0.5  <= positionCollision + sizeCollision* 0.5 )) {
+            return true;
+        }
+        return false;
+    }
+
+
 
 
     createPoint(scene, planeGeo, planeMatStep, stepX, stepZ) {
@@ -358,21 +395,21 @@ export default class MapCreator {
      * @param planeMat
      */
 
-    creatingMapGrid(planeSize,mapStaticData, scene, planeGeo, planeMat) {
+    creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat) {
 
-        for (let x = planeSize*0.5; x < mapStaticData.width *0.5; x+=planeSize) {
-            for (let z = planeSize*0.5; z < mapStaticData.length *0.5; z+=planeSize) {
-                scene.add(this.createPointMap(x, z, planeGeo,planeMat));
-                scene.add(this.createPointMap(-x, -z, planeGeo,planeMat));
-                scene.add(this.createPointMap(-x, z, planeGeo,planeMat));
-                scene.add(this.createPointMap(x, -z, planeGeo,planeMat));
+        for (let x = planeSize * 0.5; x < mapStaticData.width * 0.5; x += planeSize) {
+            for (let z = planeSize * 0.5; z < mapStaticData.length * 0.5; z += planeSize) {
+                scene.add(this.createPointMap(x, z, planeGeo, planeMat));
+                scene.add(this.createPointMap(-x, -z, planeGeo, planeMat));
+                scene.add(this.createPointMap(-x, z, planeGeo, planeMat));
+                scene.add(this.createPointMap(x, -z, planeGeo, planeMat));
 
             }
         }
 
     }
 
-    createPointMap(x, z,planeGeo,planeMat) {
+    createPointMap(x, z, planeGeo, planeMat) {
         let map = new THREE.Mesh(planeGeo, planeMat);
         map.rotation.x = Math.PI * -.5;
         map.position.set(x, 0, z);
