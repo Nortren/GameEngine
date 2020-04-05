@@ -302,22 +302,22 @@ export default class MapCreator {
         let interval = setInterval(() => {
 
             if (this.checkArray(pointArray, stepX + planeSize * 0.5, stepZ)) {
-                if (this.checkCollisionStatickObjectNew(takePosition, stepX, stepZ)) {
+                if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ));
                 }
             }
             if (this.checkArray(pointArray, stepX - planeSize * 0.5, stepZ)) {
-                if (this.checkCollisionStatickObjectNew(takePosition, -stepX, stepZ)) {
+                if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ));
                 }
             }
             if (this.checkArray(pointArray, stepX, stepZ + planeSize * 0.5)) {
-                if (this.checkCollisionStatickObjectNew(takePosition, stepX, -stepZ)) {
+                if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ));
                 }
             }
             if (this.checkArray(pointArray, stepX, stepZ - planeSize * 0.5)) {
-                if (this.checkCollisionStatickObjectNew(takePosition, -stepX, -stepZ)) {
+                if (this.checkCollisionStatickObject(takePosition, -stepX, -stepZ)) {
                     pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ));
                 }
             }
@@ -330,7 +330,7 @@ export default class MapCreator {
             if (stepX > mapStaticData.width / 2) {
                 clearInterval(interval);
             }
-        }, 100);
+        }, 1);
 
 
     }
@@ -340,40 +340,31 @@ export default class MapCreator {
         return res;
     }
 
-    checkCollisionStatickObject(arr, x, z) {
-        let status = false;
-        arr.forEach((element) => {
-            if (element.x === x && element.z === z) {
-                status = true;
-            }
-        });
-        return status
-    }
 
-    //TODO подумать как сделать обход всех статических препятствий..с одним всеработает
-    checkCollisionStatickObjectNew(elementArray, x, z) {
-        let status = false;
-         elementArray.forEach((element)=>{
-        let CollisionX = this.checkCollisionAxis(x, 1, element.colliderPositionX, element.colliderWidth/2);
-        let CollisionZ = this.checkCollisionAxis(z, 1, element.colliderPositionZ, element.colliderLength/2);
-            if (!CollisionZ || !CollisionX) {
-                status = true;
-            }
-            return;
+    /**
+     * Метод проверки на сталкновение со статическим объектом(необходим для визуализации волнового алгоритма Лее)
+     * @param elementArray
+     * @param x
+     * @param z
+     */
+    checkCollisionStatickObject(elementArray, x, z) {
+
+        return elementArray.every((element) => {
+            let CollisionX = this.checkCollisionAxis(x, 1, element.colliderPositionX, element.colliderWidth/2);
+            let CollisionZ = this.checkCollisionAxis(z, 1, element.colliderPositionZ, element.colliderLength/2);
+            return (!CollisionZ || !CollisionX);
         });
-        return status;
+
     }
 
     checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
 
-        if ((enemyPositionAxis + enemySize* 0.5 >= positionCollision - sizeCollision* 0.5) &&
-            (enemyPositionAxis - enemySize* 0.5  <= positionCollision + sizeCollision* 0.5 )) {
+        if ((enemyPositionAxis + enemySize * 0.5 > positionCollision - sizeCollision) &&
+            (enemyPositionAxis - enemySize * 0.5 < positionCollision + sizeCollision)) {
             return true;
         }
         return false;
     }
-
-
 
 
     createPoint(scene, planeGeo, planeMatStep, stepX, stepZ) {
