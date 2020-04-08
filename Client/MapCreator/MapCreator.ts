@@ -261,9 +261,13 @@ export default class MapCreator {
         let meshStepArray = [];
         let statusSearch = false;
 
-        let serachPosition = {
-            colliderPositionX: 3,
-            colliderPositionZ: -3,
+        let step = 0;
+        let moveX = 0;
+        let moveZ = 0;
+
+        let serchPosition = {
+            colliderPositionX: 15,
+            colliderPositionZ: -15,
             colliderWidth: planeSize,
             colliderLength: planeSize
         };
@@ -271,7 +275,7 @@ export default class MapCreator {
         //Точка к которой нам нужно придти
         let map = new THREE.Mesh(planeGeo, planeMatStep);
         map.rotation.x = Math.PI * -.5;
-        map.position.set(serachPosition.colliderPositionX, 0, serachPosition.colliderPositionZ);
+        map.position.set(serchPosition.colliderPositionX, 0, serchPosition.colliderPositionZ);
         map.receiveShadow = true;
 
         scene.add(map);
@@ -293,68 +297,80 @@ export default class MapCreator {
 
         let interval = setInterval(() => {
 
-            if (this.checkArray(pointArray, stepX + planeSize * 0.5, stepZ)) {
-                if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
-                    pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, stepZ, meshStepArray, stepCounterLee));
-                    if (!this.checkCollisionSearchObject(serachPosition, stepX, stepZ)) {
-                        console.log('Search1');
-                        statusSearch = true;
-                    }
-                }
 
-
-            }
-            if (this.checkArray(pointArray, stepX - planeSize * 0.5, stepZ)) {
-                if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
-                    pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, stepZ, meshStepArray, stepCounterLee));
-                    if (!this.checkCollisionSearchObject(serachPosition, -stepX, stepZ)) {
-                        console.log('Search2');
-                        statusSearch = true;
-                    }
+            for (let x = 0; x < step; x++) {
+                for (let z = 0; z < step; z++) {
+                    if (meshStepArray)
+                        if(this.checkArray(meshStepArray,x,z)) {
+                            statusSearch = this.drawWave(scene, 0, 0, stepX + x, stepZ + z, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, step, serchPosition, statusSearch)
+                        }
                 }
             }
-            if (this.checkArray(pointArray, stepX, stepZ + planeSize * 0.5)) {
-                if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
-                    pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, stepX, -stepZ, meshStepArray, stepCounterLee));
-                    if (!this.checkCollisionSearchObject(serachPosition, stepX, -stepZ)) {
-                        console.log('Search3');
-                        statusSearch = true;
-                    }
-                }
-            }
-            if (this.checkArray(pointArray, stepX, stepZ - planeSize * 0.5)) {
-                if (this.checkCollisionStatickObject(takePosition, -stepX, -stepZ)) {
-                    pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, -stepX, -stepZ, meshStepArray, stepCounterLee));
-                    if (!this.checkCollisionSearchObject(serachPosition, -stepX, -stepZ)) {
-                        console.log('Search4');
-                        statusSearch = true;
-                    }
-                }
-            }
+            step++;
 
 
-            stepZ += planeSize;
-            stepCounterLee++;
-            if (stepZ > mapStaticData.length / 2) {
-                stepZ = planeSize * 0.5;
-                stepX += planeSize;
-            }
-            if ((stepX > mapStaticData.width / 2) || statusSearch) {
+            if (statusSearch) {
                 clearInterval(interval);
                 meshStepArray.forEach((stepMesh) => {
                     let objectRemove = scene.getObjectById(stepMesh.id);
                     scene.remove(objectRemove);
-                })
-                if (statusSearch) {
-                    this.createPathSearch(meshStepArray, serachPosition,scene, planeGeo, planeMatStep, stepCounterLee);
-                }
+                });
+
+                this.createPathSearch(meshStepArray, serchPosition, scene, planeGeo, planeMatStep, step);
+
             }
-        }, 200);
+
+        }, 1000);
 
     }
 
+
+    drawWave(scene, startX, startZ, stepX, stepZ, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, stepCounterLee, serchPosition, statusSearch) {
+
+        if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
+            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ + stepZ, meshStepArray, stepCounterLee));
+            if (!this.checkCollisionSearchObject(serchPosition, stepX, stepZ)) {
+                console.log('Search1');
+                statusSearch = true;
+            }
+        }
+
+
+        if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
+            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ + stepZ, meshStepArray, stepCounterLee));
+            if (!this.checkCollisionSearchObject(serchPosition, -stepX, stepZ)) {
+                console.log('Search2');
+                statusSearch = true;
+            }
+        }
+
+
+        if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
+            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ - stepZ, meshStepArray, stepCounterLee));
+            if (!this.checkCollisionSearchObject(serchPosition, stepX, -stepZ)) {
+                console.log('Search3');
+                statusSearch = true;
+            }
+        }
+
+
+        if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
+            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ - stepZ, meshStepArray, stepCounterLee));
+            if (!this.checkCollisionSearchObject(serchPosition, -stepX, -stepZ)) {
+                console.log('Search4');
+                statusSearch = true;
+            }
+        }
+        return statusSearch;
+    }
+
     checkArray(arr, x, z) {
-        let res = (x < 0 || z < 0 || x > arr.length || z >= arr[arr.length - 1]) ? false : true;
+        let res = true;
+        if(!arr.length){
+            res = true;
+        }else {
+            res = (x < 0 || z < 0 || x <= arr[arr.length - 1].stepX || z <= arr[arr.length - 1].stepZ) ? false : true;
+        }
         return res;
     }
 
@@ -367,20 +383,38 @@ export default class MapCreator {
      * @param planeMatStep
      * @param stepCounterLee
      */
-    createPathSearch(meshStepArray, serchPosition,scene, planeGeo, planeMatStep, stepCounterLee) {
+    createPathSearch(meshStepArray, serchPosition, scene, planeGeo, planeMatStep, stepCounterLee) {
+//TODO косяк в поиске пути т.к неверно формируется массив с данными (они повторяются)
+        let searchArray = [];
+
 
         meshStepArray.forEach((step) => {
-
-
             if (this.checkNumberPlus(serchPosition.colliderPositionX) === this.checkNumberPlus(step.stepX) &&
                 this.checkNumberPlus(serchPosition.colliderPositionZ) === this.checkNumberPlus(step.stepZ)
             ) {
-              this.createPointSearch(scene, planeGeo, planeMatStep, step.stepX, step.stepZ);
+                searchArray.push(step);
+
             }
+        });
 
+        for (let i = 1; i < stepCounterLee;) {
+            searchArray.forEach((step) => {
+                if (step.stepCounterLee === i) {
+                    this.createPointSearch(scene, planeGeo, planeMatStep, step.stepX + i, step.stepZ + i);
+                    i++;
+                }
+            });
+        }
 
-        })
+    }
 
+    /**
+     * Метод генерации случайного числа
+     * @param max
+     * @returns {number}
+     */
+    getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
     }
 
     /**
@@ -482,7 +516,7 @@ export default class MapCreator {
      * @param stepZ
      * @returns {number}
      */
-    createPointSearch(scene, planeGeo, planeMatStep, stepX, stepZ){
+    createPointSearch(scene, planeGeo, planeMatStep, stepX, stepZ) {
         let map = new THREE.Mesh(planeGeo, planeMatStep);
         map.rotation.x = Math.PI * -.5;
         map.position.set(stepX, 0, stepZ);
