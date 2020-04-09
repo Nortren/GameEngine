@@ -258,7 +258,7 @@ export default class MapCreator {
         let takePosition = [];
         let stepCounterLee = 0;
         let pointArray = [{x: 0, z: 0}];
-        let meshStepArray = [];
+        let meshStepArray = new Map();
         let statusSearch = false;
 
         let step = 0;
@@ -301,9 +301,9 @@ export default class MapCreator {
             for (let x = 0; x < step; x++) {
                 for (let z = 0; z < step; z++) {
                     if (meshStepArray)
-                        if(this.checkArray(meshStepArray,x,z)) {
-                            statusSearch = this.drawWave(scene, 0, 0, stepX + x, stepZ + z, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, step, serchPosition, statusSearch)
-                        }
+
+                        statusSearch = this.drawWave(scene, 0, 0, stepX + x, stepZ + z, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, step, serchPosition, statusSearch)
+
                 }
             }
             step++;
@@ -320,57 +320,59 @@ export default class MapCreator {
 
             }
 
-        }, 1000);
+        }, 100);
 
     }
 
 
     drawWave(scene, startX, startZ, stepX, stepZ, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, stepCounterLee, serchPosition, statusSearch) {
-
-        if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
-            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ + stepZ, meshStepArray, stepCounterLee));
-            if (!this.checkCollisionSearchObject(serchPosition, stepX, stepZ)) {
-                console.log('Search1');
-                statusSearch = true;
+        if (this.checkArray(meshStepArray, stepX, stepZ)) {
+            if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
+                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ + stepZ, meshStepArray, stepCounterLee));
+                if (!this.checkCollisionSearchObject(serchPosition, stepX, stepZ)) {
+                    console.log('Search1');
+                    statusSearch = true;
+                }
             }
         }
 
-
-        if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
-            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ + stepZ, meshStepArray, stepCounterLee));
-            if (!this.checkCollisionSearchObject(serchPosition, -stepX, stepZ)) {
-                console.log('Search2');
-                statusSearch = true;
+        if (this.checkArray(meshStepArray, -stepX, stepZ)) {
+            if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
+                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ + stepZ, meshStepArray, stepCounterLee));
+                if (!this.checkCollisionSearchObject(serchPosition, -stepX, stepZ)) {
+                    console.log('Search2');
+                    statusSearch = true;
+                }
             }
         }
 
-
-        if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
-            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ - stepZ, meshStepArray, stepCounterLee));
-            if (!this.checkCollisionSearchObject(serchPosition, stepX, -stepZ)) {
-                console.log('Search3');
-                statusSearch = true;
+        if (this.checkArray(meshStepArray, stepX, -stepZ)) {
+            if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
+                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ - stepZ, meshStepArray, stepCounterLee));
+                if (!this.checkCollisionSearchObject(serchPosition, stepX, -stepZ)) {
+                    console.log('Search3');
+                    statusSearch = true;
+                }
             }
         }
 
-
-        if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
-            pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ - stepZ, meshStepArray, stepCounterLee));
-            if (!this.checkCollisionSearchObject(serchPosition, -stepX, -stepZ)) {
-                console.log('Search4');
-                statusSearch = true;
+        if (this.checkArray(meshStepArray, -stepX, -stepZ)) {
+            if (this.checkCollisionStatickObject(takePosition, -stepX, -stepZ)) {
+                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ - stepZ, meshStepArray, stepCounterLee));
+                if (!this.checkCollisionSearchObject(serchPosition, -stepX, -stepZ)) {
+                    console.log('Search4');
+                    statusSearch = true;
+                }
             }
         }
         return statusSearch;
     }
 
+
     checkArray(arr, x, z) {
-        let res = true;
-        if(!arr.length){
-            res = true;
-        }else {
-            res = (x < 0 || z < 0 || x <= arr[arr.length - 1].stepX || z <= arr[arr.length - 1].stepZ) ? false : true;
-        }
+        let validationKey = x.toString() + '_' + z.toString();
+        let res = arr.has(validationKey) ? false : true;
+
         return res;
     }
 
@@ -396,14 +398,16 @@ export default class MapCreator {
 
             }
         });
+        for (let j = stepCounterLee; j > 0; j--) {
+            for (let i = searchArray.length-1; i > 0; i--) {
 
-        for (let i = 1; i < stepCounterLee;) {
-            searchArray.forEach((step) => {
-                if (step.stepCounterLee === i) {
-                    this.createPointSearch(scene, planeGeo, planeMatStep, step.stepX + i, step.stepZ + i);
-                    i++;
+
+                if (searchArray[i].stepCounterLee === j) {
+                    this.createPointSearch(scene, planeGeo, planeMatStep, searchArray[i].stepX, searchArray[i].stepZ);
+                    break;
                 }
-            });
+
+            }
         }
 
     }
@@ -503,7 +507,8 @@ export default class MapCreator {
      */
     createPoint(scene, planeGeo, planeMatStep, stepX, stepZ, meshStepArray, stepCounterLee) {
         const id = this.createPointSearch(scene, planeGeo, planeMatStep, stepX, stepZ);
-        meshStepArray.push({id, stepCounterLee, stepX, stepZ});
+        const mapMeshKey = stepX.toString() + '_' + stepZ.toString();
+        meshStepArray.set(mapMeshKey, {id, stepCounterLee, stepX, stepZ});
         return {x: stepX, z: stepZ}
     }
 
