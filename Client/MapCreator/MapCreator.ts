@@ -271,9 +271,18 @@ export default class MapCreator {
             colliderWidth: planeSize,
             colliderLength: planeSize
         };
-
+        const loader = new THREE.TextureLoader();
+        const textureStepTarget = loader.load("./Client/image/target.png");
+        textureStepTarget.wrapS = THREE.RepeatWrapping;
+        textureStepTarget.wrapT = THREE.RepeatWrapping;
+        textureStepTarget.magFilter = THREE.NearestFilter;
+        const planeMatStepTarget = new THREE.MeshPhongMaterial({
+            // color: mapColor,
+            side: THREE.DoubleSide,
+            map: textureStepTarget,
+        });
         //Точка к которой нам нужно придти
-        let map = new THREE.Mesh(planeGeo, planeMatStep);
+        let map = new THREE.Mesh(planeGeo, planeMatStepTarget);
         map.rotation.x = Math.PI * -.5;
         map.position.set(serchPosition.colliderPositionX, 0, serchPosition.colliderPositionZ);
         map.receiveShadow = true;
@@ -398,18 +407,87 @@ export default class MapCreator {
 
             }
         });
-        for (let j = stepCounterLee; j > 0; j--) {
-            for (let i = searchArray.length-1; i > 0; i--) {
+
+        let searchX = serchPosition.colliderPositionX - 0.5;
+        let searchZ = serchPosition.colliderPositionZ - 0.5;
 
 
-                if (searchArray[i].stepCounterLee === j) {
-                    this.createPointSearch(scene, planeGeo, planeMatStep, searchArray[i].stepX, searchArray[i].stepZ);
-                    break;
+
+        //TODO мы должны значение старта передавать в метод
+        let keyStart = this.keyConverter(0.5, 0.5);
+        let keyEnd = this.keyConverter(searchX, searchZ);
+        let stepX = searchX;
+        let stepZ = searchZ;
+        let path = [];
+        /*
+        while (stepCounterLee > 0) {
+
+            stepCounterLee--;
+            for (let k = 0; k < 4; ++k) {
+                let x = searchX;
+                let z = searchZ;
+                if (x > 0) {
+                    x--;
+                }
+                else {
+                    x++;
+                }
+                if (z > 0) {
+                    z--;
+                }
+                else {
+                    z++;
                 }
 
-            }
-        }
+                if (meshStepArray.get(this.keyConverter(x, z))) {
+                    this.createPointSearch(scene, planeGeo, planeMatStep, x, z);
+                    searchX = x;
+                    searchZ = z;
+                    break;
 
+                }
+            }
+
+        }
+*/
+
+
+        setInterval(()=>{
+            stepCounterLee--;
+            for (let k = 0; k < 4; ++k) {
+                let x = searchX;
+                let z = searchZ;
+
+
+                if (z > 0 && k < 1) {
+                    z--;
+                }
+                else if (k < 2){
+                    z++;
+                }
+
+                if (x > 0 && k < 3) {
+                    x--;
+                }
+                else if(k < 4){
+                    x++;
+                }
+
+
+                if (meshStepArray.get(this.keyConverter(x, z))) {
+                    this.createPointSearch(scene, planeGeo, planeMatStep, x, z);
+                    searchX = x;
+                    searchZ = z;
+                    break;
+
+                }
+            }
+        },300);
+
+    }
+
+    keyConverter(x, z) {
+        return x.toString() + '_' + z.toString();
     }
 
     /**

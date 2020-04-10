@@ -6,8 +6,8 @@ export const globalVariables = {
         models: {sprite: false},
         collider: {
             shadow:true,
-            showShadow: true,
-            showCollider: false,
+            showShadow: false,
+            showCollider: true,
             showColliderDynamick: true,
             additionalData: false
         },
