@@ -251,11 +251,26 @@ export default class MapCreator {
     }
 
 
-    update(scene, mapStaticData) {
-        this.waveAlgorithmLee(scene,mapStaticData);
+    update(scene, data, counter) {
+        const map = data.map;
+        const searchPlayer = data.playersInTheRoom[0];
+
+        let interval;
+        //TODO Костыль просто чтоб отображать анимацию
+        if (!counter) {
+            interval = setInterval(() => {
+                clearInterval(interval);
+                if (data) {
+
+                    this.waveAlgorithmLee(scene, map, searchPlayer);
+                }
+            }, 1000);
+        }
+        counter++;
+        return counter;
     }
 
-    waveAlgorithmLee(scene, mapStaticData) {
+    waveAlgorithmLee(scene, mapStaticData, searchPlayer) {
         const planeSize = 1;
         const loader = new THREE.TextureLoader();
         const textureStep = loader.load("./Client/image/step.png");
@@ -269,9 +284,20 @@ export default class MapCreator {
         });
         const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
         const grid = this.createGridMap(mapStaticData);
-        this.lee(grid, 0, 0, 4, 4, scene, planeGeo, planeMatStep);
+
+        let mapWidth = mapStaticData.width;
+        let mapLength = mapStaticData.length;
+        let findObject = this.findPlayerPoint(searchPlayer,{mapWidth,mapLength});
+        let findObjectX = findObject.x;
+        let findObjectZ = findObject.z;
+        this.lee(grid, mapWidth/2, 0, findObjectX, findObjectZ, scene, planeGeo, planeMatStep,mapLength,mapWidth);
     }
 
+    findPlayerPoint(searchPlayer,size) {
+        let x = Math.ceil(searchPlayer.colliderPositionX) + size.mapWidth/2 -1;
+        let z = Math.ceil(searchPlayer.colliderPositionZ) + size.mapLength/2 -1;
+        return {x, z}
+    }
 
     createGridMap(mapStaticData) {
         const width = mapStaticData.width;
@@ -303,10 +329,10 @@ export default class MapCreator {
         return mapElementCoordinate;
     }
 
-    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
+    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep,mapLength,mapWidth): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
     {
-        const widthPlayingField = 10; // ширина рабочего поля
-        const lengthPlayingField = 10;// высота рабочего поля
+        const widthPlayingField = mapLength; // ширина рабочего поля
+        const lengthPlayingField = mapWidth;// высота рабочего поля
         const wall = -2; // непроходимая ячейка
         const blank = -1; // свободная непомеченная ячейка
 
@@ -371,35 +397,41 @@ export default class MapCreator {
         }
         pathX[0] = startPointX;
         pathZ[0] = startPointZ;
-        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep);
-        console.log(pathX, pathZ);// теперь px[0..len] и py[0..len] - координаты ячеек пути
+        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep,mapLength,mapWidth);
+        // теперь px[0..len] и py[0..len] - координаты ячеек пути
         return true;
     }
 
-    createPathSearch(path, scene, planeGeo, planeMatStep) {
-
-        //TODO это временные данные ширины и длинны игрового поля но поскольку поле у наст строится из 0 равномерно в разные стороны
-
-        let width = 10;
-        let legth = 10;
+    createPathSearch(path, scene, planeGeo, planeMatStep,length,width) {
 
         let searchX = path.pathX;
         let searchZ = path.pathZ;
         let lengthPath = path.lengthPath;
+        let pathArrayId = [];
 
-        setInterval(() => {
+        let pathDraw = setInterval(() => {
             //Поскольку точки карты у нас строятся только в положительном диапазоне(проверен алгоритм Лее)
             // то нам нужно правильно указывать координаты т.к центр карты ноль
             //  соответственно ноль оси координат в разные стороны с разным знаком
             let x = searchX[lengthPath] - width / 2 + 1;
-            let z = searchZ[lengthPath] - legth / 2 + 1;
+            let z = searchZ[lengthPath] - length / 2 + 1;
 
 
-            this.createPointSearch(scene, planeGeo, planeMatStep, x - 0.5, z - 0.5);
+            let mapID = this.createPointSearch(scene, planeGeo, planeMatStep, x - 0.5, z - 0.5);
+            pathArrayId.push(mapID);
 
             lengthPath--;
 
-        }, 150);
+            if (!lengthPath) {
+                clearInterval(pathDraw);
+                pathArrayId.forEach((stepMesh) => {
+                    let objectRemove = scene.getObjectById(stepMesh);
+                    scene.remove(objectRemove);
+                });
+                lengthPath = path.lengthPath;
+            }
+
+        }, 100);
 
     }
 
@@ -419,6 +451,7 @@ export default class MapCreator {
         map.position.set(stepX, 0, stepZ);
         map.receiveShadow = true;
         scene.add(map);
+        return map.id;
     }
 
     /**
