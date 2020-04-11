@@ -266,7 +266,7 @@ export default class MapCreator {
         let moveZ = 0;
 
         let serchPosition = {
-            colliderPositionX: 15,
+            colliderPositionX: -15,
             colliderPositionZ: -15,
             colliderWidth: planeSize,
             colliderLength: planeSize
@@ -411,47 +411,6 @@ export default class MapCreator {
         let searchX = serchPosition.colliderPositionX - 0.5;
         let searchZ = serchPosition.colliderPositionZ - 0.5;
 
-
-
-        //TODO мы должны значение старта передавать в метод
-        let keyStart = this.keyConverter(0.5, 0.5);
-        let keyEnd = this.keyConverter(searchX, searchZ);
-        let stepX = searchX;
-        let stepZ = searchZ;
-        let path = [];
-        /*
-        while (stepCounterLee > 0) {
-
-            stepCounterLee--;
-            for (let k = 0; k < 4; ++k) {
-                let x = searchX;
-                let z = searchZ;
-                if (x > 0) {
-                    x--;
-                }
-                else {
-                    x++;
-                }
-                if (z > 0) {
-                    z--;
-                }
-                else {
-                    z++;
-                }
-
-                if (meshStepArray.get(this.keyConverter(x, z))) {
-                    this.createPointSearch(scene, planeGeo, planeMatStep, x, z);
-                    searchX = x;
-                    searchZ = z;
-                    break;
-
-                }
-            }
-
-        }
-*/
-
-
         setInterval(()=>{
             stepCounterLee--;
             for (let k = 0; k < 4; ++k) {
@@ -466,12 +425,16 @@ export default class MapCreator {
                     z++;
                 }
 
+
                 if (x > 0 && k < 3) {
                     x--;
                 }
                 else if(k < 4){
                     x++;
                 }
+                // if(x+1 >=  searchX && x-1 <= searchX){
+                //     x = searchX;
+                // }
 
 
                 if (meshStepArray.get(this.keyConverter(x, z))) {
@@ -482,7 +445,7 @@ export default class MapCreator {
 
                 }
             }
-        },300);
+        },150);
 
     }
 
