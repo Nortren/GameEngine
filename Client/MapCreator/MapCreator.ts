@@ -167,7 +167,7 @@ export default class MapCreator {
         texture.repeat.set(repeats, repeats);
 
         const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-        const planeAlgoritm = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+        // const planeAlgoritm = new THREE.PlaneBufferGeometry(planeSize, planeSize);
         const planeMat = new THREE.MeshPhongMaterial({
             // color: mapColor,
             side: THREE.DoubleSide,
@@ -181,8 +181,6 @@ export default class MapCreator {
 
 
         this.creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat);
-
-        this.waveAlgorithmLee(planeSize, scene, planeAlgoritm, planeMatStep, mapStaticData);
 
 
         // Добавление статических объектов на карту
@@ -252,306 +250,159 @@ export default class MapCreator {
         // scene.add(map);
     }
 
-    waveAlgorithmLee(planeSize, scene, planeGeo, planeMatStep, mapStaticData) {
-        let stepX = planeSize * 0.5;
-        let stepZ = planeSize * 0.5;
-        let takePosition = [];
-        let stepCounterLee = 0;
-        let pointArray = [{x: 0, z: 0}];
-        let meshStepArray = new Map();
-        let statusSearch = false;
 
-        let step = 0;
-        let moveX = 0;
-        let moveZ = 0;
+    update(scene, mapStaticData) {
+        this.waveAlgorithmLee(scene,mapStaticData);
+    }
 
-        let serchPosition = {
-            colliderPositionX: -15,
-            colliderPositionZ: -15,
-            colliderWidth: planeSize,
-            colliderLength: planeSize
-        };
+    waveAlgorithmLee(scene, mapStaticData) {
+        const planeSize = 1;
         const loader = new THREE.TextureLoader();
-        const textureStepTarget = loader.load("./Client/image/target.png");
-        textureStepTarget.wrapS = THREE.RepeatWrapping;
-        textureStepTarget.wrapT = THREE.RepeatWrapping;
-        textureStepTarget.magFilter = THREE.NearestFilter;
-        const planeMatStepTarget = new THREE.MeshPhongMaterial({
+        const textureStep = loader.load("./Client/image/step.png");
+        textureStep.wrapS = THREE.RepeatWrapping;
+        textureStep.wrapT = THREE.RepeatWrapping;
+        textureStep.magFilter = THREE.NearestFilter;
+        const planeMatStep = new THREE.MeshPhongMaterial({
             // color: mapColor,
             side: THREE.DoubleSide,
-            map: textureStepTarget,
+            map: textureStep,
         });
-        //Точка к которой нам нужно придти
-        let map = new THREE.Mesh(planeGeo, planeMatStepTarget);
-        map.rotation.x = Math.PI * -.5;
-        map.position.set(serchPosition.colliderPositionX, 0, serchPosition.colliderPositionZ);
-        map.receiveShadow = true;
+        const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
+        const grid = this.createGridMap(mapStaticData);
+        this.lee(grid, 0, 0, 4, 4, scene, planeGeo, planeMatStep);
+    }
 
-        scene.add(map);
+
+    createGridMap(mapStaticData) {
+        const width = mapStaticData.width;
+        const length = mapStaticData.width;
+        const mapElementCoordinate = [];
+
+        for (let x = 0; x < width; x++) {
+            mapElementCoordinate.push([]);
+            for (let z = 0; z < width; z++) {
+                mapElementCoordinate[x][z] = -1;
+            }
+        }
 
 
         for (let key in mapStaticData.mapElement) {
-            let element = mapStaticData.mapElement[key];
+            let mapElementObject = mapStaticData.mapElement[key];
+            let positionX = mapElementObject.colliderPositionX + width / 2;
+            let positionZ = mapElementObject.colliderPositionZ + length / 2;
 
-            takePosition.push({
-                colliderPositionX: element.colliderPositionX,
-                colliderPositionZ: element.colliderPositionZ,
-                colliderWidth: element.colliderWidth,
-                colliderLength: element.colliderLength
-            });
-
+            for (let z = 0; z < mapElementObject.colliderLength; z++) {
+                for (let x = 0; x < mapElementObject.colliderWidth; x++) {
+                    mapElementCoordinate[positionZ - z][positionX - x] = -2;
+                }
+            }
 
         }
 
 
-        let interval = setInterval(() => {
-
-
-            for (let x = 0; x < step; x++) {
-                for (let z = 0; z < step; z++) {
-                    if (meshStepArray)
-
-                        statusSearch = this.drawWave(scene, 0, 0, stepX + x, stepZ + z, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, step, serchPosition, statusSearch)
-
-                }
-            }
-            step++;
-
-
-            if (statusSearch) {
-                clearInterval(interval);
-                meshStepArray.forEach((stepMesh) => {
-                    let objectRemove = scene.getObjectById(stepMesh.id);
-                    scene.remove(objectRemove);
-                });
-
-                this.createPathSearch(meshStepArray, serchPosition, scene, planeGeo, planeMatStep, step);
-
-            }
-
-        }, 100);
-
+        return mapElementCoordinate;
     }
 
-
-    drawWave(scene, startX, startZ, stepX, stepZ, pointArray, planeSize, takePosition, planeGeo, planeMatStep, meshStepArray, stepCounterLee, serchPosition, statusSearch) {
-        if (this.checkArray(meshStepArray, stepX, stepZ)) {
-            if (this.checkCollisionStatickObject(takePosition, stepX, stepZ)) {
-                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ + stepZ, meshStepArray, stepCounterLee));
-                if (!this.checkCollisionSearchObject(serchPosition, stepX, stepZ)) {
-                    console.log('Search1');
-                    statusSearch = true;
-                }
-            }
-        }
-
-        if (this.checkArray(meshStepArray, -stepX, stepZ)) {
-            if (this.checkCollisionStatickObject(takePosition, -stepX, stepZ)) {
-                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ + stepZ, meshStepArray, stepCounterLee));
-                if (!this.checkCollisionSearchObject(serchPosition, -stepX, stepZ)) {
-                    console.log('Search2');
-                    statusSearch = true;
-                }
-            }
-        }
-
-        if (this.checkArray(meshStepArray, stepX, -stepZ)) {
-            if (this.checkCollisionStatickObject(takePosition, stepX, -stepZ)) {
-                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX + stepX, startZ - stepZ, meshStepArray, stepCounterLee));
-                if (!this.checkCollisionSearchObject(serchPosition, stepX, -stepZ)) {
-                    console.log('Search3');
-                    statusSearch = true;
-                }
-            }
-        }
-
-        if (this.checkArray(meshStepArray, -stepX, -stepZ)) {
-            if (this.checkCollisionStatickObject(takePosition, -stepX, -stepZ)) {
-                pointArray.push(this.createPoint(scene, planeGeo, planeMatStep, startX - stepX, startZ - stepZ, meshStepArray, stepCounterLee));
-                if (!this.checkCollisionSearchObject(serchPosition, -stepX, -stepZ)) {
-                    console.log('Search4');
-                    statusSearch = true;
-                }
-            }
-        }
-        return statusSearch;
-    }
+    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
+    {
+        const widthPlayingField = 10; // ширина рабочего поля
+        const lengthPlayingField = 10;// высота рабочего поля
+        const wall = -2; // непроходимая ячейка
+        const blank = -1; // свободная непомеченная ячейка
 
 
-    checkArray(arr, x, z) {
-        let validationKey = x.toString() + '_' + z.toString();
-        let res = arr.has(validationKey) ? false : true;
-
-        return res;
-    }
-
-    /**
-     * Метод который строит путь до искомой точки
-     * @param meshStepArray
-     * @param serchPosition
-     * @param scene
-     * @param planeGeo
-     * @param planeMatStep
-     * @param stepCounterLee
-     */
-    createPathSearch(meshStepArray, serchPosition, scene, planeGeo, planeMatStep, stepCounterLee) {
-//TODO косяк в поиске пути т.к неверно формируется массив с данными (они повторяются)
-        let searchArray = [];
+        let pathX = [widthPlayingField * lengthPlayingField], pathZ = [widthPlayingField * lengthPlayingField]; // координаты ячеек, входящих  путь
+        let lengthPath;// длина пути
 
 
-        meshStepArray.forEach((step) => {
-            if (this.checkNumberPlus(serchPosition.colliderPositionX) === this.checkNumberPlus(step.stepX) &&
-                this.checkNumberPlus(serchPosition.colliderPositionZ) === this.checkNumberPlus(step.stepZ)
-            ) {
-                searchArray.push(step);
+        // Перед вызовом lee() массив grid заполнен значениями WALL и BLANK
 
-            }
-        });
+        let offsetX = [1, 0, -1, 0];   // смещения, соответствующие соседям ячейки
+        let offsetZ = [0, 1, 0, -1];   // справа, снизу, слева и сверху
+        let waveNumber;
+        let stop;
 
-        let searchX = serchPosition.colliderPositionX - 0.5;
-        let searchZ = serchPosition.colliderPositionZ - 0.5;
+        if (grid[startPointZ][startPointX] == wall || grid[searchPointZ][searchPointX] == wall) return false;  // ячейка (ax, ay) или (bx, by) - стена
 
-        setInterval(()=>{
-            stepCounterLee--;
+        // распространение волны
+        waveNumber = 0;
+        grid[startPointZ][startPointX] = 0;            // стартовая ячейка помечена 0
+
+        do {
+            stop = true;               // предполагаем, что все свободные клетки уже помечены
+            for (let z = 0; z < lengthPlayingField; ++z)
+                for (let x = 0; x < widthPlayingField; ++x)
+                    if (grid[z][x] == waveNumber)                         // ячейка (x, y) помечена числом d
+                    {
+                        for (let k = 0; k < 4; ++k)                    // проходим по всем непомеченным соседям
+                        {
+                            let iy = z + offsetZ[k], ix = x + offsetX[k];
+                            if (iy >= 0 && iy < lengthPlayingField && ix >= 0 && ix < widthPlayingField &&
+                                grid[iy][ix] == blank) {
+                                stop = false;              // найдены непомеченные клетки
+                                grid[iy][ix] = waveNumber + 1;      // распространяем волну
+                            }
+                        }
+                    }
+            waveNumber++;
+        } while (!stop && grid[searchPointZ][searchPointX] == blank);
+
+
+        if (grid[searchPointZ][searchPointX] == blank) return false;  // путь не найден
+
+        // восстановление пути
+        // восстановление пути
+        lengthPath = grid[searchPointZ][searchPointX];            // длина кратчайшего пути из (ax, ay) в (bx, by)
+
+        waveNumber = lengthPath;
+        while (waveNumber > 0) {
+            pathX[waveNumber] = searchPointX;
+            pathZ[waveNumber] = searchPointZ;                   // записываем ячейку (x, y) в путь
+            waveNumber--;
             for (let k = 0; k < 4; ++k) {
-                let x = searchX;
-                let z = searchZ;
-
-
-                if (z > 0 && k < 1) {
-                    z--;
-                }
-                else if (k < 2){
-                    z++;
-                }
-
-
-                if (x > 0 && k < 3) {
-                    x--;
-                }
-                else if(k < 4){
-                    x++;
-                }
-                // if(x+1 >=  searchX && x-1 <= searchX){
-                //     x = searchX;
-                // }
-
-
-                if (meshStepArray.get(this.keyConverter(x, z))) {
-                    this.createPointSearch(scene, planeGeo, planeMatStep, x, z);
-                    searchX = x;
-                    searchZ = z;
+                let iy = searchPointZ + offsetZ[k], ix = searchPointX + offsetX[k];
+                if (iy >= 0 && iy < lengthPlayingField && ix >= 0 && ix < widthPlayingField &&
+                    grid[iy][ix] == waveNumber) {
+                    searchPointX = searchPointX + offsetX[k];
+                    searchPointZ = searchPointZ + offsetZ[k];           // переходим в ячейку, которая на 1 ближе к старту
                     break;
-
                 }
             }
-        },150);
-
-    }
-
-    keyConverter(x, z) {
-        return x.toString() + '_' + z.toString();
-    }
-
-    /**
-     * Метод генерации случайного числа
-     * @param max
-     * @returns {number}
-     */
-    getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-    }
-
-    /**
-     * Проверка на положительное число
-     * @param number
-     * @returns {boolean}
-     */
-    checkNumberPlus(number) {
-        return number > 0;
-    }
-
-
-    /**
-     * Метод проверки на сталкновение со статическим объектом(необходим для визуализации волнового алгоритма Лее)
-     * @param elementArray
-     * @param x
-     * @param z
-     */
-    checkCollisionSearchObject(element, x, z) {
-        let CollisionX = this.checkCollisionAxisSearchObject(x, 1, element.colliderPositionX, element.colliderWidth / 2);
-        let CollisionZ = this.checkCollisionAxisSearchObject(z, 1, element.colliderPositionZ, element.colliderLength / 2);
-        return (!CollisionZ || !CollisionX);
-    }
-
-    /**
-     * Проверка столкновения с объектом поиска
-     * @param enemyPositionAxis
-     * @param enemySize
-     * @param positionCollision
-     * @param sizeCollision
-     * @returns {boolean}
-     */
-    checkCollisionAxisSearchObject(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
-
-        if ((enemyPositionAxis + enemySize * 0.5 >= positionCollision - sizeCollision) &&
-            (enemyPositionAxis - enemySize * 0.5 <= positionCollision + sizeCollision)) {
-            return true;
         }
-        return false;
+        pathX[0] = startPointX;
+        pathZ[0] = startPointZ;
+        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep);
+        console.log(pathX, pathZ);// теперь px[0..len] и py[0..len] - координаты ячеек пути
+        return true;
     }
 
+    createPathSearch(path, scene, planeGeo, planeMatStep) {
 
-    /**
-     * Метод проверки на сталкновение со статическим объектом(необходим для визуализации волнового алгоритма Лее)
-     * @param elementArray
-     * @param x
-     * @param z
-     */
-    checkCollisionStatickObject(elementArray, x, z) {
+        //TODO это временные данные ширины и длинны игрового поля но поскольку поле у наст строится из 0 равномерно в разные стороны
 
-        return elementArray.every((element) => {
-            let CollisionX = this.checkCollisionAxis(x, 1, element.colliderPositionX, element.colliderWidth / 2);
-            let CollisionZ = this.checkCollisionAxis(z, 1, element.colliderPositionZ, element.colliderLength / 2);
-            return (!CollisionZ || !CollisionX);
-        });
+        let width = 10;
+        let legth = 10;
+
+        let searchX = path.pathX;
+        let searchZ = path.pathZ;
+        let lengthPath = path.lengthPath;
+
+        setInterval(() => {
+            //Поскольку точки карты у нас строятся только в положительном диапазоне(проверен алгоритм Лее)
+            // то нам нужно правильно указывать координаты т.к центр карты ноль
+            //  соответственно ноль оси координат в разные стороны с разным знаком
+            let x = searchX[lengthPath] - width / 2 + 1;
+            let z = searchZ[lengthPath] - legth / 2 + 1;
+
+
+            this.createPointSearch(scene, planeGeo, planeMatStep, x - 0.5, z - 0.5);
+
+            lengthPath--;
+
+        }, 150);
 
     }
 
-    /**
-     * Проверка столкновения
-     * @param enemyPositionAxis
-     * @param enemySize
-     * @param positionCollision
-     * @param sizeCollision
-     * @returns {boolean}
-     */
-    checkCollisionAxis(enemyPositionAxis, enemySize, positionCollision, sizeCollision) {
-
-        if ((enemyPositionAxis + enemySize * 0.5 > positionCollision - sizeCollision) &&
-            (enemyPositionAxis - enemySize * 0.5 < positionCollision + sizeCollision)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Создаем массив точек(плиток шага)
-     * @param scene
-     * @param planeGeo
-     * @param planeMatStep
-     * @param stepX
-     * @param stepZ
-     * @param meshStepArray
-     * @param stepCounterLee
-     * @returns {{x: any, z: any}}
-     */
-    createPoint(scene, planeGeo, planeMatStep, stepX, stepZ, meshStepArray, stepCounterLee) {
-        const id = this.createPointSearch(scene, planeGeo, planeMatStep, stepX, stepZ);
-        const mapMeshKey = stepX.toString() + '_' + stepZ.toString();
-        meshStepArray.set(mapMeshKey, {id, stepCounterLee, stepX, stepZ});
-        return {x: stepX, z: stepZ}
-    }
 
     /**
      * визуализация плитки шага, чтоб можно было посмотреть работу алгоритма
@@ -568,7 +419,6 @@ export default class MapCreator {
         map.position.set(stepX, 0, stepZ);
         map.receiveShadow = true;
         scene.add(map);
-        return map.id;
     }
 
     /**
