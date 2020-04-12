@@ -287,15 +287,18 @@ export default class MapCreator {
 
         let mapWidth = mapStaticData.width;
         let mapLength = mapStaticData.length;
-        let findObject = this.findPlayerPoint(searchPlayer,{mapWidth,mapLength});
+        let findObject = this.findPlayerPoint(searchPlayer, {mapWidth, mapLength});
         let findObjectX = findObject.x;
         let findObjectZ = findObject.z;
-        this.lee(grid, mapWidth/2, 0, findObjectX, findObjectZ, scene, planeGeo, planeMatStep,mapLength,mapWidth);
+        let searchPointW = Math.ceil(mapWidth / 2);
+        let searchPointL = 0;
+
+        this.lee(grid, searchPointW, searchPointL, findObjectX, findObjectZ, scene, planeGeo, planeMatStep, mapLength, mapWidth);
     }
 
-    findPlayerPoint(searchPlayer,size) {
-        let x = Math.ceil(searchPlayer.colliderPositionX) + size.mapWidth/2 -1;
-        let z = Math.ceil(searchPlayer.colliderPositionZ) + size.mapLength/2 -1;
+    findPlayerPoint(searchPlayer, size) {
+        let x = Math.ceil(searchPlayer.colliderPositionX + size.mapWidth / 2 - 1);
+        let z = Math.ceil(searchPlayer.colliderPositionZ + size.mapLength / 2 - 1);
         return {x, z}
     }
 
@@ -314,12 +317,19 @@ export default class MapCreator {
 
         for (let key in mapStaticData.mapElement) {
             let mapElementObject = mapStaticData.mapElement[key];
-            let positionX = mapElementObject.colliderPositionX + width / 2;
-            let positionZ = mapElementObject.colliderPositionZ + length / 2;
+            let positionX = Math.ceil(mapElementObject.colliderPositionX + width / 2);
+            let positionZ = Math.ceil(mapElementObject.colliderPositionZ + length / 2);
 
-            for (let z = 0; z < mapElementObject.colliderLength; z++) {
-                for (let x = 0; x < mapElementObject.colliderWidth; x++) {
+            let colliderWidth = Math.ceil(mapElementObject.colliderWidth / 2);
+            let colliderLength = Math.ceil(mapElementObject.colliderLength / 2);
+
+            for (let z = 1; z <= colliderLength; z++) {
+                for (let x = 1; x <= colliderWidth; x++) {
+                    // [positionX + x -1] [positionX + z -1] для центрирования элемента т.к 0 считаем положительным числом
+                    mapElementCoordinate[positionZ - z][positionX + x - 1] = -2;
                     mapElementCoordinate[positionZ - z][positionX - x] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX - x] = -2;
                 }
             }
 
@@ -329,7 +339,7 @@ export default class MapCreator {
         return mapElementCoordinate;
     }
 
-    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep,mapLength,mapWidth): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
+    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep, mapLength, mapWidth): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
     {
         const widthPlayingField = mapLength; // ширина рабочего поля
         const lengthPlayingField = mapWidth;// высота рабочего поля
@@ -397,12 +407,12 @@ export default class MapCreator {
         }
         pathX[0] = startPointX;
         pathZ[0] = startPointZ;
-        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep,mapLength,mapWidth);
+        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep, mapLength, mapWidth);
         // теперь px[0..len] и py[0..len] - координаты ячеек пути
         return true;
     }
 
-    createPathSearch(path, scene, planeGeo, planeMatStep,length,width) {
+    createPathSearch(path, scene, planeGeo, planeMatStep, length, width) {
 
         let searchX = path.pathX;
         let searchZ = path.pathZ;
@@ -410,6 +420,7 @@ export default class MapCreator {
         let pathArrayId = [];
 
         let pathDraw = setInterval(() => {
+
             //Поскольку точки карты у нас строятся только в положительном диапазоне(проверен алгоритм Лее)
             // то нам нужно правильно указывать координаты т.к центр карты ноль
             //  соответственно ноль оси координат в разные стороны с разным знаком
@@ -419,9 +430,6 @@ export default class MapCreator {
 
             let mapID = this.createPointSearch(scene, planeGeo, planeMatStep, x - 0.5, z - 0.5);
             pathArrayId.push(mapID);
-
-            lengthPath--;
-
             if (!lengthPath) {
                 clearInterval(pathDraw);
                 pathArrayId.forEach((stepMesh) => {
@@ -430,6 +438,8 @@ export default class MapCreator {
                 });
                 lengthPath = path.lengthPath;
             }
+            lengthPath--;
+
 
         }, 100);
 

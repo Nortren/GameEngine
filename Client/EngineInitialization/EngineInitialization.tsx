@@ -142,8 +142,13 @@ export default class EngineInitialization extends React.Component implements pri
 
                 const camera = this.createCameraScene(canvas, this.isThereUser);
 
+                let counter = 0;
 
                 this.blData.getTestDataServerConnect((data) => {
+                    counter = this._mapCreator.update(scene,data.room,counter);
+                    if(counter >= 100){
+                        counter = 0;
+                    }
                     data.room.enemy.forEach((enemy) => {
                         let thisEnemy = this._enemyArray.filter((enemyClient) => {
 
@@ -216,6 +221,7 @@ export default class EngineInitialization extends React.Component implements pri
             this.playerInMaps.push(player);
             //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
             scene.add(playerAvatarSprite, healthLine,userCollaider);
+            // scene.add(playerAvatarSprite, healthLine);
         }
 
     }
