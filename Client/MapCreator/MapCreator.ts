@@ -290,10 +290,10 @@ export default class MapCreator {
         let findObject = this.findPlayerPoint(searchPlayer, {mapWidth, mapLength});
         let findObjectX = findObject.x;
         let findObjectZ = findObject.z;
-        let searchPointW = Math.ceil(mapWidth / 2);
-        let searchPointL = 0;
+        let searchPointX = Math.ceil(mapWidth / 2);
+        let searchPointZ = 0;
 
-        this.lee(grid, searchPointW, searchPointL, findObjectX, findObjectZ, scene, planeGeo, planeMatStep, mapLength, mapWidth);
+        this.lee(scene, grid, searchPointX, searchPointZ, findObjectX, findObjectZ, planeGeo, planeMatStep, mapLength, mapWidth);
     }
 
     findPlayerPoint(searchPlayer, size) {
@@ -302,6 +302,11 @@ export default class MapCreator {
         return {x, z}
     }
 
+    /**
+     * Метод создания сетки игрового поля(для определения препятствий)
+     * @param mapStaticData
+     * @returns {Array}
+     */
     createGridMap(mapStaticData) {
         const width = mapStaticData.width;
         const length = mapStaticData.width;
@@ -339,7 +344,23 @@ export default class MapCreator {
         return mapElementCoordinate;
     }
 
-    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, scene, planeGeo, planeMatStep, mapLength, mapWidth): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
+    /**
+     *
+     * @param scene
+     * @param grid
+     * @param startPointX
+     * @param startPointZ
+     * @param searchPointX
+     * @param searchPointZ
+     * @param scene
+     * @param planeGeo
+     * @param planeMatStep
+     * @param mapLength
+     * @param mapWidth
+     * @returns {boolean}
+     */
+
+    lee(scene, grid, startPointX, startPointZ, searchPointX, searchPointZ, planeGeo, planeMatStep, mapLength, mapWidth): boolean   // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
     {
         const widthPlayingField = mapLength; // ширина рабочего поля
         const lengthPlayingField = mapWidth;// высота рабочего поля
@@ -412,6 +433,15 @@ export default class MapCreator {
         return true;
     }
 
+    /**
+     * Метод визуальной отрисовки найденого пути
+     * @param path
+     * @param scene
+     * @param planeGeo
+     * @param planeMatStep
+     * @param length
+     * @param width
+     */
     createPathSearch(path, scene, planeGeo, planeMatStep, length, width) {
 
         let searchX = path.pathX;

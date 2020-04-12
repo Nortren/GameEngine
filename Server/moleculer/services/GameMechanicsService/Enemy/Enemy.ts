@@ -22,6 +22,8 @@ export default class Enemy {
     moveSpeed: number;
     directionMove: string;
     attackStatus: boolean;
+    countLee: number;
+    resultSearch: boolean | object;
 
     constructor(id: string,
                 sprite: string,
@@ -60,8 +62,8 @@ export default class Enemy {
         this.attackDistance = attackDistance;
         this.attackSpeed = attackSpeed;
         this.moveSpeed = moveSpeed;
-
-
+        this.countLee = 0;
+        this.resultSearch = {};
     }
 
     create() {
@@ -78,14 +80,172 @@ export default class Enemy {
         const playersInTheRoom = roomData.playersInTheRoom;
         const enemyInTheRoom = roomData.enemy;
         const collisionInTheRoom = roomData.map.mapElement;
+        const map = roomData.map;
+        //Количество тиков прежде чем вновь вызвать поиск пути
+        this.countLee++;
 
 
         this.correctMove(enemyInTheRoom);
+        this.persecutionObjectOldNew(playersInTheRoom, map);
 
 
-        this.persecutionObjectOld(playersInTheRoom, collisionInTheRoom);
     }
 
+
+    persecutionObjectOldNew(playersInTheRoom, map) {
+
+        const grid = this.createGridMap(map);
+
+        const startPointX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), map.width);
+        const startPointZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), map.length);
+        const needPlayer = this.nearestEnemy(playersInTheRoom);
+        const findObjectX = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.width);
+        const findObjectZ = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.length);
+        const mapLength = map.length;
+        const mapWidth = map.width;
+
+        if (this.countLee >= 100) {
+
+
+            this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+
+            this.countLee = 0;
+        }
+        this.enemyMove(this.resultSearch, mapLength, mapWidth);
+    }
+
+    findPointToLeeArray(searchPoint, size) {
+        let result = Math.ceil(searchPoint + size / 2 - 1);
+
+        return result
+    }
+
+    nearestEnemy(playerArray) {
+
+        let needPlayer = playerArray[0];
+
+        playerArray.forEach((player) => {
+            //Проверяем этот игрок вообще в зоне видимости
+            if (this.nearestPlayer(player)) {
+                //Сравниваем его с предыдущим игроком и смотрим кто ближе
+                if (Math.abs(player.colliderPositionX) < Math.abs(needPlayer.colliderPositionX)
+                    || Math.abs(player.colliderPositionZ) < Math.abs(needPlayer.colliderPositionZ)) {
+                    needPlayer = player;
+                }
+            }
+        });
+        return needPlayer;
+    }
+
+    lee(grid, startPointX, startPointZ, searchPointX, searchPointZ, mapLength, mapWidth): object | boolean  // поиск пути из ячейки (ax, ay) в ячейку (bx, by)
+    {
+
+        const widthPlayingField = mapLength; // ширина рабочего поля
+        const lengthPlayingField = mapWidth;// высота рабочего поля
+        const wall = -2; // непроходимая ячейка
+        const blank = -1; // свободная непомеченная ячейка
+
+
+        let pathX = [widthPlayingField * lengthPlayingField], pathZ = [widthPlayingField * lengthPlayingField]; // координаты ячеек, входящих  путь
+        let lengthPath;// длина пути
+
+
+        // Перед вызовом lee() массив grid заполнен значениями WALL и BLANK
+
+        let offsetX = [1, 0, -1, 0];   // смещения, соответствующие соседям ячейки
+        let offsetZ = [0, 1, 0, -1];   // справа, снизу, слева и сверху
+        let waveNumber;
+        let stop;
+
+        if (grid[startPointZ][startPointX] == wall || grid[searchPointZ][searchPointX] == wall) return false;  // ячейка (ax, ay) или (bx, by) - стена
+
+        // распространение волны
+        waveNumber = 0;
+        grid[startPointZ][startPointX] = 0;            // стартовая ячейка помечена 0
+
+        do {
+            stop = true;               // предполагаем, что все свободные клетки уже помечены
+            for (let z = 0; z < lengthPlayingField; ++z)
+                for (let x = 0; x < widthPlayingField; ++x)
+                    if (grid[z][x] == waveNumber)                         // ячейка (x, y) помечена числом d
+                    {
+                        for (let k = 0; k < 4; ++k)                    // проходим по всем непомеченным соседям
+                        {
+                            let iy = z + offsetZ[k], ix = x + offsetX[k];
+                            if (iy >= 0 && iy < lengthPlayingField && ix >= 0 && ix < widthPlayingField &&
+                                grid[iy][ix] == blank) {
+                                stop = false;              // найдены непомеченные клетки
+                                grid[iy][ix] = waveNumber + 1;      // распространяем волну
+                            }
+                        }
+                    }
+            waveNumber++;
+        } while (!stop && grid[searchPointZ][searchPointX] == blank);
+
+
+        if (grid[searchPointZ][searchPointX] == blank) return false;  // путь не найден
+
+        // восстановление пути
+        // восстановление пути
+        lengthPath = grid[searchPointZ][searchPointX];            // длина кратчайшего пути из (ax, ay) в (bx, by)
+
+        waveNumber = lengthPath;
+        while (waveNumber > 0) {
+            pathX[waveNumber] = searchPointX;
+            pathZ[waveNumber] = searchPointZ;                   // записываем ячейку (x, y) в путь
+            waveNumber--;
+            for (let k = 0; k < 4; ++k) {
+                let iy = searchPointZ + offsetZ[k], ix = searchPointX + offsetX[k];
+                if (iy >= 0 && iy < lengthPlayingField && ix >= 0 && ix < widthPlayingField &&
+                    grid[iy][ix] == waveNumber) {
+                    searchPointX = searchPointX + offsetX[k];
+                    searchPointZ = searchPointZ + offsetZ[k];           // переходим в ячейку, которая на 1 ближе к старту
+                    break;
+                }
+            }
+        }
+        pathX[0] = startPointX;
+        pathZ[0] = startPointZ;
+        const resultSearch = {pathX, pathZ, lengthPath};
+        // теперь px[0..len] и py[0..len] - координаты ячеек пути
+        return resultSearch;
+    }
+
+
+    enemyMove(point, mapLength, mapWidth) {
+        // if(point.pathX) {
+        // console.log(point.pathX, point.pathZ, '___PATH__=>', point.lengthPath);
+
+        // for (let i = 0; i < point.lengthPath; i++) {
+        //     console.log(this.colliderPositionX,i);
+        //     this.colliderPositionX = point.pathX[i] - mapWidth / 2 + 1;
+        //     this.colliderPositionZ = point.pathZ[i] - mapLength / 2 + 1;
+        // }
+        console.log(point);
+        if (Object.keys(point).length) {
+            console.log('TEST',this.colliderPositionX,point.pathX[0],this.colliderPositionZ , point.pathZ[0]);
+            if (this.colliderPositionX !== point.pathX[point.lengthPath] &&
+                this.colliderPositionZ !== point.pathZ[point.lengthPath]
+            ) {
+
+                if(point.pathX[0] > point.pathX[1]){
+                    this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
+                }else{
+                    this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
+                }
+
+                if(point.pathZ[0] > point.pathZ[1]){
+                    this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
+                }else{
+                    this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
+                }
+
+
+            }
+        }
+
+        // }
+    }
 
     death(roomData) {
 
@@ -130,29 +290,23 @@ export default class Enemy {
                 this.colliderOldPositionZ = this.colliderPositionZ;
             }
             else {
-                if(this.colliderPositionX > this.colliderOldPositionX){
-                    console.log("x >");
-                    this.colliderPositionX = this.colliderOldPositionX- this.moveSpeed;
+                if (this.colliderPositionX > this.colliderOldPositionX) {
+                    this.colliderPositionX = this.colliderOldPositionX - this.moveSpeed;
                 }
-                else if(this.colliderPositionX < this.colliderOldPositionX){
-                    console.log("x <");
+                else if (this.colliderPositionX < this.colliderOldPositionX) {
                     this.colliderPositionX = this.colliderOldPositionX + this.moveSpeed;
                 }
-                else{
-                    console.log("x =");
-                    this.colliderPositionX = this.colliderOldPositionX  + this.moveSpeed;
+                else {
+                    this.colliderPositionX = this.colliderOldPositionX + this.moveSpeed;
                 }
 
-                if(this.colliderPositionZ > this.colliderOldPositionZ){
-                    console.log("z >");
+                if (this.colliderPositionZ > this.colliderOldPositionZ) {
                     this.colliderPositionZ = this.colliderOldPositionZ - this.moveSpeed;
                 }
-                else if(this.colliderPositionZ < this.colliderOldPositionZ){
-                    console.log("z <");
+                else if (this.colliderPositionZ < this.colliderOldPositionZ) {
                     this.colliderPositionZ = this.colliderOldPositionZ + this.moveSpeed;
                 }
-                else{
-                    console.log("z =");
+                else {
                     this.colliderPositionZ = this.colliderOldPositionZ + this.moveSpeed;
                 }
                 this.colliderOldPositionX = this.colliderPositionX;
@@ -385,6 +539,49 @@ export default class Enemy {
 
         }
 
+    }
+
+
+    /**
+     * Метод создания сетки игрового поля(для определения препятствий)
+     * @param mapStaticData
+     * @returns {Array}
+     */
+    createGridMap(mapStaticData) {
+        const width = mapStaticData.width;
+        const length = mapStaticData.width;
+        const mapElementCoordinate = [];
+
+        for (let x = 0; x < width; x++) {
+            mapElementCoordinate.push([]);
+            for (let z = 0; z < width; z++) {
+                mapElementCoordinate[x][z] = -1;
+            }
+        }
+
+
+        for (let key in mapStaticData.mapElement) {
+            let mapElementObject = mapStaticData.mapElement[key];
+            let positionX = Math.ceil(mapElementObject.colliderPositionX + width / 2);
+            let positionZ = Math.ceil(mapElementObject.colliderPositionZ + length / 2);
+
+            let colliderWidth = Math.ceil(mapElementObject.colliderWidth / 2);
+            let colliderLength = Math.ceil(mapElementObject.colliderLength / 2);
+
+            for (let z = 1; z <= colliderLength; z++) {
+                for (let x = 1; x <= colliderWidth; x++) {
+                    // [positionX + x -1] [positionX + z -1] для центрирования элемента т.к 0 считаем положительным числом
+                    mapElementCoordinate[positionZ - z][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ - z][positionX - x] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX - x] = -2;
+                }
+            }
+
+        }
+
+
+        return mapElementCoordinate;
     }
 }
 
