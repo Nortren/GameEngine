@@ -99,14 +99,16 @@ export default class Enemy {
         const startPointX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), map.width);
         const startPointZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), map.length);
         const needPlayer = this.nearestEnemy(playersInTheRoom);
-        const findObjectX = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.width);
+        const findObjectX = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionX), map.width);
         const findObjectZ = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.length);
         const mapLength = map.length;
         const mapWidth = map.width;
 
+        // console.log(findObjectX,findObjectZ,'findObject');
+
         if (this.countLee >= 100) {
 
-
+            console.log(grid);
             this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
 
             this.countLee = 0;
@@ -221,25 +223,32 @@ export default class Enemy {
         //     this.colliderPositionX = point.pathX[i] - mapWidth / 2 + 1;
         //     this.colliderPositionZ = point.pathZ[i] - mapLength / 2 + 1;
         // }
-        console.log(point);
+        // console.log(point);
         if (Object.keys(point).length) {
-            console.log('TEST',this.colliderPositionX,point.pathX[0],this.colliderPositionZ , point.pathZ[0]);
+            // console.log('TEST', this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth), point.pathX[0],
+            //     this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength), point.pathZ[0], point);
             if (this.colliderPositionX !== point.pathX[point.lengthPath] &&
                 this.colliderPositionZ !== point.pathZ[point.lengthPath]
             ) {
 
-                if(point.pathX[0] > point.pathX[1]){
-                    this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
-                }else{
+                if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) < point.pathX[point.lengthPath]) {
+                    console.log('plusX');
                     this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
                 }
 
-                if(point.pathZ[0] > point.pathZ[1]){
-                    this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
-                }else{
-                    this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
+                if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) > point.pathX[point.lengthPath]) {
+                    console.log('minusX');
+                    this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
                 }
+                if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) < point.pathZ[point.lengthPath]) {
+                    console.log('plusZ');
+                    this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
+                }
+                if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) > point.pathZ[point.lengthPath]) {
+                    console.log('minusZ');
+                    this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
 
+                }
 
             }
         }
