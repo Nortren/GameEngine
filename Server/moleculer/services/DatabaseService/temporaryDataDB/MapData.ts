@@ -19,7 +19,7 @@ export const MapJSON = {
                 width: 10,
                 height: 10,
                 collaid: "./Client/image/collaid.png",
-                colliderPositionX: -2,
+                colliderPositionX: 3,
                 colliderPositionY: 0,
                 colliderPositionZ: 0,
                 colliderWidth: 2,
@@ -256,7 +256,7 @@ export const MapJSON = {
             {
                 typeEnemy: 'enemy1',
                 count: 1,
-                startPoint: {x:-4,y:0,z:4},
+                startPoint: {x:-4,y:0,z:0},
                 distanceBetweenEnemies: 1
             },
             {
