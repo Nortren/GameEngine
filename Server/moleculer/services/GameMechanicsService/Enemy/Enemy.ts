@@ -66,6 +66,7 @@ export default class Enemy {
         this.countLee = 0;
         this.countMove = 0;
         this.resultSearch = {};
+        this.colliderPositionY = this.calculatingCorrectHeightCollider(this.colliderPositionY,this.colliderHeight);
     }
 
     create() {
@@ -87,7 +88,7 @@ export default class Enemy {
         this.countLee++;
 
 
-        this.correctMove(enemyInTheRoom);
+        // this.correctMove(enemyInTheRoom);
         this.persecutionObjectOldNew(playersInTheRoom, map);
 
 
@@ -215,46 +216,12 @@ export default class Enemy {
     enemyMove(point, mapLength, mapWidth) {
 
         if (Object.keys(point).length) {
-            // console.log('TEST', this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth), point.pathX[0],
-            //     this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength), point.pathZ[0], point);
-            // console.log(point, point.pathX[point.lengthPath], point.pathZ[point.lengthPath], this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth), this.countMove);
             if (this.colliderPositionX !== point.pathX[point.lengthPath] &&
                 this.colliderPositionZ !== point.pathZ[point.lengthPath]
             ) {
 
 
-
-                /*
-
-                 if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) < point.pathX[point.lengthPath]) {
-
-                 this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
-                 }
-
-                 if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) > point.pathX[point.lengthPath]) {
-
-                 this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
-                 }
-
-
-                 if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) < point.pathZ[point.lengthPath]) {
-
-                 this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
-                 }
-                 if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) > point.pathZ[point.lengthPath]) {
-
-                 this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
-
-                 }*/
-
-                let x = point.pathX[this.countMove] - mapWidth / 2 + 1;
-                let z = point.pathZ[this.countMove] - mapLength / 2 + 1;
-// console.log(this.colliderPositionX,this.colliderPositionZ,point.pathX[this.countMove],point.pathZ[this.countMove],x,z);
-
                 if (this.countMove < point.lengthPath) {
-                 /*   this.colliderPositionX = x;
-                    this.colliderPositionZ = z;
-                    this.countMove++;*/
                     if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) < point.pathX[this.countMove]) {
                         this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
                     }
@@ -616,6 +583,17 @@ export default class Enemy {
 
 
         return mapElementCoordinate;
+    }
+    /**
+     * Вычисляем правилный размер коллайдера относительно оси y
+     * @param collaider
+     * @param colliderPositionY
+     * @param colliderHeight
+     */
+    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
+        let yPosition = colliderPositionY+colliderHeight/2;
+        return yPosition;
+
     }
 }
 

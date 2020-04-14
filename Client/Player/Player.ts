@@ -135,13 +135,14 @@ export default class Player implements BasicProperty {
      * @param userImg
      */
     createEngineUserObject(playerImg: Texture, position) {
-        // playerImg.wrapS = playerImg.wrapT = THREE.RepeatWrapping;
         //Зеркально отражение
         playerImg.wrapS = playerImg.wrapT = THREE.MirroredRepeatWrapping;
         playerImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
-        // playerImg.offset.x = 0.5;
-        // playerImg.offset.y = 0.5;
-        // playerImg.repeat.set(2, 2);
+
+        //TODO Эти значения должны передаваться с сервера т.к от них будет зависеть размер игрока и его правильно позиционирование относительно коллайда
+        this.scaleX = 3;
+        this.scaleY = 3;
+
         //Фильтр который создаёт эфект пикселя
         // playerImg.magFilter = THREE.NearestFilter;
         let playerAvatarSprite;
@@ -151,7 +152,7 @@ export default class Player implements BasicProperty {
             useScreenCoordinates: false, transparent: true
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
-        playerAvatarSprite.scale.set(3, 3, 1.0);
+        playerAvatarSprite.scale.set(this.scaleX, this.scaleY, 1.0);
         playerAvatarSprite.position.set(position.x,position.y, position.z);
         playerAvatarSprite.center.y = 0;
         this.playerAvatarSprite = playerAvatarSprite;
@@ -189,11 +190,23 @@ export default class Player implements BasicProperty {
 
         const playerCollaider = new THREE.Mesh(playerCollaiderGeo, materials);
         playerCollaider.rotation.x = Math.PI * -.5;
-        playerCollaider.position.set(position.x, this.colliderPositionY, position.z);
+        playerCollaider.position.set(position.x, this.calculatingCorrectHeightCollider(this.colliderPositionY,this.colliderHeight), position.z);
         this.collaider = playerCollaider;
         if (globalVariables.shadow.materialShadow) {
             playerCollaider.castShadow = true;
         }
+    }
+
+    /**
+     * Вычисляем правилный размер коллайдера относительно оси y
+     * @param collaider
+     * @param colliderPositionY
+     * @param colliderHeight
+     */
+    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
+        let yPosition = colliderPositionY+colliderHeight/2;
+        return yPosition;
+
     }
 
     /**
@@ -303,12 +316,17 @@ export default class Player implements BasicProperty {
         positionHealthLine.z = positionPlayer.z;
         positionHealthLine.y = 0;
 
+
+
+
+        this.collaider.position.x =  playerServerData.colliderPositionX;
+        this.collaider.position.z =  playerServerData.colliderPositionZ;
+
         //рисуем героя по центру картинки
         this.playerAvatarSprite.position.x = playerServerData.colliderPositionX;
-        this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ;
+        //TODO Для спрайта scaleY размер увеличениякартинки для правельного отображения он должен считаться так сделать по нормальному отдельный метод
+        this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ+this.scaleY/2;
 
-        this.collaider.position.x = this.playerAvatarSprite.position.x;
-        this.collaider.position.z = this.playerAvatarSprite.position.z;
         this.healthLine.position.x = this.playerAvatarSprite.position.x;
         this.healthLine.position.z = this.playerAvatarSprite.position.z;
 

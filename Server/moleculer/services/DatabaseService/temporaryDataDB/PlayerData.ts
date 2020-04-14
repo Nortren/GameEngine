@@ -28,7 +28,7 @@ export const PlayerJson = {
 		colliderPositionY: 0,
 		colliderPositionZ: 0,
 		colliderWidth: 1,
-		colliderHeight: 2,
+		colliderHeight: 1,
 		colliderLength: 1,
 		health: 100,
 		damage: 2,

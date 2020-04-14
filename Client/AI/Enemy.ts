@@ -170,8 +170,13 @@ export default class Enemy implements BasicPropertyEnemy {
             // color: enemyColor,
             useScreenCoordinates: false, transparent: true
         });
+
+        //TODO Эти значения должны передаваться с сервера т.к от них будет зависеть размер игрока и его правильно позиционирование относительно коллайда
+        this.scaleX = 3;
+        this.scaleY = 3;
+
         this.enemySprite = new THREE.Sprite(enemyTexture);
-        this.enemySprite.scale.set(3, 3, 1.0);
+        this.enemySprite.scale.set(this.scaleX, this.scaleY, 1.0);
         this.enemySprite.position.set(position.x, position.y, position.z);
         this.enemySprite.center.y = 0;
     }
@@ -262,10 +267,17 @@ export default class Enemy implements BasicPropertyEnemy {
         return Mesh;
     }
 
+
     //Метод который обновляет позицию item привязанных к боту
     updateEnemVisualDate(enemyData: Mesh, enemy: Mesh) {
         enemyData.position.x = enemy.colliderPositionX;
         enemyData.position.z = enemy.colliderPositionZ;
+    }
+
+    //TODO сделать нормально сейчас высчитываем положения по Z дляспрайта таким образом чтоб он нормально распологался относительно коллайда
+    updateEnemVisualSpriteDate(enemyData: Mesh, enemy: Mesh) {
+        enemyData.position.x = enemy.colliderPositionX;
+        enemyData.position.z = enemy.colliderPositionZ+this.scaleY/2;
     }
 
     /**
@@ -277,7 +289,7 @@ export default class Enemy implements BasicPropertyEnemy {
     informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator, scene) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData);
         this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData);
-        this.updateEnemVisualDate(enemyData.enemySprite, enemyData);
+        this.updateEnemVisualSpriteDate(enemyData.enemySprite, enemyData);
         this.updateHealthLine(enemyData);
 
 
@@ -369,7 +381,7 @@ export default class Enemy implements BasicPropertyEnemy {
         let delay = 2;
 
         //TODO В данном случаи цифра три показывает что последние 3 кадра будут выполняться с гигантской задержкой(Надо чтоб это значение было указанно на сервере)
-        if(spriteData.lastFrameDeathX - 3 <=this._counterOfDeath){
+        if (spriteData.lastFrameDeathX - 3 <= this._counterOfDeath) {
             delay = 5;
         }
 
@@ -380,9 +392,6 @@ export default class Enemy implements BasicPropertyEnemy {
         let move = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
 
         let rect = move;
-
-
-
 
 
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
@@ -444,7 +453,7 @@ export default class Enemy implements BasicPropertyEnemy {
         if (this.health <= 0) {
 
             if (this._counterOfDeath < spriteData.lastFrameDeathX) {
-              //Мы инкрементируем счетчик смерти если выполняется условие(т.е соответствие с указанной задержкой)
+                //Мы инкрементируем счетчик смерти если выполняется условие(т.е соответствие с указанной задержкой)
                 if (this._animationTimer % delay === 0) {
                     this._counterOfDeath++;
                 }

@@ -230,7 +230,7 @@ export default class MapCreator {
             }
 
             const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
-            elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
+            elementObjCollaider.position.set(mapElementObject.colliderPositionX,this.calculatingCorrectHeightCollider(mapElementObject.colliderPositionY, mapElementObject.colliderHeight), mapElementObject.colliderPositionZ);
             if (globalVariables.shadow.materialShadow) {
                 elementObjCollaider.castShadow = true;
             }
@@ -247,10 +247,19 @@ export default class MapCreator {
 
         }
 
-        // scene.add(map);
     }
 
+    /**
+     * Вычисляем правилный размер коллайдера относительно оси y
+     * @param collaider
+     * @param colliderPositionY
+     * @param colliderHeight
+     */
+    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight) {
+        let yPosition = colliderPositionY + colliderHeight / 2;
+        return yPosition;
 
+    }
     update(scene, data, counter) {
         const map = data.map;
         const searchPlayer = data.playersInTheRoom[0];
