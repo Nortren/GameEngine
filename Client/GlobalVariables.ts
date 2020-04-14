@@ -8,7 +8,7 @@ export const globalVariables = {
             shadow:true,
             showShadow: false,
             showCollider: true,
-            showColliderDynamick: true,
+            showColliderDynamick: false,
             additionalData: true
         },
     }
