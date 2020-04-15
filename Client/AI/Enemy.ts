@@ -260,13 +260,23 @@ export default class Enemy implements BasicPropertyEnemy {
         }
         const Mesh = new THREE.Mesh(playerMeshGeo, materials);
         Mesh.rotation.x = Math.PI * -.5;
-        Mesh.position.set(x, y, z);
+        Mesh.position.set(x,this.calculatingCorrectHeightCollider(y,height), z);
         if (globalVariables.shadow.materialShadow) {
             Mesh.castShadow = true;
         }
         return Mesh;
     }
+    /**
+     * Вычисляем правилный размер коллайдера относительно оси y
+     * @param collaider
+     * @param colliderPositionY
+     * @param colliderHeight
+     */
+    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
+        let yPosition = colliderPositionY+colliderHeight/2;
+        return yPosition;
 
+    }
 
     //Метод который обновляет позицию item привязанных к боту
     updateEnemVisualDate(enemyData: Mesh, enemy: Mesh) {

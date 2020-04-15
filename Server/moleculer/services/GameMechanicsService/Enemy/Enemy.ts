@@ -66,7 +66,6 @@ export default class Enemy {
         this.countLee = 0;
         this.countMove = 0;
         this.resultSearch = {};
-        this.colliderPositionY = this.calculatingCorrectHeightCollider(this.colliderPositionY,this.colliderHeight);
     }
 
     create() {
@@ -106,7 +105,7 @@ export default class Enemy {
         const findObjectZ = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.length);
         const mapLength = map.length;
         const mapWidth = map.width;
-
+        this.enemyAnimationRotation(needPlayer);
 
         if (this.countLee >= 100) {
             this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
@@ -237,7 +236,7 @@ export default class Enemy {
                     else {
                         this.countMove++;
                     }
-                }else{
+                } else {
                     this.countMove = 0;
                 }
 
@@ -494,7 +493,6 @@ export default class Enemy {
      */
     enemyAnimationRotation(huntedPlayer) {
         //Направление в которое следуем(для правильной анимации)
-
         this.directionMove = 'DOWN';
 
         if (huntedPlayer.colliderPositionX === this.colliderPositionX && huntedPlayer.colliderPositionZ >= this.colliderPositionZ) {
@@ -584,14 +582,15 @@ export default class Enemy {
 
         return mapElementCoordinate;
     }
+
     /**
      * Вычисляем правилный размер коллайдера относительно оси y
      * @param collaider
      * @param colliderPositionY
      * @param colliderHeight
      */
-    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
-        let yPosition = colliderPositionY+colliderHeight/2;
+    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight) {
+        let yPosition = colliderPositionY + colliderHeight / 2;
         return yPosition;
 
     }

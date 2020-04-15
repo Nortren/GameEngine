@@ -152,7 +152,7 @@ export default class Player implements BasicProperty {
             useScreenCoordinates: false, transparent: true
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
-        playerAvatarSprite.scale.set(this.scaleX, this.scaleY, 1.0);
+        playerAvatarSprite.scale.set(3, 3, 1.0);
         playerAvatarSprite.position.set(position.x,position.y, position.z);
         playerAvatarSprite.center.y = 0;
         this.playerAvatarSprite = playerAvatarSprite;
