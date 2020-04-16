@@ -88,15 +88,19 @@ export default class Enemy {
 
 
         // this.correctMove(enemyInTheRoom);
-        this.persecutionObjectOldNew(playersInTheRoom, map);
+        this.persecutionObjectOldNew(roomData, map);
 
 
     }
 
 
-    persecutionObjectOldNew(playersInTheRoom, map) {
+    persecutionObjectOldNew(roomData, map) {
 
+        const playersInTheRoom = roomData.playersInTheRoom;
         const grid = this.createGridMap(map);
+
+        //TODO Нужно обсчитать по нормальному например принимая что точка в которой стоит this.Enemy свободно ,а то он упирается в нее и не может идти
+        // this.dynamicGridObjects(roomData, grid);
 
         const startPointX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), map.width);
         const startPointZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), map.length);
@@ -111,13 +115,94 @@ export default class Enemy {
             this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
         }
 
-        this.enemyMove(this.resultSearch, mapLength, mapWidth);
+        this.enemyMove(this.resultSearch, mapLength, mapWidth, grid);
     }
 
+
+    /**
+     * Метод который переводит координаты объекта из глобальных координат в координаты матрици(сетки) используемый в алгоритме Ли
+     * Отдельно для оси Х и Z
+     * @param searchPoint
+     * @param size
+     * @returns {number}
+     */
     findPointToLeeArray(searchPoint, size) {
         let result = Math.ceil(searchPoint + size / 2 - 1);
 
         return result
+    }
+
+
+    /**
+     * Метод отвечающий за добавление динамических объектов на сетку карты
+     * @param grid
+     * @param enemy
+     */
+    dynamicGridObjects(roomData, grid) {
+        const enemyArray = roomData.enemy;
+        const mapWidth = roomData.map.width;
+        const mapLegth = roomData.map.length;
+
+        enemyArray.forEach((enemy) => {
+            let x = this.findPointToLeeArray(enemy.colliderPositionX, mapWidth);
+            let z = this.findPointToLeeArray(enemy.colliderPositionZ, mapLegth);
+            if (grid[z][x] !== -2) {
+                grid[z][x] = -2;
+            }
+            console.log(grid, x, z, 'EnemyPosition');
+        });
+
+
+    }
+
+    recalculationCoordinates(oldPositionX, pldPositionZ, newPositionX, newPositionZ, grid) {
+        if (grid[newPositionZ][newPositionX] !== -2) {
+            grid[pldPositionZ][oldPositionX] = -1;
+            grid[newPositionZ][newPositionX] = -2;
+        }
+    }
+
+
+    /**
+     * Метод создания сетки игрового поля(для определения препятствий)
+     * @param mapStaticData
+     * @returns {Array}
+     */
+    createGridMap(mapStaticData) {
+        const width = mapStaticData.width;
+        const length = mapStaticData.width;
+        const mapElementCoordinate = [];
+
+        for (let x = 0; x < width; x++) {
+            mapElementCoordinate.push([]);
+            for (let z = 0; z < width; z++) {
+                mapElementCoordinate[x][z] = -1;
+            }
+        }
+
+
+        for (let key in mapStaticData.mapElement) {
+            let mapElementObject = mapStaticData.mapElement[key];
+            let positionX = Math.ceil(mapElementObject.colliderPositionX + width / 2);
+            let positionZ = Math.ceil(mapElementObject.colliderPositionZ + length / 2);
+
+            let colliderWidth = Math.ceil(mapElementObject.colliderWidth / 2);
+            let colliderLength = Math.ceil(mapElementObject.colliderLength / 2);
+
+            for (let z = 1; z <= colliderLength; z++) {
+                for (let x = 1; x <= colliderWidth; x++) {
+                    // [positionX + x -1] [positionX + z -1] для центрирования элемента т.к 0 считаем положительным числом
+                    mapElementCoordinate[positionZ - z][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ - z][positionX - x] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX - x] = -2;
+                }
+            }
+
+        }
+
+
+        return mapElementCoordinate;
     }
 
     nearestEnemy(playerArray) {
@@ -212,7 +297,13 @@ export default class Enemy {
     }
 
 
-    enemyMove(point, mapLength, mapWidth) {
+    enemyMove(point, mapLength, mapWidth, grid) {
+
+        let oldPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
+        let pldPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
+
+        let newPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
+        let newPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
 
         if (Object.keys(point).length) {
             if (this.colliderPositionX !== point.pathX[point.lengthPath] &&
@@ -221,29 +312,34 @@ export default class Enemy {
 
 
                 if (this.countMove < point.lengthPath) {
-                    if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) < point.pathX[this.countMove]) {
+                    if (oldPositionX < point.pathX[this.countMove]) {
                         this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
                     }
-                    else if (this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth) > point.pathX[this.countMove]) {
+                    else if (oldPositionX > point.pathX[this.countMove]) {
                         this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
                     }
-                    else if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) < point.pathZ[this.countMove]) {
+                    else if (pldPositionZ < point.pathZ[this.countMove]) {
                         this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
                     }
-                    else if (this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength) > point.pathZ[this.countMove]) {
+                    else if (pldPositionZ > point.pathZ[this.countMove]) {
                         this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
                     }
                     else {
                         this.countMove++;
                     }
+                    // this.colliderPositionX = newPositionX;
+                    // this.colliderPositionZ = newPositionZ;
+                    //
+                    // newPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
+                    // newPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
+                    //
+                    // this.recalculationCoordinates(oldPositionX,pldPositionZ,newPositionX,newPositionZ,grid);
                 } else {
                     this.countMove = 0;
                 }
 
             }
         }
-
-        // }
     }
 
 
@@ -538,49 +634,6 @@ export default class Enemy {
 
         }
 
-    }
-
-
-    /**
-     * Метод создания сетки игрового поля(для определения препятствий)
-     * @param mapStaticData
-     * @returns {Array}
-     */
-    createGridMap(mapStaticData) {
-        const width = mapStaticData.width;
-        const length = mapStaticData.width;
-        const mapElementCoordinate = [];
-
-        for (let x = 0; x < width; x++) {
-            mapElementCoordinate.push([]);
-            for (let z = 0; z < width; z++) {
-                mapElementCoordinate[x][z] = -1;
-            }
-        }
-
-
-        for (let key in mapStaticData.mapElement) {
-            let mapElementObject = mapStaticData.mapElement[key];
-            let positionX = Math.ceil(mapElementObject.colliderPositionX + width / 2);
-            let positionZ = Math.ceil(mapElementObject.colliderPositionZ + length / 2);
-
-            let colliderWidth = Math.ceil(mapElementObject.colliderWidth / 2);
-            let colliderLength = Math.ceil(mapElementObject.colliderLength / 2);
-
-            for (let z = 1; z <= colliderLength; z++) {
-                for (let x = 1; x <= colliderWidth; x++) {
-                    // [positionX + x -1] [positionX + z -1] для центрирования элемента т.к 0 считаем положительным числом
-                    mapElementCoordinate[positionZ - z][positionX + x - 1] = -2;
-                    mapElementCoordinate[positionZ - z][positionX - x] = -2;
-                    mapElementCoordinate[positionZ + z - 1][positionX + x - 1] = -2;
-                    mapElementCoordinate[positionZ + z - 1][positionX - x] = -2;
-                }
-            }
-
-        }
-
-
-        return mapElementCoordinate;
     }
 
     /**
