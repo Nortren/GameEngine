@@ -100,7 +100,7 @@ export default class Enemy {
         const grid = this.createGridMap(map);
 
         //TODO Нужно обсчитать по нормальному например принимая что точка в которой стоит this.Enemy свободно ,а то он упирается в нее и не может идти
-        // this.dynamicGridObjects(roomData, grid);
+
 
         const startPointX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), map.width);
         const startPointZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), map.length);
@@ -112,6 +112,7 @@ export default class Enemy {
         this.enemyAnimationRotation(needPlayer);
 
         if (this.countLee >= 100) {
+            // this.dynamicGridObjects(roomData, grid);
             this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
         }
 
@@ -146,8 +147,12 @@ export default class Enemy {
         enemyArray.forEach((enemy) => {
             let x = this.findPointToLeeArray(enemy.colliderPositionX, mapWidth);
             let z = this.findPointToLeeArray(enemy.colliderPositionZ, mapLegth);
-            if (grid[z][x] !== -2) {
-                grid[z][x] = -2;
+            if(enemy.id = this.id && grid[z][x] !== -2){
+                //Так мы определяем точку где стоит сам бот
+                grid[z][x] = -3;
+            }
+            else if (grid[z][x] !== -2) {
+                grid[z][x] = -3;
             }
             console.log(grid, x, z, 'EnemyPosition');
         });
