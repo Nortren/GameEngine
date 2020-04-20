@@ -85,7 +85,7 @@ export default class EngineInitialization extends React.Component implements pri
      * (Нахождении в ней игроков ,монстров , игровых объектов)
      * и рендер полученных данных
      * @param scene
-     * @param renderer
+     * @param renderernpm ru
      * @param camera
      */
     createUserRoom(scene, renderer, canvas) {

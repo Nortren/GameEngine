@@ -97,7 +97,7 @@ export default class Enemy {
     persecutionObjectOldNew(roomData, map) {
 
         const playersInTheRoom = roomData.playersInTheRoom;
-        const grid = this.createGridMap(map);
+        let grid = this.createGridMap(map);
 
         //TODO Нужно обсчитать по нормальному например принимая что точка в которой стоит this.Enemy свободно ,а то он упирается в нее и не может идти
 
@@ -111,9 +111,13 @@ export default class Enemy {
         const mapWidth = map.width;
         this.enemyAnimationRotation(needPlayer);
 
-        if (this.countLee >= 100) {
-            // this.dynamicGridObjects(roomData, grid);
+        if (this.countLee >= 50) {
+
+            // let dynamicGrid = this.dynamicGridObjects(roomData, grid);
+
             this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+
+            this.countLee = 0;
         }
 
         this.enemyMove(this.resultSearch, mapLength, mapWidth, grid);
@@ -147,17 +151,17 @@ export default class Enemy {
         enemyArray.forEach((enemy) => {
             let x = this.findPointToLeeArray(enemy.colliderPositionX, mapWidth);
             let z = this.findPointToLeeArray(enemy.colliderPositionZ, mapLegth);
-            if(enemy.id = this.id && grid[z][x] !== -2){
+            if (enemy.id = this.id && grid[z][x] !== -2) {
                 //Так мы определяем точку где стоит сам бот
                 grid[z][x] = -3;
             }
             else if (grid[z][x] !== -2) {
                 grid[z][x] = -3;
             }
-            console.log(grid, x, z, 'EnemyPosition');
+
         });
 
-
+        return grid;
     }
 
     recalculationCoordinates(oldPositionX, pldPositionZ, newPositionX, newPositionZ, grid) {
@@ -234,6 +238,7 @@ export default class Enemy {
         const lengthPlayingField = mapWidth;// высота рабочего поля
         const wall = -2; // непроходимая ячейка
         const blank = -1; // свободная непомеченная ячейка
+        const enemySelf = -3; // ячейка на которой стоим
 
 
         let pathX = [widthPlayingField * lengthPlayingField], pathZ = [widthPlayingField * lengthPlayingField]; // координаты ячеек, входящих  путь
@@ -263,17 +268,18 @@ export default class Enemy {
                         {
                             let iy = z + offsetZ[k], ix = x + offsetX[k];
                             if (iy >= 0 && iy < lengthPlayingField && ix >= 0 && ix < widthPlayingField &&
-                                grid[iy][ix] == blank) {
+                                (grid[iy][ix] === blank || grid[iy][ix] === enemySelf)) {
+
                                 stop = false;              // найдены непомеченные клетки
                                 grid[iy][ix] = waveNumber + 1;      // распространяем волну
                             }
                         }
                     }
             waveNumber++;
-        } while (!stop && grid[searchPointZ][searchPointX] == blank);
+        } while (!stop && (grid[searchPointZ][searchPointX] === blank || grid[searchPointZ][searchPointX] === enemySelf));
 
 
-        if (grid[searchPointZ][searchPointX] == blank) return false;  // путь не найден
+        if (grid[searchPointZ][searchPointX] === blank || grid[searchPointZ][searchPointX] === enemySelf) return false;  // путь не найден
 
         // восстановление пути
         // восстановление пути
@@ -303,7 +309,7 @@ export default class Enemy {
 
 
     enemyMove(point, mapLength, mapWidth, grid) {
-
+        console.log(point);
         let oldPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
         let pldPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
 
