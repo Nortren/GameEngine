@@ -25,6 +25,8 @@ export default class Enemy {
     countLee: number;
     countMove: number;
     resultSearch: boolean | object;
+    findPositionX: number;
+    findPositionZ: number;
 
     constructor(id: string,
                 sprite: string,
@@ -66,6 +68,8 @@ export default class Enemy {
         this.countLee = 0;
         this.countMove = 0;
         this.resultSearch = {};
+        this.findPositionX = 0;
+        this.findPositionZ = 0;
     }
 
     create() {
@@ -114,8 +118,14 @@ export default class Enemy {
         if (this.countLee >= 50) {
 
             // let dynamicGrid = this.dynamicGridObjects(roomData, grid);
+            if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
 
-            this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+                this.countMove = 0;
+                this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+                //Запоминаем прошлую позицию цели, чтобы понимать необходимость повторного пересчета
+                this.findPositionX = findObjectX;
+                this.findPositionZ = findObjectZ;
+            }
 
             this.countLee = 0;
         }
@@ -309,12 +319,9 @@ export default class Enemy {
 
 
     enemyMove(point, mapLength, mapWidth, grid) {
-        console.log(point);
-        let oldPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
-        let pldPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
 
-        let newPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
-        let newPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
+        let oldPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
+        let oldPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
 
         if (Object.keys(point).length) {
             if (this.colliderPositionX !== point.pathX[point.lengthPath] &&
@@ -329,24 +336,15 @@ export default class Enemy {
                     else if (oldPositionX > point.pathX[this.countMove]) {
                         this.colliderPositionX = this.colliderPositionX - this.moveSpeed;
                     }
-                    else if (pldPositionZ < point.pathZ[this.countMove]) {
+                    else if (oldPositionZ < point.pathZ[this.countMove]) {
                         this.colliderPositionZ = this.colliderPositionZ + this.moveSpeed;
                     }
-                    else if (pldPositionZ > point.pathZ[this.countMove]) {
+                    else if (oldPositionZ > point.pathZ[this.countMove]) {
                         this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
                     }
                     else {
                         this.countMove++;
                     }
-                    // this.colliderPositionX = newPositionX;
-                    // this.colliderPositionZ = newPositionZ;
-                    //
-                    // newPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
-                    // newPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
-                    //
-                    // this.recalculationCoordinates(oldPositionX,pldPositionZ,newPositionX,newPositionZ,grid);
-                } else {
-                    this.countMove = 0;
                 }
 
             }
