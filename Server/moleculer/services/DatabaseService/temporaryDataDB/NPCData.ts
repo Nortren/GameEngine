@@ -23,7 +23,7 @@ export const NPCJson = {
             lastFrameDeathX: 8,
         },
         collaid: "./Client/image/collaid.png",
-        scope: "./Client/image/persecutionRadius.png",
+        scope: "./Client/image/scope_circle.png",
         scopeRadius: 10,
 
         colliderPosition: {
@@ -35,7 +35,7 @@ export const NPCJson = {
         colliderHeight: 1,
         colliderLength: 1,
         pursuitZone: 60,
-        persecutionRadius: "./Client/image/persecutionRadius.png",
+        persecutionRadius: "./Client/image/scope_circle.png",
         health: 100000,
         damage: 1,
         attackDistance: 1,
@@ -66,7 +66,7 @@ export const NPCJson = {
             lastFrameDeathX: 8,
         },
         collaid: "./Client/image/collaid.png",
-        scope: "./Client/image/persecutionRadius.png",
+        scope: "./Client/image/scope_circle.png",
         scopeRadius: 17,
 
         colliderPosition: {
@@ -78,7 +78,7 @@ export const NPCJson = {
         colliderHeight: 1,
         colliderLength: 1,
         pursuitZone: 60,
-        persecutionRadius: "./Client/image/persecutionRadius.png",
+        persecutionRadius: "./Client/image/scope_circle.png",
         health: 10,
         damage: 1,
         attackDistance: 10,
@@ -109,7 +109,7 @@ export const NPCJson = {
             lastFrameDeathX: 8,
         },
         collaid: "./Client/image/collaid.png",
-        scope: "./Client/image/persecutionRadius.png",
+        scope: "./Client/image/scope_circle.png",
         scopeRadius: 16,
 
         colliderPosition: {
@@ -121,7 +121,7 @@ export const NPCJson = {
         colliderHeight: 1,
         colliderLength: 1,
         pursuitZone: 60,
-        persecutionRadius: "./Client/image/persecutionRadius.png",
+        persecutionRadius: "./Client/image/scope_circle.png",
         health: 100,
         damage: 1,
         attackDistance: 10,
@@ -151,7 +151,7 @@ export const NPCJson = {
             lastFrameDeathX: 8,
         },
         collaid: "./Client/image/collaid.png",
-        scope: "./Client/image/persecutionRadius.png",
+        scope: "./Client/image/scope_circle.png",
         scopeRadius: 16,
 
         colliderPosition: {
@@ -163,7 +163,7 @@ export const NPCJson = {
         colliderHeight: 1,
         colliderLength: 1,
         pursuitZone: 60,
-        persecutionRadius: "./Client/image/persecutionRadius.png",
+        persecutionRadius: "./Client/image/scope_circle.png",
         health: 100,
         damage: 1,
         attackDistance: 10,

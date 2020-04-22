@@ -7,9 +7,9 @@ export const globalVariables = {
         collider: {
             shadow:true,
             showShadow: false,
-            showCollider: true,
-            showColliderDynamick: false,
-            additionalData: true
+            showCollider: true,//Показать коллайдеры объектов на сцене
+            showColliderDynamick: true,//Показать коллайдеры динамических объектов на сцене(игрока , ботов)
+            additionalData: false //отображения супортных дынных(область видимости , область преследования и т.д)
         },
     }
 ;

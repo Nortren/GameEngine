@@ -89,16 +89,17 @@ export default class Enemy {
         const map = roomData.map;
         //Количество тиков прежде чем вновь вызвать поиск пути
         this.countLee++;
-
-
-        // this.correctMove(enemyInTheRoom);
-        this.persecutionObjectOldNew(roomData, map);
+        this.persecutionObject(roomData, map);
 
 
     }
 
-
-    persecutionObjectOldNew(roomData, map) {
+    /**
+     * Метод вызова алгоритма Ли для нахождения преследуемого объекта
+     * @param roomData
+     * @param map
+     */
+    persecutionObject(roomData, map) {
 
         const playersInTheRoom = roomData.playersInTheRoom;
         let grid = this.createGridMap(map);
@@ -224,6 +225,11 @@ export default class Enemy {
         return mapElementCoordinate;
     }
 
+    /**
+     * Метод определения какой игрок ближайший (за кем нужно следовать)
+     * @param playerArray
+     * @returns {any}
+     */
     nearestEnemy(playerArray) {
 
         let needPlayer = playerArray[0];
@@ -351,12 +357,12 @@ export default class Enemy {
         }
     }
 
-
+    /**
+     * Метод удалении бота из комнаты при его смерти
+     * @param roomData
+     */
     death(roomData) {
-
         roomData.removeEnemyInRoom(this.id);
-
-
     }
 
     /**
@@ -437,55 +443,6 @@ export default class Enemy {
         return true;
     }
 
-    /**
-     * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
-     * @param enemyInTheRoom
-     */
-    correctMove(enemyInTheRoom) {
-        enemyInTheRoom.forEach((enemy) => {
-
-
-            if (this.id !== enemy.id) {
-                if (this.collisionStatus(enemy)) {
-                    //Тут мы проверяем если есть колизия то случайно перемещаем бота в свободную точку
-                    switch (this.getRandomInt(4)) {
-                        case 0:
-                            this.colliderPositionX += this.moveSpeed;
-                            break;
-                        case 1:
-                            this.colliderPositionZ += this.moveSpeed;
-                            break;
-                        case 2:
-                            this.colliderPositionX -= this.moveSpeed;
-                            break;
-                        case 3:
-                            this.colliderPositionZ -= this.moveSpeed;
-                            break;
-
-                    }
-
-
-                }
-
-            }
-
-        });
-
-    }
-
-    persecutionObjectOld(playersInTheRoom: Array<object>, collisionInTheRoom) {
-
-
-        if (playersInTheRoom) {
-            //Вычисляем ближайшего к нам игрока
-            let huntedPlayer = playersInTheRoom.filter((player) => {
-                return this.nearestPlayer(player)
-            })[0];
-            this.correctMoveStatic(collisionInTheRoom, huntedPlayer);
-
-
-        }
-    }
 
     /**
      * Определяем ближайшего к врагу игрока

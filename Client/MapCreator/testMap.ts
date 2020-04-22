@@ -77,7 +77,7 @@ export const room = {
     enemy: {
         src: "./Client/image/hero.png",
         collaid:"./Client/image/collaid.png",
-        scope:"./Client/image/persecutionRadius.png",
+        scope:"./Client/image/persecutionRadius_old.png",
         scopeRadius:16,
 
         colliderPosition:{
@@ -89,7 +89,7 @@ export const room = {
         colliderHeight: 1,
         colliderLength:1,
         pursuitZone:60,
-        persecutionRadius:"./Client/image/persecutionRadius.png",
+        persecutionRadius:"./Client/image/persecutionRadius_old.png",
         health:100,
         damage:1,
         attackDistance:1,

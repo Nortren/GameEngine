@@ -265,7 +265,7 @@ export default class MapCreator {
         const searchPlayer = data.playersInTheRoom[0];
 
         let interval;
-        //TODO Костыль просто чтоб отображать анимацию
+/*        //TODO Костыль просто чтоб отображать анимацию визуализация алгоритма Ли, чтоб наглядно видеть принцип работы (Можно удалить т.к уже перенесено на сервер и реализованно на ботах)
         if (!counter) {
             interval = setInterval(() => {
                 clearInterval(interval);
@@ -274,7 +274,7 @@ export default class MapCreator {
                     this.waveAlgorithmLee(scene, map, searchPlayer);
                 }
             }, 1000);
-        }
+        }*/
         counter++;
         return counter;
     }
