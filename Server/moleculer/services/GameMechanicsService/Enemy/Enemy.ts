@@ -117,8 +117,8 @@ export default class Enemy {
         this.enemyAnimationRotation(needPlayer);
 
         if (this.countLee >= 50) {
-
-            // let dynamicGrid = this.dynamicGridObjects(roomData, grid);
+            //Тут мы пересчитываем сетку для динамически изменяемых позицию объектов (чтоб они при попадании на одну и туже клетку отходили друг от друга)
+            grid = this.dynamicGridObjects(roomData, grid);
             if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
 
                 this.countMove = 0;
@@ -131,7 +131,7 @@ export default class Enemy {
             this.countLee = 0;
         }
 
-        this.enemyMove(this.resultSearch, mapLength, mapWidth, grid);
+        this.enemyMove(this.resultSearch, mapLength, mapWidth);
     }
 
 
@@ -162,18 +162,60 @@ export default class Enemy {
         enemyArray.forEach((enemy) => {
             let x = this.findPointToLeeArray(enemy.colliderPositionX, mapWidth);
             let z = this.findPointToLeeArray(enemy.colliderPositionZ, mapLegth);
-            if (enemy.id = this.id && grid[z][x] !== -2) {
+            if (enemy.id === this.id && grid[z][x] !== -2) {
                 //Так мы определяем точку где стоит сам бот
                 grid[z][x] = -3;
             }
             else if (grid[z][x] !== -2) {
-                grid[z][x] = -3;
+                //Но для других ботов говорим что позиция занята
+                grid[z][x] = -2;
             }
+
+            if(enemy.id === this.id && grid[z][x] === -2){
+               this.correctMove();
+            }
+
 
         });
 
         return grid;
     }
+
+    /**
+     * Метод генерации случайного числа
+     * @param max
+     * @returns {number}
+     */
+    getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+
+
+    /**
+     * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
+     * Имы их случайным образом рассталкиваем , то же самое происходит если вдруг бот залип в коллайдере препятствия
+     * @param enemyInTheRoom
+     */
+    correctMove() {
+                    //Тут мы проверяем если есть колизия то случайно перемещаем бота в свободную точку
+                    switch (this.getRandomInt(4)) {
+                        case 0:
+                            this.colliderPositionX += this.colliderHeight;
+                            break;
+                        case 1:
+                            this.colliderPositionZ += this.colliderLength;
+                            break;
+                        case 2:
+                            this.colliderPositionX -= this.colliderHeight;
+                            break;
+                        case 3:
+                            this.colliderPositionZ -= this.colliderLength;
+                            break;
+
+                    }
+            }
+
 
     recalculationCoordinates(oldPositionX, pldPositionZ, newPositionX, newPositionZ, grid) {
         if (grid[newPositionZ][newPositionX] !== -2) {
@@ -324,7 +366,7 @@ export default class Enemy {
     }
 
 
-    enemyMove(point, mapLength, mapWidth, grid) {
+    enemyMove(point, mapLength, mapWidth) {
 
         let oldPositionX = this.findPointToLeeArray(Math.ceil(this.colliderPositionX), mapWidth);
         let oldPositionZ = this.findPointToLeeArray(Math.ceil(this.colliderPositionZ), mapLength);
@@ -364,16 +406,6 @@ export default class Enemy {
     death(roomData) {
         roomData.removeEnemyInRoom(this.id);
     }
-
-    /**
-     * Метод генерации случайного числа
-     * @param max
-     * @returns {number}
-     */
-    getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-    }
-
 
     /**
      * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
