@@ -27,6 +27,7 @@ export default class Enemy {
     resultSearch: boolean | object;
     findPositionX: number;
     findPositionZ: number;
+    permissionMove: boolean;
 
     constructor(id: string,
                 sprite: string,
@@ -70,6 +71,8 @@ export default class Enemy {
         this.resultSearch = {};
         this.findPositionX = 0;
         this.findPositionZ = 0;
+        //Проверка для корректного отображенияанимации без движения
+        this.permissionMove = false;
     }
 
     create() {
@@ -114,15 +117,18 @@ export default class Enemy {
         const findObjectZ = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.length);
         const mapLength = map.length;
         const mapWidth = map.width;
-        this.enemyAnimationRotation(needPlayer);
-
-        if (this.countLee >= 50) {
+        if (this.permissionMove) {
+            this.enemyAnimationRotation(needPlayer);
+        }
+        if (this.countLee >= 1) {
             //Тут мы пересчитываем сетку для динамически изменяемых позицию объектов (чтоб они при попадании на одну и туже клетку отходили друг от друга)
             grid = this.dynamicGridObjects(roomData, grid);
             if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
 
                 this.countMove = 0;
-                this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+                // if (!this.attack(needPlayer)) {
+                    this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+                // }
                 //Запоминаем прошлую позицию цели, чтобы понимать необходимость повторного пересчета
                 this.findPositionX = findObjectX;
                 this.findPositionZ = findObjectZ;
@@ -171,8 +177,8 @@ export default class Enemy {
                 grid[z][x] = -2;
             }
 
-            if(enemy.id === this.id && grid[z][x] === -2){
-               this.correctMove();
+            if (enemy.id === this.id && grid[z][x] === -2) {
+                this.correctMove();
             }
 
 
@@ -191,30 +197,29 @@ export default class Enemy {
     }
 
 
-
     /**
      * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
      * Имы их случайным образом рассталкиваем , то же самое происходит если вдруг бот залип в коллайдере препятствия
      * @param enemyInTheRoom
      */
     correctMove() {
-                    //Тут мы проверяем если есть колизия то случайно перемещаем бота в свободную точку
-                    switch (this.getRandomInt(4)) {
-                        case 0:
-                            this.colliderPositionX += this.colliderHeight;
-                            break;
-                        case 1:
-                            this.colliderPositionZ += this.colliderLength;
-                            break;
-                        case 2:
-                            this.colliderPositionX -= this.colliderHeight;
-                            break;
-                        case 3:
-                            this.colliderPositionZ -= this.colliderLength;
-                            break;
+        //Тут мы проверяем если есть колизия то случайно перемещаем бота в свободную точку
+        switch (this.getRandomInt(4)) {
+            case 0:
+                this.colliderPositionX += this.colliderHeight;
+                break;
+            case 1:
+                this.colliderPositionZ += this.colliderLength;
+                break;
+            case 2:
+                this.colliderPositionX -= this.colliderHeight;
+                break;
+            case 3:
+                this.colliderPositionZ -= this.colliderLength;
+                break;
 
-                    }
-            }
+        }
+    }
 
 
     recalculationCoordinates(oldPositionX, pldPositionZ, newPositionX, newPositionZ, grid) {
@@ -378,6 +383,7 @@ export default class Enemy {
 
 
                 if (this.countMove < point.lengthPath) {
+                    this.permissionMove = true;
                     if (oldPositionX < point.pathX[this.countMove]) {
                         this.colliderPositionX = this.colliderPositionX + this.moveSpeed;
                     }
@@ -391,10 +397,13 @@ export default class Enemy {
                         this.colliderPositionZ = this.colliderPositionZ - this.moveSpeed;
                     }
                     else {
+
                         this.countMove++;
                     }
                 }
-
+                else {
+                    this.permissionMove = false;
+                }
             }
         }
     }
@@ -405,58 +414,6 @@ export default class Enemy {
      */
     death(roomData) {
         roomData.removeEnemyInRoom(this.id);
-    }
-
-    /**
-     * Метод проверки корректности позиции бота т.е если бот стоит на той же точке что и другой бот один из них должен уступить эту позицию
-     * @param enemyInTheRoom
-     */
-    correctMoveStatic(staticElement, huntedPlayer) {
-
-        let currentEnemypositionX = this.colliderPositionX;
-        let currentEnemypositionZ = this.colliderPositionZ;
-
-        let move = true;
-
-        for (var key in staticElement) {
-            if (!this.collisionStatusMapElement(staticElement[key], currentEnemypositionX, currentEnemypositionZ)) {
-                this.colliderPositionX = currentEnemypositionX;
-                this.colliderPositionZ = currentEnemypositionZ;
-            }
-            else {
-                move = false;
-            }
-
-            if (move) {
-                this.goToThePlayer(huntedPlayer);
-                this.colliderOldPositionX = this.colliderPositionX;
-                this.colliderOldPositionZ = this.colliderPositionZ;
-            }
-            else {
-                if (this.colliderPositionX > this.colliderOldPositionX) {
-                    this.colliderPositionX = this.colliderOldPositionX - this.moveSpeed;
-                }
-                else if (this.colliderPositionX < this.colliderOldPositionX) {
-                    this.colliderPositionX = this.colliderOldPositionX + this.moveSpeed;
-                }
-                else {
-                    this.colliderPositionX = this.colliderOldPositionX + this.moveSpeed;
-                }
-
-                if (this.colliderPositionZ > this.colliderOldPositionZ) {
-                    this.colliderPositionZ = this.colliderOldPositionZ - this.moveSpeed;
-                }
-                else if (this.colliderPositionZ < this.colliderOldPositionZ) {
-                    this.colliderPositionZ = this.colliderOldPositionZ + this.moveSpeed;
-                }
-                else {
-                    this.colliderPositionZ = this.colliderOldPositionZ + this.moveSpeed;
-                }
-                this.colliderOldPositionX = this.colliderPositionX;
-                this.colliderOldPositionZ = this.colliderPositionZ;
-            }
-
-        }
     }
 
     /**
@@ -493,49 +450,12 @@ export default class Enemy {
         }
     }
 
-    /**
-     * Двигаемся к выбранному игроку
-     */
-    goToThePlayer(huntedPlayer) {
-
-        const speedMove = this.moveSpeed;
-        if (this && huntedPlayer) {
-            if (!this.collisionStatus(huntedPlayer) && !this.attack(huntedPlayer)) {
-
-                //Движение за игроком по оси X
-                if (this.colliderPositionX.toFixed(1) !== huntedPlayer.colliderPositionX.toFixed(1)) {
-                    if (this.colliderPositionX < huntedPlayer.colliderPositionX) {
-                        this.colliderPositionX = this.colliderPositionX + speedMove;
-                    }
-                    if (this.colliderPositionX > huntedPlayer.colliderPositionX) {
-                        this.colliderPositionX = this.colliderPositionX - speedMove;
-                    }
-                }
-
-                //Движение за игроком по оси Z
-                if (this.colliderPositionZ.toFixed(1) !== huntedPlayer.colliderPositionZ.toFixed(1)) {
-                    if (this.colliderPositionZ < huntedPlayer.colliderPositionZ) {
-                        this.colliderPositionZ = this.colliderPositionZ + speedMove;
-                    }
-                    if (this.colliderPositionZ > huntedPlayer.colliderPositionZ) {
-                        this.colliderPositionZ = this.colliderPositionZ - speedMove;
-                    }
-                }
-            }
-
-
-            this.enemyAnimationRotation(huntedPlayer)
-
-
-        }
-
-    }
 
     attack(huntedPlayer) {
 
         let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
         let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength, this.attackDistance);
-
+        console.log(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
         if (CollisionZ && CollisionX) {
             this.attackStatus = true;
 
