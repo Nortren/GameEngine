@@ -28,10 +28,9 @@ export default class Editor extends React.Component  {
     render() {
         return (
             <div className="editor_container">
-                <EditorWindows/>
-{/*<div className="editor_container__sceneObject"></div>*/}
-{/*<div className="editor_container__projectStructure"></div>*/}
-{/*<div className="editor_container_inspector"></div>*/}
+                <EditorWindows width="70%" justifySelf="start"/>
+                <EditorWindows width="100%" height="10%" justifySelf="center"/>
+                <EditorWindows width="70%" justifySelf="end"/>
             </div>
         );
     }
