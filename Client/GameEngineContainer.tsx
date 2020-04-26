@@ -13,6 +13,7 @@ import {changePhysics} from './Store/Physics/Actions';
 import {changeUserStatus} from './Store/UserData/Actions';
 import EngineInitialization from "./EngineInitialization/EngineInitialization";
 import StickController from "./StickController/StickController";
+import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
 
@@ -32,6 +33,7 @@ class GameEngineContainer extends React.Component {
         if (this.props.userStatusAuthorization) {
 
             return <div>
+                <Editor/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}
