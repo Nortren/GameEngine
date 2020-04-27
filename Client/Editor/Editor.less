@@ -4,7 +4,32 @@
   position: absolute;
   z-index: 1;
   display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 2vw;
+  //grid-template-rows: 1fr;
+  //grid-template-columns: 1fr 1fr 1fr;
+  //grid-gap: 2vw;
+  color: red;
+  grid-template-areas: 'header header header' 'sceneObject scene inspector' 'footer footer footer';
+  grid-template-rows: 60px 1fr 60px;
+  grid-template-columns: 20% 1fr 20%;
+
+  #editorHeader {
+    grid-area: header;
+  }
+  #inspector {
+    grid-area: inspector;
+  }
+
+  #sceneObject {
+    grid-area: sceneObject;
+  }
+  #editorFooter {
+    grid-area: footer;
+  }
+
 }
+
+
+
+
+
+

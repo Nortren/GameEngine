@@ -2,9 +2,7 @@ import * as React from 'react';
 import EditorWindows from "./EditorWindows/EditorWindows";
 
 
-
-
-export default class Editor extends React.Component  {
+export default class Editor extends React.Component {
 
 
     constructor(props: object) {
@@ -21,6 +19,7 @@ export default class Editor extends React.Component  {
 
 
     }
+
     componentDidUpdate() {
         this._animate = this.props.animations;
     }
@@ -28,9 +27,13 @@ export default class Editor extends React.Component  {
     render() {
         return (
             <div className="editor_container">
-                <EditorWindows width="70%" justifySelf="start"/>
-                <EditorWindows width="100%" height="10%" justifySelf="center"/>
-                <EditorWindows width="70%" justifySelf="end"/>
+
+                <EditorWindows id='editorHeader' />
+                <EditorWindows id='sceneObject' />
+       
+                <EditorWindows id='inspector'/>
+                <EditorWindows id='editorFooter'/>
+
             </div>
         );
     }

@@ -6,6 +6,7 @@ export default class Editor extends React.Component {
 
     constructor(props: object) {
         super(props);
+        this.id = props.id;
         this.state = {
             style: {
                 height: props.height || '100%',
@@ -29,7 +30,7 @@ export default class Editor extends React.Component {
 
     render() {
         return (
-            <div className="editor_windows_container" style={this.state.style}>
+            <div className="editor_windows_container" id={this.id} style={this.state.style}>
 
             </div>
         );
