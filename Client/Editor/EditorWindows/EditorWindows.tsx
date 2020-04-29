@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-export default class Editor extends React.Component {
+export default class EditorWindows extends React.Component {
 
 
     constructor(props: object) {
@@ -21,8 +21,14 @@ export default class Editor extends React.Component {
 
     componentDidMount() {
 
-
+        this.resize();
     }
+
+    resize = event => {
+        //Получаем главнуюсетку которую ибудем двигать
+        let mainGrid = event.target.parentNode.parentNode;
+        console.log(event);
+    };
 
     componentDidUpdate() {
         this._animate = this.props.animations;
@@ -33,19 +39,23 @@ export default class Editor extends React.Component {
         let horizontalResizeLine = 'editor_windows_container-resizeLine-H';
         let verticalResizeLine = 'editor_windows_container-resizeLine-V';
 
+        let topResizeLine = horizontalResizeLine + ' resizeLineTop';
+        let leftResizeLine = verticalResizeLine + ' resizeLineLeft';
+        let rightResizeLine = verticalResizeLine + ' resizeLineRight';
+        let bottomResizeLine = horizontalResizeLine + ' resizeLineBottom';
 
-        const topResizeLine = this.props.position === 'top' ? horizontalResizeLine +' resizeLineTop' : horizontalResizeLine + ' resizeActive resizeLineTop';
-        const leftResizeLine = this.props.position === 'left' ? verticalResizeLine + ' resizeLineLeft' : verticalResizeLine + ' resizeActive resizeLineLeft';
-        const rightResizeLine = this.props.position === 'right' ? verticalResizeLine + ' resizeLineRight' : verticalResizeLine + ' resizeActive resizeLineRight';
-        const bottomResizeLine = this.props.position === 'bottom' ? horizontalResizeLine + ' resizeLineBottom' : horizontalResizeLine + ' resizeActive resizeLineBottom';
+        topResizeLine = this.props.position === 'top' ? topResizeLine : topResizeLine + ' resizeActive';
+        leftResizeLine = this.props.position === 'left' ? leftResizeLine : leftResizeLine + ' resizeActive';
+        rightResizeLine = this.props.position === 'right' ? rightResizeLine : rightResizeLine + ' resizeActive';
+        bottomResizeLine = this.props.position === 'bottom' ? bottomResizeLine : bottomResizeLine + ' resizeActive';
 
         return (
             <div className="editor_windows_container" id={this.id} style={this.state.style}>
-                <div className={topResizeLine}></div>
-                <div className={leftResizeLine}></div>
-                <div className={rightResizeLine}></div>
-                <div className={bottomResizeLine}></div>
-                <div className="editor_windows_container-stackPanel"></div>
+                <div onMouseDown={this.resize} className={topResizeLine}></div>
+                <div onMouseDown={this.resize} className={leftResizeLine}></div>
+                <div onMouseDown={this.resize} className={rightResizeLine}></div>
+                <div onMouseDown={this.resize} className={bottomResizeLine}></div>
+                <div onMouseDown={this.resize} className="editor_windows_container-stackPanel"></div>
             </div>
         );
     }
