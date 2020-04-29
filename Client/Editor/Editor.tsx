@@ -28,11 +28,10 @@ export default class Editor extends React.Component {
         return (
             <div className="editor_container">
 
-                <EditorWindows id='editorHeader' />
-                <EditorWindows id='sceneObject' />
-       
-                <EditorWindows id='inspector'/>
-                <EditorWindows id='editorFooter'/>
+                <EditorWindows id='editorHeader' position="top" />
+                <EditorWindows id='sceneObject' position="left" />
+                <EditorWindows id='inspector' position="right"/>
+                <EditorWindows id='editorFooter' position="bottom"/>
 
             </div>
         );

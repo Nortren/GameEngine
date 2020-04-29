@@ -29,13 +29,22 @@ export default class Editor extends React.Component {
     }
 
     render() {
+
+        let horizontalResizeLine = 'editor_windows_container-resizeLine-H';
+        let verticalResizeLine = 'editor_windows_container-resizeLine-V';
+
+
+        const topResizeLine = this.props.position === 'top' ? horizontalResizeLine +' resizeLineTop' : horizontalResizeLine + ' resizeActive resizeLineTop';
+        const leftResizeLine = this.props.position === 'left' ? verticalResizeLine + ' resizeLineLeft' : verticalResizeLine + ' resizeActive resizeLineLeft';
+        const rightResizeLine = this.props.position === 'right' ? verticalResizeLine + ' resizeLineRight' : verticalResizeLine + ' resizeActive resizeLineRight';
+        const bottomResizeLine = this.props.position === 'bottom' ? horizontalResizeLine + ' resizeLineBottom' : horizontalResizeLine + ' resizeActive resizeLineBottom';
+
         return (
             <div className="editor_windows_container" id={this.id} style={this.state.style}>
-                <div id="resizeLineTop" className="editor_windows_container-resizeLine-H"></div>
-                <div id="resizeLineLeft" className="editor_windows_container-resizeLine-V"></div>
-                <div id="resizeLineRight" className="editor_windows_container-resizeLine-V"></div>
-                <div id="resizeLineBottom" className="editor_windows_container-resizeLine-H"></div>
-
+                <div className={topResizeLine}></div>
+                <div className={leftResizeLine}></div>
+                <div className={rightResizeLine}></div>
+                <div className={bottomResizeLine}></div>
                 <div className="editor_windows_container-stackPanel"></div>
             </div>
         );
