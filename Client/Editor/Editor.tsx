@@ -23,14 +23,19 @@ private testTarget = null;
               this.testTarget = event.target;
             }
         });
-        document.addEventListener('mouseup',(event)=>{
+        document.addEventListener('mousemove',(event)=>{
             if(this.testSt){
                 this.testTarget.parentNode.style.width = event.x+'px';
+                this.testTarget.parentNode.style.height = event.y+'px';
                     // console.log(event.x,event.y,event.target);
-                this.testSt = false;
+
             }
            });
-
+        document.addEventListener('mouseup',(event)=>{
+            if(this.testSt){
+                this.testSt = false;
+            }
+        });
     }
 
     componentDidUpdate() {
