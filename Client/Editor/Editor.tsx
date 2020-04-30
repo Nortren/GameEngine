@@ -4,7 +4,8 @@ import EditorWindows from "./EditorWindows/EditorWindows";
 
 export default class Editor extends React.Component {
 
-
+private testSt = false;
+private testTarget = null;
     constructor(props: object) {
         super(props);
         this.state = {
@@ -16,7 +17,19 @@ export default class Editor extends React.Component {
     }
 
     componentDidMount() {
-
+        document.addEventListener('mousedown',(event)=>{
+            if(event.target.classList.contains('resizeActive')){
+              this.testSt = true;
+              this.testTarget = event.target;
+            }
+        });
+        document.addEventListener('mouseup',(event)=>{
+            if(this.testSt){
+                this.testTarget.parentNode.style.width = event.x+'px';
+                    // console.log(event.x,event.y,event.target);
+                this.testSt = false;
+            }
+           });
 
     }
 

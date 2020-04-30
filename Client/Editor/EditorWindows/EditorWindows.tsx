@@ -20,13 +20,17 @@ export default class EditorWindows extends React.Component {
     }
 
     componentDidMount() {
+// document.addEventListener()
+//         this.resize();
 
-        this.resize();
     }
 
     resize = event => {
-        //Получаем главнуюсетку которую ибудем двигать
-        let mainGrid = event.target.parentNode.parentNode;
+        //Получаем главную сетку которую ибудем двигать
+        if(event){
+            let mainGrid = event.target.parentNode.parentNode;
+        }
+
         console.log(event);
     };
 
@@ -51,11 +55,11 @@ export default class EditorWindows extends React.Component {
 
         return (
             <div className="editor_windows_container" id={this.id} style={this.state.style}>
-                <div onMouseDown={this.resize} className={topResizeLine}></div>
-                <div onMouseDown={this.resize} className={leftResizeLine}></div>
-                <div onMouseDown={this.resize} className={rightResizeLine}></div>
-                <div onMouseDown={this.resize} className={bottomResizeLine}></div>
-                <div onMouseDown={this.resize} className="editor_windows_container-stackPanel"></div>
+                <div  className={topResizeLine}></div>
+                <div  className={leftResizeLine}></div>
+                <div  className={rightResizeLine}></div>
+                <div  className={bottomResizeLine}></div>
+                <div  className="editor_windows_container-stackPanel"></div>
             </div>
         );
     }
