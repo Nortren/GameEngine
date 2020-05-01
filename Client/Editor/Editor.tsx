@@ -66,13 +66,14 @@ export default class Editor extends React.Component {
                 else if (this.moveElement === 'resizeLineLeft' && event.x <= window.innerWidth) {
                     let resultResize = this.startPositionX - event.x;
 
-                    if (resultResize > 0 ||  parseInt(this.testTarget.parentNode.style.width) > this._startWidth) {
+                    if (resultResize > 0 || parseInt(this.testTarget.parentNode.style.width) > this._startWidth) {
                         this.testTarget.parentNode.style.position = '';
                         this.testTarget.parentNode.style.width = this._styleTargetElement + (this.startPositionX - event.x) + 'px';
+                        this.testSPX = event.x;
                     }
                     else {
                         this.testTarget.parentNode.style.position = 'absolute';
-                        this.testTarget.parentNode.style.left = Math.abs(this.startPositionX - event.x) + 'px';
+                        this.testTarget.parentNode.style.left = Math.abs(event.x - this.testSPX) + 'px';
                         this.testTarget.parentNode.style.width = this._styleTargetElement + (this.startPositionX - event.x) + 'px';
                     }
 
