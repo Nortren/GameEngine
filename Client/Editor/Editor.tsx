@@ -9,6 +9,7 @@ export default class Editor extends React.Component {
     private testTarget = null;
     private _styleTargetElement = 0;
     private _startWidth = 0;
+    private _startHight = 0;
 
 
     constructor(props: object) {
@@ -24,6 +25,7 @@ export default class Editor extends React.Component {
     componentDidMount() {
         this.resizeWindows();
         this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width);
+        this._startHight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
     }
 
     /**
@@ -32,7 +34,8 @@ export default class Editor extends React.Component {
     resizeWindows(): void {
         document.addEventListener('mousedown', (event) => {
             let targetElement = event.target.parentNode;
-            this._styleTargetElement = parseInt(window.getComputedStyle(targetElement).width);
+            this._styleTargetElementX = parseInt(window.getComputedStyle(targetElement).width);
+            this._styleTargetElementY = parseInt(window.getComputedStyle(targetElement).height);
             this.startPositionX = event.x;
             this.startPositionY = event.y;
             if (event.target.classList.contains('resizeActive')) {
@@ -57,24 +60,40 @@ export default class Editor extends React.Component {
         });
         document.addEventListener('mousemove', (event) => {
             if (this.testSt) {
-
+                if(!this.testSPX){
+                    this.testSPX = this.startPositionX;
+                }
+                if(!this.testSPY){
+                    this.testSPY = this.startPositionY;
+                }
 
                 if (this.moveElement === 'resizeLineTop') {
+                    let resultResizeY = this.startPositionY - event.y;
 
+                    if (resultResizeY > 0 || parseInt(this.testTarget.parentNode.style.height) > this._startHight) {
+                        this.testTarget.parentNode.style.position = '';
+                        this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
+                        this.testSPY = event.y;
+                    }
+                    else {
+                        this.testTarget.parentNode.style.position = 'absolute';
+                        this.testTarget.parentNode.style.top = Math.abs(event.y - this.testSPY) + 'px';
+                        this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
+                    }
                 }
                 //TODO метод для правильного ресайза правого окна
                 else if (this.moveElement === 'resizeLineLeft' && event.x <= window.innerWidth) {
-                    let resultResize = this.startPositionX - event.x;
+                    let resultResizeX = this.startPositionX - event.x;
 
-                    if (resultResize > 0 || parseInt(this.testTarget.parentNode.style.width) > this._startWidth) {
+                    if (resultResizeX > 0 || parseInt(this.testTarget.parentNode.style.width) > this._startWidth) {
                         this.testTarget.parentNode.style.position = '';
-                        this.testTarget.parentNode.style.width = this._styleTargetElement + (this.startPositionX - event.x) + 'px';
+                        this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
                         this.testSPX = event.x;
                     }
                     else {
                         this.testTarget.parentNode.style.position = 'absolute';
                         this.testTarget.parentNode.style.left = Math.abs(event.x - this.testSPX) + 'px';
-                        this.testTarget.parentNode.style.width = this._styleTargetElement + (this.startPositionX - event.x) + 'px';
+                        this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
                     }
 
                 }
@@ -82,7 +101,7 @@ export default class Editor extends React.Component {
                     this.testTarget.parentNode.style.width = event.x + 'px';
                 }
                 else if (this.moveElement === 'resizeLineBottom') {
-
+                    this.testTarget.parentNode.style.height = event.y + 'px';
                 }
             }
         });
