@@ -1,5 +1,6 @@
 import * as React from 'react';
 import EditorWindows from "./EditorWindows/EditorWindows";
+import topMenu from "../Editor/Controls/TopMenu";
 import {match} from "minimatch";
 
 
@@ -120,7 +121,7 @@ export default class Editor extends React.Component {
         return (
             <div className="editor_container">
 
-                <EditorWindows id='editorHeader' position="top"/>
+                <EditorWindows id='editorHeader' position="top" components={[topMenu,topMenu]}/>
                 <EditorWindows id='sceneObject' position="left"/>
                 <EditorWindows id='inspector' position="right"/>
                 <EditorWindows id='editorFooter' position="bottom"/>

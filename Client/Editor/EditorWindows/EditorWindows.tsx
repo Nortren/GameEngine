@@ -27,7 +27,7 @@ export default class EditorWindows extends React.Component {
 
     resize = event => {
         //Получаем главную сетку которую ибудем двигать
-        if(event){
+        if (event) {
             let mainGrid = event.target.parentNode.parentNode;
         }
 
@@ -36,6 +36,15 @@ export default class EditorWindows extends React.Component {
 
     componentDidUpdate() {
         this._animate = this.props.animations;
+    }
+
+    getComponents(components) {
+        let Comp = components;
+
+        return (<Comp/>);
+
+
+
     }
 
     render() {
@@ -52,14 +61,21 @@ export default class EditorWindows extends React.Component {
         leftResizeLine = this.props.position === 'left' ? leftResizeLine : leftResizeLine + ' resizeActive';
         rightResizeLine = this.props.position === 'right' ? rightResizeLine : rightResizeLine + ' resizeActive';
         bottomResizeLine = this.props.position === 'bottom' ? bottomResizeLine : bottomResizeLine + ' resizeActive';
+        this.componentE = '';
 
+        if(this.props.components) {
+            this.componentE = this.props.components.forEach((component) => {
+                return this.getComponents(component)
+            });
+        }
         return (
             <div className="editor_windows_container" id={this.id} style={this.state.style}>
-                <div  className={topResizeLine}></div>
-                <div  className={leftResizeLine}></div>
-                <div  className={rightResizeLine}></div>
-                <div  className={bottomResizeLine}></div>
-                <div  className="editor_windows_container-stackPanel"></div>
+                <div className={topResizeLine}></div>
+                <div className={leftResizeLine}></div>
+                <div className={rightResizeLine}></div>
+                <div className={bottomResizeLine}></div>
+                <div className="editor_windows_container-stackPanel"></div>
+                {this.componentE}
             </div>
         );
     }

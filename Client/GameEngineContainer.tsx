@@ -30,7 +30,7 @@ class GameEngineContainer extends React.Component {
 
     startInit() {
         const blData = new BL();
-        if (this.props.userStatusAuthorization) {
+        if (true) {
 
             return <div>
                 <Editor/>
@@ -56,7 +56,6 @@ class GameEngineContainer extends React.Component {
             </div>;
         }
         return <Authorization changeUserStatus={this.props.changeUserStatus}/>;
-        ;
     }
 
     render() {
