@@ -1,6 +1,6 @@
 import * as React from 'react';
 import EditorWindows from "./EditorWindows/EditorWindows";
-import topMenu from "../Editor/Controls/TopMenu";
+import topMenu from "./Controls/TopMenu/TopMenu";
 import {match} from "minimatch";
 
 

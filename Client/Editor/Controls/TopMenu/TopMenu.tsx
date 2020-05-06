@@ -31,7 +31,7 @@ export default class TopMenu extends React.Component {
 
 
         return (
-            <div className="editor_windows_container">
+            <div className="topMenu_container">
                 123
             </div>
         );

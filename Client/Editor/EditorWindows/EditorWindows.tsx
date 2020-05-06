@@ -38,13 +38,16 @@ export default class EditorWindows extends React.Component {
         this._animate = this.props.animations;
     }
 
-    getComponents(components) {
-        let Comp = components;
-
-        return (<Comp/>);
-
-
-
+    /**
+     * Метод который рендерит переданные в наш компонент сторонние компоненты
+     * @returns {any}
+     */
+    getComponents() {
+        return (
+                this.props.components.map(Component => (
+                    <Component/>
+                ))
+        );
     }
 
     render() {
@@ -74,8 +77,9 @@ export default class EditorWindows extends React.Component {
                 <div className={leftResizeLine}></div>
                 <div className={rightResizeLine}></div>
                 <div className={bottomResizeLine}></div>
-                <div className="editor_windows_container-stackPanel"></div>
-                {this.componentE}
+                <div className="editor_windows_container-stackPanel">
+                    {this.props.components ?  this.getComponents() : ''}
+                </div>
             </div>
         );
     }

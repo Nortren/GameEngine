@@ -16,6 +16,7 @@ import StickController from "./StickController/StickController";
 import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
+import {globalVariables} from "./GlobalVariables";
 
 class GameEngineContainer extends React.Component {
     constructor(props) {
@@ -30,10 +31,11 @@ class GameEngineContainer extends React.Component {
 
     startInit() {
         const blData = new BL();
-        if (true) {
+        if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
 
             return <div>
-                <Editor/>
+                {globalVariables.enableEditor ?   <Editor/> : '' }
+
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}
