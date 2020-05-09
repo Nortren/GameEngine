@@ -1,0 +1,53 @@
+.dropDownButton {
+  &_container {
+
+    &-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border: 1px solid #595959;
+      border-radius: 1px;
+      color: #8a8a8a;
+      background: #2A2A2A;
+      &:hover {
+
+        background: #595959;
+      }
+      &:focus {
+        outline: none;
+        background: #202020;
+      }
+      &:focus .dropDown-content {
+        display: block !important;
+      }
+      &[disavled] {
+        color: #d2d5db;
+        background: #6c7589;
+        cursor: not-allowed;
+      }
+
+    }
+  }
+}
+
+.dropDown-content {
+  display: none;
+  position: absolute;
+  background-color: #2A2A2A;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  a {
+    color: #8a8a8a;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  &:hover {
+    display: block;
+  }
+}
