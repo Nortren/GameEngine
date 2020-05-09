@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-
 export default class EditorWindows extends React.Component {
 
 
     constructor(props: object) {
         super(props);
         this.id = props.id;
+        this.count = 0;
         this.state = {
             style: {
                 height: props.height || '100%',
@@ -20,13 +20,12 @@ export default class EditorWindows extends React.Component {
     }
 
     componentDidMount() {
-// document.addEventListener()
-//         this.resize();
+
 
     }
 
     resize = event => {
-        //Получаем главную сетку которую ибудем двигать
+        //Получаем главную сетку которую будем двигать
         if (event) {
             let mainGrid = event.target.parentNode.parentNode;
         }
@@ -43,10 +42,12 @@ export default class EditorWindows extends React.Component {
      * @returns {any}
      */
     getComponents() {
+
         return (
-                this.props.components.map(Component => (
-                    <Component/>
-                ))
+            this.props.componentArray.map(Component => (
+                <Component.componentName key={Component.name+ Component.id} params={Component} />
+
+            ))
         );
     }
 
@@ -66,11 +67,6 @@ export default class EditorWindows extends React.Component {
         bottomResizeLine = this.props.position === 'bottom' ? bottomResizeLine : bottomResizeLine + ' resizeActive';
         this.componentE = '';
 
-        if(this.props.components) {
-            this.componentE = this.props.components.forEach((component) => {
-                return this.getComponents(component)
-            });
-        }
         return (
             <div className="editor_windows_container" id={this.id} style={this.state.style}>
                 <div className={topResizeLine}></div>
@@ -78,7 +74,7 @@ export default class EditorWindows extends React.Component {
                 <div className={rightResizeLine}></div>
                 <div className={bottomResizeLine}></div>
                 <div className="editor_windows_container-stackPanel">
-                    {this.props.components ?  this.getComponents() : ''}
+                    {this.props.componentArray ? this.getComponents() : ''}
                 </div>
             </div>
         );

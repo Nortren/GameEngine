@@ -1,6 +1,9 @@
 import * as React from 'react';
 import EditorWindows from "./EditorWindows/EditorWindows";
-import topMenu from "./Controls/TopMenu/TopMenu";
+import TopMenu from "./Controls/TopMenu/TopMenu";
+import DropDownButton from "./Controls/DropDownButton/DropDownButton";
+import Button from "./Controls/Button/Button";
+import Tab from "./Controls/Tab/Tab";
 import {match} from "minimatch";
 
 
@@ -61,10 +64,10 @@ export default class Editor extends React.Component {
         });
         document.addEventListener('mousemove', (event) => {
             if (this.testSt) {
-                if(!this.testSPX){
+                if (!this.testSPX) {
                     this.testSPX = this.startPositionX;
                 }
-                if(!this.testSPY){
+                if (!this.testSPY) {
                     this.testSPY = this.startPositionY;
                 }
 
@@ -118,13 +121,42 @@ export default class Editor extends React.Component {
     }
 
     render() {
+
+        const fileButton = {componentName: DropDownButton, name: 'file', id: 1, componentArray: []};
+        const editButton = {componentName: DropDownButton, name: 'edit', id: 2, componentArray: []};
+        const gameObjectButton = {componentName: DropDownButton, name: 'game object', id: 3, componentArray: []};
+        const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
+
+        const topMenuHeader = {componentName: TopMenu, id: 1, componentArray: [fileButton, editButton, gameObjectButton, componentButton]};
+
+        const handTool = {componentName: Button, name: '', id: 1, componentArray: []};
+        const moveTool = {componentName: Button, name: '', id: 2, componentArray: []};
+        const rotateTool = {componentName: Button, name: '', id: 3, componentArray: []};
+        const scaleTool = {componentName: Button, name: '', id: 4, componentArray: []};
+        const rectTool = {componentName: Button, name: '', id: 4, componentArray: []};
+        const customEditorTool = {componentName: Button, name: '', id: 4, componentArray: []};
+
+        const bottomMenuHeader = {componentName: TopMenu, id: 2, componentArray: [handTool, moveTool, rotateTool, scaleTool,rectTool,customEditorTool]};
+
+        const start = {componentName: Button, name: '', id: 1, componentArray: []};
+        const pause = {componentName: Button, name: '', id: 2, componentArray: []};
+        const step = {componentName: Button, name: '', id: 3, componentArray: []};
+
+        const sceneTopMenuHeader = {componentName: TopMenu, id: 3, height:'5%',justifyContent: 'center', componentArray: [start, pause, step]};
+
+
+        const tabSceneObject = {componentName: Tab, id: 2, componentArray: []};
+        const tabInspector = {componentName: Tab, id: 2, componentArray: []};
+        const tabEditorFooter = {componentName: Tab, id: 2, componentArray: []};
+
         return (
             <div className="editor_container">
 
-                <EditorWindows id='editorHeader' position="top" components={[topMenu,topMenu]}/>
-                <EditorWindows id='sceneObject' position="left"/>
-                <EditorWindows id='inspector' position="right"/>
-                <EditorWindows id='editorFooter' position="bottom"/>
+                <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader,bottomMenuHeader]}/>
+                <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
+                <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}/>
+                <EditorWindows id='inspector' position="right"  componentArray={[tabInspector]}/>
+                <EditorWindows id='editorFooter' position="bottom"   componentArray={[tabEditorFooter]}/>
 
             </div>
         );
