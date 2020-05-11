@@ -18,6 +18,7 @@ export default class DropDownButton extends React.Component {
             fps: 0
         };
         this.clickButton = this.clickButton.bind(this);
+        this.clicklLink = this.clicklLink.bind(this);
     }
 
     componentDidMount() {
@@ -29,8 +30,14 @@ export default class DropDownButton extends React.Component {
     }
 
     clickButton() {
-        console.log(this.props.id);
+        console.log('clickButton');
     }
+
+    clicklLink(data, event) {
+        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{parentID:this.props.params.parentElement}});
+        event.target.dispatchEvent(event1);
+    }
+
 
     render() {
 
@@ -41,13 +48,17 @@ export default class DropDownButton extends React.Component {
                         onClick={this.clickButton}>{this.props.params.name}
                     <div></div>
                     <div class="dropDown_contentContainer">
-                        <div class="dropDown_contentContainer-content">Settings</div>
-                        <div class="dropDown_contentContainer-content">Add Object</div>
-                        <div class="dropDown_contentContainer-content">Mesh</div>
-                        <div class="dropDown_contentContainer-content">Scene</div>
-                        <div class="dropDown_contentContainer-content">Tools</div>
-                        <div class="dropDown_contentContainer-content">Windows Manager</div>
-                        <div class="dropDown_contentContainer-content">About Program</div>
+                        { ( this.props.params.linkList ? this.props.params.linkList.map(Link => (
+                            <div onClick={this.clicklLink.bind(this, Link)}
+                                 class="dropDown_contentContainer-content">{Link}</div>
+                        )) : '1111')}
+                        {/*<div class="dropDown_contentContainer-content">Settings</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">Add Object</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">Mesh</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">Scene</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">Tools</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">Windows Manager</div>*/}
+                        {/*<div class="dropDown_contentContainer-content">About Program</div>*/}
                     </div>
                 </button>
 
