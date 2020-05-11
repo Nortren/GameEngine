@@ -20,21 +20,20 @@ export default class LayoutBrowserTabs extends React.Component {
 
         };
         this.openTabs = this.openTabs.bind(this);
-        this.specialIdentificationClass = 'id_' + this.props.params.id;
-        this.specialIdentificationClassArea = 'idCount_' + this.props.params.id;
-        this.tabClassName = 'tab_container_header-buttonArray-button tablinks ' + this.specialIdentificationClass;
+        this.specialIdentificationClass = 'tab_' + this.props.params.id;
+        this.specialIdentificationClassArea = 'area_' + this.props.params.id;
+        this.tabClassName = 'tab_container_header-buttonArray-button  ' + this.specialIdentificationClass;
         this.tabAreaClassName = 'tab_container-tabArea tabcontent ';
     }
 
     componentDidMount() {
-        this._tab = document.querySelectorAll(".tablinks" + '.' + this.specialIdentificationClass);
-        this._tabArea = document.querySelectorAll(".tabcontent" + '.' + this.specialIdentificationClass);
+        this.updateTabStatus();
         this._tab.forEach((el) => {
             el.addEventListener("click", this.openTabs);
         });
 
 
-        document.addEventListener("Add Tab", (event) => { // (1)
+        document.addEventListener("Add Tab", (event) => {
             if(event.detail.parentID === this.props.params.id) {
                 this.createNewTab(event);
             }
@@ -86,9 +85,13 @@ export default class LayoutBrowserTabs extends React.Component {
         this.setState({button: this.state.button});
     }
 
-    componentDidUpdate() {
+    updateTabStatus(){
         this._tab = document.querySelectorAll(".tablinks" + '.' + this.specialIdentificationClass);
         this._tabArea = document.querySelectorAll(".tabcontent" + '.' + this.specialIdentificationClassArea);
+    }
+
+    componentDidUpdate() {
+      this.updateTabStatus();
     }
 
     openTabs(event) {
@@ -104,7 +107,7 @@ export default class LayoutBrowserTabs extends React.Component {
             event.classList.remove("active");
         });
 
-        document.querySelector(".idCount_"+ this.props.params.id +'_' + id).classList.add("active");
+        document.querySelector(".area_"+ this.props.params.id +'_' + id).classList.add("active");
 
         btnTarget.classList.add("active");
     }
@@ -120,8 +123,8 @@ export default class LayoutBrowserTabs extends React.Component {
                         {this.addTab()}
                     </div>
                     <div className="tab_container_header-setting">
-                        <Button key={DropDownButton + 12312} params={{name: '', id: 4, componentArray: []}}/>
-                        <DropDownButton key={DropDownButton + 5436} params={{
+                        <Button  params={{name: '', id: 4, componentArray: []}}/>
+                        <DropDownButton  params={{
                             name: '',
                             parentElement:this.props.params.id,
                             id: 4,
