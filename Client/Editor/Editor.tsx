@@ -3,7 +3,7 @@ import EditorWindows from "./EditorWindows/EditorWindows";
 import TopMenu from "./Controls/TopMenu/TopMenu";
 import DropDownButton from "./Controls/DropDownButton/DropDownButton";
 import Button from "./Controls/Button/Button";
-import Tab from "./Controls/Tab/Tab";
+import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
 import {match} from "minimatch";
 
 
@@ -145,9 +145,9 @@ export default class Editor extends React.Component {
         const sceneTopMenuHeader = {componentName: TopMenu, id: 3, height:'5%',justifyContent: 'center', componentArray: [start, pause, step]};
 
 
-        const tabSceneObject = {componentName: Tab, id: 2, componentArray: []};
-        const tabInspector = {componentName: Tab, id: 2, componentArray: []};
-        const tabEditorFooter = {componentName: Tab, id: 2, componentArray: []};
+        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: []};
+        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: []};
+        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: []};
 
         return (
             <div className="editor_container">
