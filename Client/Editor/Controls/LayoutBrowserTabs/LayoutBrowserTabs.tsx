@@ -50,7 +50,7 @@ export default class LayoutBrowserTabs extends React.Component {
             this.state.button.map(element => (
 
 
-                <button onClick={this.openTabs} id="tab_container-button_id-1"
+                <button onClick={this.openTabs}
                         className={this.tabClassName}
                         data-id={element.id}>
                     Tab_{element.id}
