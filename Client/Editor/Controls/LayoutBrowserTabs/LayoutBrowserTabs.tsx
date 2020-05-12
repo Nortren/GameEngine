@@ -5,7 +5,7 @@ import Hierarch from "../../Tools/Hierarch/Hierarch";
 
 export default class LayoutBrowserTabs extends React.Component {
     private _tab: NodeListOf<Element>;
-    private _tabArea: NodeListOf<Element>;
+    private _tabArea: [];
 
     constructor(props: object) {
         super(props);
@@ -16,13 +16,13 @@ export default class LayoutBrowserTabs extends React.Component {
                 width: props.width,
                 justifySelf: props.justifySelf,
             },
-            button: [{id:1}]
+            button: [{id: 1}]
 
         };
         this.openTabs = this.openTabs.bind(this);
         this.specialIdentificationClass = 'tab_' + this.props.params.id;
         this.specialIdentificationClassArea = 'area_' + this.props.params.id;
-        this.tabClassName = 'tab_container_header-buttonArray-button  ' + this.specialIdentificationClass;
+        this.tabClassName = 'tab_container_header-buttonArray-button  ';
         this.tabAreaClassName = 'tab_container-tabArea tabcontent ';
     }
 
@@ -34,7 +34,7 @@ export default class LayoutBrowserTabs extends React.Component {
 
 
         document.addEventListener("Add Tab", (event) => {
-            if(event.detail.parentID === this.props.params.id) {
+            if (event.detail.parentID === this.props.params.id) {
                 this.createNewTab(event);
             }
         });
@@ -60,6 +60,7 @@ export default class LayoutBrowserTabs extends React.Component {
             ))
         );
     }
+
     /**
      * Метод который рендерит новых табы
      * @returns {any}
@@ -70,8 +71,11 @@ export default class LayoutBrowserTabs extends React.Component {
             this.state.button.map(element => (
 
 
-                <div className={this.tabAreaClassName + this.specialIdentificationClassArea+' ' +this.specialIdentificationClassArea+'_'+element.id} id={this.props.params.id}>
+                <div className={this.tabAreaClassName} id={this.props.params.id}
+                     data-id={this.specialIdentificationClassArea + '_' + element.id}
+                     data-parenttabid={this.specialIdentificationClassArea}>
                     first_{this.props.params.id}_{element.id}
+
                     <Hierarch/>
                 </div>
 
@@ -81,17 +85,17 @@ export default class LayoutBrowserTabs extends React.Component {
     }
 
     createNewTab(event) {
-        this.state.button.push({id:this.state.button.length+1,name:event.type});
+        this.state.button.push({id: this.state.button.length + 1, name: event.type});
         this.setState({button: this.state.button});
     }
 
-    updateTabStatus(){
-        this._tab = document.querySelectorAll(".tablinks" + '.' + this.specialIdentificationClass);
-        this._tabArea = document.querySelectorAll(".tabcontent" + '.' + this.specialIdentificationClassArea);
+    updateTabStatus() {
+        this._tab = document.querySelectorAll('[data-id='+this.specialIdentificationClassArea+']');
+        this._tabArea = document.querySelectorAll('[data-parenttabid='+this.specialIdentificationClassArea+']');
     }
 
     componentDidUpdate() {
-      this.updateTabStatus();
+        this.updateTabStatus();
     }
 
     openTabs(event) {
@@ -107,8 +111,7 @@ export default class LayoutBrowserTabs extends React.Component {
             event.classList.remove("active");
         });
 
-        document.querySelector(".area_"+ this.props.params.id +'_' + id).classList.add("active");
-
+        document.querySelector('[data-id='+this.specialIdentificationClassArea+ '_' + id+']').classList.add("active");
         btnTarget.classList.add("active");
     }
 
@@ -123,10 +126,10 @@ export default class LayoutBrowserTabs extends React.Component {
                         {this.addTab()}
                     </div>
                     <div className="tab_container_header-setting">
-                        <Button  params={{name: '', id: 4, componentArray: []}}/>
-                        <DropDownButton  params={{
+                        <Button params={{name: '', id: 4, componentArray: []}}/>
+                        <DropDownButton params={{
                             name: '',
-                            parentElement:this.props.params.id,
+                            parentElement: this.props.params.id,
                             id: 4,
                             componentArray: [],
                             linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab', 'Add Tab', 'UI element Debugger']
@@ -134,7 +137,6 @@ export default class LayoutBrowserTabs extends React.Component {
                     </div>
                 </div>
                 {this.addTabArea()}
-
 
 
             </div>
