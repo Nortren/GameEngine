@@ -45,7 +45,7 @@ export default class EditorWindows extends React.Component {
 
         return (
             this.props.componentArray.map(Component => (
-                <Component.componentName key={Component.name+ Component.id} params={Component} />
+                <Component.componentName key={Component.name+ Component.id} options={Component} />
 
             ))
         );

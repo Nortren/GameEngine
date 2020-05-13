@@ -34,7 +34,7 @@ export default class DropDownButton extends React.Component {
     }
 
     clicklLink(data, event) {
-        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{parentID:this.props.params.parentElement}});
+        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{parentID:this.props.options.parentElement}});
         event.target.dispatchEvent(event1);
     }
 
@@ -45,10 +45,10 @@ export default class DropDownButton extends React.Component {
         return (
             <div className="dropDownButton_container">
                 <button drop className="dropDownButton_container-button"
-                        onClick={this.clickButton}>{this.props.params.name}
+                        onClick={this.clickButton}>{this.props.options.name}
                     <div></div>
                     <div class="dropDown_contentContainer">
-                        { ( this.props.params.linkList ? this.props.params.linkList.map(Link => (
+                        { ( this.props.options.linkList ? this.props.options.linkList.map(Link => (
                             <div onClick={this.clicklLink.bind(this, Link)}
                                  class="dropDown_contentContainer-content">{Link}</div>
                         )) : '1111')}

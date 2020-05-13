@@ -7,9 +7,9 @@ export default class TopMenu extends React.Component {
         this.id = props.id;
         this.state = {
             style: {
-                height: props.params ? (props.params.height || '') : '',
-                width:  props.params ? (props.params.width || '') : '',
-                justifyContent:  props.params ? (props.params.justifyContent || '') : '',
+                height: props.options ? (props.options.height || '') : '',
+                width:  props.options ? (props.options.width || '') : '',
+                justifyContent:  props.options ? (props.options.justifyContent || '') : '',
             },
             moveY: 0, countMove: 0,
             moveXBoll: true,
@@ -32,8 +32,8 @@ export default class TopMenu extends React.Component {
      */
     getComponents() {
         return (
-            this.props.params.componentArray.map(Component => (
-                <Component.componentName key={Component.name + Component.id} params={Component}/>
+            this.props.options.componentArray.map(Component => (
+                <Component.componentName key={Component.name + Component.id} options={Component}/>
             ))
         );
     }
@@ -44,7 +44,7 @@ export default class TopMenu extends React.Component {
         return (
             <div className="topMenu_container" key={this.props.id} style={ this.state.style}>
                 <div className="topMenu_container-components">
-                    {this.props.params.componentArray ? this.getComponents() : ''}
+                    {this.props.options.componentArray ? this.getComponents() : ''}
                 </div>
             </div>
         );

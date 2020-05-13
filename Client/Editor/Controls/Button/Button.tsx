@@ -37,7 +37,7 @@ export default class Button extends React.Component {
 
         return (
             <div className="button_container">
-                <button className="button_container-button" onClick={this.clickButton}>{this.props.params.name}</button>
+                <button className="button_container-button" onClick={this.clickButton}>{this.props.options.name}</button>
             </div>
         );
     }
