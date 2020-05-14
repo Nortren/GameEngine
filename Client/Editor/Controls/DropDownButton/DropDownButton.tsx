@@ -51,14 +51,8 @@ export default class DropDownButton extends React.Component {
                         { ( this.props.options.linkList ? this.props.options.linkList.map(Link => (
                             <div onClick={this.clicklLink.bind(this, Link)}
                                  class="dropDown_contentContainer-content">{Link}</div>
-                        )) : '1111')}
-                        {/*<div class="dropDown_contentContainer-content">Settings</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">Add Object</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">Mesh</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">Scene</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">Tools</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">Windows Manager</div>*/}
-                        {/*<div class="dropDown_contentContainer-content">About Program</div>*/}
+                        )) : 'Empty')}
+
                     </div>
                 </button>
 

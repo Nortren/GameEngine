@@ -21,7 +21,7 @@
         outline: none;
         background: #202020;
       }
-      &:focus .dropDown_contentContainer{
+      &:focus .dropDown_contentContainer {
         display: flex;
       }
       &[disavled] {
@@ -49,8 +49,13 @@
     text-decoration: none;
     display: flex;
   }
-
-  &:hover {
-    display: block;
+  &-content {
+    &:hover {
+      background: #595959;
+    }
+    &:active {
+      outline: none;
+      background: #202020;
+    }
   }
 }

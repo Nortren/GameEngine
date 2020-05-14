@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-export default class Button extends React.Component {
+export default class Hierarch extends React.Component {
 
 
     constructor(props: object) {
@@ -28,15 +28,16 @@ export default class Button extends React.Component {
 
     }
 
-    clickButton(data, event) {
-        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{options:this.props.options}});
-        event.target.dispatchEvent(event1);
+    clickButton() {
+        console.log(this.props.id);
     }
 
     render() {
+
+
         return (
-            <div className="button_container">
-                <button className="button_container-button" onClick={this.clickButton.bind(this, this.props.options.name)}>{this.props.options.icon || this.props.options.name}</button>
+            <div className="hierarch_container">
+                ObjectView
             </div>
         );
     }

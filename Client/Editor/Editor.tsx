@@ -30,6 +30,14 @@ export default class Editor extends React.Component {
         this.resizeWindows();
         this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width);
         this._startHight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
+
+        document.addEventListener("Full screen scene", (event) => {
+         this.hideEditorToolbar();
+        });
+    }
+
+    hideEditorToolbar(){
+        console.log(12312312);
     }
 
     /**
@@ -129,11 +137,11 @@ export default class Editor extends React.Component {
 
         const topMenuHeader = {componentName: TopMenu, id: 1, componentArray: [fileButton, editButton, gameObjectButton, componentButton]};
 
-        const handTool = {componentName: Button, name: '', id: 1, componentArray: []};
-        const moveTool = {componentName: Button, name: '', id: 2, componentArray: []};
-        const rotateTool = {componentName: Button, name: '', id: 3, componentArray: []};
-        const scaleTool = {componentName: Button, name: '', id: 4, componentArray: []};
-        const rectTool = {componentName: Button, name: '', id: 4, componentArray: []};
+        const handTool = {componentName: Button,name:'', icon: '', id: 1, componentArray: []};
+        const moveTool = {componentName: Button,name:'Full screen scene', icon: '', id: 2, componentArray: []};
+        const rotateTool = {componentName: Button,name:'', icon: '', id: 3, componentArray: []};
+        const scaleTool = {componentName: Button,name:'', icon: '', id: 4, componentArray: []};
+        const rectTool = {componentName: Button,name:'', icon: '', id: 4, componentArray: []};
         const customEditorTool = {componentName: Button, name: '', id: 4, componentArray: []};
 
         const bottomMenuHeader = {componentName: TopMenu, id: 2, componentArray: [handTool, moveTool, rotateTool, scaleTool,rectTool,customEditorTool]};

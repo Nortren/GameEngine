@@ -54,7 +54,7 @@ export default class LayoutBrowserTabs extends React.Component {
                 <button onClick={this.openTabs}
                         className={this.tabClassName}
                         data-id={element.id}
-                        data-idTab={this.specialIdentificationClassArea + '_' + element.id}
+                        data-idtab={this.specialIdentificationClassArea + '_' + element.id}
                         data-idContainerTab={this.specialIdentificationClassArea}>
 
                     Tab_{element.id}
@@ -76,8 +76,8 @@ export default class LayoutBrowserTabs extends React.Component {
 
 
                 <div className={this.tabAreaClassName} id={this.props.options.id}
-                     data-idTab={this.specialIdentificationClass + '_' + element.id}
-                     data-idContainerArea={this.specialIdentificationClassArea}>
+                     data-idtab={this.specialIdentificationClass + '_' + element.id}
+                     data-idcontainerarea={this.specialIdentificationClassArea}>
 
                     first_{this.props.options.id}_{element.id}
 
@@ -103,7 +103,7 @@ export default class LayoutBrowserTabs extends React.Component {
      */
     updateTabStatus() {
         this._tab = document.querySelectorAll('[data-idContainerTab='+this.specialIdentificationClassArea+']');
-        this._tabArea = document.querySelectorAll('[data-idContainerArea='+this.specialIdentificationClassArea+']');
+        this._tabArea = document.querySelectorAll('[data-idcontainerarea='+this.specialIdentificationClassArea+']');
     }
 
     componentDidUpdate() {
@@ -130,8 +130,8 @@ export default class LayoutBrowserTabs extends React.Component {
             event.classList.remove("active");
         });
 
-        document.querySelector('[data-idTab='+this.specialIdentificationClass+ '_' + id+']').classList.add("active");
-        document.querySelector('[data-idTab='+this.specialIdentificationClassArea+ '_' + id+']').classList.add("active");
+        document.querySelector('[data-idtab='+this.specialIdentificationClass+ '_' + id+']').classList.add("active");
+        document.querySelector('[data-idtab='+this.specialIdentificationClassArea+ '_' + id+']').classList.add("active");
 
     }
 
