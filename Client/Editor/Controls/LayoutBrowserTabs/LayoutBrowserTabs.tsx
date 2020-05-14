@@ -11,11 +11,7 @@ export default class LayoutBrowserTabs extends React.Component {
         super(props);
         this.id = props.id;
         this.state = {
-            style: {
-                height: props.height || '100%',
-                width: props.width,
-                justifySelf: props.justifySelf,
-            },
+            style: props.options.style,
             button: [{id: 1}]
 
         };
@@ -79,7 +75,7 @@ export default class LayoutBrowserTabs extends React.Component {
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
 
-                    first_{this.props.options.id}_{element.id}
+
 
                     <Hierarch/>
                 </div>
@@ -140,7 +136,7 @@ export default class LayoutBrowserTabs extends React.Component {
 
 
         return (
-            <div className="tab_container">
+            <div className="tab_container" style={this.state.style}>
                 <div className="tab_container_header">
                     <div className="tab_container_header-buttonArray">
                         {this.addTab()}

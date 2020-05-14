@@ -153,9 +153,9 @@ export default class Editor extends React.Component {
         const sceneTopMenuHeader = {componentName: TopMenu, id: 3, height:'5%',justifyContent: 'center', componentArray: [start, pause, step]};
 
 
-        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: []};
-        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: []};
-        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: []};
+        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: [],style:{maxHeight:'68vh'}};
+        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: [],style:{maxHeight:'68vh'}};
+        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: [],style:{maxHeight:'20vh'}};
 
         return (
             <div className="editor_container">
