@@ -4,7 +4,12 @@ import TopMenu from "./Controls/TopMenu/TopMenu";
 import DropDownButton from "./Controls/DropDownButton/DropDownButton";
 import Button from "./Controls/Button/Button";
 import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
-import {match} from "minimatch";
+
+
+import Hierarch from "./Tools/Hierarch/Hierarch";
+import ObjectView from "./Tools/ObjectView/ObjectView";
+import Project from "./Tools/Project/Project";
+
 
 
 export default class Editor extends React.Component {
@@ -153,9 +158,13 @@ export default class Editor extends React.Component {
         const sceneTopMenuHeader = {componentName: TopMenu, id: 3, height:'5%',justifyContent: 'center', componentArray: [start, pause, step]};
 
 
-        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: [],style:{maxHeight:'68vh'}};
-        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: [],style:{maxHeight:'68vh'}};
-        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: [],style:{maxHeight:'20vh'}};
+        const ToolHierarch =  {componentName: Hierarch, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
+        const ToolObjectView =  {componentName: ObjectView, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
+        const ToolProject =  {componentName: Project, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
+
+        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: [ToolHierarch,ToolObjectView,ToolProject],style:{maxHeight:'68vh'}};
+        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: [ToolHierarch,ToolObjectView],style:{maxHeight:'68vh'}};
+        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: [ToolProject],style:{maxHeight:'20vh'}};
 
         return (
             <div className="editor_container">

@@ -1,7 +1,4 @@
 import * as React from 'react';
-import ScrollContainer from '../../Controls/ScrollContainer/ScrollContainer'
-import ObjectView from '../ObjectView/ObjectView'
-
 export default class Hierarch extends React.Component {
 
 
@@ -38,7 +35,7 @@ export default class Hierarch extends React.Component {
 
         return (
             <div className="hierarch_container">
-                <ScrollContainer source={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} template={ObjectView} type="vertical" />
+                Hierarch
             </div>
         );
     }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-export default class Hierarch extends React.Component {
+export default class ObjectView extends React.Component {
 
 
     constructor(props: object) {
@@ -36,7 +36,7 @@ export default class Hierarch extends React.Component {
 
 
         return (
-            <div className="hierarch_container">
+            <div className="objectView_container">
                 ObjectView
             </div>
         );

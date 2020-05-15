@@ -1,7 +1,8 @@
 import * as React from 'react';
 import DropDownButton from "../DropDownButton/DropDownButton";
 import Button from "../Button/Button";
-import Hierarch from "../../Tools/Hierarch/Hierarch";
+
+import ScrollContainer from '../../Controls/ScrollContainer/ScrollContainer'
 
 export default class LayoutBrowserTabs extends React.Component {
     private _tab: NodeListOf<Element>;
@@ -75,9 +76,7 @@ export default class LayoutBrowserTabs extends React.Component {
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
 
-
-
-                    <Hierarch/>
+                    <ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={this.props.options.componentArray} type="vertical" />
                 </div>
 
 

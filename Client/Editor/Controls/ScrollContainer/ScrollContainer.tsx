@@ -14,33 +14,21 @@ export default class ScrollContainer extends React.Component {
         };
     }
 
-    carouselMoveDown(length: number) {
-        this.setState({elementShiftVertical: this.state.elementShiftVertical - 150});
-        if (this.state.elementShiftVertical <= -length) {
-            this.setState({elementShiftVertical: 0});
-        }
+
+    /**
+     * Метод который рендерит переданные в наш компонент сторонние компоненты
+     * @returns {any}
+     */
+    getComponents() {
+
+        return (
+            this.props.componentArray.map(Component => (
+                <div className="scroll_container-component"><Component.componentName className="scroll_container_component" key={(Component.name || '') + Component.id} options={Component}/></div>
+
+            ))
+        );
     }
 
-    carouselMoveUp() {
-        this.setState({elementShiftVertical: this.state.elementShiftVertical - 150});
-        if (this.state.elementShiftVertical <= 0) {
-            this.setState({elementShiftVertical: 0});
-        }
-    }
-
-    carouselMoveLeft() {
-        this.setState({elementShiftHorizontal: this.state.elementShiftHorizontal + 128});
-        if (this.state.elementShiftHorizontal >= 0) {
-            this.setState({elementShiftHorizontal: 0});
-        }
-    }
-
-    carouselMoveRight(length) {
-        this.setState({elementShiftHorizontal: this.state.elementShiftHorizontal - 128});
-        if (this.state.elementShiftHorizontal <= -length) {
-            this.setState({elementShiftHorizontal: 0});
-        }
-    }
 
     getVerticalCarousel(componentRender, lengthArrayData, style) {
         const ComponentRender = componentRender;
@@ -51,30 +39,13 @@ export default class ScrollContainer extends React.Component {
                     <div style={style} className="carousel_vertical_line">
 
                         {
-                            Object.keys(this.props.source).map((objectData) =>
-                            {
-
-                                return <ComponentRender value={this.props.source[objectData]}
-                                                        id={countIDElement++}
-                                                        key={countIDElement}/>
-                            })
+                            this.getComponents()
                         }
 
                     </div>
 
                 </div>
-                <div className="control_position carousel_container-vertical ">
-                    <a className="carousel-control_left left carousel-control" href="#carousel-id" role="button"
-                       data-slide="prev">
-                        <span className="carousel-control_left_glyphicon_chevron  glyphicon glyphicon-chevron-up"
-                              aria-hidden="true" onClick={e => this.carouselMoveUp()}></span>
-                    </a>
-                    <a className=" carousel-control_right  right carousel-control" href="#carousel-id" role="button"
-                       data-slide="next">
-                        <span className="carousel-control_right_glyphicon_chevron glyphicon glyphicon-chevron-down"
-                              aria-hidden="true" onClick={e => this.carouselMoveDown(lengthArrayData)}></span>
-                    </a>
-                </div>
+
             </div>
 
         );
@@ -85,28 +56,10 @@ export default class ScrollContainer extends React.Component {
         let countIDElement = 0;
         return (
             <div className="carousel_horizontal">
-                    <div style={style} className="carousel_horizontal_line">
-                        {
-                            Object.keys(this.props.source).map((objectData) =>
-                            {
-
-                                return <ComponentRender value={this.props.source[objectData]}
-                                                        id={countIDElement++}
-                                                        key={countIDElement}/>
-                            })
-                            }
-                    </div>
-                <div className="carousel-control_position carousel_horizontal ">
-                    <a className="carousel-control_left left carousel-control" href="#carousel-id" role="button"
-                       data-slide="prev">
-                        <span className="carousel-control_left_glyphicon_chevron  glyphicon glyphicon-chevron-left"
-                              aria-hidden="true" onClick={e => this.carouselMoveLeft()}></span>
-                    </a>
-                    <a className=" carousel-control_right  right carousel-control" href="#carousel-id" role="button"
-                       data-slide="next">
-                        <span className="carousel-control_right_glyphicon_chevron glyphicon glyphicon-chevron-right"
-                              aria-hidden="true" onClick={e => this.carouselMoveRight(lengthArrayData)}></span>
-                    </a>
+                <div style={style} className="carousel_horizontal_line">
+                    {
+                        this.props.options.componentArray ? this.getComponents() : ''
+                    }
                 </div>
             </div>
         );
@@ -118,16 +71,16 @@ export default class ScrollContainer extends React.Component {
         //TODO эти данные должен отдавать сервер
 
         const elementContainerWidth = 300;
-        const lengthArrayData = (this.props.source ? this.props.source.length : 0) * elementContainerWidth;
+        const lengthArrayData = (this.props.componentArray ? this.props.componentArray.length : 0) * elementContainerWidth;
         const ComponentRender = this.props.template || null;
         const type = this.props.type;
-        if (type === "vertical" && lengthArrayData > 0 && ComponentRender) {
+        if (type === "vertical" && lengthArrayData > 0) {
             return this.getVerticalCarousel(ComponentRender, lengthArrayData, styleVertical);
         }
-        else if (type === "horizontal" && lengthArrayData > 0 && ComponentRender) {
+        else if (type === "horizontal" && lengthArrayData > 0) {
             return this.getHorizontalCarousel(ComponentRender, lengthArrayData, styleHorizontal);
         }
-        else{
+        else {
             return <div>Empty ScrollContainer</div>;
         }
     }
