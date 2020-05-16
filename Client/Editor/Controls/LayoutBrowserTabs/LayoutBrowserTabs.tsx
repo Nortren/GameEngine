@@ -54,7 +54,7 @@ export default class LayoutBrowserTabs extends React.Component {
                         data-idtab={this.specialIdentificationClassArea + '_' + element.id}
                         data-idContainerTab={this.specialIdentificationClassArea}>
 
-                    Tab_{element.id}
+                    {element.name ? element.name : element.id}
                 </button>
 
 
@@ -71,6 +71,7 @@ export default class LayoutBrowserTabs extends React.Component {
         return (
             this.state.button.map(element => (
 
+            
 
                 <div className={this.tabAreaClassName} id={this.props.options.id}
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
@@ -89,7 +90,7 @@ export default class LayoutBrowserTabs extends React.Component {
      * @param event
      */
     createNewTab(event) {
-        this.state.button.push({id: this.state.button.length + 1, name: event.type});
+        this.state.button.push({id: this.state.button.length + 1, name: event.detail.buttonName});
         this.setState({button: this.state.button});
     }
 

@@ -36,14 +36,14 @@ export default class DropDownButton extends React.Component {
     getDropDownList(Link) {
 
         return (
-            <div onClick={this.clicklLink.bind(this, Link.name)} name={Link.name}
+            <div
                  class="dropDown_contentContainer-content">{Link.name}
                 <div class="dropDown_arrayListContainer">
 
                 { ( Link.arrayList ? Link.arrayList .map(listLink => (
 
                     typeof listLink === 'string' ? (
-                        <div onClick={this.clicklLink.bind(this, listLink)}
+                        <div onClick={this.clicklLink.bind(this, Link.name,listLink)}
                              class="dropDown_contentContainer-content">{listLink}</div>) : this.getDropDownList(listLink)
                 )) : 'Empty')}
                  </div>
@@ -56,11 +56,11 @@ export default class DropDownButton extends React.Component {
         console.log('clickButton');
     }
 
-    clicklLink(data, event) {
-        let event1 = new CustomEvent(data, {
+    clicklLink(mainButtonName,buttonName, event) {
+        let event1 = new CustomEvent(mainButtonName, {
             bubbles: true,
             cancelable: true,
-            detail: {parentID: this.props.options.parentElement}
+            detail: {parentID: this.props.options.parentElement,buttonName}
         });
         event.target.dispatchEvent(event1);
     }
