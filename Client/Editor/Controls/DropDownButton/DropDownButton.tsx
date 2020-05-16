@@ -29,12 +29,39 @@ export default class DropDownButton extends React.Component {
 
     }
 
+    /**
+     * Метод который рендерит переданные в наш компонент сторонние компоненты
+     * @returns {any}
+     */
+    getDropDownList(Link) {
+
+        return (
+            <div onClick={this.clicklLink.bind(this, Link.name)} name={Link.name}
+                 class="dropDown_contentContainer-content">{Link.name}
+                <div class="dropDown_arrayListContainer">
+
+                { ( Link.arrayList ? Link.arrayList .map(listLink => (
+
+                    typeof listLink === 'string' ? (
+                        <div onClick={this.clicklLink.bind(this, listLink)}
+                             class="dropDown_contentContainer-content">{listLink}</div>) : this.getDropDownList(listLink)
+                )) : 'Empty')}
+                 </div>
+            </div>
+        );
+    }
+
+
     clickButton() {
         console.log('clickButton');
     }
 
     clicklLink(data, event) {
-        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{parentID:this.props.options.parentElement}});
+        let event1 = new CustomEvent(data, {
+            bubbles: true,
+            cancelable: true,
+            detail: {parentID: this.props.options.parentElement}
+        });
         event.target.dispatchEvent(event1);
     }
 
@@ -45,12 +72,14 @@ export default class DropDownButton extends React.Component {
         return (
             <div className="dropDownButton_container">
                 <button drop className="dropDownButton_container-button"
-                        onClick={this.clickButton}>{this.props.options.name}
-                    <div></div>
+                        onClick={this.clickButton}>
+                    {this.props.options.name}
                     <div class="dropDown_contentContainer">
                         { ( this.props.options.linkList ? this.props.options.linkList.map(Link => (
-                            <div onClick={this.clicklLink.bind(this, Link)}
-                                 class="dropDown_contentContainer-content">{Link}</div>
+
+                            typeof Link === 'string' ? (
+                                <div onClick={this.clicklLink.bind(this, Link)}
+                                     class="dropDown_contentContainer-content">{Link}</div>) : this.getDropDownList(Link)
                         )) : 'Empty')}
 
                     </div>

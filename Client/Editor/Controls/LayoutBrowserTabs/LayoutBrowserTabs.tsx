@@ -147,7 +147,7 @@ export default class LayoutBrowserTabs extends React.Component {
                             parentElement: this.props.options.id,
                             id: 4,
                             componentArray: [],
-                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab', 'Add Tab', 'UI element Debugger']
+                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','Object View','Project']} , 'UI element Debugger']
                         }}/>
                     </div>
                 </div>

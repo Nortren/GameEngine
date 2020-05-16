@@ -135,8 +135,10 @@ export default class Editor extends React.Component {
 
     render() {
 
-        const fileButton = {componentName: DropDownButton, name: 'file', id: 1, componentArray: [], linkList:['Settings','Add Object','Mesh','Scene','Tools','Windows Manager','About Program']};
+
         const editButton = {componentName: DropDownButton, name: 'edit', id: 2, componentArray: []};
+
+        const fileButton = {componentName: DropDownButton, name: 'file', id: 1, componentArray: [], linkList:['Settings','Add Object','Scene',{name:'TestList',arrayList:['Settings','Add Object','Scene']},'Tools','Windows Manager','About Program']};
         const gameObjectButton = {componentName: DropDownButton, name: 'game object', id: 3, componentArray: []};
         const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
 
