@@ -1,5 +1,5 @@
 import * as React from 'react';
-export default class Hierarch extends React.Component {
+export default class Hierarchy extends React.Component {
 
 
     constructor(props: object) {
@@ -35,7 +35,7 @@ export default class Hierarch extends React.Component {
 
         return (
             <div className="hierarch_container">
-                Hierarch
+                Hierarchy
             </div>
         );
     }

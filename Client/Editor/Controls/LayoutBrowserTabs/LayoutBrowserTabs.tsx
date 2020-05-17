@@ -13,7 +13,7 @@ export default class LayoutBrowserTabs extends React.Component {
         this.id = props.id;
         this.state = {
             style: props.options.style,
-            button: [{id: 1}]
+            button: [{id: 1,name:props.options.componentArray[0].componentName.name}]
 
         };
         this.openTabs = this.openTabs.bind(this);
@@ -67,22 +67,26 @@ export default class LayoutBrowserTabs extends React.Component {
      * @returns {any}
      */
     addTabArea() {
-
+        let res = null;
         return (
             this.state.button.map(element => (
 
-            
+
 
                 <div className={this.tabAreaClassName} id={this.props.options.id}
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
 
-                    <ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={this.props.options.componentArray} type="vertical" />
+                    <ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={  this.selectComponent(element.name)} type="vertical" />
                 </div>
 
 
             ))
         );
+    }
+
+    selectComponent(nameComponent){
+        return this.props.options.componentArray.filter((component)=>{ return component.componentName.name === nameComponent})
     }
 
     /**
@@ -148,7 +152,7 @@ export default class LayoutBrowserTabs extends React.Component {
                             parentElement: this.props.options.id,
                             id: 4,
                             componentArray: [],
-                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','Object View','Project']} , 'UI element Debugger']
+                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','ObjectView','Project']} , 'UI element Debugger']
                         }}/>
                     </div>
                 </div>
