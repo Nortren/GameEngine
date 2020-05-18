@@ -70,7 +70,7 @@ export default class DropDownButton extends React.Component {
 
 
         return (
-            <div className="dropDownButton_container">
+            <div className="dropDownButton_container" style={this.state.style}>
                 <button drop className="dropDownButton_container-button"
                         onClick={this.clickButton}>
                     {this.props.options.name}

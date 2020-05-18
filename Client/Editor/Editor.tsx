@@ -11,7 +11,6 @@ import ObjectView from "./Tools/ObjectView/ObjectView";
 import Project from "./Tools/Project/Project";
 
 
-
 export default class Editor extends React.Component {
 
     private testSt = false;
@@ -36,13 +35,23 @@ export default class Editor extends React.Component {
         this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width);
         this._startHight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
 
-        document.addEventListener("Full screen scene", (event) => {
-         this.hideEditorToolbar();
+        document.addEventListener("Hide screen scene", (event) => {
+            this.hideEditorToolbar();
         });
     }
 
-    hideEditorToolbar(){
-        console.log(12312312);
+    hideEditorToolbar() {
+        document.querySelector('.editor_container').classList.add('editor_container-full');
+        document.getElementById('sceneObject').classList.add('editor_container-sceneObject');
+        document.getElementById('inspector').classList.add('editor_container-inspector');
+        document.querySelector('.editor_visibleButton-button').classList.add('editor_visibleButton-button-visible');
+    }
+
+    fullscreenEditorToolbar() {
+        document.querySelector('.editor_container').classList.remove('editor_container-full');
+        document.getElementById('sceneObject').classList.remove('editor_container-sceneObject');
+        document.getElementById('inspector').classList.remove('editor_container-inspector');
+        document.querySelector('.editor_visibleButton-button').classList.remove('editor_visibleButton-button-visible');
     }
 
     /**
@@ -138,45 +147,89 @@ export default class Editor extends React.Component {
 
         const editButton = {componentName: DropDownButton, name: 'edit', id: 2, componentArray: []};
 
-        const fileButton = {componentName: DropDownButton, name: 'file', id: 1, componentArray: [], linkList:['Settings','Add Object','Scene',{name:'TestList',arrayList:['Settings','Add Object','Scene']},'Tools','Windows Manager','About Program']};
+        const fileButton = {
+            componentName: DropDownButton,
+            name: 'file',
+            id: 1,
+            componentArray: [],
+            linkList: ['Settings', 'Add Object', 'Scene', {
+                name: 'TestList',
+                arrayList: ['Settings', 'Add Object', 'Scene']
+            }, 'Tools', 'Windows Manager', 'About Program']
+        };
         const gameObjectButton = {componentName: DropDownButton, name: 'game object', id: 3, componentArray: []};
         const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
 
-        const topMenuHeader = {componentName: TopMenu, id: 1, componentArray: [fileButton, editButton, gameObjectButton, componentButton]};
+        const topMenuHeader = {
+            componentName: TopMenu,
+            id: 1,
+            componentArray: [fileButton, editButton, gameObjectButton, componentButton]
+        };
 
-        const handTool = {componentName: Button,name:'', icon: '', id: 1, componentArray: []};
-        const moveTool = {componentName: Button,name:'Full screen scene', icon: '', id: 2, componentArray: []};
-        const rotateTool = {componentName: Button,name:'', icon: '', id: 3, componentArray: []};
-        const scaleTool = {componentName: Button,name:'', icon: '', id: 4, componentArray: []};
-        const rectTool = {componentName: Button,name:'', icon: '', id: 4, componentArray: []};
+        const handTool = {componentName: Button, name: '', icon: '', id: 1, componentArray: []};
+        const moveTool = {componentName: Button, name: 'Full screen scene', icon: '', id: 2, componentArray: []};
+        const rotateTool = {componentName: Button, name: '', icon: '', id: 3, componentArray: []};
+        const scaleTool = {componentName: Button, name: 'Hide screen scene', icon: '', id: 4, componentArray: []};
+        const rectTool = {componentName: Button, name: '', icon: '', id: 4, componentArray: []};
         const customEditorTool = {componentName: Button, name: '', id: 4, componentArray: []};
 
-        const bottomMenuHeader = {componentName: TopMenu, id: 2, componentArray: [handTool, moveTool, rotateTool, scaleTool,rectTool,customEditorTool]};
+        const bottomMenuHeader = {
+            componentName: TopMenu,
+            id: 2,
+            componentArray: [handTool, moveTool, rotateTool, scaleTool, rectTool, customEditorTool]
+        };
 
         const start = {componentName: Button, name: '', id: 1, componentArray: []};
         const pause = {componentName: Button, name: '', id: 2, componentArray: []};
         const step = {componentName: Button, name: '', id: 3, componentArray: []};
 
-        const sceneTopMenuHeader = {componentName: TopMenu, id: 3, height:'5%',justifyContent: 'center', componentArray: [start, pause, step]};
+        const sceneTopMenuHeader = {
+            componentName: TopMenu,
+            id: 3,
+            height: '5%',
+            justifyContent: 'center',
+            componentArray: [start, pause, step]
+        };
 
 
-        const ToolHierarch =  {componentName: Hierarchy, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
-        const ToolObjectView =  {componentName: ObjectView, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
-        const ToolProject =  {componentName: Project, id: 1, componentArray: [],style:{maxHeight:'77vh'}};
+        const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
+        const ToolObjectView = {componentName: ObjectView, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
+        const ToolProject = {componentName: Project, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
 
-        const tabSceneObject = {componentName: LayoutBrowserTabs, id: 1, componentArray: [ToolHierarch,ToolObjectView,ToolProject],style:{maxHeight:'68vh'}};
-        const tabInspector = {componentName: LayoutBrowserTabs, id: 2, componentArray: [ToolObjectView,ToolHierarch],style:{maxHeight:'68vh'}};
-        const tabEditorFooter = {componentName: LayoutBrowserTabs, id: 3, componentArray: [ToolProject],style:{maxHeight:'20vh'}};
+        const tabSceneObject = {
+            componentName: LayoutBrowserTabs,
+            id: 1,
+            componentArray: [ToolHierarch, ToolObjectView, ToolProject],
+            style: {maxHeight: '68vh'}
+        };
+        const tabInspector = {
+            componentName: LayoutBrowserTabs,
+            id: 2,
+            componentArray: [ToolObjectView, ToolHierarch],
+            style: {maxHeight: '68vh'}
+        };
+        const tabEditorFooter = {
+            componentName: LayoutBrowserTabs,
+            id: 3,
+            componentArray: [ToolProject],
+            style: {maxHeight: '20vh'}
+        };
 
         return (
-            <div className="editor_container">
+            <div className="editor">
+                <div className="editor_visibleButton">
+                    <button onClick={this.fullscreenEditorToolbar.bind(this)} className="editor_visibleButton-button">
+                        
+                    </button>
+                </div>
+                <div className="editor_container">
+                    <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader, bottomMenuHeader]}/>
+                    <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
+                    <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}/>
+                    <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
+                    <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
 
-                <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader,bottomMenuHeader]}/>
-                <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
-                <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}/>
-                <EditorWindows id='inspector' position="right"  componentArray={[tabInspector]}/>
-                <EditorWindows id='editorFooter' position="bottom"   componentArray={[tabEditorFooter]}/>
-
+                </div>
             </div>
         );
     }
