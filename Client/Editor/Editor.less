@@ -28,7 +28,7 @@
     grid-template-areas: 'header header header' 'sceneObject scene inspector' 'footer footer footer';
     grid-template-rows: 1fr 15fr 5fr;
     grid-template-columns: 1fr 3fr 1fr;
-    transition: all 3s;
+    transition: all 1s;
     gap: 0;
     #editorHeader {
       grid-area: header;
@@ -40,13 +40,14 @@
       background: none;
     }
     #sceneObject {
-      transition: all 1s;
+      //transition: all 1s;
       grid-area: sceneObject;
     }
     #editorFooter {
       grid-area: footer;
     }
     &-full {
+      transition: all 1s;
       gap: 200px;
       opacity: 0;
       visibility: hidden;
