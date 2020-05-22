@@ -2,7 +2,6 @@ import * as React from 'react';
 import DropDownButton from "../DropDownButton/DropDownButton";
 import Button from "../Button/Button";
 
-import ScrollContainer from '../../Controls/ScrollContainer/ScrollContainer'
 
 export default class LayoutBrowserTabs extends React.Component {
     private _tab: NodeListOf<Element>;
@@ -37,6 +36,21 @@ export default class LayoutBrowserTabs extends React.Component {
         });
         this.openTabs();
     };
+
+
+    /**
+     * Метод который рендерит переданные в наш компонент сторонние компоненты
+     * @returns {any}
+     */
+    getComponents(component) {
+
+        return (
+            component.map(Component => (
+               <Component.componentName className="scroll_container_component" key={(Component.name || '') + Component.id} options={Component}/>
+
+            ))
+        );
+    }
 
     /**
      * Метод который рендерит новых табы
@@ -76,8 +90,10 @@ export default class LayoutBrowserTabs extends React.Component {
                 <div className={this.tabAreaClassName} id={this.props.options.id}
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
-
-                    <ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={  this.selectComponent(element.name)} type="vertical" />
+                    {
+                        this.getComponents(this.selectComponent(element.name))
+                    }
+                    {/*<ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={  this.selectComponent(element.name)} type="vertical" />*/}
                 </div>
 
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-export default class ObjectView extends React.Component {
+export default class Inspector extends React.Component {
 
 
     constructor(props: object) {
@@ -36,8 +36,13 @@ export default class ObjectView extends React.Component {
 
 
         return (
-            <div className="objectView_container">
-                ObjectView
+            <div className="inspector_container">
+                <div className="inspector_container-componentsDataContainer">
+
+                </div>
+                <div className="inspector_container-buttonAddContainer">
+                    <button className="inspector_container-buttonAddContainer_button">Add Component</button>
+                </div>
             </div>
         );
     }
