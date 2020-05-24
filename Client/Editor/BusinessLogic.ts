@@ -18,34 +18,16 @@ export default class BusinessLogic {
             'receivername': 'Test'
         };
         let url = 'http://localhost:3001/api';
-        /* let response = fetch(url,{ method: 'POST',
-         headers: {
-         'Accept': 'application/json',
-         'Content-Type': 'application/json',
-         },
-         body : data
-         });*/
+
         let response = fetch(url, {
             method: 'POST',
             headers: {
 
-                'test_data_connection': 'TEST'
+                'Content-Type': 'application/json;charset=utf-8'
             },
-            body: '123123123'
+            body: JSON.stringify(data)
         });
 
-       /* let response_1 = fetch(url, {
-            method: 'GET',
-            headers: {
-
-                'test_data_connection': 'TEST'
-            }
-
-        });
-
-        response_1.then((commits) => {
-            console.log(commits);
-        });*/
         response.then((commits) => {
                 console.log(commits,'Test console');
             },

@@ -1,5 +1,7 @@
 const Service = require("moleculer").Service;
 const ApiGateway = require("moleculer-web");
+const fs = require('fs');
+const path = require('path');
 class EditorService extends Service {
 
     constructor(broker) {
@@ -21,14 +23,19 @@ class EditorService extends Service {
                         origin: ["http://localhost:3001", "http://localhost:8080"],
                         methods: ["GET", "OPTIONS", "POST"]
                     },
+                    bodyParsers: {
+                        json: true,
+                        urlencoded: {extended: true}
+                    },
                     aliases: {
-                        "POST /api"(req, res){
-                            this.testActions(req, res)
-                        },
+                        // "POST /api"(req, res){
+                        //     this.testActions(req, res)
+                        // },
+                        "POST /api": 'EditorService.testActions',
                         // "GET /api": "EditorService.testActions"
                     },
                     onBeforeCall(ctx, route, req, res) {
-                        console.log('onBeforeCall7',req.body,res.body);
+                        // console.log('onBeforeCall7',req.body);
                         // Set request headers to context meta
                         ctx.meta.userAgent = req.headers["user-agent"];
 
@@ -39,7 +46,7 @@ class EditorService extends Service {
 
                     },
                     onError(req, res, err) {
-                        console.log('Error route', req);
+                        console.log('Error route');
                         res.setHeader("Content-Type", "text/plain");
                         res.writeHead(err.code || 500);
                         res.end("Route error test1: " + err.message);
@@ -57,11 +64,30 @@ class EditorService extends Service {
         });
     }
 
-    testActions(request, response) {
+    readFolder(folder) {
+        fs.readdir(folder, function (err, items) {
 
-        console.log(request.body, 'REQ');
-        response.writeHead(200, { 'Content-Type': 'text/plain' });
-        response.end('okay');
+          items.forEach((data)=>{
+              console.log(data);
+              fs.stat(folder,(err,it)=>{
+                  if(err){
+                      console.log(err);
+                  }
+                  else {
+                      console.log(it.isFile());
+                  }
+              })
+          })
+        });
+    }
+
+    testActions(request, response) {
+        const folder = '/GameEngine';
+
+        this.readFolder(folder);
+        // console.log(request.params);
+        request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
+        request.options.parentCtx.params.res.end('TETETETTETETETE');
     }
 
     userAuthorization(ctx) {
