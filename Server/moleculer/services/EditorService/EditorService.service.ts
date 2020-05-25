@@ -64,28 +64,54 @@ class EditorService extends Service {
         });
     }
 
+    /**
+     * Метод,для чтения структуры проекта
+     * @param folder корень от куда надо начать читать
+     */
     readFolder(folder) {
-        fs.readdir(folder, function (err, items) {
+        let promise = [];
+        let structure = {};
+        fs.readdir(folder, (err, items) => {
+            items.map(fileName => {
+                promise.push(new Promise((resolve, reject) => {
+                        let itemStatus = fs.statSync(path.join(folder, fileName));
+                        try {
+                            structure.name = fileName;
+                            if (itemStatus.isDirectory()) {
 
-          items.forEach((data)=>{
-              console.log(data);
-              fs.stat(folder,(err,it)=>{
-                  if(err){
-                      console.log(err);
-                  }
-                  else {
-                      console.log(it.isFile());
-                  }
-              })
-          })
+                                structure.type = 'directory';
+                                if (fileName !== 'node_modules' && fileName !== '.git') {
+                                    this.readFolder(path.join(folder, fileName));
+                                }
+                            }
+
+                            if (itemStatus.isFile()) {
+                                structure.type = 'file';
+                                // console.log(fileName, ' File');
+                            }
+                            resolve(structure);
+                            // console.log(structure);
+                        }
+                        catch (error) {
+                            reject(error);
+
+                        }
+                    })
+                );
+            });
+
         });
+        console.log(promise,' promise');
+        // return Promise.all(promise);
     }
 
     testActions(request, response) {
         const folder = '/GameEngine';
 
-        this.readFolder(folder);
-        // console.log(request.params);
+        let structure = this.readFolder(folder);
+        structure.then((result) => {
+            console.log(result)
+        });
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end('TETETETTETETETE');
     }
