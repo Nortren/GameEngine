@@ -68,47 +68,52 @@ class EditorService extends Service {
      * Метод,для чтения структуры проекта
      * @param folder корень от куда надо начать читать
      */
-    readFolder(folder) {
-        let promise = [];
+    readFolder(folder, promise, parent) {
+        promise = promise || [];
         let structure = {};
         fs.readdir(folder, (err, items) => {
+            console.log({parent,items});
             items.map(fileName => {
-                promise.push(new Promise((resolve, reject) => {
-                        let itemStatus = fs.statSync(path.join(folder, fileName));
-                        try {
-                            structure.name = fileName;
-                            if (itemStatus.isDirectory()) {
 
-                                structure.type = 'directory';
-                                if (fileName !== 'node_modules' && fileName !== '.git') {
-                                    this.readFolder(path.join(folder, fileName));
-                                }
-                            }
+                let itemStatus = fs.statSync(path.join(folder, fileName));
+                try {
+                    structure.name = fileName;
+                    if (itemStatus.isDirectory()) {
 
-                            if (itemStatus.isFile()) {
-                                structure.type = 'file';
-                                // console.log(fileName, ' File');
-                            }
-                            resolve(structure);
-                            // console.log(structure);
+                        structure.type = 'directory';
+                        if (fileName !== 'node_modules' && fileName !== '.git') {
+                            structure.type = 'directory';
+                            structure.parent = parent;
+                            promise.push(structure);
+                            this.readFolder(path.join(folder, fileName), promise,fileName);
                         }
-                        catch (error) {
-                            reject(error);
+                    }
 
-                        }
-                    })
-                );
+                    else if (itemStatus.isFile()) {
+                        structure.type = 'file';
+                        structure.parent = parent;
+                        promise.push(structure);
+
+                    }
+
+
+                }
+                catch (error) {
+               console.log(error);
+
+                }
+
             });
 
         });
-        console.log(promise,' promise');
-        // return Promise.all(promise);
+        // console.log(promise, ' promise');
+        return Promise.all(promise);
     }
 
     testActions(request, response) {
         const folder = '/GameEngine';
 
-        let structure = this.readFolder(folder);
+        let structure = this.readFolder(folder, null, null);
         structure.then((result) => {
             console.log(result)
         });
