@@ -1,3 +1,4 @@
+import {async} from "q";
 const Service = require("moleculer").Service;
 const ApiGateway = require("moleculer-web");
 const fs = require('fs');
@@ -68,55 +69,57 @@ class EditorService extends Service {
      * Метод,для чтения структуры проекта
      * @param folder корень от куда надо начать читать
      */
-    readFolder(folder, promise, parent) {
-        promise = promise || [];
-        let structure = {};
-        fs.readdir(folder, (err, items) => {
-            console.log({parent,items});
-            items.map(fileName => {
+    readFolder(folder, parent, promise): object {
 
+        let projectStructure = [];
+        promise = promise || [];
+
+
+        let test =   fs.readdir(folder, (err, items) => {
+
+            items.map(fileName => {
+                let arrayItem = [];
+                let type = 'file';
                 let itemStatus = fs.statSync(path.join(folder, fileName));
                 try {
-                    structure.name = fileName;
-                    if (itemStatus.isDirectory()) {
 
-                        structure.type = 'directory';
+                    if (itemStatus.isDirectory()) {
+                        type = 'directory';
                         if (fileName !== 'node_modules' && fileName !== '.git') {
-                            structure.type = 'directory';
-                            structure.parent = parent;
-                            promise.push(structure);
-                            this.readFolder(path.join(folder, fileName), promise,fileName);
+
+                            arrayItem.push(     this.readFolder(path.join(folder, fileName), projectStructure, fileName, promise));
                         }
                     }
 
-                    else if (itemStatus.isFile()) {
-                        structure.type = 'file';
-                        structure.parent = parent;
-                        promise.push(structure);
 
-                    }
-
-
+                   return projectStructure.push({type:type,parent:fileName, items:arrayItem});
                 }
                 catch (error) {
-               console.log(error);
+                    console.log(error);
 
                 }
-
+              return projectStructure;
             });
-
+            console.log(projectStructure);
+            return projectStructure;
         });
-        // console.log(promise, ' promise');
-        return Promise.all(promise);
+
+        return test || 'NO'
     }
 
     testActions(request, response) {
         const folder = '/GameEngine';
 
-        let structure = this.readFolder(folder, null, null);
-        structure.then((result) => {
-            console.log(result)
-        });
+        let structure = this.readFolder(folder, null, null, null);
+        // console.log(structure, 'structure_1');
+
+        // structure.then((result) => {
+        //     console.log(result, 'structure_2');
+        // });
+        // Promise.all(structure).then((result) => {
+        //     // console.log(result);
+        //        result.forEach((res_1)=>{res_1.forEach((res_2)=>{console.log(res_2)})})
+        //     });
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end('TETETETTETETETE');
     }
