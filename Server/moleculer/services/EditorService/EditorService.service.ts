@@ -66,62 +66,34 @@ class EditorService extends Service {
     }
 
     /**
-     * Метод,для чтения структуры проекта
-     * @param folder корень от куда надо начать читать
+     * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде объекта
      */
-    readFolder(folder, parent, promise): object {
+    readFolder(folder, projectStructure): object {
+        let currentDirectory = fs.readdirSync(folder, 'utf8');
+        currentDirectory.forEach(file => {
+            let pathOfCurrentItem = path.join(folder, file);
 
-        let projectStructure = [];
-        promise = promise || [];
-
-
-        let test =   fs.readdir(folder, (err, items) => {
-
-            items.map(fileName => {
-                let arrayItem = [];
-                let type = 'file';
-                let itemStatus = fs.statSync(path.join(folder, fileName));
-                try {
-
-                    if (itemStatus.isDirectory()) {
-                        type = 'directory';
-                        if (fileName !== 'node_modules' && fileName !== '.git') {
-
-                            arrayItem.push(     this.readFolder(path.join(folder, fileName), projectStructure, fileName, promise));
-                        }
-                    }
-
-
-                   return projectStructure.push({type:type,parent:fileName, items:arrayItem});
-                }
-                catch (error) {
-                    console.log(error);
-
-                }
-              return projectStructure;
-            });
-            console.log(projectStructure);
-            return projectStructure;
+            if (fs.statSync(pathOfCurrentItem).isFile()) {
+                projectStructure[file] = {name: file, type: 'file'};
+            }
+            else {
+                projectStructure[file] = {name: file, type: 'directory'};
+                this.readFolder(pathOfCurrentItem, projectStructure[file]);
+            }
         });
-
-        return test || 'NO'
+        return projectStructure;
     }
+
 
     testActions(request, response) {
         const folder = '/GameEngine';
 
-        let structure = this.readFolder(folder, null, null, null);
-        // console.log(structure, 'structure_1');
+        let structure = this.readFolder(folder, {});
+        console.log(structure, 'structure_1');
 
-        // structure.then((result) => {
-        //     console.log(result, 'structure_2');
-        // });
-        // Promise.all(structure).then((result) => {
-        //     // console.log(result);
-        //        result.forEach((res_1)=>{res_1.forEach((res_2)=>{console.log(res_2)})})
-        //     });
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
-        request.options.parentCtx.params.res.end('TETETETTETETETE');
+        let data = {test: structure};
+        request.options.parentCtx.params.res.end(JSON.stringify(data));
     }
 
     userAuthorization(ctx) {
