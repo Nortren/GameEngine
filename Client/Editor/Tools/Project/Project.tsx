@@ -1,5 +1,6 @@
 import * as React from 'react';
 import BusinessLogic from '../../BusinessLogic'
+import DirectoryItem from "./DirectoryItem/DirectoryItem";
 
 export default class Project extends React.Component {
 
@@ -28,9 +29,25 @@ export default class Project extends React.Component {
 
     }
 
+    createDirectory() {
+        if (this.state.directoryProject) {
+            return (
+                Object.keys(this.state.directoryProject).map(directoryItem => (
+                    <DirectoryItem id={this.state.directoryProject[directoryItem].name}
+                                   name={this.state.directoryProject[directoryItem].name}
+                                   type={this.state.directoryProject[directoryItem].type}
+                    />
+
+                ))
+            );
+        }
+    }
+
+
     getDirectory() {
-        BusinessLogic.getDirectoryProject();
-        console.log('get directory');
+        const projectDirectory = BusinessLogic.getDirectoryProject();
+        projectDirectory.then(response => response.json())
+            .then(result => this.setState({directoryProject: result.data}));
     }
 
     render() {
@@ -42,6 +59,7 @@ export default class Project extends React.Component {
                     <button onClick={this.getDirectory} className="inspector_container-buttonAddContainer_button">Add
                         Directory
                     </button>
+                    {this.createDirectory()}
                 </div>
                 <div className="project_container-elementContainer">
                     <div className="project_container-elementContainer_element">

@@ -56,7 +56,7 @@ class EditorService extends Service {
             },
             actions: {
                 checkUserAuthorization: this.userAuthorization,
-                testActions: this.testActions
+                testActions: this.sendDirectoryEngine
             },
             events: {},
             created: this.serviceCreated,
@@ -85,15 +85,14 @@ class EditorService extends Service {
     }
 
 
-    testActions(request, response) {
-        const folder = '/GameEngine';
+    sendDirectoryEngine(request, response) {
+        const folder = '/GameEngine/Client/Editor';
 
         let structure = this.readFolder(folder, {});
         console.log(structure, 'structure_1');
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
-        let data = {test: structure};
-        request.options.parentCtx.params.res.end(JSON.stringify(data));
+        request.options.parentCtx.params.res.end(JSON.stringify({data: structure}));
     }
 
     userAuthorization(ctx) {

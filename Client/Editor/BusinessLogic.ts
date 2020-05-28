@@ -19,7 +19,7 @@ export default class BusinessLogic {
         };
         let url = 'http://localhost:3001/api';
 
-        let response = fetch(url, {
+        return fetch(url, {
             method: 'POST',
             headers: {
 
@@ -27,13 +27,5 @@ export default class BusinessLogic {
             },
             body: JSON.stringify(data)
         });
-
-        response.then((commits) => {
-                console.log(commits,'Test console');
-            },
-            error => {
-                console.log('Error', error);
-            })
-
     }
 }
