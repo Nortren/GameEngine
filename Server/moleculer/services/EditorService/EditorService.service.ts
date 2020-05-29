@@ -68,17 +68,26 @@ class EditorService extends Service {
     /**
      * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде объекта
      */
-    readFolder(folder, projectStructure): object {
+    readFolder(folder, projectStructure,arrItem): object {
         let currentDirectory = fs.readdirSync(folder, 'utf8');
+
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
 
             if (fs.statSync(pathOfCurrentItem).isFile()) {
-                projectStructure[file] = {name: file, type: 'file'};
+                arrItem.push({name: file, type: 'file'});
             }
             else {
-                projectStructure[file] = {name: file, type: 'directory'};
-                this.readFolder(pathOfCurrentItem, projectStructure[file]);
+
+                projectStructure[file] = {name: file, type: 'directory',arrItem:[]};
+
+                if(projectStructure.name){
+                    console.log(folder,projectStructure.name,' TestStructute');
+                    projectStructure[file].arrItem.push({name: file, type: 'directory',arrItem:[]});
+                }
+
+
+                this.readFolder(pathOfCurrentItem, projectStructure[file],projectStructure[file].arrItem);
             }
         });
         return projectStructure;
@@ -86,10 +95,10 @@ class EditorService extends Service {
 
 
     sendDirectoryEngine(request, response) {
-        const folder = '/GameEngine/Client/Editor';
+        const folder = '/GameEngine/Client/Editor/Tools';
 
-        let structure = this.readFolder(folder, {});
-        console.log(structure, 'structure_1');
+        let structure = this.readFolder(folder, {},[]);
+        // console.log(structure, 'structure_1');
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end(JSON.stringify({data: structure}));

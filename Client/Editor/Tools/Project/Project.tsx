@@ -29,18 +29,39 @@ export default class Project extends React.Component {
 
     }
 
-    createDirectory() {
-        if (this.state.directoryProject) {
-            return (
-                Object.keys(this.state.directoryProject).map(directoryItem => (
-                    <DirectoryItem id={this.state.directoryProject[directoryItem].name}
-                                   name={this.state.directoryProject[directoryItem].name}
-                                   type={this.state.directoryProject[directoryItem].type}
-                    />
+    createStructure(directoryProject) {
+        if (directoryProject) {
 
-                ))
+            return (  <div className="TestArray">{Object.keys(directoryProject).map(directoryItem => (
+                directoryProject[directoryItem].type === 'directory' ? this.createStructure(directoryProject[directoryItem]) : this.createDirectory(directoryItem, directoryProject)
+            ))}</div>)
+        }
+
+
+    }
+
+    createDirectory(directoryItem, directoryProject) {
+        if (directoryItem !== 'name' && directoryItem !== 'type') {
+            return (
+                <DirectoryItem id={directoryProject[directoryItem].name}
+                               name={directoryProject[directoryItem].name}
+                               type={directoryProject[directoryItem].type}
+                />
+
+
             );
         }
+        if (directoryItem === 'type') {
+            return (
+            <DirectoryItem id={directoryProject['type']}
+                           name={directoryProject['name']}
+                           type={directoryProject['type']}
+            >
+                {this.createStructure(directoryItem)}
+            </DirectoryItem>
+            );
+        }
+
     }
 
 
@@ -59,7 +80,7 @@ export default class Project extends React.Component {
                     <button onClick={this.getDirectory} className="inspector_container-buttonAddContainer_button">Add
                         Directory
                     </button>
-                    {this.createDirectory()}
+                    {this.createStructure(this.state.directoryProject)}
                 </div>
                 <div className="project_container-elementContainer">
                     <div className="project_container-elementContainer_element">
