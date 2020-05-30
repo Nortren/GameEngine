@@ -1,10 +1,62 @@
 .project {
 
   &_container {
+    &-list {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      &_container {
+        display: flex;
+        flex-direction: column;
+        margin-left: -20px;
+        &_nodeButton {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          border: 0px solid #595959;
+          border-radius: 1px;
+          color: #8a8a8a;
+          font-size: 0.7em;
+          background: #2A2A2A;
+        }
+        &_view {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          img{
+            display: inline-block;
+            width: 20px;
+            height: 15px;
+            background-image: url(/resources/MrkChannels/icon/GoogleIcon.svg);
+
+            background-repeat: no-repeat;
+            background: url("/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png")
+          }
+        }
+        &_array {
+          display: none;
+          &-visible {
+            display: flex;
+            flex-direction: column;
+          }
+        }
+        &_img {
+          width: 20px;
+          height: 15px;
+        }
+        &_name {
+
+        }
+      }
+
+    }
     display: grid;
-    grid-template-areas: 'left right' 'left right' ;
+    grid-template-areas: 'left right' 'left right';
     grid-template-rows: 1fr 5fr;
-    grid-template-columns: 1fr 5fr ;
+    grid-template-columns: 1fr 5fr;
 
     &-navigation {
       grid-area: left;
@@ -30,9 +82,14 @@
         align-items: center;
         &-image {
           height: 70%;
+          padding: 10px;
         }
         &-text {
-
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          max-width: 100%;
+          padding: 5px;
         }
       }
     }

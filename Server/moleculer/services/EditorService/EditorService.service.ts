@@ -65,43 +65,49 @@ class EditorService extends Service {
         });
     }
 
+
+    /*
+     if (fs.statSync(pathOfCurrentItem).isFile()) {
+     projectStructure[file] = {name: file, type: 'file'};
+     }
+     else {
+     projectStructure[file] = {name: file, type: 'directory',test:[]};
+     this.readFolder(pathOfCurrentItem, projectStructure[file]);
+     }
+     */
+
+
     /**
      * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде объекта
      */
-    readFolder(folder, projectStructure,arrItem): object {
+    readFolder(folder,  arrayOfStructures): object {
+        const projectStructure = {};
         let currentDirectory = fs.readdirSync(folder, 'utf8');
 
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
 
             if (fs.statSync(pathOfCurrentItem).isFile()) {
-                arrItem.push({name: file, type: 'file'});
+                arrayOfStructures.push({name: file, type: 'file'});
             }
             else {
-
-                projectStructure[file] = {name: file, type: 'directory',arrItem:[]};
-
-                if(projectStructure.name){
-                    console.log(folder,projectStructure.name,' TestStructute');
-                    projectStructure[file].arrItem.push({name: file, type: 'directory',arrItem:[]});
-                }
-
-
-                this.readFolder(pathOfCurrentItem, projectStructure[file],projectStructure[file].arrItem);
+                projectStructure[file] = {name: file, type: 'directory', arrayOfStructures: []};
+                arrayOfStructures.push(projectStructure[file]);
+                this.readFolder(pathOfCurrentItem, projectStructure[file].arrayOfStructures);
             }
         });
-        return projectStructure;
+        return arrayOfStructures;
     }
 
 
     sendDirectoryEngine(request, response) {
-        const folder = '/GameEngine/Client/Editor/Tools';
+        const folder = '/GameEngine/Client';
 
-        let structure = this.readFolder(folder, {},[]);
+        let structure = this.readFolder(folder, []);
         // console.log(structure, 'structure_1');
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
-        request.options.parentCtx.params.res.end(JSON.stringify({data: structure}));
+        request.options.parentCtx.params.res.end(JSON.stringify({data:[{name: 'root', type: 'directory',arrayOfStructures:structure}]}));
     }
 
     userAuthorization(ctx) {
