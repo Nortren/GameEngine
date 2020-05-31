@@ -22,7 +22,7 @@ export default class DropDownButton extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
+
     };
 
     componentDidUpdate() {

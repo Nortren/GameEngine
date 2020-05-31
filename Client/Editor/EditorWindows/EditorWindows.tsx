@@ -30,7 +30,7 @@ export default class EditorWindows extends React.Component {
             let mainGrid = event.target.parentNode.parentNode;
         }
 
-        console.log(event);
+
     };
 
     componentDidUpdate() {
