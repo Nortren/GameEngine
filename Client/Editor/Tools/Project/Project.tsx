@@ -29,8 +29,11 @@ export default class Project extends React.Component {
 
     }
 
-
-    expandHeirs(event) {
+    /**
+     * Метод скрытия/отображения элементов в файловой структуре дерева эелементов
+     * @param event
+     */
+    expandHeirs(event):void {
 
         if (event.target.textContent === "►") {
             event.target.innerHTML = "&#9660;";
@@ -50,7 +53,11 @@ export default class Project extends React.Component {
         }
     }
 
-    showContents(event) {
+    /**
+     * Метод получения директории по которой кликнул пользователь
+     * @param event
+     */
+    showContents(event):void {
         const nameDirectoryShare = event.target.parentElement.dataset.directoryname;
         let result = this.getShareDirectory(this.state.directoryProject, nameDirectoryShare, []);
         this.setState({selectedDirectory: result[0]});
@@ -82,8 +89,11 @@ export default class Project extends React.Component {
 
     }
 
-
-    createStructure(directoryProject) {
+    /**
+     * Метод отображения файловой структуры проекта
+     * @param directoryProject
+     */
+    createStructure(directoryProject):void {
         if (directoryProject) {
             {
                 return directoryProject.map((directoryItem) => {
@@ -92,8 +102,6 @@ export default class Project extends React.Component {
                             name={directoryItem.name}
                             type={directoryItem.type}
                         >
-
-
                             <li className="project_container-list_container">
 
                                 <div className="project_container-list_container_view">
@@ -128,7 +136,12 @@ export default class Project extends React.Component {
         }
     }
 
-    createStructureElement(directoryProject) {
+    /**
+     * Метод отображения выбранной директории
+     * @param directoryProject
+     * @returns {[any,any,any,any,any]}
+     */
+    showDirectoryStructureSelectedFolder(directoryProject):void {
         if (directoryProject && directoryProject.type === 'directory') {
             {
 
@@ -154,28 +167,29 @@ export default class Project extends React.Component {
         }
     }
 
-    getDirectory() {
+    /**
+     * Метод получения данных с бизнес логики и запись их в state
+     **/
+    getDirectory(): void {
         const projectDirectory = BusinessLogic.getDirectoryProject();
         projectDirectory.then(response => response.json())
             .then(result => {
-                this.setState({directoryProject: result.data,
-                    selectedDirectory:result.data[0] });
+                this.setState({
+                    directoryProject: result.data,
+                    selectedDirectory: result.data[0]
+                });
             });
     }
 
     render() {
 
-
         return (
             <div className="project_container">
                 <div className="project_container-navigation">
-                    {/*<button onClick={this.getDirectory} className="inspector_container-buttonAddContainer_button">Add*/}
-                    {/*Directory*/}
-                    {/*</button>*/}
                     {this.createStructure(this.state.directoryProject)}
                 </div>
                 <div className="project_container-elementContainer">
-                    {this.createStructureElement(this.state.selectedDirectory)}
+                    {this.showDirectoryStructureSelectedFolder(this.state.selectedDirectory)}
                 </div>
             </div>
         );

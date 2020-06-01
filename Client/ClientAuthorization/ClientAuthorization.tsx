@@ -42,30 +42,37 @@ export default class ClientAuthorization extends React.Component {
     render() {
 
         return (
-            <div className="container-fluid Authorization-container">
-                <div className="Authorization-window">
+            <div className="Authorization_page">
+                {/*<div className="Authorization_page-projectName">Game engine</div>*/}
+            <div className="Authorization_page-container">
+                <div className="Authorization_page-window">
 
-                    <div className="Authorization-window-controls-input">
-                        <input id="authorization_name" type="name"
-                               className="Authorization-window-controls-input_login"/>
+                    <div className="Authorization_page-window-controls-input">
+                        <input id="authorization_name" type="email"
+                               className="Authorization_page-window-controls-input_login"/>
                         <input id="authorization_password" type="password"
-                               className="Authorization-window-controls-input_password"/>
+                               className="Authorization_page-window-controls-input_password"/>
                     </div>
-                    <div className="Authorization-window-controls-button">
-                        <button id="authorization_button_login" className="Authorization-window-controls-button_login"
+                    <div className="Authorization_page-window-controls-button">
+                        <button id="authorization_button_login" className="Authorization_page-window-controls-button_login"
                                 onClick={this.login}>
                             login
                         </button>
                         <button id="authorization_button_registration"
-                                className="Authorization-window-controls-button_registration"
+                                className="Authorization_page-window-controls-button_registration"
                                 onClick={this.registration}>
                             registration
                         </button>
                     </div>
 
                 </div>
-            </div>
 
+            </div>
+                <div className="Authorization_page_additionalInformation">
+                    <div className="Authorization_page_additionalInformation-version">v.0.0.1</div>
+                    <div className="Authorization_page_additionalInformation-developerName">by Nortren</div>
+                </div>
+            </div>
         )
 
 

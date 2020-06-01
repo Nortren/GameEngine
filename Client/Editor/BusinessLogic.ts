@@ -12,7 +12,8 @@ export default class BusinessLogic {
     }
 
 
-    static  getDirectoryProject() {
+ /* Пример POST запроса
+  static  getDirectoryProject() {
         let data = {
             'ordername': '12312',
             'receivername': 'Test'
@@ -22,7 +23,23 @@ export default class BusinessLogic {
         return fetch(url, {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(data)
+        });
+    }*/
 
+
+    static  getDirectoryProject(): Promise<Response> {
+        let data = {
+            'ordername': '12312',
+            'receivername': 'Test'
+        };
+        let url = 'http://localhost:3001/api';
+
+        return fetch(url, {
+            method: 'POST',
+            headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(data)

@@ -1,22 +1,49 @@
-.Authorization {
-  &-container{
-    background-color: #74919e;
-    width: 100%;
-    height: 100%;
+.companyThemeSize() {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px;
+  border-radius: 18px;
+  color: #8a8a8a;
+  font-size: 1em;
+  background-color: #1e1e1e;
+  &:focus {
+    outline: none;
+  }
+}
+
+.Authorization_page {
+  background-color: #2A2A2A;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  color: #8a8a8a;
+  &-projectName {
+    display: flex;
+    justify-content: center;
     position: absolute;
+    top:30%;
+    left:40%;
+  }
+  &-container {
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
   &-window {
-    width: 60%;
+    width: 30%;
     height: 50%;
-    position: absolute;
-    top: 25%;
-    left: 20%;
-    border: 1px solid;
+    border: none;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #95a5ad;
+    background-color: #2A2A2A;
     &-controls {
       display: flex;
       flex-direction: column;
@@ -31,16 +58,14 @@
           height: 50%;
           width: 70%;
           font-size: 2.5em;
-          border: 1px solid;
-          border-radius: 10px;
+          .companyThemeSize()
         }
         &_password {
           height: 50%;
           width: 70%;
           margin-top: 1%;
           font-size: 2.5em;
-          border: 1px solid;
-          border-radius: 10px;
+          .companyThemeSize()
         }
       }
       &-button {
@@ -49,12 +74,17 @@
         align-items: center;
         flex-direction: column;
         height: 40%;
+
         &_login {
-          width: 70%;
-          height: 50%;
+          width: 5%;
+          height: 10%;
           font-size: larger;
-          border: 1px solid;
-          border-radius: 5px;
+          border-radius: 50px !important;
+          border: 8px solid #2A2A2A !important;
+          position: absolute;
+          top: 30%;
+          left: 58%;
+          .companyThemeSize()
         }
         &_registration {
           height: 50%;
@@ -63,8 +93,27 @@
           font-size: larger;
           border: 1px solid;
           border-radius: 5px;
+          .companyThemeSize()
         }
       }
+    }
+  }
+
+  &_additionalInformation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 10%;
+    &-version {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+    &-developerName {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
     }
   }
 }

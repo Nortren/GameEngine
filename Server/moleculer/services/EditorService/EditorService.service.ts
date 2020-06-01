@@ -78,9 +78,13 @@ class EditorService extends Service {
 
 
     /**
-     * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде объекта
+     * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде массива объектов
+     * @param folder
+     * @param arrayOfStructures
+     * @returns {[Object]}
      */
-    readFolder(folder,  arrayOfStructures): object {
+
+    readFolder(folder: string,  arrayOfStructures: [object]): [object] {
         const projectStructure = {};
         let currentDirectory = fs.readdirSync(folder, 'utf8');
 
@@ -100,11 +104,14 @@ class EditorService extends Service {
     }
 
 
-    sendDirectoryEngine(request, response) {
+    /**
+     * Метод отправки массива объектов со структурой директории клиенту
+     * @param request
+     * @param response
+     */
+    sendDirectoryEngine(request, response):void {
         const folder = '/GameEngine/Client';
-
-        let structure = this.readFolder(folder, []);
-        // console.log(structure, 'structure_1');
+        const structure = this.readFolder(folder, [{}]);
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end(JSON.stringify({data:[{name: 'root', type: 'directory',arrayOfStructures:structure}]}));
