@@ -29,8 +29,8 @@ export default class Button extends React.Component {
     }
 
     clickButton(data, event) {
-        let event1 = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{options:this.props.options}});
-        event.target.dispatchEvent(event1);
+        let getData = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{options:this.props.options}});
+        event.target.dispatchEvent(getData);
     }
 
     render() {
