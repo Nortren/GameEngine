@@ -10,7 +10,7 @@ export const fpsCounter = (state = initionState, action) => {
         case ACTION_CHANGE_FPS_COUNT:
             return {
                 ...state,
-                fpsCounter: action.payload
+                fps: action.payload
             };
 
     }

@@ -26,7 +26,7 @@ interface primaryEngineInitializationData {
 /**
  * Главный контрол первичной инициализации движка
  */
-export default class EngineInitialization extends React.Component implements primaryEngineInitializationData {
+ class EngineInitialization extends React.Component implements primaryEngineInitializationData {
 
     public context: CanvasRenderingContext2D;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
@@ -149,8 +149,8 @@ export default class EngineInitialization extends React.Component implements pri
                 let counter = 0;
 
                 this.blData.getTestDataServerConnect((data) => {
-                    counter = this._mapCreator.update(scene,data.room,counter);
-                    if(counter >= 100){
+                    counter = this._mapCreator.update(scene, data.room, counter);
+                    if (counter >= 100) {
                         counter = 0;
                     }
                     data.room.enemy.forEach((enemy) => {
@@ -224,7 +224,7 @@ export default class EngineInitialization extends React.Component implements pri
         if (thisIdOnMap.length === 0) {
             this.playerInMaps.push(player);
             //Дабавляемна сцену спрайт игрока линию жизни игрока и коллайдер игрока
-            scene.add(playerAvatarSprite, healthLine,userCollaider);
+            scene.add(playerAvatarSprite, healthLine, userCollaider);
             // scene.add(playerAvatarSprite, healthLine);
         }
 
@@ -286,8 +286,9 @@ export default class EngineInitialization extends React.Component implements pri
         //Счетчик FPS
         if (duration < 1000) {
             this._FPSCounter++;
+
         } else {
-            console.log(this.props.fpsCounter);
+            this.props.fpsCounter(this._FPSCounter);
             this.setState({fps: this._FPSCounter});
             this._FPSCounter = 0;
             timeStart = now;
@@ -299,8 +300,8 @@ export default class EngineInitialization extends React.Component implements pri
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
         /*   for (let key in enemyArray) {
-               enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
-           }*/
+         enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
+         }*/
 
 
         this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
@@ -379,7 +380,7 @@ export default class EngineInitialization extends React.Component implements pri
     render() {
         return (
             <div className="fps-counter">
-                <div className="fps-counter-view" >{this.state.fps}</div>
+                <div className="fps-counter-view">{this.state.fps}</div>
                 <canvas id="canvas"/>
             </div>
         );
@@ -388,15 +389,15 @@ export default class EngineInitialization extends React.Component implements pri
 
 const mapStateToProps = state => {
     return {
-        fpsCounter: state.FPSCounter.fps,
+        fps: state.fpsCounter.fps
     };
 };
 
 const mapDispatchToProps = {
     fpsCounter
 };
-console.log(fpsCounter,'fpsCounter');
-connect(mapStateToProps,mapDispatchToProps)(EngineInitialization);
+
+export default connect(mapStateToProps, mapDispatchToProps)(EngineInitialization);
 
 
 
