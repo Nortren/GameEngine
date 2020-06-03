@@ -9,7 +9,11 @@ import Camera from "../Camera/Camera";
 import {globalVariables} from "../GlobalVariables";
 import BL from "../BusinessLogic";
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
+import {connect} from 'react-redux';
 
+import {
+    fpsCounter
+} from '../Store/EditorStore/FPSCounter/Actions';
 
 interface primaryEngineInitializationData {
     userID: string;
@@ -283,6 +287,7 @@ export default class EngineInitialization extends React.Component implements pri
         if (duration < 1000) {
             this._FPSCounter++;
         } else {
+            console.log(this.props.fpsCounter);
             this.setState({fps: this._FPSCounter});
             this._FPSCounter = 0;
             timeStart = now;
@@ -374,13 +379,24 @@ export default class EngineInitialization extends React.Component implements pri
     render() {
         return (
             <div className="fps-counter">
-                <div className="fps-counter-view">{this.state.fps}</div>
+                <div className="fps-counter-view" >{this.state.fps}</div>
                 <canvas id="canvas"/>
             </div>
         );
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        fpsCounter: state.FPSCounter.fps,
+    };
+};
+
+const mapDispatchToProps = {
+    fpsCounter
+};
+console.log(fpsCounter,'fpsCounter');
+connect(mapStateToProps,mapDispatchToProps)(EngineInitialization);
 
 
 

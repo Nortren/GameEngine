@@ -1,11 +1,11 @@
 
-export const ACTION_CHANGE_PHYSICS = "ACTION_CHANGE_FPSCounter";
+export const ACTION_CHANGE_FPS_COUNT = "ACTION_CHANGE_FPS_COUNT";
 
-export const changeFPSCounter = physicalCollision=>{
+export const fpsCounter = fps=>{
 
     return {
-        type: ACTION_CHANGE_PHYSICS,
-        payload: physicalCollision
+        type: ACTION_CHANGE_FPS_COUNT,
+        payload: fps
     }
 };
 

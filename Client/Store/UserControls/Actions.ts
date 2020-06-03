@@ -37,3 +37,9 @@ export const animationStatusChange = animationStatus =>{
         payload: animationStatus
     }
 };
+export const animationStatusChange = animationStatus =>{
+    return {
+        type: ANIMATION_CHANGE,
+        payload: animationStatus
+    }
+};

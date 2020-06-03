@@ -13,6 +13,7 @@ export default class EditorWindows extends React.Component {
                 width: props.width,
                 justifySelf: props.justifySelf,
             },
+            templateStyle: props.templateStyle,
             moveY: 0, countMove: 0,
             moveXBoll: true,
             fps: 0
@@ -73,7 +74,7 @@ export default class EditorWindows extends React.Component {
                 <div className={leftResizeLine}></div>
                 <div className={rightResizeLine}></div>
                 <div className={bottomResizeLine}></div>
-                <div className="editor_windows_container-stackPanel">
+                <div className="editor_windows_container-stackPanel" style={this.state.templateStyle}>
                     {this.props.componentArray ? this.getComponents() : ''}
                 </div>
             </div>

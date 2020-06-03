@@ -21,7 +21,7 @@ export default class Inspector extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
+
     };
 
     componentDidUpdate() {
@@ -29,7 +29,7 @@ export default class Inspector extends React.Component {
     }
 
     getReduxState() {
-        console.log(rootReducer.getState());
+
     }
 
     render() {

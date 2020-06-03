@@ -1,7 +1,8 @@
 import * as React from 'react';
+import {connect} from 'react-redux';
 
 
-export default class Button extends React.Component {
+class FPSCounter extends React.Component {
 
 
     constructor(props: object) {
@@ -28,21 +29,31 @@ export default class Button extends React.Component {
 
     }
 
-    clickButton(data, event) {
-        let getData = new CustomEvent(data, {bubbles: true, cancelable: true,detail:{options:this.props.options}});
-        event.target.dispatchEvent(getData);
+
+
+    clickButton() {
+
     }
 
     render() {
+
+
         return (
-            <div className="button_container">
-                <button className="button_container-button" onClick={this.clickButton.bind(this, this.props.options.name)}>{this.props.options.icon || this.props.options.name}</button>
+            <div className="FPSCounter_container">
+                <div className="FPSCounter_container-count">
+                    60
+                </div>
+                <div className="FPSCounter_container-graphs">
+                </div>
+
             </div>
         );
     }
 }
-
-
+const storeTest =(state)=>{
+    // console.log(state.fpsCounter,'STORE');
+};
+export default connect(storeTest)(FPSCounter);
 
 
 

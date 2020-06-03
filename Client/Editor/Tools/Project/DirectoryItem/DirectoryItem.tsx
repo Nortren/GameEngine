@@ -19,7 +19,7 @@ export default class DirectoryItem extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this.props);
+
     };
 
     componentDidUpdate() {

@@ -9,6 +9,7 @@ import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
 import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
 import Project from "./Tools/Project/Project";
+import ControllPanel from "./Tools/ControllPanel/ControllPanel";
 
 
 
@@ -185,7 +186,7 @@ export default class Editor extends React.Component {
         const step = {componentName: Button, name: '', id: 3, componentArray: []};
 
         const sceneTopMenuHeader = {
-            componentName: TopMenu,
+            componentName: ControllPanel,
             id: 3,
             height: '5%',
             justifyContent: 'center',
@@ -223,9 +224,9 @@ export default class Editor extends React.Component {
                     </button>
                 </div>
                 <div className="editor_container">
-                    <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader, bottomMenuHeader]}/>
+                    <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader, bottomMenuHeader]} />
                     <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
-                    <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}/>
+                    <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}  templateStyle={{border: "none"}}/>
                     <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
                     <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
 

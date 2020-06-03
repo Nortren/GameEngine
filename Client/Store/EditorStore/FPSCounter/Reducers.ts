@@ -1,16 +1,16 @@
-import {ACTION_CHANGE_FPSCounter} from './Actions'
+import {ACTION_CHANGE_FPS_COUNT} from './Actions'
 const initionState = {
-    physicalCollision:false
+    fps:0
 };
 
 
 
-export const FPSCounterReducer = (state = initionState, action) => {
+export const fpsCounter = (state = initionState, action) => {
     switch (action.type){
-        case ACTION_CHANGE_FPSCounter:
+        case ACTION_CHANGE_FPS_COUNT:
             return {
                 ...state,
-                physicalCollision: action.payload
+                fpsCounter: action.payload
             };
 
     }
