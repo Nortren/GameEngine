@@ -54,10 +54,10 @@ class FPSCounter extends React.Component  {
         const ctx = canvas.getContext('2d');
 
         //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
-        const bodySizeWidth = document.getElementsByClassName('FPSCounter_container-graphs')[0];
-        const bodySizeHeight = document.getElementsByClassName('FPSCounter_container-graphs')[0];
-        canvas.setAttribute('width', bodySizeWidth.offsetWidth );
-        canvas.setAttribute('height', bodySizeHeight.offsetHeight);
+        const bodySizeWidth = document.getElementsByClassName('FPSCounter_container-graphs')[0] as HTMLCanvasElement;
+        const bodySizeHeight = document.getElementsByClassName('FPSCounter_container-graphs')[0] as HTMLCanvasElement;
+        canvas.setAttribute('width', bodySizeWidth.offsetWidth.toString() );
+        canvas.setAttribute('height', bodySizeHeight.offsetHeight.toString());
 
         //Количество отрезков на которое мы делим график(его детализация)
         const graphsLinecount = this._arrayLength;
