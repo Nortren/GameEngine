@@ -1,26 +1,45 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
+interface IFPSCounter_state {
+    fps: number
+}
+interface IFPSCounter_props {
+    fpsCounter: number
+}
+class FPSCounter extends React.Component  {
 
-class FPSCounter extends React.Component {
-
+    state:IFPSCounter_state;
+    props:IFPSCounter_props;
+    _arrayFPS: number[];
+    private _arrayLength: number;
 
     constructor(props: object) {
         super(props);
-        this.id = props.id;
         this.state = {
             fps: 0
         };
-}
+
+    }
 
     componentDidMount() {
-        setInterval(()=>{   this.drawsGraphs('fpsChart', [1,2334,123,346,123,1,2334,123,346,1231,2334,123,346,1231,2334,123,346,1231,2334,123,346,123], 1);},100);
+        this._arrayFPS = [];
+        setInterval(() => {
+            this._arrayFPS.push(this.props.fpsCounter);
+            this._arrayLength = 100;
+
+
+            if (this._arrayFPS.length > this._arrayLength) {
+                this._arrayFPS = [];
+            }
+
+            this.drawsGraphs('fpsChart', this._arrayFPS, 1);
+        }, 100);
     };
 
     componentDidUpdate() {
 
     }
-
 
     /**
      * Отрисовка графиков на Canvas
@@ -28,52 +47,62 @@ class FPSCounter extends React.Component {
      * @param dataGraphs данны с для отрисовки
      * @param color цвет линии графика
      */
-    drawsGraphs(idCanvas: number, dataGraphs: number | [], color: number): void {
+    drawsGraphs(idCanvas: string, dataGraphs: number[], color: number): void {
         //цвета линий
         const colors = ['#2196f3', '#1CC39C', '#FF5F62', '#2196f3'];
-        const canvas = document.getElementById(idCanvas);
-        const gr = canvas.getContext('2d');
+        const canvas =  document.getElementById(idCanvas) as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d');
+
         //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
         const bodySizeWidth = document.getElementsByClassName('FPSCounter_container-graphs')[0];
         const bodySizeHeight = document.getElementsByClassName('FPSCounter_container-graphs')[0];
-        canvas.setAttribute('width', bodySizeWidth.offsetWidth);
-        canvas.setAttribute('height', bodySizeHeight.offsetHeight * 0.6);
-        const maxCount = 35 + 10;
-        const x0 = 30;
-        const y0 = 60;
-        const width = canvas.widt;
+        canvas.setAttribute('width', bodySizeWidth.offsetWidth );
+        canvas.setAttribute('height', bodySizeHeight.offsetHeight);
+
+        //Количество отрезков на которое мы делим график(его детализация)
+        const graphsLinecount = this._arrayLength;
+
+        const width = canvas.width;
         const height = canvas.height;
-        const stepY = Math.round(height / bodySizeHeight.offsetHeight * 10);
-        const stepX = Math.round(width / bodySizeWidth.offsetWidth * 10);
+
+        const stepY = (bodySizeHeight.offsetHeight) / graphsLinecount;
+        const stepX = (bodySizeWidth.offsetWidth) / graphsLinecount;
 
         //рисуются кривые
+        ctx.beginPath();
 
-        gr.beginPath();
 
-        for (let counData in dataGraphs) {
-            const count = dataGraphs[counData];
-            const x = x0 + ((counData - 1) * stepX);
-            const y = y0 + (height - count * stepY);
+        //Для правильного построения графика по оси X мы двигаемся на одинаковый шаг изменяя только значения по Y
+        dataGraphs.forEach((item, i, array) => {
 
-            if (1 == counData) {
-                gr.moveTo(x, y);
-            } else {
-                gr.lineTo(x, y);
+            const x = stepX * i;
+            /*Поскольку ось строится из левого верхнего угла для правильного отображения координат по оси Y делаем таким образом
+             что считаем максимальную точку, это высату нашего canvas  и вычитаем из нее полученые значения тем самым получая корректное отображение
+             */
+            const y = canvas.height - (stepY * item);
+
+            if (i === 0) {
+                //стартовая точка
+                ctx.moveTo(0, canvas.height * 0.5);
             }
-        }
-        gr.strokeStyle = colors[color]; //цвет линии
-        gr.lineWidth = 3;//толщина линии
-        gr.stroke();
 
+            ctx.lineTo(x, y);
+
+        });
+
+        ctx.strokeStyle = colors[color]; //цвет линии
+        ctx.lineWidth = 3;//толщина линии
+
+        ctx.stroke();
     }
-    render() {
 
+    render() {
 
         return (
             <div className="FPSCounter_container">
                 FPS:
                 <div className="FPSCounter_container-count">
-                   {this.props.fpsCounter}
+                    {this.props.fpsCounter}
                 </div>
                 <div className="FPSCounter_container-graphs">
                     <canvas id='fpsChart'></canvas>
