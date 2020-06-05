@@ -83,7 +83,7 @@ class FPSCounter extends React.Component  {
 
             if (i === 0) {
                 //стартовая точка
-                ctx.moveTo(0, canvas.height * 0.5);
+                ctx.moveTo(0, y);
             }
 
             ctx.lineTo(x, y);
@@ -91,7 +91,7 @@ class FPSCounter extends React.Component  {
         });
 
         ctx.strokeStyle = colors[color]; //цвет линии
-        ctx.lineWidth = 3;//толщина линии
+        ctx.lineWidth = 1;//толщина линии
 
         ctx.stroke();
     }
