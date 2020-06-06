@@ -49,7 +49,7 @@ class FPSCounter extends React.Component  {
      */
     drawsGraphs(idCanvas: string, dataGraphs: number[], color: number): void {
         //цвета линий
-        const colors = ['#2196f3', '#1CC39C', '#FF5F62', '#2196f3'];
+        const colors = ['#2196f3', '#8a8a8a', '#FF5F62', '#2196f3'];
         const canvas =  document.getElementById(idCanvas) as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
