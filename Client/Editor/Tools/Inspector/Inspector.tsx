@@ -1,5 +1,5 @@
 import * as React from 'react';
-
+import rootReducer from '../../../Store/Reducers'
 
 export default class Inspector extends React.Component {
 
@@ -17,19 +17,19 @@ export default class Inspector extends React.Component {
             moveXBoll: true,
             fps: 0
         };
-        this.clickButton = this.clickButton.bind(this);
+        this.getReduxState = this.getReduxState.bind(this);
     }
 
     componentDidMount() {
-        console.log(this.props);
+
     };
 
     componentDidUpdate() {
 
     }
 
-    clickButton() {
-        console.log(this.props.id);
+    getReduxState() {
+
     }
 
     render() {
@@ -41,7 +41,7 @@ export default class Inspector extends React.Component {
 
                 </div>
                 <div className="inspector_container-buttonAddContainer">
-                    <button className="inspector_container-buttonAddContainer_button">Add Component</button>
+                    <button onClick={this.getReduxState} className="inspector_container-buttonAddContainer_button">Add Component</button>
                 </div>
             </div>
         );

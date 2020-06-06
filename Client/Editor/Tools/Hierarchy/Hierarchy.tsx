@@ -27,7 +27,7 @@ export default class Hierarchy extends React.Component {
     }
 
     clickButton() {
-        console.log(this.props.id);
+
     }
 
     render() {
