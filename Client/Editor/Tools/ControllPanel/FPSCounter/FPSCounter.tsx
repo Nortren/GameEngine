@@ -1,20 +1,20 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-interface IFPSCounter_state {
+interface IState {
     fps: number
 }
-interface IFPSCounter_props {
+interface IProps {
     fpsCounter: number
 }
-class FPSCounter extends React.Component  {
+class FPSCounter extends React.Component<IProps, IState> {
 
-    state:IFPSCounter_state;
-    props:IFPSCounter_props;
+    public state: IState;
+    public props: IProps;
     _arrayFPS: number[];
     private _arrayLength: number;
 
-    constructor(props: object) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
             fps: 0
@@ -50,13 +50,13 @@ class FPSCounter extends React.Component  {
     drawsGraphs(idCanvas: string, dataGraphs: number[], color: number): void {
         //цвета линий
         const colors = ['#2196f3', '#8a8a8a', '#FF5F62', '#2196f3'];
-        const canvas =  document.getElementById(idCanvas) as HTMLCanvasElement;
+        const canvas = document.getElementById(idCanvas) as HTMLCanvasElement;
         const ctx = canvas.getContext('2d');
 
         //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
         const bodySizeWidth = document.getElementsByClassName('FPSCounter_container-graphs')[0] as HTMLCanvasElement;
         const bodySizeHeight = document.getElementsByClassName('FPSCounter_container-graphs')[0] as HTMLCanvasElement;
-        canvas.setAttribute('width', bodySizeWidth.offsetWidth.toString() );
+        canvas.setAttribute('width', bodySizeWidth.offsetWidth.toString());
         canvas.setAttribute('height', bodySizeHeight.offsetHeight.toString());
 
         //Количество отрезков на которое мы делим график(его детализация)

@@ -33,7 +33,7 @@ export default class Project extends React.Component {
      * Метод скрытия/отображения элементов в файловой структуре дерева эелементов
      * @param event
      */
-    expandHeirs(event):void {
+    expandHeirs(event): void {
 
         if (event.target.textContent === "►") {
             event.target.innerHTML = "&#9660;";
@@ -57,8 +57,8 @@ export default class Project extends React.Component {
      * Метод получения директории по которой кликнул пользователь
      * @param event
      */
-    showContents(event):void {
-        const nameDirectoryShare = event.target.parentElement.dataset.directoryname;
+    showContents(event, name): void {
+        const nameDirectoryShare = name ? name : event.target.parentElement.dataset.directoryname;
         let result = this.getShareDirectory(this.state.directoryProject, nameDirectoryShare, []);
         this.setState({selectedDirectory: result[0]});
 
@@ -93,7 +93,7 @@ export default class Project extends React.Component {
      * Метод отображения файловой структуры проекта
      * @param directoryProject
      */
-    createStructure(directoryProject):void {
+    createStructure(directoryProject): void {
         if (directoryProject) {
             {
                 return directoryProject.map((directoryItem) => {
@@ -136,20 +136,29 @@ export default class Project extends React.Component {
         }
     }
 
+    getInfo(structure: object) {
+        if (structure.type === 'directory') {
+            this.showContents(null, structure.name);
+        }
+        console.log(structure.name, '___', structure.type);
+    }
+
     /**
      * Метод отображения выбранной директории
      * @param directoryProject
      * @returns {[any,any,any,any,any]}
      */
-    showDirectoryStructureSelectedFolder(directoryProject):void {
+    showDirectoryStructureSelectedFolder(directoryProject): void {
+
         if (directoryProject && directoryProject.type === 'directory') {
             {
 
-
+                directoryProject.arrayOfStructures.sort((a, b) => a.type === 'directory' ? -1 : 1);
                 return directoryProject.arrayOfStructures.map((directoryItem) => {
                     return (
 
-                        <div className="project_container-elementContainer_element">
+                        <div className="project_container-elementContainer_element"
+                             onClick={this.getInfo.bind(this, directoryItem)}>
                             {directoryItem.type === 'directory' ?
                                 <img src="/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png"
                                      className="project_container-elementContainer_element-image" alt=""/> :
@@ -174,6 +183,7 @@ export default class Project extends React.Component {
         const projectDirectory = BusinessLogic.getDirectoryProject();
         projectDirectory.then(response => response.json())
             .then(result => {
+                result.data[0].arrayOfStructures.sort((a, b) => a.type === 'directory' ? -1 : 1);
                 this.setState({
                     directoryProject: result.data,
                     selectedDirectory: result.data[0]

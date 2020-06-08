@@ -12,13 +12,12 @@ export default class BusinessLogic {
     }
 
 
- /* Пример POST запроса
-  static  getDirectoryProject() {
+    static  getInfoAboutStructute() {
         let data = {
             'ordername': '12312',
             'receivername': 'Test'
         };
-        let url = 'http://localhost:3001/api';
+        let url = 'http://localhost:3001/api/getInfoAboutStructure';
 
         return fetch(url, {
             method: 'POST',
@@ -27,22 +26,17 @@ export default class BusinessLogic {
             },
             body: JSON.stringify(data)
         });
-    }*/
+    }
 
 
     static  getDirectoryProject(): Promise<Response> {
-        let data = {
-            'ordername': '12312',
-            'receivername': 'Test'
-        };
-        let url = 'http://localhost:3001/api';
+        let url = 'http://localhost:3001/api/getProjectStructure';
 
         return fetch(url, {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(data)
         });
     }
 }

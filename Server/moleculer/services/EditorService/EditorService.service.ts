@@ -29,15 +29,11 @@ class EditorService extends Service {
                         urlencoded: {extended: true}
                     },
                     aliases: {
-                        // "POST /api"(req, res){
-                        //     this.testActions(req, res)
-                        // },
-                        "POST /api": 'EditorService.testActions',
-                        // "GET /api": "EditorService.testActions"
+                        "GET /api/getProjectStructure": "EditorService.getProjectStructure",
+                        "POST /api/getInfoAboutStructure": 'EditorService.getInfoAboutStructure',
                     },
                     onBeforeCall(ctx, route, req, res) {
-                        // console.log('onBeforeCall7',req.body);
-                        // Set request headers to context meta
+
                         ctx.meta.userAgent = req.headers["user-agent"];
 
                     },
@@ -50,13 +46,14 @@ class EditorService extends Service {
                         console.log('Error route');
                         res.setHeader("Content-Type", "text/plain");
                         res.writeHead(err.code || 500);
-                        res.end("Route error test1: " + err.message);
+                        res.end("Route error GameEngineServer response: " + err.message);
                     }
                 }]
             },
             actions: {
                 checkUserAuthorization: this.userAuthorization,
-                testActions: this.sendDirectoryEngine
+                getProjectStructure: this.sendDirectoryEngine,
+                getInfoAboutStructure: this.getInfoAboutStructure
             },
             events: {},
             created: this.serviceCreated,
@@ -65,17 +62,19 @@ class EditorService extends Service {
         });
     }
 
+    getInfoAboutStructure(request, response): void {
+        const folder = '/GameEngine/Client';
+        const structure = this.readFolder(folder, [{}]);
 
-    /*
-     if (fs.statSync(pathOfCurrentItem).isFile()) {
-     projectStructure[file] = {name: file, type: 'file'};
-     }
-     else {
-     projectStructure[file] = {name: file, type: 'directory',test:[]};
-     this.readFolder(pathOfCurrentItem, projectStructure[file]);
-     }
-     */
-
+        request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
+        request.options.parentCtx.params.res.end(JSON.stringify({
+            data: [{
+                name: 'root',
+                type: 'directory',
+                arrayOfStructures: structure
+            }]
+        }));
+    }
 
     /**
      * Метод рексрусивного спуска по директории проекта ,для формирование структуры проекта в виде массива объектов
@@ -84,7 +83,7 @@ class EditorService extends Service {
      * @returns {[Object]}
      */
 
-    readFolder(folder: string,  arrayOfStructures: [object]): [object] {
+    readFolder(folder: string, arrayOfStructures: [object]): [object] {
         const projectStructure = {};
         let currentDirectory = fs.readdirSync(folder, 'utf8');
 
@@ -109,12 +108,18 @@ class EditorService extends Service {
      * @param request
      * @param response
      */
-    sendDirectoryEngine(request, response):void {
+    sendDirectoryEngine(request, response): void {
         const folder = '/GameEngine/Client';
         const structure = this.readFolder(folder, [{}]);
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
-        request.options.parentCtx.params.res.end(JSON.stringify({data:[{name: 'root', type: 'directory',arrayOfStructures:structure}]}));
+        request.options.parentCtx.params.res.end(JSON.stringify({
+            data: [{
+                name: 'root',
+                type: 'directory',
+                arrayOfStructures: structure
+            }]
+        }));
     }
 
     userAuthorization(ctx) {
