@@ -5,7 +5,7 @@ export const globalVariables = {
         shadow: {materialShadow: false},
         models: {sprite: false},
         enableEditor: true, //включает отображение редактора
-        disableAuthorization: false   , //выключает меню авторизации (удобно при разработке редактора отключать, что б каждый раз не авторизовываться)
+        disableAuthorization: true   , //выключает меню авторизации (удобно при разработке редактора отключать, что б каждый раз не авторизовываться)
         collider: {
             shadow: true,
             showShadow: false,
