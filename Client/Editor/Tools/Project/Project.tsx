@@ -140,6 +140,13 @@ export default class Project extends React.Component {
         if (structure.type === 'directory') {
             this.showContents(null, structure.name);
         }
+        else if (structure.type === 'file'){
+            const elementStructure = BusinessLogic.getInfoAboutStructute(structure);
+            elementStructure.then(response => response.json())
+                .then(result => {
+                  console.log(result,123123);
+                });
+        }
         console.log(structure.name, '___', structure.type);
     }
 
