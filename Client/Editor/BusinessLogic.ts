@@ -12,11 +12,8 @@ export default class BusinessLogic {
     }
 
 
-    static  getInfoAboutStructute() {
-        let data = {
-            'ordername': '12312',
-            'receivername': 'Test'
-        };
+    static  getInfoAboutStructute(structure:object) {
+
         let url = 'http://localhost:3001/api/getInfoAboutStructure';
 
         return fetch(url, {
@@ -24,7 +21,7 @@ export default class BusinessLogic {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(structure)
         });
     }
 
