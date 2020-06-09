@@ -80,11 +80,11 @@ class EditorService extends Service {
             try {
 
                 request.options.parentCtx.params.res.end(JSON.stringify({
-                    data: [{
+                    data: {
                         name,
                         type,
                         fileData: data
-                    }]
+                    }
                 }));
             }
             catch (e) {

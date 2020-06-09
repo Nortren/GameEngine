@@ -40,6 +40,9 @@ export default class Editor extends React.Component {
         document.addEventListener("Hide screen scene", (event) => {
             this.hideEditorToolbar();
         });
+        document.addEventListener("ReadFile", (event) => {
+        this.setState({inspectorData:event.detail})
+        });
     }
 
     hideEditorToolbar() {
@@ -195,7 +198,7 @@ export default class Editor extends React.Component {
 
 
         const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
-        const ToolInspector = {componentName: Inspector, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
+        const ToolInspector = {componentName: Inspector, id: 1, componentArray: [], style: {maxHeight: '77vh'},inspectorData:this.state.inspectorData};
         const ToolProject = {componentName: Project, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
 
         const tabSceneObject = {
