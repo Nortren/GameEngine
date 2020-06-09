@@ -56,13 +56,13 @@ export default class DropDownButton extends React.Component {
         console.log('clickButton');
     }
 
-    clicklLink(mainButtonName,buttonName, event) {
-        let event1 = new CustomEvent(mainButtonName, {
+    clicklLink(mainButtonName,buttonName, event):void {
+        const createTab = new CustomEvent(mainButtonName, {
             bubbles: true,
             cancelable: true,
             detail: {parentID: this.props.options.parentElement,buttonName}
         });
-        event.target.dispatchEvent(event1);
+        event.target.dispatchEvent(createTab);
     }
 
 

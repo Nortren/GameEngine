@@ -1,8 +1,12 @@
 import * as React from 'react';
 import BusinessLogic from '../../BusinessLogic'
-import DirectoryItem from "./DirectoryItem/DirectoryItem";
+import {connect} from 'react-redux';
 
-export default class Project extends React.Component {
+import {
+    changeViewer
+} from '../../../Store/EditorStore/Viewer/Actions';
+
+class Project extends React.Component {
 
 
     constructor(props: object) {
@@ -94,16 +98,20 @@ export default class Project extends React.Component {
      * @param directoryProject
      */
     createStructure(directoryProject): void {
+
         if (directoryProject) {
             {
                 return directoryProject.map((directoryItem) => {
+                    const imageDirectory = directoryItem.type === 'directory' ?
+                        "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
+                        "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
+
                     return (
                         <ul className="project_container-list" id={directoryItem.name}
                             name={directoryItem.name}
                             type={directoryItem.type}
                         >
-                            <li className="project_container-list_container">
-
+                            <li className="project_container-list_container" onClick={this.getInfo.bind(this, directoryItem)}>
                                 <div className="project_container-list_container_view">
                                     {directoryItem.type === 'directory' ?
                                         <button className="project_container-list_container_nodeButton" type="button"
@@ -111,51 +119,64 @@ export default class Project extends React.Component {
                                     <div className="project_container-list_container_view-directoryNaming"
                                          data-directoryName={directoryItem.name}
                                          onClick={this.showContents.bind(this)}>
-                                        {directoryItem.type === 'directory' ?
-                                            <img src="/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png"
-                                                 className="project_container-list_container_img" alt=""/> :
-                                            <img src="/Client/Editor/Tools/Project/DirectoryItem/icon/file.png"
-                                                 className="project_container-list_container_img" alt=""/>}
+                                        <img src={imageDirectory}
+                                             className="project_container-list_container_img" alt=""/>
                                         <div className="project_container-list_name">
                                             {directoryItem.name}
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="project_container-list_container_array">
-                                    {directoryItem.arrayOfStructures ? this.createStructure(directoryItem.arrayOfStructures) : ''}
+                                    {directoryItem.arrayOfStructures ?
+                                        this.createStructure(directoryItem.arrayOfStructures) : ''}
                                 </div>
                             </li>
                         </ul>
-
-
                     );
                 })
             }
-
         }
     }
 
-    getInfo(structure: object) {
+    getInfo(structure: object): void {
         if (structure.type === 'directory') {
             this.showContents(null, structure.name);
         }
-        else if (structure.type === 'file'){
+        else if (structure.type === 'file' && !this.checkStore(structure.name)) {
             const elementStructure = BusinessLogic.getInfoAboutStructute(structure);
             elementStructure.then(response => response.json())
                 .then(result => {
-                  console.log(result,123123);
+                    this.props.changeViewer(result.data);
+                    console.log(result.data.fileData);
                 });
         }
+
+        const readFile = new CustomEvent('ReadFile', {
+            bubbles: true,
+            cancelable: true,
+            detail: {structure}
+        });
+        event.target.dispatchEvent(readFile);
+
         console.log(structure.name, '___', structure.type);
     }
 
     /**
-     * Метод отображения выбранной директории
+     * Проверяем есть ли у нас подобное значение в хранилище ,что бы не делать повторные запросы на БЛ
+     * TODO после такого как будут готовы редакторы, нужно будет удалять измененное значение из хранилища
+     * @param nameSearchElement
+     * @returns {boolean}
+     */
+    checkStore(nameSearchElement: string): boolean{
+        return this.props.viewer.some((item)=>{return item.name === nameSearchElement});
+    }
+
+    /**
+     *  Метод отображения выбранной директории
      * @param directoryProject
      * @returns {[any,any,any,any,any]}
      */
-    showDirectoryStructureSelectedFolder(directoryProject): void {
+    showDirectoryStructureSelectedFolder(directoryProject): object {
 
         if (directoryProject && directoryProject.type === 'directory') {
             {
@@ -212,7 +233,17 @@ export default class Project extends React.Component {
         );
     }
 }
+const mapStateToProps = state => {
+    return {
+        viewer: state.viewer.viewData
+    };
+};
 
+const mapDispatchToProps = {
+    changeViewer
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Project);
 
 
 
