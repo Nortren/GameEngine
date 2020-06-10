@@ -11,7 +11,7 @@ import Inspector from "./Tools/Inspector/Inspector";
 import Project from "./Tools/Project/Project";
 import ControllPanel from "./Tools/ControllPanel/ControllPanel";
 
-
+export const GlobalEditorContext = React.createContext();
 
 export default class Editor extends React.Component {
 
@@ -41,7 +41,7 @@ export default class Editor extends React.Component {
             this.hideEditorToolbar();
         });
         document.addEventListener("ReadFile", (event) => {
-        this.setState({inspectorData:event.detail})
+            this.setState({inspectorData: event.detail})
         });
     }
 
@@ -198,7 +198,13 @@ export default class Editor extends React.Component {
 
 
         const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
-        const ToolInspector = {componentName: Inspector, id: 1, componentArray: [], style: {maxHeight: '77vh'},inspectorData:this.state.inspectorData};
+        const ToolInspector = {
+            componentName: Inspector,
+            id: 1,
+            componentArray: [],
+            style: {maxHeight: '77vh'},
+            inspectorData: this.state.inspectorData
+        };
         const ToolProject = {componentName: Project, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
 
         const tabSceneObject = {
@@ -218,7 +224,7 @@ export default class Editor extends React.Component {
             id: 3,
             componentArray: [ToolProject]
         };
-
+        const inspectorData = this.state.inspectorData;
         return (
             <div className="editor">
                 <div className="editor_visibleButton">
@@ -226,14 +232,18 @@ export default class Editor extends React.Component {
                         
                     </button>
                 </div>
-                <div className="editor_container">
-                    <EditorWindows id='editorHeader' position="top" componentArray={[topMenuHeader, bottomMenuHeader]} />
-                    <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
-                    <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}  templateStyle={{border: "none"}}/>
-                    <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
-                    <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
+                <GlobalEditorContext.Provider value={{inspectorData}}>
+                    <div className="editor_container">
+                        <EditorWindows id='editorHeader' position="top"
+                                       componentArray={[topMenuHeader, bottomMenuHeader]}/>
+                        <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
+                        <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}
+                                       templateStyle={{border: "none"}}/>
+                        <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
+                        <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
 
-                </div>
+                    </div>
+                </GlobalEditorContext.Provider>
             </div>
         );
     }

@@ -147,7 +147,6 @@ class Project extends React.Component {
             elementStructure.then(response => response.json())
                 .then(result => {
                     this.props.changeViewer(result.data);
-                    console.log(result.data.fileData);
                 });
         }
 
@@ -157,8 +156,6 @@ class Project extends React.Component {
             detail: {structure}
         });
         event.target.dispatchEvent(readFile);
-
-        console.log(structure.name, '___', structure.type);
     }
 
     /**
