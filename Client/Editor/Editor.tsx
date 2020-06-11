@@ -43,6 +43,9 @@ export default class Editor extends React.Component {
         document.addEventListener("ReadFile", (event) => {
             this.setState({inspectorData: event.detail})
         });
+        document.addEventListener("LoadStart", (event) => {
+            this.setState({testLoaderStatus: event.detail.status})
+        });
     }
 
     hideEditorToolbar() {
@@ -211,13 +214,13 @@ export default class Editor extends React.Component {
             componentName: LayoutBrowserTabs,
             id: 1,
             componentArray: [ToolHierarch, ToolInspector, ToolProject],
-            style: {maxHeight: '68vh'}
+            style: {maxHeight: '58vh'}
         };
         const tabInspector = {
             componentName: LayoutBrowserTabs,
             id: 2,
             componentArray: [ToolInspector, ToolHierarch],
-            style: {maxHeight: '68vh'}
+            style: {maxHeight: '58vh'}
         };
         const tabEditorFooter = {
             componentName: LayoutBrowserTabs,
@@ -225,6 +228,7 @@ export default class Editor extends React.Component {
             componentArray: [ToolProject]
         };
         const inspectorData = this.state.inspectorData;
+        const testLoaderStatus = this.state.testLoaderStatus;
         return (
             <div className="editor">
                 <div className="editor_visibleButton">
@@ -232,7 +236,7 @@ export default class Editor extends React.Component {
                         
                     </button>
                 </div>
-                <GlobalEditorContext.Provider value={{inspectorData}}>
+                <GlobalEditorContext.Provider value={{inspectorData,testLoaderStatus}}>
                     <div className="editor_container">
                         <EditorWindows id='editorHeader' position="top"
                                        componentArray={[topMenuHeader, bottomMenuHeader]}/>

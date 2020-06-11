@@ -64,8 +64,7 @@ import {GlobalEditorContext} from '../../Editor';
 
  */
 
-
-export default function Inspector() {
+function InspectorEditor() {
     const [test, setTest] = React.useState<object[]>(0);
     const [fileData, setFileData] = React.useState<object[]>('');
     const [fileName, setFileName] = React.useState<object[]>('');
@@ -74,6 +73,7 @@ export default function Inspector() {
 
 
     const {inspectorData} = React.useContext(GlobalEditorContext);
+
     React.useEffect(() => {
 
         const resFilter = viewData.filter((item) => {
@@ -91,7 +91,6 @@ export default function Inspector() {
         console.log(test);
         setTest(test + 1);
     };
-
     return (
         <div className="inspector_container">
             <div className="inspector_container-componentsDataContainer">
@@ -113,6 +112,34 @@ export default function Inspector() {
             </div>
         </div>
     );
+};
+
+function FileLoad() {
+    return (
+        <div>Load...</div>
+    );
 }
 
+
+export default function Inspector() {
+    const [viewFile, setviewFile] = React.useState<object[]>('123123');
+    const {testLoaderStatus} = React.useContext(GlobalEditorContext);
+
+    React.useEffect(() => {
+        if (testLoaderStatus === false) {
+            setviewFile(<InspectorEditor/>);
+        }
+        else if (testLoaderStatus === true) {
+            setviewFile(<FileLoad/>);
+        }
+
+        console.log(testLoaderStatus);
+    }, [testLoaderStatus]);
+
+    return (
+        <div>
+            {viewFile}
+        </div>
+    );
+}
 

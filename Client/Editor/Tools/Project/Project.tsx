@@ -111,7 +111,8 @@ class Project extends React.Component {
                             name={directoryItem.name}
                             type={directoryItem.type}
                         >
-                            <li className="project_container-list_container" onClick={this.getInfo.bind(this, directoryItem)}>
+                            <li className="project_container-list_container"
+                                onClick={this.getInfo.bind(this, directoryItem)}>
                                 <div className="project_container-list_container_view">
                                     {directoryItem.type === 'directory' ?
                                         <button className="project_container-list_container_nodeButton" type="button"
@@ -138,7 +139,20 @@ class Project extends React.Component {
         }
     }
 
-    getInfo(structure: object): void {
+    getInfo(structure: object, event): void {
+        const readFile = new CustomEvent('ReadFile', {
+            bubbles: true,
+            cancelable: true,
+            detail: {structure}
+        });
+//Тестовый лодер загрузки данных с сервера
+        const testLoader = new CustomEvent('LoadStart', {
+            bubbles: true,
+            cancelable: true,
+            detail: {status: true}
+        });
+
+        const saveEvent = event.currentTarget;
         if (structure.type === 'directory') {
             this.showContents(null, structure.name);
         }
@@ -147,15 +161,19 @@ class Project extends React.Component {
             elementStructure.then(response => response.json())
                 .then(result => {
                     this.props.changeViewer(result.data);
-                });
-        }
+                    setTimeout(() => {
+                        testLoader.detail.status = false;
+                        saveEvent.dispatchEvent(testLoader);
+                        saveEvent.dispatchEvent(readFile);
+                    }, 3000)
 
-        const readFile = new CustomEvent('ReadFile', {
-            bubbles: true,
-            cancelable: true,
-            detail: {structure}
-        });
-        event.target.dispatchEvent(readFile);
+                });
+        } else if (this.checkStore(structure.name)) {
+            testLoader.detail.status = false;
+            event.target.dispatchEvent(readFile);
+        }
+        event.target.dispatchEvent(testLoader);
+
     }
 
     /**
@@ -164,8 +182,10 @@ class Project extends React.Component {
      * @param nameSearchElement
      * @returns {boolean}
      */
-    checkStore(nameSearchElement: string): boolean{
-        return this.props.viewer.some((item)=>{return item.name === nameSearchElement});
+    checkStore(nameSearchElement: string): boolean {
+        return this.props.viewer.some((item) => {
+            return item.name === nameSearchElement
+        });
     }
 
     /**
