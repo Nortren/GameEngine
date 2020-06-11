@@ -2,11 +2,27 @@
 .inspector {
   &_container {
     width: inherit;
-    height: inherit;
+    height: 90%;
+    &__file{
+      &-container{
+        height: 100%;
+        &_header{
+          height: 10%;
+          display: flex;
+          justify-content: space-between;
+        }
+        &_body{
+          height: 90%;
+          word-break: break-word;
+          overflow: auto;
+        }
+      }
+    }
     &-buttonAddContainer {
       display: flex;
       justify-content: center;
       width: inherit;
+      height: 10%;
       &_button {
         margin: 5px;
         -webkit-appearance: none;
