@@ -68,8 +68,8 @@ class EditorService extends Service {
      * @param response
      */
     sendInfoAboutStructure(request, response): void {
-        const name =  request.params.name;
-        const type =  request.params.type;
+        const name = request.params.name;
+        const type = request.params.type;
         const promise = new Promise((resolve, reject) => {
             fs.readFile(request.params.path, "utf8", (error, data) => {
                 resolve(data);
@@ -100,10 +100,9 @@ class EditorService extends Service {
      * @returns {[Object]}
      */
 
-    readFolder(folder: string, arrayOfStructures: [object]): [object] {
+    readFolder(folder: string, arrayOfStructures: object[]): object[] {
         const projectStructure = {};
         let currentDirectory = fs.readdirSync(folder, 'utf8');
-        console.log(folder);
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
 
@@ -128,9 +127,8 @@ class EditorService extends Service {
     /**
      * Метод отправки массива объектов со структурой директории клиенту
      * @param request
-     * @param response
      */
-    sendDirectoryEngine(request, response): void {
+    sendDirectoryEngine(request: Context<object>): void {
         const folder = '/GameEngine/Client';
         const structure = this.readFolder(folder, [{}]);
 

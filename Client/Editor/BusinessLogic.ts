@@ -25,7 +25,10 @@ export default class BusinessLogic {
         });
     }
 
-
+    /**
+     * Метод получение структуры проекта с сервера
+     * @returns {Promise<Response>}
+     */
     static  getDirectoryProject(): Promise<Response> {
         let url = 'http://localhost:3001/api/getProjectStructure';
 
