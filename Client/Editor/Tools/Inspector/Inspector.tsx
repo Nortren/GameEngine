@@ -3,80 +3,22 @@ import {useDispatch, useSelector, useEffect} from 'react-redux';
 import {connect} from 'react-redux';
 import {GlobalEditorContext} from '../../Editor';
 import FileLoad from '../../Controls/Loader/Loader'
-/*
- class Inspector extends React.Component {
 
-
- constructor(props: object) {
- super(props);
- this.id = props.id;
- this.state = {
- style: {
- height: props.height || '100%',
- width: props.width,
- justifySelf: props.justifySelf,
- },
- inspectorData: props.options.inspectorData ? props.options.inspectorData.structure.name : props.options.inspectorData,
- moveY: 0, countMove: 0,
- moveXBoll: true,
- fps: 0
- };
- this.getReduxState = this.getReduxState.bind(this);
- }
-
- componentDidMount() {
-
- };
-
- componentDidUpdate() {
-
- }
-
- getReduxState() {
- let t = this.props.viewer.filter((item) => {
- return item.name === this.props.options.inspectorData.structure.name
- });
- return t.length ? t[0].fileData : ''
- }
-
- render() {
-
-
- return (
- <div className="inspector_container">
- <div className="inspector_container-componentsDataContainer">
-
- </div>
- <div className="inspector_container-buttonAddContainer">
- <button onClick={this.getReduxState} className="inspector_container-buttonAddContainer_button">Add
- Component {this.getReduxState()}</button>
- </div>
- </div>
- );
- }
- }
- const mapStateToProps = state => {
- return {
- viewer: state.viewer.viewData
- };
- };
-
- export default connect(mapStateToProps)(Inspector);
-
+/**
+ * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
+ * @returns {any}
+ * @constructor
  */
-
 function InspectorEditor() {
-    const [test, setTest] = React.useState<object[]>(0);
+
     const [fileData, setFileData] = React.useState<object[]>('');
     const [fileName, setFileName] = React.useState<object[]>('');
     const [fileType, setFileType] = React.useState<object[]>('');
     const viewData = useSelector(state => state.viewer.viewData);
 
-
     const {inspectorData} = React.useContext(GlobalEditorContext);
 
     React.useEffect(() => {
-
         const resFilter = viewData.filter((item) => {
             return item.name === inspectorData.structure.name
         })[0];
@@ -87,20 +29,10 @@ function InspectorEditor() {
         }
     }, [inspectorData]);
 
-
-    const testClick = () => {
-        console.log(test);
-        setTest(test + 1);
-    };
     return (
         <div className="inspector_container">
             <div className="inspector_container-componentsDataContainer">
 
-            </div>
-            <div className="inspector_container-buttonAddContainer">
-                <button onClick={testClick} className="inspector_container-buttonAddContainer_button">Add
-                    Component
-                </button>
             </div>
             <div className="inspector_container__file-container">
                 <div className="inspector_container__file-container_header">
@@ -113,10 +45,15 @@ function InspectorEditor() {
             </div>
         </div>
     );
-};
+}
 
 
-
+/**
+ * Компонент представления инспектора данных до момента загрузки отображает лоадер(если был выбранн подгружаемый елемнт)
+ * или пустое представление
+ * @returns {any}
+ * @constructor
+ */
 export default function Inspector() {
     const [viewFile, setviewFile] = React.useState<object[]>('');
     const {testLoaderStatus} = React.useContext(GlobalEditorContext);
