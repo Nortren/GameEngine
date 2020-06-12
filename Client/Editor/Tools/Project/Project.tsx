@@ -1,12 +1,13 @@
 import * as React from 'react';
 import BusinessLogic from '../../BusinessLogic'
 import {connect} from 'react-redux';
-
+import FileLoad from '../../Controls/Loader/Loader'
 import {
     changeViewer
 } from '../../../Store/EditorStore/Viewer/Actions';
 
 class Project extends React.Component {
+
 
 
     constructor(props: object) {
@@ -17,6 +18,7 @@ class Project extends React.Component {
                 height: props.height || '100%',
                 width: props.width,
                 justifySelf: props.justifySelf,
+                loadData: false
             },
             moveY: 0, countMove: 0,
             moveXBoll: true,
@@ -96,8 +98,9 @@ class Project extends React.Component {
     /**
      * Метод отображения файловой структуры проекта
      * @param directoryProject
+     * @returns {any}
      */
-    createStructure(directoryProject): void {
+    createStructure(directoryProject: object): void {
 
         if (directoryProject) {
             {
@@ -161,12 +164,9 @@ class Project extends React.Component {
             elementStructure.then(response => response.json())
                 .then(result => {
                     this.props.changeViewer(result.data);
-                    setTimeout(() => {
-                        testLoader.detail.status = false;
-                        saveEvent.dispatchEvent(testLoader);
-                        saveEvent.dispatchEvent(readFile);
-                    }, 3000)
-
+                    testLoader.detail.status = false;
+                    saveEvent.dispatchEvent(testLoader);
+                    saveEvent.dispatchEvent(readFile);
                 });
         } else if (this.checkStore(structure.name)) {
             testLoader.detail.status = false;
@@ -189,11 +189,11 @@ class Project extends React.Component {
     }
 
     /**
-     *  Метод отображения выбранной директории
+     * Метод отображения выбранной директории
      * @param directoryProject
      * @returns {[any,any,any,any,any]}
      */
-    showDirectoryStructureSelectedFolder(directoryProject): object {
+    showDirectoryStructureSelectedFolder(directoryProject): object[] {
 
         if (directoryProject && directoryProject.type === 'directory') {
             {
@@ -233,11 +233,11 @@ class Project extends React.Component {
                     directoryProject: result.data,
                     selectedDirectory: result.data[0]
                 });
+                this.setState({loadData: true});
             });
     }
 
-    render() {
-
+    showProject() {
         return (
             <div className="project_container">
                 <div className="project_container-navigation">
@@ -248,6 +248,12 @@ class Project extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    render() {
+        return (
+            <div className="project">   {this.state.loadData ? this.showProject() : <FileLoad/>}</div>
+        )
     }
 }
 const mapStateToProps = state => {

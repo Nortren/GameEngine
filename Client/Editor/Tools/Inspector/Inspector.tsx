@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useDispatch, useSelector, useEffect} from 'react-redux';
 import {connect} from 'react-redux';
 import {GlobalEditorContext} from '../../Editor';
+import FileLoad from '../../Controls/Loader/Loader'
 /*
  class Inspector extends React.Component {
 
@@ -114,15 +115,10 @@ function InspectorEditor() {
     );
 };
 
-function FileLoad() {
-    return (
-        <div>Load...</div>
-    );
-}
 
 
 export default function Inspector() {
-    const [viewFile, setviewFile] = React.useState<object[]>('123123');
+    const [viewFile, setviewFile] = React.useState<object[]>('');
     const {testLoaderStatus} = React.useContext(GlobalEditorContext);
 
     React.useEffect(() => {
@@ -137,7 +133,7 @@ export default function Inspector() {
     }, [testLoaderStatus]);
 
     return (
-        <div>
+        <div className="inspector_container">
             {viewFile}
         </div>
     );
