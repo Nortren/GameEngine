@@ -30,7 +30,7 @@ export default function Hierarchy() {
 }
 
 function ItemChildrenList(props){
-    const test = [];
+    const imageDirectory = "Client/Editor/img/cubeMeshIcon.png";
     /**
      * Метод скрытия/отображения элементов в файловой структуре дерева эелементов
      * @param event
@@ -64,6 +64,8 @@ function ItemChildrenList(props){
             <div className="hierarchy_container_containerItem_view">
             <button className="hierarchy_container_containerItem-nodeButton" type="button"
                     onClick={expandHeirs}>{(Object.keys(props.item).length && props.item.children.length) ? '►':''}</button>
+                <img src={imageDirectory}
+                     className="project_container-list_container_img" alt=""/>
             <div className="hierarchy_container_containerItem-scene">{props.item.type}</div>
             </div>
             <div className="hierarchy_container_containerItem_array">

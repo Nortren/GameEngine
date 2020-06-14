@@ -4,6 +4,7 @@
     width: inherit;
     display: flex;
     flex-direction: column;
+    padding-left: 0;
     &_containerItem{
       list-style-type: none;
       display: flex;
@@ -11,9 +12,16 @@
       &-list{
         display: flex;
         flex-direction: column;
+        padding-left: 30px;
       }
       &_view{
         display: flex;
+        align-items: center;
+        img{
+          margin: 0 5px 0 0;
+          width: 20px;
+          height: 20px;
+        }
       }
       &-nodeButton{
         -webkit-appearance: none;
