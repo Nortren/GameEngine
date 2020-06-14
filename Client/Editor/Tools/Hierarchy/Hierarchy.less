@@ -12,15 +12,21 @@
       &-list{
         display: flex;
         flex-direction: column;
-        padding-left: 30px;
+        padding-left: 1em;
+
       }
       &_view{
+        margin-top: 5px;
         display: flex;
         align-items: center;
+        cursor: pointer;
         img{
           margin: 0 5px 0 0;
           width: 20px;
           height: 20px;
+        }
+        &-selected{
+          background-color: #202020;
         }
       }
       &-nodeButton{
@@ -37,6 +43,9 @@
         background: #2A2A2A;
         &:focus {
           outline: none;
+        }
+        &-selected{
+          background-color: #202020;
         }
       }
       &_array {

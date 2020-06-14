@@ -27,7 +27,7 @@ function InspectorEditor() {
             setFileName(resFilter.name);
             setFileType(resFilter.name);
         }
-    }, [inspectorData]);
+    }, [viewData]);
 
     return (
         <div className="inspector_container">
