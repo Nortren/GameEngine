@@ -11,9 +11,8 @@ import BL from "../BusinessLogic";
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
 import {connect} from 'react-redux';
 
-import {
-    fpsCounter
-} from '../Store/EditorStore/FPSCounter/Actions';
+import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
+import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 
 interface primaryEngineInitializationData {
     userID: string;
@@ -26,7 +25,7 @@ interface primaryEngineInitializationData {
 /**
  * Главный контрол первичной инициализации движка
  */
- class EngineInitialization extends React.Component implements primaryEngineInitializationData {
+class EngineInitialization extends React.Component implements primaryEngineInitializationData {
 
     public context: CanvasRenderingContext2D;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
@@ -60,7 +59,7 @@ interface primaryEngineInitializationData {
 
         this.createUserRoom(scene, renderer, canvas);
 
-
+        console.log(scene);
     }
 
     /**
@@ -295,6 +294,7 @@ interface primaryEngineInitializationData {
         }
 
         requestAnimationFrame(() => {
+            this.props.gameWorldState(scene);
             this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);
         });
         renderer.render(scene, camera);
@@ -389,12 +389,14 @@ interface primaryEngineInitializationData {
 
 const mapStateToProps = state => {
     return {
-        fps: state.fpsCounter.fps
+        fps: state.fpsCounter.fps,
+        GWState: state.gameWorldState.GWState
     };
 };
 
 const mapDispatchToProps = {
-    fpsCounter
+    fpsCounter,
+    gameWorldState
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EngineInitialization);

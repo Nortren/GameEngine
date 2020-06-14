@@ -4,6 +4,7 @@ import {physicsReducer} from "./Physics/Reducers";
 import {userStatusReducer} from "./UserData/Reducers";
 import {fpsCounter} from "./EditorStore/FPSCounter/Reducers";
 import {viewer} from "./EditorStore/Viewer/Reducers";
+import {gameWorldState} from "./StoreStateGameWorld/Reducers";
 
 //Собираем reducers
 export default combineReducers({
@@ -12,4 +13,5 @@ export default combineReducers({
     userData: userStatusReducer,
     fpsCounter: fpsCounter,
     viewer: viewer,
+    gameWorldState: gameWorldState,
 });
