@@ -31,7 +31,13 @@ export default function Hierarchy() {
 
 
     const clickOnElement = (data, event) => {
-        dispatch(changeViewer({name: "BusinessLogic.js", type: "file", fileData: "tetetete"}));
+        //Тестовый лодер загрузки данных с сервера
+        const loaderEvent = new CustomEvent('LoadStart', {
+            bubbles: true,
+            cancelable: true,
+            detail: {status: true}
+        });
+        getInfo(data,event,loaderEvent);
         const itemFindClass = 'hierarchy_container_containerItem_view';
         const itemChangeClass= 'hierarchy_container_containerItem_view-selected';
         const buttonFindClass= 'hierarchy_container_containerItem-nodeButton';
@@ -42,6 +48,28 @@ export default function Hierarchy() {
         changeHiirarchyClassLogickCSS(itemFindClass,itemChangeClass,event);
         changeHiirarchyClassLogickCSS(buttonFindClass,buttonChangeClass,event);
     };
+
+
+
+    const getInfo = (structure, event,loaderEvent) => {
+
+        const readFile = new CustomEvent('ReadFile', {
+            bubbles: true,
+            cancelable: true,
+            detail: {structure:{name:structure.type,type:'sceneObject',fileData:structure}}
+        });
+        const saveEvent = event.currentTarget;
+        //Включаем лоадер
+        saveEvent.dispatchEvent(loaderEvent);
+        saveEvent.dispatchEvent(readFile);
+        dispatch(changeViewer({name:structure.type,type:'sceneObject',fileData:structure}));
+        loaderEvent.detail.status = false;
+        //Выключаем лоадер
+        saveEvent.dispatchEvent(loaderEvent);
+        // event.target.dispatchEvent(loaderEvent);
+
+    };
+
 
     /**
      * Функция отвечающая которая навешивает стиль "выбранной строки"
@@ -91,7 +119,7 @@ function ItemChildrenList(props) {
                type={props.item.type}
     >
         <li className="hierarchy_container_containerItem-list"
-            onClick={props.clickOnElement.bind(null, '123')}>
+            onClick={props.clickOnElement.bind(null,props.item)}>
             <div className="hierarchy_container_containerItem_view">
                 <button className="hierarchy_container_containerItem-nodeButton" type="button"
                         onClick={expandHeirs}>{(Object.keys(props.item).length && props.item.children.length) ? '►' : ''}</button>
