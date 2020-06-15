@@ -25,9 +25,9 @@ function InspectorEditor() {
         if (resFilter) {
             setFileData(resFilter.fileData);
             setFileName(resFilter.name);
-            setFileType(resFilter.name);
+            setFileType(resFilter.type);
         }
-    }, [viewData]);
+    }, [inspectorData]);
 
     return (
         <div className="inspector_container">
@@ -40,7 +40,7 @@ function InspectorEditor() {
                     <div className="inspector_container__file-container_type">{fileType}</div>
                 </div>
                 <div className="inspector_container__file-container_body">
-                    {fileData}
+                    {fileType !=='sceneObject' ? fileData : Object.keys(fileData).map((item)=>{return <div><div>{item}</div><div>{typeof fileData[item] === 'object'? toString(fileData[item]) : fileData[item]}</div></div>})}
                 </div>
             </div>
         </div>
