@@ -11,6 +11,8 @@ import {
  * @returns {any}
  * @constructor
  */
+export const HierarchyContext = React.createContext();
+
 export default function Hierarchy() {
     let dispatch = useDispatch();
     const viewData = useSelector(state => state.gameWorldState.GWState);
@@ -22,14 +24,12 @@ export default function Hierarchy() {
         }
     }, [viewData]);
 
+
     /**
      * Клик по item из списка объектов на сцене
      * @param data
      * @param event
      */
-
-
-
     const clickOnElement = (data, event) => {
         //Тестовый лодер загрузки данных с сервера
         const loaderEvent = new CustomEvent('LoadStart', {
@@ -37,32 +37,31 @@ export default function Hierarchy() {
             cancelable: true,
             detail: {status: true}
         });
-        getInfo(data,event,loaderEvent);
+        getInfo(data, event, loaderEvent);
         const itemFindClass = 'hierarchy_container_containerItem_view';
-        const itemChangeClass= 'hierarchy_container_containerItem_view-selected';
-        const buttonFindClass= 'hierarchy_container_containerItem-nodeButton';
-        const buttonChangeClass= 'hierarchy_container_containerItem-nodeButton-selected';
+        const itemChangeClass = 'hierarchy_container_containerItem_view-selected';
+        const buttonFindClass = 'hierarchy_container_containerItem-nodeButton';
+        const buttonChangeClass = 'hierarchy_container_containerItem-nodeButton-selected';
 
         event.stopPropagation();
 
-        changeHiirarchyClassLogickCSS(itemFindClass,itemChangeClass,event);
-        changeHiirarchyClassLogickCSS(buttonFindClass,buttonChangeClass,event);
+        changeHiirarchyClassLogicCSS(itemFindClass, itemChangeClass, event);
+        changeHiirarchyClassLogicCSS(buttonFindClass, buttonChangeClass, event);
     };
 
 
-
-    const getInfo = (structure, event,loaderEvent) => {
+    const getInfo = (structure, event, loaderEvent) => {
 
         const readFile = new CustomEvent('ReadFile', {
             bubbles: true,
             cancelable: true,
-            detail: {structure:{name:structure.type,type:'sceneObject',fileData:structure}}
+            detail: {structure: {name: structure.type, type: 'sceneObject', fileData: structure}}
         });
         const saveEvent = event.currentTarget;
         //Включаем лоадер
         saveEvent.dispatchEvent(loaderEvent);
         saveEvent.dispatchEvent(readFile);
-        dispatch(changeViewer({name:structure.type,type:'sceneObject',fileData:structure}));
+        dispatch(changeViewer({name: structure.type, type: 'sceneObject', fileData: structure}));
         loaderEvent.detail.status = false;
         //Выключаем лоадер
         saveEvent.dispatchEvent(loaderEvent);
@@ -70,6 +69,15 @@ export default function Hierarchy() {
 
     };
 
+    const progressBarStatus = count => {
+        if (Object.keys(viewData).length && viewData.children.length === count) {
+            document.querySelector('.hierarchy_container-progressBarStatus').classList.remove('hierarchy_container-progressBarStatus');
+            document.querySelector('.loader_container').classList.add('hierarchy_container-progressBarStatus')
+        }
+    };
+
+
+    const progressBarLength = Object.keys(viewData).length ? viewData.children.length : 0;
 
     /**
      * Функция отвечающая которая навешивает стиль "выбранной строки"
@@ -77,17 +85,30 @@ export default function Hierarchy() {
      * @param itemChangeClass
      * @param event
      */
-   const changeHiirarchyClassLogickCSS =(itemFindClass,itemChangeClass,event)=>{
+    const changeHiirarchyClassLogicCSS = (itemFindClass, itemChangeClass, event) => {
         document.querySelectorAll('.'.concat(itemChangeClass)).forEach((item) => {
             item.classList.remove(itemChangeClass)
         });
         event.currentTarget.querySelector('.'.concat(itemFindClass)).classList.add(itemChangeClass);
     };
 
-    return <ItemChildrenList item={viewData} clickOnElement={clickOnElement} parent={true}/>
+
+    return <HierarchyContext.Provider value={{progressBarStatus, progressBarLength}}>
+        <div className="hierarchy_container hierarchy_container-progressBarStatus">
+            <ItemChildrenList item={viewData}
+                               clickOnElement={clickOnElement}
+                               parent={true} count={0}
+        />
+        </div>
+        <FileLoad/>
+    </HierarchyContext.Provider>
 }
 
 function ItemChildrenList(props) {
+    let {progressBarStatus} = React.useContext(HierarchyContext);
+
+    let count = props.count;
+
     const imageDirectory = "Client/Editor/img/cubeMeshIcon.png";
     /**
      * Метод скрытия/отображения элементов в файловой структуре дерева эелементов
@@ -112,14 +133,17 @@ function ItemChildrenList(props) {
             });
         }
     };
+
     // счетчик объектов на сцене
     // {/*<div>    {(Object.keys(props.item).length && props.parent) ? props.item.children.length : ''}</div>*/}
     return <ul className="hierarchy_container" id={new Date().getSeconds()}
                name={props.item.type}
                type={props.item.type}
     >
+
         <li className="hierarchy_container_containerItem-list"
-            onClick={props.clickOnElement.bind(null,props.item)}>
+            onClick={props.clickOnElement.bind(null, props.item)}>
+
             <div className="hierarchy_container_containerItem_view">
                 <button className="hierarchy_container_containerItem-nodeButton" type="button"
                         onClick={expandHeirs}>{(Object.keys(props.item).length && props.item.children.length) ? '►' : ''}</button>
@@ -131,9 +155,12 @@ function ItemChildrenList(props) {
                 </div>
             </div>
             <div className="hierarchy_container_containerItem_array">
+
                 {Object.keys(props.item).length ? props.item.children.map((item) => {
+                    count++;
+                    progressBarStatus(count);
                     // return <div className="hierarchy_container_containerItem_array-item">{item.type}</div>
-                    return <ItemChildrenList item={item} clickOnElement={props.clickOnElement}/>
+                    return <ItemChildrenList item={item} clickOnElement={props.clickOnElement} count={count}/>
                 }) : ''}
             </div>
         </li>
