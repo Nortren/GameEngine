@@ -40,7 +40,13 @@ function InspectorEditor() {
                     <div className="inspector_container__file-container_type">{fileType}</div>
                 </div>
                 <div className="inspector_container__file-container_body">
-                    {fileType !=='sceneObject' ? fileData : Object.keys(fileData).map((item)=>{return <div><div>{item}</div><div>{typeof fileData[item] === 'object'? toString(fileData[item]) : fileData[item]}</div></div>})}
+                    {fileType !== 'sceneObject' ? fileData : Object.keys(fileData).map((item) => {
+                        return <div>
+                            <div>{item}</div>
+                            {/*<div>{typeof fileData[item] === 'object' ? toString(fileData[item]) : fileData[item]}</div>*/}
+                            <div>{item === 'position' ? <div><div>{fileData[item].x}</div><div>{fileData[item].y}</div><div>{fileData[item].z}</div></div> : ''}</div>
+                        </div>
+                    })}
                 </div>
             </div>
         </div>
