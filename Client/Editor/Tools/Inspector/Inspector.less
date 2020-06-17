@@ -1,17 +1,68 @@
+.buttonVisible(){
+  margin: 5px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 0;
+  border-radius: 1px;
+  color: #8a8a8a;
+  font-size: 0.7em;
+  background: #2A2A2A;
+  &:hover {
+
+  }
+  &:focus {
+    outline: none;
+  }
+  &[disavled] {
+    color: #d2d5db;
+    cursor: not-allowed;
+  }
+}
+.inputArea(@width){
+  input {
+    margin: 0 3px 0 3px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid #595959;
+    color: #8a8a8a;
+    font-size: 1em;
+    background-color: #1e1e1e;
+    max-height: 20px;
+    width: @width;
+    &:hover {
+
+    }
+    &:focus {
+      outline: none;
+    }
+    &[disavled] {
+      color: #d2d5db;
+      cursor: not-allowed;
+    }
+  }
+}
 
 .inspector {
   &_container {
     width: inherit;
     height: 100%;
-    &__file{
-      &-container{
+    &__file {
+      &-container {
         height: 100%;
-        &_header{
+        &_header {
           height: 5%;
           display: flex;
           justify-content: space-between;
         }
-        &_body{
+        &_body {
           height: 95%;
           word-break: break-word;
           overflow: auto;
@@ -24,32 +75,61 @@
       width: inherit;
       height: 10%;
       &_button {
-        margin: 5px;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        border: 1px solid #595959;
-        border-radius: 1px;
-        color: #8a8a8a;
-        font-size: 0.7em;
-        background: #2A2A2A;
-        &:hover {
+        .buttonVisible();
 
-          background: #595959;
-        }
-        &:focus {
-          outline: none;
-          background: #202020;
-        }
-        &[disavled] {
-          color: #d2d5db;
-          background: #6c7589;
-          cursor: not-allowed;
-        }
       }
+    }
+  }
+}
+
+.containerSceneObject {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #595959;
+
+  &-buttonHide{
+  .buttonVisible()
+  }
+
+  &-header {
+    display: flex;
+  }
+  &-body {
+    &-hide {
+      display: none;
+    }
+  }
+
+  &-transform {
+    &_item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      &-name {
+        width: 20%;
+      }
+      &-arrayValue {
+     .inputArea(30%);
+        width: 80%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: baseline;
+      }
+    }
+  }
+
+
+  &_light{
+    &-intensity{
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      .inputArea(70%);
+      &_name{
+
+      }
+
     }
   }
 }
