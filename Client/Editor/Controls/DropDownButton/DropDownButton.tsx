@@ -10,7 +10,8 @@ export default class DropDownButton extends React.Component {
         this.state = {
             style: {
                 height: props.height || '100%',
-                width: props.width,
+                width: props.options.width,
+                margin: props.options.margin || 0,
                 justifySelf: props.justifySelf,
             },
             moveY: 0, countMove: 0,

@@ -34,7 +34,7 @@
     border: 1px solid #595959;
     color: #8a8a8a;
     font-size: 1em;
-    background-color: #1e1e1e;
+    background-color: #2A2A2A;
     max-height: 20px;
     width: @width;
     &:hover {
@@ -119,18 +119,53 @@
     }
   }
 
+  .lightContainer(){
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .inputArea(70%);
+}
+ .inputCheckbox(){
+   margin: 0 3px 0 3px;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   border: 1px solid #595959;
+   color: #8a8a8a;
+   font-size: 1em;
+   background-color: #2A2A2A;
+   max-height: 20px;
+ }
 
   &_light{
-    &-intensity{
+    &__container{
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
-      .inputArea(70%);
-      &_name{
+      align-items: center;
+     
+      &-intensity{
+        .lightContainer();
+        &_name{
 
+        }
       }
+      &-color{
+        .lightContainer();
+        &_name{
 
+        }
+        &-body{
+          border: 1px solid #595959;
+          width: 70%;
+          height: 20px;
+          margin: 0 3px 0 3px;
+        }
+      }
     }
+
   }
 }
 
