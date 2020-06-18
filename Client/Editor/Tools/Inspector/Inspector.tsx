@@ -3,6 +3,8 @@ import {useDispatch, useSelector, useEffect} from 'react-redux';
 import {connect} from 'react-redux';
 import {GlobalEditorContext} from '../../Editor';
 import FileLoad from '../../Controls/Loader/Loader'
+import DropDownButton from '../../Controls/DropDownButton/DropDownButton';
+
 import {Template} from "webpack";
 
 /**
@@ -75,12 +77,36 @@ function SceneObjectTemplate(props) {
 function ComponentTemplateLight(props) {
     const source = props.source;
 
-    const templateName = source.type;
-
+    const templateName = 'Light';
+const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
     const template = <div>
-        <div className="containerSceneObject_light-intensity">
-            <div className="containerSceneObject_light-intensity_name">Intensity</div>
+        <div className="containerSceneObject_light__container-color">
+            <div className="containerSceneObject_light__container-color_name">Type</div>
+            <DropDownButton options={{
+                name: source.type,
+                parentElement: null,
+                id: 4,
+                width:'70%',
+                margin: '0 3px 0 3px',
+                componentArray: [],
+                linkList: ['AmbientLight','DirectionalLight','HemisphereLight','Light','LightProbe','PointLight','RectAreaLight','SpotLight']
+            }}/>
+        </div>
+        <div className="containerSceneObject_light__container-intensity">
+            <div className="containerSceneObject_light__container-intensity_name">Intensity</div>
             <input value={source.intensity}/>
+        </div>
+        <div className="containerSceneObject_light__container-color">
+            <div className="containerSceneObject_light__container-color_name">Color</div>
+            <div className="containerSceneObject_light__container-color-body" style={{backgroundColor:rgb}}></div>
+        </div>
+        <div className="containerSceneObject_light__container">
+            <div className="containerSceneObject_light__container-castShadow_name">CastShadow</div>
+            <input type="checkbox" checked/>
+        </div>
+        <div className="containerSceneObject_light__container">
+            <div className="containerSceneObject_light__container-receiveShadow_name">ReceiveShadow</div>
+            <input type="checkbox" checked/>
         </div>
     </div>;
 
