@@ -64,12 +64,12 @@ function SceneObjectTemplate(props) {
     const type = props.source.type;
     let template: object;
 
-    if(type === 'HemisphereLight'){
-        template =   <ComponentTemplateLight source={source}/>
+    if (type === 'HemisphereLight') {
+        template = <ComponentTemplateLight source={source}/>
     }
-    else{
-        template =     <TransformControl position={source.position} rotation={source.rotation}
-                                         scale={source.scale}/>
+    else {
+        template = <TransformControl position={source.position} rotation={source.rotation}
+                                     scale={source.scale}/>
     }
 
     return template;
@@ -78,7 +78,7 @@ function ComponentTemplateLight(props) {
     const source = props.source;
 
     const templateName = 'Light';
-const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
+    const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
     const template = <div>
         <div className="containerSceneObject_light__container-color">
             <div className="containerSceneObject_light__container-color_name">Type</div>
@@ -86,10 +86,10 @@ const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
                 name: source.type,
                 parentElement: null,
                 id: 4,
-                width:'70%',
+                width: '70%',
                 margin: '0 3px 0 3px',
                 componentArray: [],
-                linkList: ['AmbientLight','DirectionalLight','HemisphereLight','Light','LightProbe','PointLight','RectAreaLight','SpotLight']
+                linkList: ['AmbientLight', 'DirectionalLight', 'HemisphereLight', 'Light', 'LightProbe', 'PointLight', 'RectAreaLight', 'SpotLight']
             }}/>
         </div>
         <div className="containerSceneObject_light__container-intensity">
@@ -98,15 +98,19 @@ const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
         </div>
         <div className="containerSceneObject_light__container-color">
             <div className="containerSceneObject_light__container-color_name">Color</div>
-            <div className="containerSceneObject_light__container-color-body" style={{backgroundColor:rgb}}></div>
+            <div className="containerSceneObject_light__container-color-body" style={{backgroundColor: rgb}}></div>
         </div>
         <div className="containerSceneObject_light__container">
             <div className="containerSceneObject_light__container-castShadow_name">CastShadow</div>
-            <input type="checkbox" checked/>
+            <div class="checkbox">
+                <input id="check1" type="checkbox" name="check" value="check1"/>
+                <label for="check1"/>
+            </div>
         </div>
         <div className="containerSceneObject_light__container">
             <div className="containerSceneObject_light__container-receiveShadow_name">ReceiveShadow</div>
-            <input type="checkbox" checked/>
+            <input id="check2" type="checkbox" name="check" value="check2"/>
+            <label for="check2"/>
         </div>
     </div>;
 
