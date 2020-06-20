@@ -38,14 +38,14 @@ export default class DropDownButton extends React.Component {
 
         return (
             <div
-                 class="dropDown_contentContainer-content">{Link.name}
-                <div class="dropDown_arrayListContainer">
+                className="dropDown_contentContainer-content">{Link.name}
+                <div className="dropDown_arrayListContainer">
 
                 { ( Link.arrayList ? Link.arrayList .map(listLink => (
 
                     typeof listLink === 'string' ? (
                         <div onClick={this.clicklLink.bind(this, Link.name,listLink)}
-                             class="dropDown_contentContainer-content">{listLink}</div>) : this.getDropDownList(listLink)
+                             className="dropDown_contentContainer-content">{listLink}</div>) : this.getDropDownList(listLink)
                 )) : 'Empty')}
                  </div>
             </div>
@@ -72,15 +72,15 @@ export default class DropDownButton extends React.Component {
 
         return (
             <div className="dropDownButton_container" style={this.state.style}>
-                <button drop className="dropDownButton_container-button"
+                <button  className="dropDownButton_container-button"
                         onClick={this.clickButton}>
                     {this.props.options.name}
-                    <div class="dropDown_contentContainer">
+                    <div className="dropDown_contentContainer">
                         { ( this.props.options.linkList ? this.props.options.linkList.map(Link => (
 
                             typeof Link === 'string' ? (
                                 <div onClick={this.clicklLink.bind(this, Link)}
-                                     class="dropDown_contentContainer-content">{Link}</div>) : this.getDropDownList(Link)
+                                     className="dropDown_contentContainer-content">{Link}</div>) : this.getDropDownList(Link)
                         )) : 'Empty')}
 
                     </div>

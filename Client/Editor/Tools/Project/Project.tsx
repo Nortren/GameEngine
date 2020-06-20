@@ -36,7 +36,6 @@ export default function Project() {
     let dispatch = useDispatch();
 
 
-
     React.useEffect(() => {
         getDirectory();
     }, []);
@@ -176,14 +175,15 @@ function ShowDirectoryStructureSelectedFolder(options: IStructureSelectedFolder)
     if (options.directoryProject && options.directoryProject.type === 'directory') {
         {
             options.directoryProject.arrayOfStructures.sort((a, b) => a.type === 'directory' ? -1 : 1);
-            return options.directoryProject.arrayOfStructures.map((directoryItem) => {
+            return options.directoryProject.arrayOfStructures.map((directoryItem, index) => {
                 const image = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
 
+                let keyIndex = index + 'project_container-elementContainer_element';
                 return (
 
-                    <div className="project_container-elementContainer_element"
+                    <div key={keyIndex} className="project_container-elementContainer_element"
                          onClick={options.clickOnElement.bind(null, directoryItem)}>
                         <img src={image}
                              className="project_container-elementContainer_element-image" alt=""/>
@@ -226,24 +226,25 @@ function CreateStructure(options: IStructure) {
     };
     if (options.data) {
         {
-            return options.data.map((directoryItem) => {
+            return options.data.map((directoryItem, index) => {
                 const imageDirectory = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
-
+                let keyIndexUl = index + '_project_container-list_' + directoryItem.name;
+                let keyIndexLi = index + '_project_container-list_container_' + directoryItem.name;
                 return (
-                    <ul className="project_container-list" id={directoryItem.name}
+                    <ul key={keyIndexUl} className="project_container-list" id={directoryItem.name}
                         name={directoryItem.name}
                         type={directoryItem.type}
                     >
-                        <li className="project_container-list_container"
+                        <li key={keyIndexLi} className="project_container-list_container"
                             onClick={options.clickOnElement.bind(null, directoryItem)}>
                             <div className="project_container-list_container_view">
                                 {directoryItem.type === 'directory' ?
                                     <button className="project_container-list_container_nodeButton" type="button"
                                             onClick={expandHeirs}>&#9658;</button> : ''}
                                 <div className="project_container-list_container_view-directoryNaming"
-                                     data-directoryName={directoryItem.name}
+                                     data-directoryname={directoryItem.name}
                                      onClick={options.showContents}>
                                     <img src={imageDirectory}
                                          className="project_container-list_container_img" alt=""/>

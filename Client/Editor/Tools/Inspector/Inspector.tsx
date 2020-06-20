@@ -50,14 +50,6 @@ function InspectorEditor() {
     );
 }
 
-/*
- Object.keys(fileData).map((item) => {
- return <div>
- <div>{item}</div>
- {/!*<div>{typeof fileData[item] === 'object' ? toString(fileData[item]) : fileData[item]}</div>*!/}
- <div>{item === 'position' ? <TransformTemplate position={fileData[item]} />  : ''}</div>
- </div>
- })*/
 
 function SceneObjectTemplate(props) {
     const source = props.source;
@@ -67,6 +59,9 @@ function SceneObjectTemplate(props) {
     if (type === 'HemisphereLight') {
         template = <ComponentTemplateLight source={source}/>
     }
+    else if (type === 'Mesh' || type === 'Sprite') {
+        template = <ComponentTemplateMesh source={source}/>
+    }
     else {
         template = <TransformControl position={source.position} rotation={source.rotation}
                                      scale={source.scale}/>
@@ -74,13 +69,110 @@ function SceneObjectTemplate(props) {
 
     return template;
 }
+
+function ComponentTemplateMesh(props) {
+    const source = props.source;
+
+    const templateMeshFilterName = 'Mesh Filter';
+    const templateMeshFilter = <div>
+        <div className="containerSceneObject_mesh__container-type">
+            <div className="containerSceneObject__mesh__container-type_name">{source.type}</div>
+            <DropDownButton options={{
+                name: source.geometry.type,
+                parentElement: null,
+                id: 4,
+                width: '70%',
+                margin: '0 3px 0 3px',
+                componentArray: [],
+                linkList: [
+                    'BoxBufferGeometry',
+                    'CircleBufferGeometry',
+                    'ConeBufferGeometry',
+                    'CylinderBufferGeometry',
+                    'DodecahedronBufferGeometry',
+                    'ExtrudeBufferGeometry',
+                    'IcosahedronBufferGeometry',
+                    'LatheBufferGeometry',
+                    'OctahedronBufferGeometry',
+                    'ParametricBufferGeometry',
+                    'PlaneBufferGeometry',
+                    'PolyhedronBufferGeometry',
+                    'RingBufferGeometry',
+                    'ShapeBufferGeometry',
+                    'SphereBufferGeometry',
+                    'TetrahedronBufferGeometry',
+                    'TextBufferGeometry',
+                    'TorusBufferGeometry',
+                    'TorusKnotBufferGeometry',
+                    'TubeBufferGeometry',
+                ]
+            }}/>
+        </div>
+    </div>;
+
+    const templateMeshRendererName = 'Mesh Renderer';
+    const templatesMaterials = <div>
+            <div className="containerSceneObject_mesh__container-type">
+                <div className="containerSceneObject__mesh__container-type_name">Materials</div>
+                <DropDownButton options={{
+                    name: source.material.type,
+                    parentElement: null,
+                    id: 4,
+                    width: '70%',
+                    margin: '0 3px 0 3px',
+                    componentArray: [],
+                    linkList: [
+                        'MeshBasicMaterial',
+                        'MeshDepthMaterial',
+                        'MeshDistanceMaterial',
+                        'MeshLambertMaterial',
+                        'MeshMatcapMaterial',
+                        'MeshNormalMaterial',
+                        'MeshPhongMaterial',
+                        'MeshPhysicalMaterial',
+                        'MeshStandardMaterial',
+                        'MeshToonMaterial'
+                    ]
+                }}/>
+
+            </div>
+            <div className="containerSceneObject_mesh__container-type">
+                <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
+                {source.material.map.image ? <img class="containerSceneObject_mesh__container-type_img" src={source.material.map.image.currentSrc} alt=""/> : ''}
+            </div>
+        </div>
+    ;
+    const templatesLighting = <div className="containerSceneObject_mesh__container-type">
+        <div className="containerSceneObject_checkbox__container">
+            <div className="containerSceneObject_light__container-receiveShadow_name">CastShadow</div>
+            <input id="check2" type="checkbox" name="check" value="check2"/>
+            <label for="check2"/>
+        </div>
+    </div>;
+    const templateMeshRenderer = <div>
+        <TemplateManagementContainer template={templatesMaterials} templateName={'Materials'}/>
+        <TemplateManagementContainer template={templatesLighting} templateName={'Lighting'}/>
+
+    </div>;
+
+
+    return (
+        <div>
+            <TransformControl position={props.source.position} rotation={props.source.rotation}
+                              scale={props.source.scale}/>
+            <TemplateManagementContainer template={templateMeshFilter} templateName={templateMeshFilterName}/>
+            <TemplateManagementContainer template={templateMeshRenderer} templateName={templateMeshRendererName}/>
+        </div>
+    );
+}
+
 function ComponentTemplateLight(props) {
     const source = props.source;
 
     const templateName = 'Light';
     const rgb = `rgb(${source.color.r},${source.color.g},${source.color.b})`;
     const template = <div>
-        <div className="containerSceneObject_light__container-color">
+        <div className="containerSceneObject_light__container-type">
             <div className="containerSceneObject_light__container-color_name">Type</div>
             <DropDownButton options={{
                 name: source.type,
@@ -96,18 +188,18 @@ function ComponentTemplateLight(props) {
             <div className="containerSceneObject_light__container-intensity_name">Intensity</div>
             <input value={source.intensity}/>
         </div>
-        <div className="containerSceneObject_light__container-color">
-            <div className="containerSceneObject_light__container-color_name">Color</div>
-            <div className="containerSceneObject_light__container-color-body" style={{backgroundColor: rgb}}></div>
+        <div className="containerSceneObject_light__container-type">
+            <div className="containerSceneObject_light__container-type_name">Color</div>
+            <div className="containerSceneObject_light__container-type-body" style={{backgroundColor: rgb}}></div>
         </div>
-        <div className="containerSceneObject_light__container">
+        <div className="containerSceneObject_checkbox__container">
             <div className="containerSceneObject_light__container-castShadow_name">CastShadow</div>
             <div class="checkbox">
                 <input id="check1" type="checkbox" name="check" value="check1"/>
                 <label for="check1"/>
             </div>
         </div>
-        <div className="containerSceneObject_light__container">
+        <div className="containerSceneObject_checkbox__container">
             <div className="containerSceneObject_light__container-receiveShadow_name">ReceiveShadow</div>
             <input id="check2" type="checkbox" name="check" value="check2"/>
             <label for="check2"/>
