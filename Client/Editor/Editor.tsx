@@ -238,13 +238,13 @@ export default class Editor extends React.Component {
                 </div>
                 <GlobalEditorContext.Provider value={{inspectorData,testLoaderStatus}}>
                     <div className="editor_container">
-                        <EditorWindows id='editorHeader' position="top"
+                        <EditorWindows   id='editorHeader' position="top"
                                        componentArray={[topMenuHeader, bottomMenuHeader]}/>
                         <EditorWindows id='sceneObject' position="left" componentArray={[tabSceneObject]}/>
-                        <EditorWindows id='scene' position="center" componentArray={[sceneTopMenuHeader]}
+                        <EditorWindows  id='scene' position="center" componentArray={[sceneTopMenuHeader]}
                                        templateStyle={{border: "none"}}/>
-                        <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
-                        <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
+                        <EditorWindows  id='inspector' position="right" componentArray={[tabInspector]}/>
+                        <EditorWindows  id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
 
                     </div>
                 </GlobalEditorContext.Provider>

@@ -66,7 +66,7 @@ export default class LayoutBrowserTabs extends React.Component {
                         className={this.tabClassName}
                         data-id={element.id}
                         data-idtab={this.specialIdentificationClassArea + '_' + element.id}
-                        data-idContainerTab={this.specialIdentificationClassArea}>
+                        data-idcontainertab={this.specialIdentificationClassArea}>
 
                     {element.name ? element.name : element.id}
                 </button>
@@ -118,7 +118,7 @@ export default class LayoutBrowserTabs extends React.Component {
      * Собираем данные по tab и tabArea на вкладке
      */
     updateTabStatus() {
-        this._tab = document.querySelectorAll('[data-idContainerTab='+this.specialIdentificationClassArea+']');
+        this._tab = document.querySelectorAll('[data-idcontainertab='+this.specialIdentificationClassArea+']');
         this._tabArea = document.querySelectorAll('[data-idcontainerarea='+this.specialIdentificationClassArea+']');
     }
 
@@ -168,7 +168,7 @@ export default class LayoutBrowserTabs extends React.Component {
                             parentElement: this.props.options.id,
                             id: 4,
                             componentArray: [],
-                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','ObjectView','Project']} , 'UI element Debugger']
+                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','Inspector','Project']} , 'UI element Debugger']
                         }}/>
                     </div>
                 </div>

@@ -120,6 +120,16 @@
   flex-direction: column;
   border: 1px solid #595959;
 
+  &_checkbox{
+    &__container{
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      margin: 5px;
+      .inputCheckbox();
+    }
+  }
+
   &-buttonHide{
   .buttonVisible()
   }
@@ -128,6 +138,7 @@
     display: flex;
   }
   &-body {
+    min-height: 30px;
     &-hide {
       display: none;
     }
@@ -175,7 +186,44 @@
 
         }
       }
-      &-color{
+      &-type{
+        width: 100%;
+        .lightContainer();
+        &_name{
+
+        }
+        &-body{
+          border: 1px solid #595959;
+          width: 70%;
+          height: 20px;
+          margin: 0 3px 0 3px;
+        }
+      }
+    }
+
+  }
+  &_mesh{
+    &__container{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &-intensity{
+        .lightContainer();
+        &_name{
+
+        }
+      }
+      &-type{
+        margin: 5px;
+        &_img{
+          width: 30px;
+          border: 1px solid #595959;
+        }
+        &__light {
+          width: 100%;
+          .lightContainer();
+        }
         .lightContainer();
         &_name{
 
