@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 import {GlobalEditorContext} from '../../Editor';
 import FileLoad from '../../Controls/Loader/Loader'
 import DropDownButton from '../../Controls/DropDownButton/DropDownButton';
-
-import {Template} from "webpack";
+import {
+    changeImageEditor,changeImageEditorStatus
+} from '../../../Store/EditorStore/ImageEditor/Actions';
 
 /**
  * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
@@ -18,7 +19,6 @@ function InspectorEditor() {
     const [fileName, setFileName] = React.useState<object[]>('');
     const [fileType, setFileType] = React.useState<object[]>('');
     const viewData = useSelector(state => state.viewer.viewData);
-
     const {inspectorData} = React.useContext(GlobalEditorContext);
 
     React.useEffect(() => {
@@ -72,7 +72,7 @@ function SceneObjectTemplate(props) {
 
 function ComponentTemplateMesh(props) {
     const source = props.source;
-
+    const dispatch = useDispatch();
     const templateMeshFilterName = 'Mesh Filter';
     const templateMeshFilter = <div>
         <div className="containerSceneObject_mesh__container-type">
@@ -110,7 +110,14 @@ function ComponentTemplateMesh(props) {
         </div>
     </div>;
 
+    const openInImageEditor = (e,imgSrc) => {
+      console.log('openInImageEditor',imgSrc);
+        dispatch(changeImageEditor(imgSrc));
+        dispatch(changeImageEditorStatus(true));
+    };
+
     const templateMeshRendererName = 'Mesh Renderer';
+    const imgSrc = source.material.map.image.currentSrc;
     const templatesMaterials = <div>
             <div className="containerSceneObject_mesh__container-type">
                 <div className="containerSceneObject__mesh__container-type_name">Materials</div>
@@ -138,7 +145,9 @@ function ComponentTemplateMesh(props) {
             </div>
             <div className="containerSceneObject_mesh__container-type">
                 <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
-                {source.material.map.image ? <img class="containerSceneObject_mesh__container-type_img" src={source.material.map.image.currentSrc} alt=""/> : ''}
+                {source.material.map.image ?
+                    <img onClick={(e)=>openInImageEditor(e,imgSrc)} class="containerSceneObject_mesh__container-type_img"
+                         src={imgSrc} alt=""/> : ''}
             </div>
         </div>
     ;
