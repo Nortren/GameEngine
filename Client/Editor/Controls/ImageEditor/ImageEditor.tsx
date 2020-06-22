@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
+import Button from "../Button/Button";
 /**
  * Крмпонент простмотра изображений(TODO редактирования)
  * @returns {any}
@@ -69,6 +70,11 @@ export default function ImageEditor(props) {
         <div className="imageEditor_container-body">
             <div className="imageEditor_container-body_editorTools">
                 <div className="imageEditor_container-body_editorTools-tools">
+                    <Button options={ {name: '', id: 1, componentArray: [],style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 2, componentArray: [],style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 3, componentArray: [],style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 1, componentArray: [],style:{margin:'5px'}}}/>
+
                 </div>
                 <button onClick={closeImageEditor} className="imageEditor_container-body_editorTools-buttonClose">X
                 </button>
