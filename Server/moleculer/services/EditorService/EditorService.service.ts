@@ -70,6 +70,7 @@ class EditorService extends Service {
     sendInfoAboutStructure(request, response): void {
         const name = request.params.name;
         const type = request.params.type;
+        const extension = request.params.extension;
         const promise = new Promise((resolve, reject) => {
             fs.readFile(request.params.path, "utf8", (error, data) => {
                 resolve(data);
@@ -83,6 +84,7 @@ class EditorService extends Service {
                     data: {
                         name,
                         type,
+                        extension,
                         fileData: data
                     }
                 }));
@@ -105,11 +107,11 @@ class EditorService extends Service {
         let currentDirectory = fs.readdirSync(folder, 'utf8');
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
-
+console.log(folder,'Folder');
             if (fs.statSync(pathOfCurrentItem).isFile()) {
                 arrayOfStructures.push({
                     name: file,
-                    path: folder.concat('/' + file),
+                    path: folder.concat('\\' + file),
                     extension: path.extname(file),
                     type: 'file'
                 });

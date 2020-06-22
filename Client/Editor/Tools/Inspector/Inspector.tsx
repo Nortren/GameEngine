@@ -5,7 +5,7 @@ import {GlobalEditorContext} from '../../Editor';
 import FileLoad from '../../Controls/Loader/Loader'
 import DropDownButton from '../../Controls/DropDownButton/DropDownButton';
 import {
-    changeImageEditor,changeImageEditorStatus
+    changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
 
 /**
@@ -14,10 +14,11 @@ import {
  * @constructor
  */
 function InspectorEditor() {
-
+    const dispatch = useDispatch();
     const [fileData, setFileData] = React.useState<object[]>('');
     const [fileName, setFileName] = React.useState<object[]>('');
     const [fileType, setFileType] = React.useState<object[]>('');
+    const [fileExtension, setFileExtension] = React.useState<object[]>('');
     const viewData = useSelector(state => state.viewer.viewData);
     const {inspectorData} = React.useContext(GlobalEditorContext);
 
@@ -29,8 +30,25 @@ function InspectorEditor() {
             setFileData(resFilter.fileData);
             setFileName(resFilter.name);
             setFileType(resFilter.type);
+            setFileExtension(resFilter.extension);
         }
     }, [inspectorData]);
+
+
+    const typeRegexp = (extension) => {
+        let arrayExtension = [/png/, /jepg/, /gif/];
+
+       return arrayExtension.filter((item) => {
+            return extension.match(item);
+        });
+    };
+
+    if(typeRegexp(fileExtension).length){
+        dispatch(changeImageEditor(inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g,'/')));
+        dispatch(changeImageEditorStatus(true));
+    }
+
+    console.log(typeRegexp(fileExtension),'TestRegXp');
 
     return (
         <div className="inspector_container">
@@ -110,8 +128,8 @@ function ComponentTemplateMesh(props) {
         </div>
     </div>;
 
-    const openInImageEditor = (e,imgSrc) => {
-      console.log('openInImageEditor',imgSrc);
+    const openInImageEditor = (e, imgSrc) => {
+        console.log('openInImageEditor', imgSrc);
         dispatch(changeImageEditor(imgSrc));
         dispatch(changeImageEditorStatus(true));
     };
@@ -146,7 +164,7 @@ function ComponentTemplateMesh(props) {
             <div className="containerSceneObject_mesh__container-type">
                 <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
                 {source.material.map.image ?
-                    <img onClick={(e)=>openInImageEditor(e,imgSrc)} class="containerSceneObject_mesh__container-type_img"
+                    <img onClick={(e) => openInImageEditor(e, imgSrc)} class="containerSceneObject_mesh__container-type_img"
                          src={imgSrc} alt=""/> : ''}
             </div>
         </div>
