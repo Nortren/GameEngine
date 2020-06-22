@@ -11,8 +11,6 @@ import {HierarchyContext} from '../../Tools/Hierarchy/Hierarchy';
 export default function FileLoad() {
     if (HierarchyContext && HierarchyContext._currentValue) {
         const {progressBarStatus, progressBarLength, progressStatusLength} = React.useContext(HierarchyContext);
-
-        console.log(progressBarLength, progressStatusLength, 'Loader');
     }
     return (
         <div className="loader_container">

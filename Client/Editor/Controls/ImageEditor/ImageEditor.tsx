@@ -23,8 +23,8 @@ export default function ImageEditor(props) {
             img.src = imageEditorStore;
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
             const bodySize = document.getElementsByClassName('imageEditor_container-body')[0] as HTMLCanvasElement;
-            const bodySizeWidth = bodySize.offsetWidth * 0.5;
-            const bodySizeHeight = bodySize.offsetHeight * 0.5;
+            const bodySizeWidth = bodySize.offsetWidth * 0.8;
+            const bodySizeHeight = bodySize.offsetHeight * 0.8;
             canvas.setAttribute('width', bodySizeWidth.toString());
             canvas.setAttribute('height', bodySizeHeight.toString());
 

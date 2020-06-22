@@ -18,6 +18,7 @@ export const viewer = (state = initionState, action) => {
                         if (item.name === action.payload.name) {
                             item.type = action.payload.type;
                             item.fileData = action.payload.fileData;
+                            item.extension = action.payload.extension;
 
                             return item;
                         }
