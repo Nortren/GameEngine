@@ -70,10 +70,10 @@ export default function ImageEditor(props) {
         <div className="imageEditor_container-body">
             <div className="imageEditor_container-body_editorTools">
                 <div className="imageEditor_container-body_editorTools-tools">
-                    <Button options={ {name: '', id: 1, componentArray: [],style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 2, componentArray: [],style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 3, componentArray: [],style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 1, componentArray: [],style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: '', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
 
                 </div>
                 <button onClick={closeImageEditor} className="imageEditor_container-body_editorTools-buttonClose">X

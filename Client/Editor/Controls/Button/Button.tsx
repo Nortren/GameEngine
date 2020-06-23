@@ -18,7 +18,7 @@ export default class Button extends React.Component {
         this.clickButton = this.clickButton.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount(props) {
 
     };
 

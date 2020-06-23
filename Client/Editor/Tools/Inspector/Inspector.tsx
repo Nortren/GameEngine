@@ -38,18 +38,16 @@ function InspectorEditor() {
     const typeRegexp = (extension) => {
         let arrayExtension = [/png/, /jepg/, /gif/];
 
-       return arrayExtension.filter((item) => {
+        return arrayExtension.filter((item) => {
             return extension.match(item);
         });
     };
-
-    if(typeRegexp(fileExtension).length){
-        dispatch(changeImageEditor(inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g,'/')));
-        dispatch(changeImageEditorStatus(true));
+    if (fileExtension) {
+        if (typeRegexp(fileExtension).length) {
+            dispatch(changeImageEditor(inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g, '/')));
+            dispatch(changeImageEditorStatus(true));
+        }
     }
-
-    console.log(typeRegexp(fileExtension),'TestRegXp');
-
     return (
         <div className="inspector_container">
             <div className="inspector_container-componentsDataContainer">
