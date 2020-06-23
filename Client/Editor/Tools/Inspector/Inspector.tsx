@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {GlobalEditorContext} from '../../Editor';
 import FileLoad from '../../Controls/Loader/Loader'
 import DropDownButton from '../../Controls/DropDownButton/DropDownButton';
+import Button from "../../Controls/Button/Button";
 import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
@@ -14,7 +15,6 @@ import {
  * @constructor
  */
 function InspectorEditor() {
-    const dispatch = useDispatch();
     const [fileData, setFileData] = React.useState<object[]>('');
     const [fileName, setFileName] = React.useState<object[]>('');
     const [fileType, setFileType] = React.useState<object[]>('');
@@ -35,19 +35,6 @@ function InspectorEditor() {
     }, [inspectorData]);
 
 
-    const typeRegexp = (extension) => {
-        let arrayExtension = [/png/, /jepg/, /gif/];
-
-        return arrayExtension.filter((item) => {
-            return extension.match(item);
-        });
-    };
-    if (fileExtension) {
-        if (typeRegexp(fileExtension).length) {
-            dispatch(changeImageEditor(inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g, '/')));
-            dispatch(changeImageEditorStatus(true));
-        }
-    }
     return (
         <div className="inspector_container">
             <div className="inspector_container-componentsDataContainer">
@@ -59,11 +46,74 @@ function InspectorEditor() {
                     <div className="inspector_container__file-container_type">{fileType}</div>
                 </div>
                 <div className="inspector_container__file-container_body">
-                    {fileType !== 'sceneObject' ? fileData : <SceneObjectTemplate source={fileData}/>}
+                    {fileType !== 'sceneObject' ?
+                        <FileReaderTemplate source={{fileData, fileExtension, inspectorData}}/> :
+                        <SceneObjectTemplate source={fileData}/>}
                 </div>
             </div>
         </div>
     );
+}
+
+function FileReaderTemplate(props) {
+
+    const source = props.source;
+    const type = props.source.type;
+    let fileExtension = 'text';
+    let template: object = <div>NONE</div>;
+    const typeRegexp = (extension) => {
+        let arrayExtension = [/png/, /jepg/, /gif/];
+
+        return arrayExtension.filter((item) => {
+            return extension.match(item);
+        });
+    };
+
+
+
+//TODO поправить ошибку с неправильым порядком инициализации компонентов
+    if (source.fileExtension) {
+        fileExtension = typeRegexp(source.fileExtension).length ? 'image' : 'text';
+        if (fileExtension === 'image') {
+            const imgPath = source.inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g, '/');
+
+            template = <ImageReaderTemplate source={{imgPath}}/>
+        }
+        else {
+            template = <TextReaderTemplate source={{source}}/>
+        }
+    }
+
+
+    return template;
+}
+
+function ImageReaderTemplate(props) {
+    const dispatch = useDispatch();
+    const source = props.source;
+    const templateName = 'ImageViewer';
+    React.useEffect(() => {
+        document.addEventListener("Edit", (event) => {
+            dispatch(changeImageEditor(source.imgPath));
+            dispatch(changeImageEditorStatus(true));
+        });
+    }, []);
+
+    const template = <div className="fileReader_container">
+
+        <div className="fileReader_container-header">
+            <Button options={ {name: 'Edit',iconType:'edit', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px',border:0}}}/>
+        </div>
+        <img  className="fileReader_container-image" src={source.imgPath} alt=""/>
+    </div>;
+
+
+    return <TemplateManagementContainer template={template} templateName={templateName}/>;
+}
+function TextReaderTemplate(props) {
+    const source = props.source;
+
+    return (<div>{source.fileData}</div>)
 }
 
 

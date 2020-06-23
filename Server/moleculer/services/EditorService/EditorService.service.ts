@@ -107,7 +107,6 @@ class EditorService extends Service {
         let currentDirectory = fs.readdirSync(folder, 'utf8');
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
-console.log(folder,'Folder');
             if (fs.statSync(pathOfCurrentItem).isFile()) {
                 arrayOfStructures.push({
                     name: file,

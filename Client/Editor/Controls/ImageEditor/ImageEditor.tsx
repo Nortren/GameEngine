@@ -17,7 +17,15 @@ export default function ImageEditor(props) {
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
     const dispatch = useDispatch();
 
+
+
+
     React.useEffect(() => {
+
+        document.addEventListener("off", (event) => {
+            dispatch(changeImageEditorStatus(false));
+        });
+
         const canvas = document.getElementById("imageEditorCanvas")  as HTMLCanvasElement;
         if (canvas) {
             const img = new Image();
@@ -70,14 +78,15 @@ export default function ImageEditor(props) {
         <div className="imageEditor_container-body">
             <div className="imageEditor_container-body_editorTools">
                 <div className="imageEditor_container-body_editorTools-tools">
-                    <Button options={ {name: '', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: '', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-
+                    <Button options={ {name: 'dropper',iconType:'dropper', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'pencil',iconType:'pencil', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'brush',iconType:'brush', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'tint',iconType:'tint', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'photo',iconType:'photo', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'bold',iconType:'bold', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'scissors',iconType:'scissors', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                 </div>
-                <button onClick={closeImageEditor} className="imageEditor_container-body_editorTools-buttonClose">X
-                </button>
+                <Button options={ {name: 'off',iconType:'off', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
             </div>
             <div className="imageEditor_container-body_canvas">
                 <canvas id="imageEditorCanvas"></canvas>

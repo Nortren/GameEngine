@@ -23,7 +23,8 @@ export default class Button extends React.Component {
         this.id = props.id;
         this.state = {
             style: {
-                margin: props.options.style ? props.options.style.margin : ''
+                margin: props.options.style ? props.options.style.margin : '',
+                border: props.options.style ? props.options.style.border : ''
             },
             moveY: 0, countMove: 0,
             moveXBoll: true,
@@ -38,7 +39,7 @@ export default class Button extends React.Component {
     };
 
     startInit() {
-        enum fontAwesome {
+        enum fontAwesomeArray {
             faEyeDropper = 'dropper',
             faPencilAlt = 'pencil',
             faPaintBrush = 'brush',
@@ -46,14 +47,14 @@ export default class Button extends React.Component {
             faPhotoVideo = 'photo',
             faPowerOff = 'off',
             faHandScissors = 'scissors',
-            faBold = 'bold'
+            faBold = 'bold',
+            faEdit = 'edit'
         }
-        console.log();
         if (this.props.options.type === 'EditorButton') {
-            return <div className="editorButton_container" style={this.state.style}>
+            return <div className="editorButton_container" >
                 <button className="editorButton_container-button"
-                        onClick={this.clickButton.bind(this, this.props.options.name)}>
-                    <FontAwesomeIcon icon={fontAwesome['dropper']} size='2x'/>
+                        onClick={this.clickButton.bind(this, this.props.options.name)} style={this.state.style}>
+                    <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]} size='2x'/>
                 </button>
             </div>
         }
