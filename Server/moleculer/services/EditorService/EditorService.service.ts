@@ -107,11 +107,14 @@ class EditorService extends Service {
         let currentDirectory = fs.readdirSync(folder, 'utf8');
         currentDirectory.forEach(file => {
             let pathOfCurrentItem = path.join(folder, file);
-            if (fs.statSync(pathOfCurrentItem).isFile()) {
+            const fileStats = fs.statSync(pathOfCurrentItem);
+            if (fileStats.isFile()) {
+
                 arrayOfStructures.push({
                     name: file,
                     path: folder.concat('\\' + file),
                     extension: path.extname(file),
+                    stats:fileStats,
                     type: 'file'
                 });
             }

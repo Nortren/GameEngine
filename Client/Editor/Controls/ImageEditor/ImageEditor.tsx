@@ -58,7 +58,7 @@ export default function ImageEditor(props) {
                 }
                 catch (err) {
                     //	выводит необходимую ошибку
-                    console.log('Ошибка');
+                    console.log(err,'_Ошибка');
                 }
             };
 
