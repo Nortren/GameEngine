@@ -78,15 +78,16 @@ export default function ImageEditor(props) {
         <div className="imageEditor_container-body">
             <div className="imageEditor_container-body_editorTools">
                 <div className="imageEditor_container-body_editorTools-tools">
-                    <Button options={ {name: 'dropper',iconType:'dropper', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'pencil',iconType:'pencil', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'brush',iconType:'brush', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'tint',iconType:'tint', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'photo',iconType:'photo', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'bold',iconType:'bold', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'scissors',iconType:'scissors', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'dropper',iconType:'Dropper',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'pencil',iconType:'PencilAlt',iconSize:'2x', id: 2, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'brush',iconType:'PaintBrush',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'tint',iconType:'Tint', id: 1,iconSize:'2x', componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'photo',iconType:'PhotoVideo',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'bold',iconType:'Bold', id: 2,iconSize:'2x', componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'scissors',iconType:'HandScissors',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'eraser',iconType:'Eraser',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                 </div>
-                <Button options={ {name: 'off',iconType:'off', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                <Button options={ {name: 'off',iconType:'PowerOff',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
             </div>
             <div className="imageEditor_container-body_canvas">
                 <canvas id="imageEditorCanvas"></canvas>

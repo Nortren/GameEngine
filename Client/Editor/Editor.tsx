@@ -173,13 +173,12 @@ export default class Editor extends React.Component {
             id: 1,
             componentArray: [fileButton, editButton, gameObjectButton, componentButton]
         };
-
-        const handTool = {componentName: Button, name: '', icon: '', id: 1, componentArray: []};
-        const moveTool = {componentName: Button, name: 'Full screen scene', icon: '', id: 2, componentArray: []};
-        const rotateTool = {componentName: Button, name: '', icon: '', id: 3, componentArray: []};
-        const scaleTool = {componentName: Button, name: 'Hide screen scene', icon: '', id: 4, componentArray: []};
-        const rectTool = {componentName: Button, name: '', icon: '', id: 4, componentArray: []};
-        const customEditorTool = {componentName: Button, name: '', id: 4, componentArray: []};
+        const handTool = {componentName: Button, name: '',iconType:'MousePointer',iconSize:'1x', id: 1, componentArray: []};
+        const moveTool = {componentName: Button, name: 'Full screen scene',iconType:'Expand',iconSize:'1x', id: 2, componentArray: []};
+        const rotateTool = {componentName: Button, name: '',iconType:'Redo',iconSize:'1x', id: 3, componentArray: []};
+        const scaleTool = {componentName: Button, name: 'Hide screen scene',iconType:'ArrowsAlt',iconSize:'1x', id: 4, componentArray: []};
+        const rectTool = {componentName: Button, name: '',iconType:'Dropper',iconSize:'1x', id: 4, componentArray: []};
+        const customEditorTool = {componentName: Button,iconType:'Dropper',iconSize:'1x', id: 4, componentArray: []};
 
         const bottomMenuHeader = {
             componentName: TopMenu,
@@ -187,9 +186,9 @@ export default class Editor extends React.Component {
             componentArray: [handTool, moveTool, rotateTool, scaleTool, rectTool, customEditorTool]
         };
 
-        const start = {componentName: Button, name: '', id: 1, componentArray: []};
-        const pause = {componentName: Button, name: '', id: 2, componentArray: []};
-        const step = {componentName: Button, name: '', id: 3, componentArray: []};
+        const start = {componentName: Button, name: '',iconType:'Dropper',iconSize:'1x', id: 1, componentArray: []};
+        const pause = {componentName: Button, name: '',iconType:'Dropper',iconSize:'1x', id: 2, componentArray: []};
+        const step = {componentName: Button, name: '',iconType:'Dropper',iconSize:'1x', id: 3, componentArray: []};
 
         const sceneTopMenuHeader = {
             componentName: ControllPanel,

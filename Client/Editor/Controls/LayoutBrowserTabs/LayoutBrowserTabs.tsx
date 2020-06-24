@@ -162,9 +162,11 @@ export default class LayoutBrowserTabs extends React.Component {
                         {this.addTab()}
                     </div>
                     <div className="tab_container_header-setting">
-                        <Button options={{name: '', id: 4, componentArray: []}}/>
+                        <Button options={ {name: 'dropper',iconType:'Paperclip',iconSize:'1x', id: 1, componentArray: []}}/>
                         <DropDownButton options={{
                             name: '',
+                            iconType:'Tools',
+                            iconSize:'1x',
                             parentElement: this.props.options.id,
                             id: 4,
                             componentArray: [],

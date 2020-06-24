@@ -17,7 +17,6 @@ export default class ControllPanel extends React.Component {
             moveXBoll: true,
             fps: 0
         };
-        this.clickButton = this.clickButton.bind(this);
     }
 
     componentDidMount() {
@@ -28,8 +27,16 @@ export default class ControllPanel extends React.Component {
 
     }
 
-    clickButton() {
-
+    /**
+     * Метод который рендерит переданные в наш компонент сторонние компоненты
+     * @returns {any}
+     */
+    getComponents() {
+        return (
+            this.props.options.componentArray.map(Component => (
+                <Component.componentName key={Component.name + Component.id} options={Component}/>
+            ))
+        );
     }
 
     render() {
@@ -40,10 +47,7 @@ export default class ControllPanel extends React.Component {
                 <div className="controllPanel_container-left">
                 </div>
                 <div className="controllPanel_container-center">
-                    <Button options={ {name: '', id: 1, componentArray: []}}/>
-                    <Button options={ {name: '', id: 2, componentArray: []}}/>
-                    <Button options={ {name: '', id: 3, componentArray: []}}/>
-
+                    {this.props.options.componentArray ? this.getComponents() : ''}
                 </div>
                 <div className="controllPanel_container-right">
                     <FPSCounter/>

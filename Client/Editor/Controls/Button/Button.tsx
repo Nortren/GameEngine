@@ -1,15 +1,34 @@
 import * as React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-// import {
-//     faEyeDropper,
-//     faPencilAlt,
-//     faPaintBrush,
-//     faTint,
-//     faPhotoVideo,
-//     faPowerOff,
-//     faHandScissors,
-//     faBold
-// } from '@fortawesome/free-solid-svg-icons'
+import {
+    faEyeDropper,
+    faPencilAlt,
+    faPaintBrush,
+    faTint,
+    faPhotoVideo,
+    faPowerOff,
+    faHandScissors,
+    faBold,
+    faExpandAlt,
+    faExpandArrowsAlt,
+    faExpand,
+    faWrench,
+    faSlidersH,
+    faPlay, faPalette,
+    faMousePointer,
+    faHammer,
+    faFolderOpen,
+    faFolderMinus,
+    faFolderPlus,
+    faFile,
+    faCompressArrowsAlt,
+    faArrowsAlt,
+    faEdit,
+    faEraser,
+    faTools,
+faPaperclip,
+    faRedo,
+} from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
 
@@ -40,28 +59,50 @@ export default class Button extends React.Component {
 
     startInit() {
         enum fontAwesomeArray {
-            faEyeDropper = 'dropper',
-            faPencilAlt = 'pencil',
-            faPaintBrush = 'brush',
-            faTint = 'tint',
-            faPhotoVideo = 'photo',
-            faPowerOff = 'off',
-            faHandScissors = 'scissors',
-            faBold = 'bold',
-            faEdit = 'edit'
+            faEyeDropper = 'Dropper',
+            faPencilAlt = 'PencilAlt',
+            faPaintBrush = 'PaintBrush',
+            faTint = 'Tint',
+            faPhotoVideo = 'PhotoVideo',
+            faPowerOff = 'PowerOff',
+            faHandScissors = 'HandScissors',
+            faBold = 'Bold',
+            faExpandAlt = 'ExpandAlt',
+            faExpandArrowsAlt = 'ExpandArrowsAlt',
+            faExpand = 'Expand',
+            faWrench = 'Wrench',
+            faSlidersH = 'SlidersH',
+            faPlay = 'Play',
+            faPalette = 'Palette',
+            faMousePointer = 'MousePointer',
+            faHammer = 'Hammer',
+            faFolderOpen = 'FolderOpen',
+            faFolderMinus = 'FolderMinus',
+            faFolderPlus = 'FolderPlus',
+            faFile = 'File',
+            faCompressArrowsAlt = 'CompressArrowsAlt',
+            faArrowsAlt = 'ArrowsAlt',
+            faEdit = 'Edit',
+            faEraser = 'Eraser',
+            faTools = 'Tools',
+            faPaperclip = 'Paperclip',
+            faRedo = 'Redo'
         }
         if (this.props.options.type === 'EditorButton') {
-            return <div className="editorButton_container" >
+            return <div className="editorButton_container">
                 <button className="editorButton_container-button"
                         onClick={this.clickButton.bind(this, this.props.options.name)} style={this.state.style}>
-                    <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]} size='2x'/>
+                    <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
+                                     size={this.props.options.iconSize}/>
                 </button>
             </div>
         }
         else {
             return <div className="button_container" style={this.state.style}>
                 <button className="button_container-button"
-                        onClick={this.clickButton.bind(this, this.props.options.name)}>{this.props.options.icon || this.props.options.name}</button>
+                        onClick={this.clickButton.bind(this, this.props.options.name)}><FontAwesomeIcon
+                    icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
+                    size={this.props.options.iconSize}/></button>
             </div>
         }
     }
