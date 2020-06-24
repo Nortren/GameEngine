@@ -62,7 +62,7 @@ function FileReaderTemplate(props) {
     let fileExtension = 'text';
     let template: object = <div>NONE</div>;
     const typeRegexp = (extension) => {
-        let arrayExtension = [/png/, /jepg/, /gif/];
+        let arrayExtension = [/png/, /jepg/,/jpg/, /gif/];
 
         return arrayExtension.filter((item) => {
             return extension.match(item);
@@ -102,7 +102,7 @@ function ImageReaderTemplate(props) {
     const template = <div className="fileReader_container">
 
         <div className="fileReader_container-header">
-            <Button options={ {name: 'Edit',iconType:'edit', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px',border:0}}}/>
+            <Button options={ {name: 'Edit',iconType:'Edit',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px',border:0}}}/>
         </div>
         <img  className="fileReader_container-image" src={source.imgPath} alt=""/>
     </div>;
