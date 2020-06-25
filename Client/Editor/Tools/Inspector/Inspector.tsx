@@ -210,39 +210,95 @@ function ComponentTemplateMesh(props) {
         dispatch(changeImageEditorStatus(true));
     };
 
-    const templateMeshRendererName = 'Mesh Renderer';
-    const imgSrc = source.material.map.image.currentSrc;
-    const templatesMaterials = <div>
-            <div className="containerSceneObject_mesh__container-type">
-                <div className="containerSceneObject__mesh__container-type_name">Materials</div>
-                <DropDownButton options={{
-                    name: source.material.type,
-                    parentElement: null,
-                    id: 4,
-                    width: '70%',
-                    margin: '0 3px 0 3px',
-                    componentArray: [],
-                    linkList: [
-                        'MeshBasicMaterial',
-                        'MeshDepthMaterial',
-                        'MeshDistanceMaterial',
-                        'MeshLambertMaterial',
-                        'MeshMatcapMaterial',
-                        'MeshNormalMaterial',
-                        'MeshPhongMaterial',
-                        'MeshPhysicalMaterial',
-                        'MeshStandardMaterial',
-                        'MeshToonMaterial'
-                    ]
-                }}/>
+    const findImageData = (imgSrc) => {
+        return imgSrc.length;
+    };
 
+    const templateMeshRendererName = 'Mesh Renderer';
+    // const imgSrc = source.material.map.image.currentSrc;
+    const imgSrc = source.material;
+    const imageResultArray = findImageData(imgSrc);
+    const templatesMaterials = <div>
+
+            {imageResultArray ? imgSrc.map((imgMaterial) => {
+                return (
+                    <div>
+                        <div className="containerSceneObject_mesh__container-type">
+                            <div className="containerSceneObject__mesh__container-type_name">Materials</div>
+                            <DropDownButton options={{
+                                name: imgMaterial.type,
+                                parentElement: null,
+                                id: 4,
+                                width: '70%',
+                                margin: '0 3px 0 3px',
+                                componentArray: [],
+                                linkList: [
+                                    'MeshBasicMaterial',
+                                    'MeshDepthMaterial',
+                                    'MeshDistanceMaterial',
+                                    'MeshLambertMaterial',
+                                    'MeshMatcapMaterial',
+                                    'MeshNormalMaterial',
+                                    'MeshPhongMaterial',
+                                    'MeshPhysicalMaterial',
+                                    'MeshStandardMaterial',
+                                    'MeshToonMaterial'
+                                ]
+                            }}/>
+                        </div>
+                        <div className="containerSceneObject_mesh__container-type">
+                            <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
+                            {imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)}
+                                                    class="containerSceneObject_mesh__container-type_img"
+                                                    src={imgMaterial.map.image.currentSrc} alt=""/> :
+                                <div className="containerSceneObject_mesh__container-type_color"
+                                     style={{backgroundColor: `rgb(${imgMaterial.color.r},${imgMaterial.color.g},${imgMaterial.color.b})`}}></div>
+                            }
+                        </div>
+
+                    </div>
+                )
+            }) : <div>
+                <div className="containerSceneObject_mesh__container-type">
+                    <div className="containerSceneObject__mesh__container-type_name">Materials</div>
+                    <DropDownButton options={{
+                        name: source.material.type,
+                        parentElement: null,
+                        id: 4,
+                        width: '70%',
+                        margin: '0 3px 0 3px',
+                        componentArray: [],
+                        linkList: [
+                            'MeshBasicMaterial',
+                            'MeshDepthMaterial',
+                            'MeshDistanceMaterial',
+                            'MeshLambertMaterial',
+                            'MeshMatcapMaterial',
+                            'MeshNormalMaterial',
+                            'MeshPhongMaterial',
+                            'MeshPhysicalMaterial',
+                            'MeshStandardMaterial',
+                            'MeshToonMaterial'
+                        ]
+                    }}/>
+                </div>
+                <div className="containerSceneObject_mesh__container-type">
+                    <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
+                    <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
+                         class="containerSceneObject_mesh__container-type_img"
+                         src={imgSrc.map.image.currentSrc} alt=""/>
+                </div>
             </div>
-            <div className="containerSceneObject_mesh__container-type">
-                <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
-                {source.material.map.image ?
-                    <img onClick={(e) => openInImageEditor(e, imgSrc)} class="containerSceneObject_mesh__container-type_img"
-                         src={imgSrc} alt=""/> : ''}
-            </div>
+            }
+
+            {/*    <div className="containerSceneObject_mesh__container-type">
+             <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
+             {imageResultArray? imgSrc.map((imgMaterial)=>{
+             return (imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)} class="containerSceneObject_mesh__container-type_img"
+             src={imgMaterial.map.image.currentSrc} alt=""/> :    <div className="containerSceneObject_mesh__container-type_color" style={{backgroundColor:`rgb(${imgMaterial.color.r},${imgMaterial.color.g},${imgMaterial.color.b})` }}></div>)
+             }):  <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)} class="containerSceneObject_mesh__container-type_img"
+             src={imgSrc.map.image.currentSrc} alt=""/>}
+             </div>*/}
         </div>
     ;
     const templatesLighting = <div className="containerSceneObject_mesh__container-type">
