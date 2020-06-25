@@ -14,7 +14,7 @@ import {
     faExpand,
     faWrench,
     faSlidersH,
-    faPlay, faPalette,
+    faPalette,
     faMousePointer,
     faHammer,
     faFolderOpen,
@@ -28,6 +28,12 @@ import {
     faTools,
 faPaperclip,
     faRedo,
+    faList,
+    faObjectUngroup,
+    faCut,
+    faPlay,
+    faPause,
+    faForward,
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
@@ -86,7 +92,13 @@ export default class Button extends React.Component {
             faEraser = 'Eraser',
             faTools = 'Tools',
             faPaperclip = 'Paperclip',
-            faRedo = 'Redo'
+            faRedo = 'Redo',
+            faList = 'List',
+            faObjectUngroup = 'ObjectUngroup',
+            faCut = 'Cut',
+            faPlay = 'Play',
+            faPause = 'Pause',
+            faForward = 'Forward'
         }
         if (this.props.options.type === 'EditorButton') {
             return <div className="editorButton_container">

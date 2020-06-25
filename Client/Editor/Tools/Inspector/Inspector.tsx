@@ -22,6 +22,23 @@ function InspectorEditor() {
     const viewData = useSelector(state => state.viewer.viewData);
     const {inspectorData} = React.useContext(GlobalEditorContext);
 
+    const template = <div className="inspector_container">
+        <div className="inspector_container-componentsDataContainer">
+
+        </div>
+        <div className="inspector_container__file-container">
+            <div className="inspector_container__file-container_header">
+                <div className="inspector_container__file-container_name">{fileName}</div>
+                <div className="inspector_container__file-container_type">{fileType}</div>
+            </div>
+            <div className="inspector_container__file-container_body">
+                {fileType !== 'sceneObject' ?
+                    <FileReaderTemplate source={{fileData, fileExtension, inspectorData}}/> :
+                    <SceneObjectTemplate source={fileData}/>}
+            </div>
+        </div>
+    </div>
+
     React.useEffect(() => {
         const resFilter = viewData.filter((item) => {
             return item.name === inspectorData.structure.name
@@ -35,24 +52,7 @@ function InspectorEditor() {
     }, [inspectorData]);
 
 
-    return (
-        <div className="inspector_container">
-            <div className="inspector_container-componentsDataContainer">
-
-            </div>
-            <div className="inspector_container__file-container">
-                <div className="inspector_container__file-container_header">
-                    <div className="inspector_container__file-container_name">{fileName}</div>
-                    <div className="inspector_container__file-container_type">{fileType}</div>
-                </div>
-                <div className="inspector_container__file-container_body">
-                    {fileType !== 'sceneObject' ?
-                        <FileReaderTemplate source={{fileData, fileExtension, inspectorData}}/> :
-                        <SceneObjectTemplate source={fileData}/>}
-                </div>
-            </div>
-        </div>
-    );
+    return template;
 }
 
 function FileReaderTemplate(props) {
@@ -60,9 +60,10 @@ function FileReaderTemplate(props) {
     const source = props.source;
     const type = props.source.type;
     let fileExtension = 'text';
+    let structureExtension = source.inspectorData.structure.extension;
     let template: object = <div>NONE</div>;
     const typeRegexp = (extension) => {
-        let arrayExtension = [/png/, /jepg/,/jpg/, /gif/];
+        let arrayExtension = [/png/, /jepg/, /jpg/, /gif/];
 
         return arrayExtension.filter((item) => {
             return extension.match(item);
@@ -70,17 +71,16 @@ function FileReaderTemplate(props) {
     };
 
 
-
 //TODO поправить ошибку с неправильым порядком инициализации компонентов
     if (source.fileExtension) {
         fileExtension = typeRegexp(source.fileExtension).length ? 'image' : 'text';
-        if (fileExtension === 'image') {
+        if (fileExtension === 'image' && source.fileExtension === structureExtension) {
             const imgPath = source.inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g, '/');
 
-            template = <ImageReaderTemplate source={{imgPath}}/>
+            template = <ImageReaderTemplate source={source} imgPath={imgPath}/>
         }
         else {
-            template = <TextReaderTemplate source={{source}}/>
+            template = <TextReaderTemplate source={source}/>
         }
     }
 
@@ -91,20 +91,48 @@ function FileReaderTemplate(props) {
 function ImageReaderTemplate(props) {
     const dispatch = useDispatch();
     const source = props.source;
+    const structure = source.inspectorData.structure;
+    const imgSize = structure.stats.size;
+    const imgPath = props.imgPath;
+    const imgName = structure.name.replace(/\.[^/.]+$/g, '');
+    const createDate = new Date(structure.stats.birthtime).toLocaleString();
     const templateName = 'ImageViewer';
     React.useEffect(() => {
         document.addEventListener("Edit", (event) => {
-            dispatch(changeImageEditor(source.imgPath));
+            dispatch(changeImageEditor(imgPath));
             dispatch(changeImageEditorStatus(true));
         });
     }, []);
 
     const template = <div className="fileReader_container">
-
-        <div className="fileReader_container-header">
-            <Button options={ {name: 'Edit',iconType:'Edit',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px',border:0}}}/>
+        <div className="fileReader_container-data">
+            <div className="fileReader_container-data_name">Name</div>
+            <input className="fileReader_container-data-body" value={imgName}></input>
         </div>
-        <img  className="fileReader_container-image" src={source.imgPath} alt=""/>
+
+        <div className="fileReader_container-data">
+            <div className="fileReader_container-data_name">Path</div>
+            <input className="fileReader_container-data-body" value={imgPath}></input>
+        </div>
+        <div className="fileReader_container-data">
+            <div className="fileReader_container-data_name">Size</div>
+            <div className="fileReader_container-data_body">{imgSize}</div>
+        </div>
+        <div className="fileReader_container-data">
+            <div className="fileReader_container-data_name">Create Date</div>
+            <div className="fileReader_container-data_body">{createDate}</div>
+        </div>
+        <div className="fileReader_container-header">
+            <Button options={ {
+                name: 'Edit',
+                iconType: 'Edit',
+                iconSize: '1x',
+                id: 1,
+                componentArray: [],
+                style: {margin: '5px'}
+            }}/>
+        </div>
+        <img className="fileReader_container-image" src={imgPath} alt=""/>
     </div>;
 
 

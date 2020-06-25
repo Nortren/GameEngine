@@ -84,7 +84,7 @@ export default function ImageEditor(props) {
                     <Button options={ {name: 'tint',iconType:'Tint', id: 1,iconSize:'2x', componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                     <Button options={ {name: 'photo',iconType:'PhotoVideo',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                     <Button options={ {name: 'bold',iconType:'Bold', id: 2,iconSize:'2x', componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
-                    <Button options={ {name: 'scissors',iconType:'HandScissors',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+                    <Button options={ {name: 'scissors',iconType:'Cut',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                     <Button options={ {name: 'eraser',iconType:'Eraser',iconSize:'2x', id: 3, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
                 </div>
                 <Button options={ {name: 'off',iconType:'PowerOff',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
