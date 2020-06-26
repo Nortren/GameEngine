@@ -157,7 +157,7 @@ function SceneObjectTemplate(props) {
         template = <ComponentTemplateMesh source={source}/>
     }
     else {
-        template = <TransformControl position={source.position} rotation={source.rotation}
+        template = <TransformControl source={source} position={source.position} rotation={source.rotation}
                                      scale={source.scale}/>
     }
 
@@ -290,15 +290,6 @@ function ComponentTemplateMesh(props) {
                 </div>
             </div>
             }
-
-            {/*    <div className="containerSceneObject_mesh__container-type">
-             <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
-             {imageResultArray? imgSrc.map((imgMaterial)=>{
-             return (imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)} class="containerSceneObject_mesh__container-type_img"
-             src={imgMaterial.map.image.currentSrc} alt=""/> :    <div className="containerSceneObject_mesh__container-type_color" style={{backgroundColor:`rgb(${imgMaterial.color.r},${imgMaterial.color.g},${imgMaterial.color.b})` }}></div>)
-             }):  <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)} class="containerSceneObject_mesh__container-type_img"
-             src={imgSrc.map.image.currentSrc} alt=""/>}
-             </div>*/}
         </div>
     ;
     const templatesLighting = <div className="containerSceneObject_mesh__container-type">
@@ -317,8 +308,7 @@ function ComponentTemplateMesh(props) {
 
     return (
         <div>
-            <TransformControl position={props.source.position} rotation={props.source.rotation}
-                              scale={props.source.scale}/>
+            <TransformControl source={source}/>
             <TemplateManagementContainer template={templateMeshFilter} templateName={templateMeshFilterName}/>
             <TemplateManagementContainer template={templateMeshRenderer} templateName={templateMeshRendererName}/>
         </div>
@@ -368,8 +358,7 @@ function ComponentTemplateLight(props) {
 
     return (
         <div>
-            <TransformControl position={props.source.position} rotation={props.source.rotation}
-                              scale={props.source.scale}/>
+            <TransformControl source={source}/>
             <TemplateManagementContainer template={template} templateName={templateName}/>
         </div>
     );
@@ -428,17 +417,44 @@ function TemplateManagementContainer(props) {
  * @constructor
  */
 function TransformControl(props) {
+    const source = props.source;
+    const position = source.position;
+    const rotation = source.rotation;
+    const scale = source.scale;
+    const transformData = {position, rotation, scale};
+
     const templateName = 'Transform';
-    const template = Object.keys(props).map((item) => {
+    const template = Object.keys(transformData).map((item) => {
+        const [inputDataX, changeInputDataX] = React.useState<object[]>(transformData[item].x);
+        const [inputDataY, changeInputDataY] = React.useState<object[]>(transformData[item].y);
+        const [inputDataZ, changeInputDataZ] = React.useState<object[]>(transformData[item].z);
+        //Пробрасываем данные в шину событий редактора
+        const changeTransform = (data, setFunction, item,name) => {
+            setFunction(data);
+            const readFile = new CustomEvent('EditorEventBus', {
+                bubbles: true,
+                cancelable: true,
+                detail: {data, item,name, source}
+            });
+            event.target.dispatchEvent(readFile);
+        };
+
+
         return (
             <div className="containerSceneObject-transform_item">
                 <div className="containerSceneObject-transform_item-name">
                     {item}
                 </div>
                 <div className="containerSceneObject-transform_item-arrayValue">
-                    X<input value={props[item].x}/>
-                    Y<input value={props[item].y}/>
-                    Z<input value={props[item].z}/>
+                    X<input value={inputDataX} name="x" onChange={(event) => {
+                    changeTransform(event.target.value, changeInputDataX, item,event.target.name)
+                }}/>
+                    Y<input value={inputDataY} name="y" onChange={(event) => {
+                    changeTransform(event.target.value, changeInputDataY, item,event.target.name)
+                }}/>
+                    Z<input value={inputDataZ} name="z" onChange={(event) => {
+                    changeTransform(event.target.value, changeInputDataZ, item,event.target.name)
+                }}/>
                 </div>
             </div>
         )

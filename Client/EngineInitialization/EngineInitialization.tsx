@@ -52,14 +52,13 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         const canvas = this.createCanvas();
 
         const renderer = new THREE.WebGLRenderer({canvas: canvas});
-        const scene = new THREE.Scene();
-        scene.scale.set(1, 1, 1);
+        this.scene = new THREE.Scene();
+        this.scene.scale.set(1, 1, 1);
         this.blData = new BL();
 
 
-        this.createUserRoom(scene, renderer, canvas);
+        this.createUserRoom(this.scene, renderer, canvas);
 
-        console.log(scene);
     }
 
     /**
@@ -277,7 +276,12 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * @param user
      */
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
-
+        if (this.props.editorData) {
+            const idSearchElement = this.props.editorData.source.id;
+            const searchObject = this.scene.getObjectById(idSearchElement);
+            const changeData = this.props.editorData.data;
+            searchObject[this.props.editorData.item][this.props.editorData.name] = changeData;
+        }
 
         let now = performance.now();
         let duration = now - timeStart;
@@ -299,10 +303,6 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         });
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
-        /*   for (let key in enemyArray) {
-         enemyArray[key].informationAboutWorld(enemyArray[key], playerInformation, this._mapCreator, scene);
-         }*/
-
 
         this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
             playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
@@ -365,6 +365,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
 
     componentDidUpdate() {
+
+
         this._animate = this.props.animations;
     }
 
