@@ -21,11 +21,21 @@ import {globalVariables} from "./GlobalVariables";
 class GameEngineContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+           editorData: null
+        };
     }
 
     componentDidMount() {
+        document.addEventListener("EditorEventBus", (event) => {
+            this.eventBusEditor(event)
+        });
 
 
+    }
+
+    eventBusEditor(event){
+        this.setState({editorData:event.detail});
 
     }
 
@@ -44,6 +54,7 @@ class GameEngineContainer extends React.Component {
                     direction={this.props.direction}
                     changePhysics={this.props.changePhysics}
                     skillButton={this.props.skillButton}
+                    editorData={this.state.editorData}
                 />
                 <StickController className=".container-fluid"
                                  showElement={this.props.userStatusAuthorization}
