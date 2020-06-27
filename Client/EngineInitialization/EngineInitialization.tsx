@@ -299,7 +299,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * @param user
      */
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
-        if (this.props.editorData) {
+        if (this.props.editorData && this.props.editorData.name) {
 
 
             if (this.props.editorData.name === "EditorEventBus") {
@@ -313,7 +313,12 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 const geometry = this.createGeometry(createGeometryName);
                 this.scene.add(geometry);
             }
-
+            const createTab = new CustomEvent('changeEditorData', {
+                bubbles: true,
+                cancelable: true,
+                detail: {status: true}
+            });
+            document.dispatchEvent(createTab);
         }
 
         let now = performance.now();

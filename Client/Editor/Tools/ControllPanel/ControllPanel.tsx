@@ -17,11 +17,11 @@ export default class ControllPanel extends React.Component {
     }
 
     componentDidMount(a, b) {
-        console.log(a, b);
+
     };
 
     componentDidUpdate(a, b) {
-        console.log(a, b);
+
     }
 
 

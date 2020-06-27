@@ -17,7 +17,6 @@ import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
 import {globalVariables} from "./GlobalVariables";
-import {reject} from "q";
 
 class GameEngineContainer extends React.Component {
     constructor(props) {
@@ -36,7 +35,10 @@ class GameEngineContainer extends React.Component {
             console.log(event, "Create 3d Object");
             this.eventBusEditor("CreateObject", event);
         });
-
+        document.addEventListener("changeEditorData", (event) => {
+            console.log(event,"changeEditorData");
+            this.eventBusEditor("", {});
+        });
         //Обнуляем state для предотвращения повторноговыполнения события(т.к они будут постоянно храниться в стейте и проверка будет положительна)
 
 
