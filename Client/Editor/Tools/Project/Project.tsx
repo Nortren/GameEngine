@@ -159,6 +159,8 @@ export default function Project() {
 
     };
 
+
+
     return (
         <div className="project">   {loadData ? showProject() : <FileLoad/>}</div>
     )
@@ -175,7 +177,7 @@ function ShowDirectoryStructureSelectedFolder(options: IStructureSelectedFolder)
     if (options.directoryProject && options.directoryProject.type === 'directory') {
         {
             options.directoryProject.arrayOfStructures.sort((a, b) => a.type === 'directory' ? -1 : 1);
-            return options.directoryProject.arrayOfStructures.map((directoryItem, index) => {
+            return React.useMemo(()=> options.directoryProject.arrayOfStructures.map((directoryItem, index) => {
                 const image = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
@@ -191,7 +193,7 @@ function ShowDirectoryStructureSelectedFolder(options: IStructureSelectedFolder)
                             className="project_container-elementContainer_element-text">{directoryItem.name}</div>
                     </div>
                 );
-            })
+            }),options.directoryProject.arrayOfStructures)
         }
     }
 }
@@ -226,12 +228,13 @@ function CreateStructure(options: IStructure) {
     };
     if (options.data) {
         {
-            return options.data.map((directoryItem, index) => {
+            return React.useMemo(()=>  options.data.map((directoryItem, index) => {
                 const imageDirectory = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
                 let keyIndexUl = index + '_project_container-list_' + directoryItem.name;
                 let keyIndexLi = index + '_project_container-list_container_' + directoryItem.name;
+                let keyIndexStructure = index + '_createStructure_' + directoryItem.name;
                 return (
                     <ul key={keyIndexUl} className="project_container-list" id={directoryItem.name}
                         name={directoryItem.name}
@@ -255,14 +258,16 @@ function CreateStructure(options: IStructure) {
                             </div>
                             <div className="project_container-list_container_array">
                                 {directoryItem.arrayOfStructures ?
-                                    <CreateStructure data={directoryItem.arrayOfStructures}
-                                                     clickOnElement={options.clickOnElement}
-                                                     showContents={options.showContents}/> : ''}
+                                    <CreateStructure
+                                        key={keyIndexStructure}
+                                        data={directoryItem.arrayOfStructures}
+                                        clickOnElement={options.clickOnElement}
+                                        showContents={options.showContents}/> : ''}
                             </div>
                         </li>
                     </ul>
                 );
-            })
+            }),options.data)
         }
     }
 }

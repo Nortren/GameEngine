@@ -12,7 +12,7 @@ export default class LayoutBrowserTabs extends React.Component {
         this.id = props.id;
         this.state = {
             style: props.options.style,
-            button: [{id: 1,name:props.options.componentArray[0].componentName.name}]
+            button: [{id: 1, name: props.options.componentArray[0].componentName.name}]
 
         };
         this.openTabs = this.openTabs.bind(this);
@@ -46,7 +46,8 @@ export default class LayoutBrowserTabs extends React.Component {
 
         return (
             component.map(Component => (
-               <Component.componentName className="scroll_container_component" key={(Component.name || '') + Component.id} options={Component}/>
+                <Component.componentName className="scroll_container_component"
+                                         key={Component.componentName.name + Component.id} options={Component}/>
 
             ))
         );
@@ -62,7 +63,8 @@ export default class LayoutBrowserTabs extends React.Component {
             this.state.button.map(element => (
 
 
-                <button onClick={this.openTabs}
+                <button key={'button_' + element.id}
+                        onClick={this.openTabs}
                         className={this.tabClassName}
                         data-id={element.id}
                         data-idtab={this.specialIdentificationClassArea + '_' + element.id}
@@ -87,13 +89,12 @@ export default class LayoutBrowserTabs extends React.Component {
 
 
 
-                <div className={this.tabAreaClassName} id={this.props.options.id}
+                <div key={this.props.options.id} className={this.tabAreaClassName} id={this.props.options.id}
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
                     {
                         this.getComponents(this.selectComponent(element.name))
                     }
-                    {/*<ScrollContainer options={[1,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6,2,3,4,5,6]} componentArray={  this.selectComponent(element.name)} type="vertical" />*/}
                 </div>
 
 
@@ -101,8 +102,10 @@ export default class LayoutBrowserTabs extends React.Component {
         );
     }
 
-    selectComponent(nameComponent){
-        return this.props.options.componentArray.filter((component)=>{ return component.componentName.name === nameComponent})
+    selectComponent(nameComponent) {
+        return this.props.options.componentArray.filter((component) => {
+            return component.componentName.name === nameComponent
+        })
     }
 
     /**
@@ -118,8 +121,8 @@ export default class LayoutBrowserTabs extends React.Component {
      * Собираем данные по tab и tabArea на вкладке
      */
     updateTabStatus() {
-        this._tab = document.querySelectorAll('[data-idcontainertab='+this.specialIdentificationClassArea+']');
-        this._tabArea = document.querySelectorAll('[data-idcontainerarea='+this.specialIdentificationClassArea+']');
+        this._tab = document.querySelectorAll('[data-idcontainertab=' + this.specialIdentificationClassArea + ']');
+        this._tabArea = document.querySelectorAll('[data-idcontainerarea=' + this.specialIdentificationClassArea + ']');
     }
 
     componentDidUpdate() {
@@ -132,7 +135,7 @@ export default class LayoutBrowserTabs extends React.Component {
      */
     openTabs(event) {
         let id = 1;
-        if(event) {
+        if (event) {
             const btnTarget = event.currentTarget;
             id = btnTarget.dataset.id;
             btnTarget.classList.add("active");
@@ -146,8 +149,8 @@ export default class LayoutBrowserTabs extends React.Component {
             event.classList.remove("active");
         });
 
-        document.querySelector('[data-idtab='+this.specialIdentificationClass+ '_' + id+']').classList.add("active");
-        document.querySelector('[data-idtab='+this.specialIdentificationClassArea+ '_' + id+']').classList.add("active");
+        document.querySelector('[data-idtab=' + this.specialIdentificationClass + '_' + id + ']').classList.add("active");
+        document.querySelector('[data-idtab=' + this.specialIdentificationClassArea + '_' + id + ']').classList.add("active");
 
     }
 
@@ -162,15 +165,24 @@ export default class LayoutBrowserTabs extends React.Component {
                         {this.addTab()}
                     </div>
                     <div className="tab_container_header-setting">
-                        <Button options={ {name: 'dropper',iconType:'Paperclip',iconSize:'1x', id: 1, componentArray: []}}/>
+                        <Button options={ {
+                            name: 'dropper',
+                            iconType: 'Paperclip',
+                            iconSize: '1x',
+                            id: 1,
+                            componentArray: []
+                        }}/>
                         <DropDownButton options={{
                             name: '',
-                            iconType:'Tools',
-                            iconSize:'1x',
+                            iconType: 'Tools',
+                            iconSize: '1x',
                             parentElement: this.props.options.id,
                             id: 4,
                             componentArray: [],
-                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab',{name:'Add Tab',arrayList:['Hierarchy','Inspector','Project']} , 'UI element Debugger']
+                            linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab', {
+                                name: 'Add Tab',
+                                arrayList: ['Hierarchy', 'Inspector', 'Project']
+                            }, 'UI element Debugger']
                         }}/>
                     </div>
                 </div>

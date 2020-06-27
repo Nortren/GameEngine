@@ -33,7 +33,7 @@ export default class TopMenu extends React.Component {
     getComponents() {
         return (
             this.props.options.componentArray.map(Component => (
-                <Component.componentName key={Component.name + Component.id} options={Component}/>
+                <Component.componentName key={Component.name + Component.componentName.name + Component.id} options={Component}/>
             ))
         );
     }
@@ -42,7 +42,7 @@ export default class TopMenu extends React.Component {
 
 
         return (
-            <div className="topMenu_container" key={this.props.id} style={ this.state.style}>
+            <div className="topMenu_container" key={this.props.options.id} style={ this.state.style}>
                 <div className="topMenu_container-components">
                     {this.props.options.componentArray ? this.getComponents() : ''}
                 </div>

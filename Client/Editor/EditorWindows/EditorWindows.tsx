@@ -46,7 +46,7 @@ export default class EditorWindows extends React.Component {
 
         return (
             this.props.componentArray.map(Component => (
-                <Component.componentName key={Component.name+ Component.id} options={Component} />
+                <Component.componentName key={Component.componentName.name + Component.id} options={Component} />
 
             ))
         );
@@ -69,7 +69,7 @@ export default class EditorWindows extends React.Component {
         this.componentE = '';
 
         return (
-            <div className="editor_windows_container" id={this.id} style={this.state.style}>
+            <div  className="editor_windows_container" id={this.id} style={this.state.style}>
                 <div className={topResizeLine}></div>
                 <div className={leftResizeLine}></div>
                 <div className={rightResizeLine}></div>

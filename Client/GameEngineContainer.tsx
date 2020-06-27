@@ -17,34 +17,39 @@ import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
 import {globalVariables} from "./GlobalVariables";
+import {reject} from "q";
 
 class GameEngineContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-           editorData: null
+            editorData: null
         };
     }
 
     componentDidMount() {
         document.addEventListener("EditorEventBus", (event) => {
-            this.eventBusEditor(event)
+            this.eventBusEditor("EditorEventBus", event);
+
         });
+        document.addEventListener("Create 3d Object", (event) => {
+            console.log(event, "Create 3d Object");
+            this.eventBusEditor("CreateObject", event);
+        });
+
+        //Обнуляем state для предотвращения повторноговыполнения события(т.к они будут постоянно храниться в стейте и проверка будет положительна)
 
 
     }
 
-    eventBusEditor(event){
-        this.setState({editorData:event.detail});
-
+    eventBusEditor(eventName, event) {
+        this.setState({editorData: {name: eventName, event: event.detail, syntheticEvent: event}});
     }
 
     startInit() {
-        const blData = new BL();
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
-
             return <div>
-                {globalVariables.enableEditor ?   <Editor/> : '' }
+                {globalVariables.enableEditor ? <Editor/> : '' }
 
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
@@ -68,11 +73,13 @@ class GameEngineContainer extends React.Component {
                 />
             </div>;
         }
+
         return <Authorization changeUserStatus={this.props.changeUserStatus}/>;
     }
 
     render() {
         this.startInit();
+
         return (
             <div className="MainPage">
                 {this.startInit()}

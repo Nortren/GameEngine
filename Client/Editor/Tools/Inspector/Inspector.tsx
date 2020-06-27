@@ -33,11 +33,11 @@ function InspectorEditor() {
             </div>
             <div className="inspector_container__file-container_body">
                 {fileType !== 'sceneObject' ?
-                    <FileReaderTemplate source={{fileData, fileExtension, inspectorData}}/> :
+                    <FileReaderTemplate  source={{fileData, fileExtension, inspectorData}}/> :
                     <SceneObjectTemplate source={fileData}/>}
             </div>
         </div>
-    </div>
+    </div>;
 
     React.useEffect(() => {
         const resFilter = viewData.filter((item) => {
@@ -157,8 +157,9 @@ function SceneObjectTemplate(props) {
         template = <ComponentTemplateMesh source={source}/>
     }
     else {
-        template = <TransformControl source={source} position={source.position} rotation={source.rotation}
-                                     scale={source.scale}/>
+        template =
+            <TransformControl key={source.uuid} source={source} position={source.position} rotation={source.rotation}
+                              scale={source.scale}/>
     }
 
     return template;
@@ -225,7 +226,7 @@ function ComponentTemplateMesh(props) {
                     <div>
                         <div className="containerSceneObject_mesh__container-type">
                             <div className="containerSceneObject__mesh__container-type_name">Materials</div>
-                            <DropDownButton options={{
+                            <DropDownButton key={imgMaterial.uuid} options={{
                                 name: imgMaterial.type,
                                 parentElement: null,
                                 id: 4,
@@ -246,7 +247,7 @@ function ComponentTemplateMesh(props) {
                                 ]
                             }}/>
                         </div>
-                        <div className="containerSceneObject_mesh__container-type">
+                        <div key={imgMaterial.uuid} className="containerSceneObject_mesh__container-type">
                             <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
                             {imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)}
                                                     class="containerSceneObject_mesh__container-type_img"
@@ -284,9 +285,9 @@ function ComponentTemplateMesh(props) {
                 </div>
                 <div className="containerSceneObject_mesh__container-type">
                     <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
-                    <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
-                         class="containerSceneObject_mesh__container-type_img"
-                         src={imgSrc.map.image.currentSrc} alt=""/>
+                    {imgSrc.map ?  <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
+                                        class="containerSceneObject_mesh__container-type_img"
+                                        src={imgSrc.map.image.currentSrc} alt=""/> : ''}
                 </div>
             </div>
             }
@@ -300,16 +301,17 @@ function ComponentTemplateMesh(props) {
         </div>
     </div>;
     const templateMeshRenderer = <div>
-        <TemplateManagementContainer template={templatesMaterials} templateName={'Materials'}/>
-        <TemplateManagementContainer template={templatesLighting} templateName={'Lighting'}/>
+        <TemplateManagementContainer key={'Materials_1'} template={templatesMaterials} templateName={'Materials'}/>
+        <TemplateManagementContainer key={'Lighting_1'} template={templatesLighting} templateName={'Lighting'}/>
 
     </div>;
 
 
     return (
         <div>
-            <TransformControl source={source}/>
-            <TemplateManagementContainer template={templateMeshFilter} templateName={templateMeshFilterName}/>
+            <TransformControl key={source.uuid} source={source}/>
+            <TemplateManagementContainer key={'Lighting_1'} template={templateMeshFilter}
+                                         templateName={templateMeshFilterName}/>
             <TemplateManagementContainer template={templateMeshRenderer} templateName={templateMeshRendererName}/>
         </div>
     );
@@ -358,8 +360,8 @@ function ComponentTemplateLight(props) {
 
     return (
         <div>
-            <TransformControl source={source}/>
-            <TemplateManagementContainer template={template} templateName={templateName}/>
+            <TransformControl key={source.uuid} source={source}/>
+            <TemplateManagementContainer key={source.uuid} template={template} templateName={templateName}/>
         </div>
     );
 }
@@ -397,7 +399,7 @@ function TemplateManagementContainer(props) {
     };
 
     return (
-        <div className="containerSceneObject">
+        <div key={props.templateName + new Date().getMilliseconds()} className="containerSceneObject">
             <div className="containerSceneObject-header">
                 <button className="containerSceneObject-buttonHide" type="button"
                         onClick={expandHeirs}>&#9660;</button>
@@ -429,12 +431,12 @@ function TransformControl(props) {
         const [inputDataY, changeInputDataY] = React.useState<object[]>(transformData[item].y);
         const [inputDataZ, changeInputDataZ] = React.useState<object[]>(transformData[item].z);
         //Пробрасываем данные в шину событий редактора
-        const changeTransform = (data, setFunction, item,name) => {
+        const changeTransform = (data, setFunction, item, name) => {
             setFunction(data);
             const readFile = new CustomEvent('EditorEventBus', {
                 bubbles: true,
                 cancelable: true,
-                detail: {data, item,name, source}
+                detail: {data, item, name, source}
             });
             event.target.dispatchEvent(readFile);
         };
@@ -447,20 +449,20 @@ function TransformControl(props) {
                 </div>
                 <div className="containerSceneObject-transform_item-arrayValue">
                     X<input value={inputDataX} name="x" onChange={(event) => {
-                    changeTransform(event.target.value, changeInputDataX, item,event.target.name)
+                    changeTransform(event.target.value, changeInputDataX, item, event.target.name)
                 }}/>
                     Y<input value={inputDataY} name="y" onChange={(event) => {
-                    changeTransform(event.target.value, changeInputDataY, item,event.target.name)
+                    changeTransform(event.target.value, changeInputDataY, item, event.target.name)
                 }}/>
                     Z<input value={inputDataZ} name="z" onChange={(event) => {
-                    changeTransform(event.target.value, changeInputDataZ, item,event.target.name)
+                    changeTransform(event.target.value, changeInputDataZ, item, event.target.name)
                 }}/>
                 </div>
             </div>
         )
     });
     return (
-        <TemplateManagementContainer template={template} templateName={templateName}/>
+        <TemplateManagementContainer key={source.uuid} template={template} templateName={templateName}/>
     )
 }
 
