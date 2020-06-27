@@ -38,13 +38,14 @@ export default class DropDownButton extends React.Component {
 
         return (
             <div
+                key={Link.name}
                 className="dropDown_contentContainer-content">{Link.name}
                 <div className="dropDown_arrayListContainer">
 
-                    { ( Link.arrayList ? Link.arrayList.map(listLink => (
+                    { ( Link.arrayList ? Link.arrayList.map((listLink,index) => (
 
                         typeof listLink === 'string' ? (
-                            <div onClick={this.clicklLink.bind(this, Link.name, listLink)}
+                            <div key={index} onClick={this.clicklLink.bind(this, Link.name, listLink)}
                                  className="dropDown_contentContainer-content">{listLink}</div>) : this.getDropDownList(listLink)
                     )) : 'Empty')}
                 </div>
@@ -100,17 +101,17 @@ export default class DropDownButton extends React.Component {
         }
 
         return (
-            <div className="dropDownButton_container" style={this.state.style}>
+            <div key={this.props.options.key+this.props.options.name} className="dropDownButton_container" style={this.state.style}>
                 <button className="dropDownButton_container-button"
                         onClick={this.clickButton}>
                     {this.props.options.iconType ?
                         <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
                                          size={this.props.options.iconSize}/> : this.props.options.name}
                     <div className="dropDown_contentContainer">
-                        { ( this.props.options.linkList ? this.props.options.linkList.map(Link => (
+                        { ( this.props.options.linkList ? this.props.options.linkList.map((Link, index) => (
 
                             typeof Link === 'string' ? (
-                                <div onClick={this.clicklLink.bind(this, Link)}
+                                <div key={Link+index} onClick={this.clicklLink.bind(this, Link)}
                                      className="dropDown_contentContainer-content">{Link}</div>) : this.getDropDownList(Link)
                         )) : 'Empty')}
 

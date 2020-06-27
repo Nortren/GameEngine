@@ -22,7 +22,7 @@ export default function Hierarchy() {
         if (Object.keys(viewData).length) {
             setSceneObjectList(viewData.children);
         }
-    }, [viewData]);
+    }, [viewData.children]);
 
 
     /**
@@ -91,19 +91,22 @@ export default function Hierarchy() {
         });
         event.currentTarget.querySelector('.'.concat(itemFindClass)).classList.add(itemChangeClass);
     };
+    const renderTest = React.useMemo(()=>{
+        return <HierarchyContext.Provider value={{progressBarStatus, progressBarLength}}>
+            <div className="hierarchy_container hierarchy_container-progressBarStatus">
+                <ItemChildrenList item={viewData}
+                                  clickOnElement={clickOnElement}
+                                  parent={true}
+                                  indexKey={0}
+                                  key={0}
+                                  count={0}
+                />
+            </div>
+            <FileLoad/>
+        </HierarchyContext.Provider>
+    });
 
-
-    return <HierarchyContext.Provider value={{progressBarStatus, progressBarLength}}>
-        <div className="hierarchy_container hierarchy_container-progressBarStatus">
-            <ItemChildrenList item={viewData}
-                              clickOnElement={clickOnElement}
-                              parent={true}
-                              indexKey={0}
-                              count={0}
-            />
-        </div>
-        <FileLoad/>
-    </HierarchyContext.Provider>
+    return renderTest;
 }
 
 function ItemChildrenList(props) {
@@ -166,7 +169,7 @@ let keyLi = props.indexKey+'_li';
                     count++;
                     progressBarStatus(count);
                     // return <div className="hierarchy_container_containerItem_array-item">{item.type}</div>
-                    return <ItemChildrenList indexKey={indexKey} item={item} clickOnElement={props.clickOnElement} count={count}/>
+                    return <ItemChildrenList key={indexKey} indexKey={indexKey} item={item} clickOnElement={props.clickOnElement} count={count}/>
                 }) : ''}
             </div>
         </li>

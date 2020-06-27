@@ -172,7 +172,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 if (!this.init) {
                     this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
                     this.init = true;
-
+                    this.props.gameWorldState(scene);
                     this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
                 }
             }
@@ -267,6 +267,29 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         return enemyDataArrayTest;
     }
 
+
+    createGeometry(geometryName: string, params?: object): object {
+        let geometry;
+        let material;
+        switch (geometryName) {
+            case 'BoxGeometry':
+                geometry = new THREE.BoxGeometry(1, 1, 1);
+                material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+                const cube = new THREE.Mesh(geometry, material);
+                return cube;
+            case 'CylinderGeometry':
+                geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                const cylinder = new THREE.Mesh(geometry, material);
+                return cylinder;
+            case 'SphereGeometry':
+                geometry = new THREE.SphereGeometry(5, 32, 32);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                const sphere = new THREE.Mesh(geometry, material);
+                return sphere;
+        }
+    }
+
     /**
      * Функция покадрового обновления сцены для отображения всех изменений и анимаций
      * @param renderer
@@ -276,11 +299,26 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * @param user
      */
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
-        if (this.props.editorData) {
-            const idSearchElement = this.props.editorData.source.id;
-            const searchObject = this.scene.getObjectById(idSearchElement);
-            const changeData = this.props.editorData.data;
-            searchObject[this.props.editorData.item][this.props.editorData.name] = changeData;
+        if (this.props.editorData && this.props.editorData.name) {
+
+
+            if (this.props.editorData.name === "EditorEventBus") {
+                const idSearchElement = this.props.editorData.event.source.id;
+                const searchObject = this.scene.getObjectById(idSearchElement);
+                const changeData = this.props.editorData.event.data;
+                searchObject[this.props.editorData.event.item][this.props.editorData.event.name] = changeData;
+            }
+            if (this.props.editorData.name === "CreateObject") {
+                const createGeometryName = this.props.editorData.event.buttonName;
+                const geometry = this.createGeometry(createGeometryName);
+                this.scene.add(geometry);
+            }
+            const createTab = new CustomEvent('changeEditorData', {
+                bubbles: true,
+                cancelable: true,
+                detail: {status: true}
+            });
+            document.dispatchEvent(createTab);
         }
 
         let now = performance.now();
@@ -298,7 +336,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         }
 
         requestAnimationFrame(() => {
-            this.props.gameWorldState(scene);
+
             this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);
         });
         renderer.render(scene, camera);

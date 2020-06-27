@@ -13,19 +13,17 @@ export default class ControllPanel extends React.Component {
                 width: props.width,
                 justifySelf: props.justifySelf,
             },
-            moveY: 0, countMove: 0,
-            moveXBoll: true,
-            fps: 0
         };
     }
 
-    componentDidMount() {
+    componentDidMount(a, b) {
 
     };
 
-    componentDidUpdate() {
+    componentDidUpdate(a, b) {
 
     }
+
 
     /**
      * Метод который рендерит переданные в наш компонент сторонние компоненты
