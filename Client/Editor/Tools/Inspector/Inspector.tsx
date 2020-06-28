@@ -33,7 +33,7 @@ function InspectorEditor() {
             </div>
             <div className="inspector_container__file-container_body">
                 {fileType !== 'sceneObject' ?
-                    <FileReaderTemplate  source={{fileData, fileExtension, inspectorData}}/> :
+                    <FileReaderTemplate source={{fileData, fileExtension, inspectorData}}/> :
                     <SceneObjectTemplate source={fileData}/>}
             </div>
         </div>
@@ -253,7 +253,7 @@ function ComponentTemplateMesh(props) {
                                                     class="containerSceneObject_mesh__container-type_img"
                                                     src={imgMaterial.map.image.currentSrc} alt=""/> :
                                 <div className="containerSceneObject_mesh__container-type_color"
-                                     style={{backgroundColor: `rgb(${imgMaterial.color.r},${imgMaterial.color.g},${imgMaterial.color.b})`}}></div>
+                                     style={{backgroundColor: `${imgMaterial.color.getStyle()}`}}></div>
                             }
                         </div>
 
@@ -285,9 +285,11 @@ function ComponentTemplateMesh(props) {
                 </div>
                 <div className="containerSceneObject_mesh__container-type">
                     <div className="containerSceneObject_mesh__container-type_name">MaterialsTexture</div>
-                    {imgSrc.map ?  <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
-                                        class="containerSceneObject_mesh__container-type_img"
-                                        src={imgSrc.map.image.currentSrc} alt=""/> : ''}
+                    {imgSrc.map ? <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
+                                       class="containerSceneObject_mesh__container-type_img"
+                                       src={imgSrc.map.image.currentSrc} alt=""/> :
+                        <div className="containerSceneObject_mesh__container-type_color"
+                             style={{backgroundColor: `${imgSrc.color.getStyle()}`}}></div>}
                 </div>
             </div>
             }

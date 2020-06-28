@@ -267,7 +267,12 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         return enemyDataArrayTest;
     }
 
-
+    /**
+     * Метод создания простой геометрии
+     * @param geometryName
+     * @param params
+     * @returns {Mesh}
+     */
     createGeometry(geometryName: string, params?: object): object {
         let geometry;
         let material;
@@ -287,6 +292,113 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
                 const sphere = new THREE.Mesh(geometry, material);
                 return sphere;
+            case 'ConeGeometry':
+                geometry = new THREE.ConeGeometry(5, 20, 32);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                const cone = new THREE.Mesh(geometry, material);
+                return cone;
+            case 'ExtrudeGeometry':
+                const length = 12, width = 8;
+
+                const shape = new THREE.Shape();
+                shape.moveTo( 0,0 );
+                shape.lineTo( 0, width );
+                shape.lineTo( length, width );
+                shape.lineTo( length, 0 );
+                shape.lineTo( 0, 0 );
+
+                const extrudeSettings = {
+                    steps: 2,
+                    depth: 16,
+                    bevelEnabled: true,
+                    bevelThickness: 1,
+                    bevelSize: 1,
+                    bevelOffset: 0,
+                    bevelSegments: 1
+                };
+
+                geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                const extrude = new THREE.Mesh( geometry, material ) ;
+                return extrude;
+            case 'LatheGeometry':
+                const points = [];
+                for ( var i = 0; i < 10; i ++ ) {
+                    points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+                }
+                geometry = new THREE.LatheGeometry( points );
+                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+                const lathe = new THREE.Mesh( geometry, material );
+                return lathe;
+            case 'ParametricGeometry':
+                geometry = new THREE.ParametricGeometry( THREE.ParametricGeometries.klein, 25, 25 );
+                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                const klein = new THREE.Mesh( geometry, material );
+                return klein;
+            case 'PlaneGeometry':
+                geometry = new THREE.PlaneGeometry( 5, 20, 32 );
+                material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                const plane = new THREE.Mesh( geometry, material );
+                return plane;
+            case 'RingGeometry':
+                geometry = new THREE.RingGeometry( 1, 5, 32 );
+                material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
+                const ring = new THREE.Mesh( geometry, material );
+                return ring;
+            case 'ShapeGeometry':
+                const x = 0, y = 0;
+
+                const heartShape = new THREE.Shape();
+
+                heartShape.moveTo( x + 5, y + 5 );
+                heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
+                heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7,x - 6, y + 7 );
+                heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
+                heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
+                heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
+                heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+
+                geometry = new THREE.ShapeGeometry( heartShape );
+                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                const shapeGeometry = new THREE.Mesh( geometry, material ) ;
+                return shapeGeometry;
+            case 'TorusGeometry':
+                geometry = new THREE.TorusGeometry( 10, 3, 16, 100 );
+                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+                const torus = new THREE.Mesh( geometry, material );
+                return torus;
+            case 'TorusKnotGeometry':
+                geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+                const torusKnot = new THREE.Mesh( geometry, material );
+                return torusKnot;
+            case 'TubeGeometry':
+            function CustomSinCurve( scale ) {
+
+                THREE.Curve.call( this );
+
+                this.scale = ( scale === undefined ) ? 1 : scale;
+
+            }
+
+                CustomSinCurve.prototype = Object.create( THREE.Curve.prototype );
+                CustomSinCurve.prototype.constructor = CustomSinCurve;
+
+                CustomSinCurve.prototype.getPoint = function ( t ) {
+
+                    const tx = t * 3 - 1.5;
+                    const ty = Math.sin( 2 * Math.PI * t );
+                    const tz = 0;
+
+                    return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+
+                };
+
+                const path = new CustomSinCurve( 10 );
+                geometry = new THREE.TubeGeometry( path, 20, 2, 8, false );
+                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                const tube = new THREE.Mesh( geometry, material );
+                return tube;
         }
     }
 
