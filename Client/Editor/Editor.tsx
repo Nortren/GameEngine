@@ -172,24 +172,18 @@ export default class Editor extends React.Component {
                     name: 'Create 3d Object',
                     arrayList: [
                         'BoxGeometry',
-                        'SphereGeometry',
-                        'CircleGeometry',
-                        'ConeGeometry',
                         'CylinderGeometry',
-                        'DodecahedronGeometry',
+                        'SphereGeometry',
+                        'ConeGeometry',
                         'ExtrudeGeometry',
-                        'IcosahedronGeometry',
                         'LatheGeometry',
-                        'OctahedronGeometry',
                         'ParametricGeometry',
                         'PlaneGeometry',
                         'RingGeometry',
                         'ShapeGeometry',
-                        'TetrahedronGeometry',
-                        'TextGeometry',
                         'TorusGeometry',
                         'TorusKnotGeometry',
-                        'TubeGeometry',
+                        'TubeGeometry'
                     ]
                 }, {
                     name: 'Create 2d Object',
@@ -207,7 +201,7 @@ export default class Editor extends React.Component {
                         'SkinnedMesh',
                         'Sprite'
                     ]
-                }]
+                },'Effect','Light','Audio','Video','UI','Camera']
         };
         const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
 
