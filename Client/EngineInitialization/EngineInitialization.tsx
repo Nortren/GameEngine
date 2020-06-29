@@ -214,7 +214,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
                     //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
                     const gridHelper = new THREE.GridHelper(100, 100);
-                    // scene.add( gridHelper );
+                    scene.add( gridHelper );
 
                     const raycaster = new THREE.Raycaster();
 
@@ -464,12 +464,15 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         intersects.forEach((sceneData) => {
 
             this.selectedObjectArray.forEach((id) => {
+                //Проверка на то что двигаем не helper сетки сегментов
+                if(sceneData.object.type !== 'LineSegments') {
                     this.scene.getObjectById(id).position.x = sceneData.point.x;
                     //TODO из-за постоянной смены координат объект улетает в вверх, надо пофиксить
                     // sceneData.object.position.y = sceneData.point.y;
                     this.scene.getObjectById(id).position.z = sceneData.point.z;
                     //Тут выбираем объект по которому кликнули и пока пользователь не отпустил клик сохраняем uuid выбранных объектов
                     //Чтоб избежать пересечение выбора
+                }
             });
 
 
@@ -479,7 +482,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         if (!this.objectIsSelected) {
             intersects.forEach((sceneData) => {
-                this.selectedObjectArray.push(sceneData.object.id);
+                //Проверка на то что двигаем не helper сетки сегментов
+                if(sceneData.object.type !== 'LineSegments') {
+                    this.selectedObjectArray.push(sceneData.object.id);
+                }
             });
             this.objectIsSelected = true;
         }
