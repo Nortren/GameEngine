@@ -55,9 +55,46 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         this.scene = new THREE.Scene();
         this.scene.scale.set(1, 1, 1);
         this.blData = new BL();
-
+        this.mouse = new THREE.Vector2();
 
         this.createUserRoom(this.scene, renderer, canvas);
+        document.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+        document.addEventListener('mousedown', this.onMouseClick.bind(this), false);
+        document.addEventListener('mouseup', this.onMouseClick.bind(this), false);
+    }
+
+    /**
+     *
+     * @param canvas
+     * @param userData
+     */
+
+    onMouseMove(event) {
+
+
+        // calculate mouse position in normalized device coordinates
+        // (-1 to +1) for both components
+
+        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+
+    }
+
+    onMouseClick(event) {
+
+
+        // calculate mouse position in normalized device coordinates
+        // (-1 to +1) for both components
+        console.log(event.type);
+        this.statusChangeObject = event.type === 'mousedown';
+        this.objectIsSelected = false;
+        this.selectedObjectArray = [];
+        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+
+        if(event.type === 'mouseup'){
+            this.objectIsSelected = false;
+        }
 
     }
 
@@ -81,6 +118,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         this._camera.сameraON(globalVariables.camera.cameraControl, camera, canvas);
         return camera;
     }
+
 
     /**
      * Метод создания комнаты в которой помещен игрок и получения данных с БЛ о состоянии комнаты
@@ -173,7 +211,15 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     this.updateUsersPositionInRoom(userProps, this.playerInMaps, camera, cameraProps, this._enemyArray);
                     this.init = true;
                     this.props.gameWorldState(scene);
-                    this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0);
+
+                    //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
+                    const gridHelper = new THREE.GridHelper(100, 100);
+                    // scene.add( gridHelper );
+
+                    const raycaster = new THREE.Raycaster();
+
+
+                    this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0, raycaster, this.mouse);
                 }
             }
         });
@@ -301,11 +347,11 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 const length = 12, width = 8;
 
                 const shape = new THREE.Shape();
-                shape.moveTo( 0,0 );
-                shape.lineTo( 0, width );
-                shape.lineTo( length, width );
-                shape.lineTo( length, 0 );
-                shape.lineTo( 0, 0 );
+                shape.moveTo(0, 0);
+                shape.lineTo(0, width);
+                shape.lineTo(length, width);
+                shape.lineTo(length, 0);
+                shape.lineTo(0, 0);
 
                 const extrudeSettings = {
                     steps: 2,
@@ -317,89 +363,128 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     bevelSegments: 1
                 };
 
-                geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                const extrude = new THREE.Mesh( geometry, material ) ;
+                geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+                const extrude = new THREE.Mesh(geometry, material);
                 return extrude;
             case 'LatheGeometry':
                 const points = [];
-                for ( var i = 0; i < 10; i ++ ) {
-                    points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+                for (var i = 0; i < 10; i++) {
+                    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, ( i - 5 ) * 2));
                 }
-                geometry = new THREE.LatheGeometry( points );
-                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-                const lathe = new THREE.Mesh( geometry, material );
+                geometry = new THREE.LatheGeometry(points);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                const lathe = new THREE.Mesh(geometry, material);
                 return lathe;
             case 'ParametricGeometry':
-                geometry = new THREE.ParametricGeometry( THREE.ParametricGeometries.klein, 25, 25 );
-                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                const klein = new THREE.Mesh( geometry, material );
+                geometry = new THREE.ParametricGeometry(THREE.ParametricGeometries.klein, 25, 25);
+                material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+                const klein = new THREE.Mesh(geometry, material);
                 return klein;
             case 'PlaneGeometry':
-                geometry = new THREE.PlaneGeometry( 5, 20, 32 );
-                material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
-                const plane = new THREE.Mesh( geometry, material );
+                geometry = new THREE.PlaneGeometry(5, 20, 32);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleSide});
+                const plane = new THREE.Mesh(geometry, material);
                 return plane;
             case 'RingGeometry':
-                geometry = new THREE.RingGeometry( 1, 5, 32 );
-                material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
-                const ring = new THREE.Mesh( geometry, material );
+                geometry = new THREE.RingGeometry(1, 5, 32);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleSide});
+                const ring = new THREE.Mesh(geometry, material);
                 return ring;
             case 'ShapeGeometry':
                 const x = 0, y = 0;
 
                 const heartShape = new THREE.Shape();
 
-                heartShape.moveTo( x + 5, y + 5 );
-                heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
-                heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7,x - 6, y + 7 );
-                heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
-                heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
-                heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
-                heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+                heartShape.moveTo(x + 5, y + 5);
+                heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+                heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+                heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+                heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+                heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+                heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
 
-                geometry = new THREE.ShapeGeometry( heartShape );
-                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                const shapeGeometry = new THREE.Mesh( geometry, material ) ;
+                geometry = new THREE.ShapeGeometry(heartShape);
+                material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+                const shapeGeometry = new THREE.Mesh(geometry, material);
                 return shapeGeometry;
             case 'TorusGeometry':
-                geometry = new THREE.TorusGeometry( 10, 3, 16, 100 );
-                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-                const torus = new THREE.Mesh( geometry, material );
+                geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+                material = new THREE.MeshBasicMaterial({color: 0xffff00});
+                const torus = new THREE.Mesh(geometry, material);
                 return torus;
             case 'TorusKnotGeometry':
-                geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
-                material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-                const torusKnot = new THREE.Mesh( geometry, material );
+                geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+                material = new THREE.MeshBasicMaterial({color: 0x2A2A2A});
+                const torusKnot = new THREE.Mesh(geometry, material);
                 return torusKnot;
             case 'TubeGeometry':
-            function CustomSinCurve( scale ) {
+            function CustomSinCurve(scale) {
 
-                THREE.Curve.call( this );
+                THREE.Curve.call(this);
 
                 this.scale = ( scale === undefined ) ? 1 : scale;
 
             }
 
-                CustomSinCurve.prototype = Object.create( THREE.Curve.prototype );
+                CustomSinCurve.prototype = Object.create(THREE.Curve.prototype);
                 CustomSinCurve.prototype.constructor = CustomSinCurve;
 
-                CustomSinCurve.prototype.getPoint = function ( t ) {
+                CustomSinCurve.prototype.getPoint = function (t) {
 
                     const tx = t * 3 - 1.5;
-                    const ty = Math.sin( 2 * Math.PI * t );
+                    const ty = Math.sin(2 * Math.PI * t);
                     const tz = 0;
 
-                    return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+                    return new THREE.Vector3(tx, ty, tz).multiplyScalar(this.scale);
 
                 };
 
-                const path = new CustomSinCurve( 10 );
-                geometry = new THREE.TubeGeometry( path, 20, 2, 8, false );
-                material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-                const tube = new THREE.Mesh( geometry, material );
+                const path = new CustomSinCurve(10);
+                geometry = new THREE.TubeGeometry(path, 20, 2, 8, false);
+                material = new THREE.MeshBasicMaterial({color: 0x2A2A2A});
+                const tube = new THREE.Mesh(geometry, material);
                 return tube;
         }
+    }
+
+
+    /**
+     * TODO использовать метод только в режими редактирования, прикрутить проверку на режим
+     * Метод получения выбранного объекта в режими редактирования
+     * @param raycaster
+     * @param mouse
+     * @param camera
+     * @param scene
+     */
+    getSelectedObject(raycaster, mouse, camera, scene) {
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(scene.children);
+
+        intersects.forEach((sceneData) => {
+
+            this.selectedObjectArray.forEach((id) => {
+                    this.scene.getObjectById(id).position.x = sceneData.point.x;
+                    //TODO из-за постоянной смены координат объект улетает в вверх, надо пофиксить
+                    // sceneData.object.position.y = sceneData.point.y;
+                    this.scene.getObjectById(id).position.z = sceneData.point.z;
+                    //Тут выбираем объект по которому кликнули и пока пользователь не отпустил клик сохраняем uuid выбранных объектов
+                    //Чтоб избежать пересечение выбора
+            });
+
+
+
+
+        });
+
+        if (!this.objectIsSelected) {
+            intersects.forEach((sceneData) => {
+                this.selectedObjectArray.push(sceneData.object.id);
+            });
+            this.objectIsSelected = true;
+        }
+
+
     }
 
     /**
@@ -410,10 +495,14 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart): void {
+    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse): void {
+
+        if (this.statusChangeObject) {
+            this.getSelectedObject(raycaster, mouse, camera, scene);
+        }
+
+
         if (this.props.editorData && this.props.editorData.name) {
-
-
             if (this.props.editorData.name === "EditorEventBus") {
                 const idSearchElement = this.props.editorData.event.source.id;
                 const searchObject = this.scene.getObjectById(idSearchElement);
@@ -449,7 +538,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         requestAnimationFrame(() => {
 
-            this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart);
+            this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse);
         });
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
