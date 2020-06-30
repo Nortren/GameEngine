@@ -4,7 +4,9 @@ import TopMenu from "./Controls/TopMenu/TopMenu";
 import DropDownButton from "./Controls/DropDownButton/DropDownButton";
 import Button from "./Controls/Button/Button";
 import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
+
 import ImageEditor from './Controls/ImageEditor/ImageEditor';
+import ColorPalette from "./Controls/ColorPalette/ColorPalette";
 
 import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
@@ -317,6 +319,7 @@ export default class Editor extends React.Component {
                         <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
                         <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
                         <ImageEditor/>
+                        <ColorPalette/>
                     </div>
                 </GlobalEditorContext.Provider>
             </div>
