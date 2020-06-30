@@ -4,7 +4,9 @@ import TopMenu from "./Controls/TopMenu/TopMenu";
 import DropDownButton from "./Controls/DropDownButton/DropDownButton";
 import Button from "./Controls/Button/Button";
 import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
+
 import ImageEditor from './Controls/ImageEditor/ImageEditor';
+import ColorPalette from "./Controls/ColorPalette/ColorPalette";
 
 import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
@@ -165,7 +167,44 @@ export default class Editor extends React.Component {
                 arrayList: ['Settings', 'Add Object', 'Scene']
             }, 'Tools', 'Windows Manager', 'About Program']
         };
-        const gameObjectButton = {componentName: DropDownButton, name: 'game object', id: 3, componentArray: []};
+        const gameObjectButton = {
+            componentName: DropDownButton, name: 'game object', id: 3, componentArray: [],
+            linkList: ['Create Empty',
+                {
+                    name: 'Create 3d Object',
+                    arrayList: [
+                        'BoxGeometry',
+                        'CylinderGeometry',
+                        'SphereGeometry',
+                        'ConeGeometry',
+                        'ExtrudeGeometry',
+                        'LatheGeometry',
+                        'ParametricGeometry',
+                        'PlaneGeometry',
+                        'RingGeometry',
+                        'ShapeGeometry',
+                        'TorusGeometry',
+                        'TorusKnotGeometry',
+                        'TubeGeometry'
+                    ]
+                }, {
+                    name: 'Create 2d Object',
+                    arrayList: [
+                        'Bone',
+                        'Group',
+                        'InstancedMesh',
+                        'Line',
+                        'LineLoop',
+                        'LineSegments',
+                        'LOD',
+                        'Mesh',
+                        'Points',
+                        'Skeleton',
+                        'SkinnedMesh',
+                        'Sprite'
+                    ]
+                },'Effect','Light','Audio','Video','UI','Camera']
+        };
         const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
 
         const topMenuHeader = {
@@ -173,12 +212,47 @@ export default class Editor extends React.Component {
             id: 1,
             componentArray: [fileButton, editButton, gameObjectButton, componentButton]
         };
-        const handTool = {componentName: Button, name: '',iconType:'MousePointer',iconSize:'1x', id: 1, componentArray: []};
-        const moveTool = {componentName: Button, name: 'Full screen scene',iconType:'ArrowsAlt',iconSize:'1x', id: 2, componentArray: []};
-        const rotateTool = {componentName: Button, name: '',iconType:'Redo',iconSize:'1x', id: 3, componentArray: []};
-        const scaleTool = {componentName: Button, name: 'Hide screen scene',iconType:'Expand',iconSize:'1x', id: 4, componentArray: []};
-        const rectTool = {componentName: Button, name: '',iconType:'ObjectUngroup',iconSize:'1x', id: 4, componentArray: []};
-        const customEditorTool = {componentName: Button,iconType:'List',iconSize:'1x', id: 4, componentArray: []};
+        const handTool = {
+            componentName: Button,
+            name: '',
+            iconType: 'MousePointer',
+            iconSize: '1x',
+            id: 1,
+            componentArray: []
+        };
+        const moveTool = {
+            componentName: Button,
+            name: 'Full screen scene',
+            iconType: 'ArrowsAlt',
+            iconSize: '1x',
+            id: 2,
+            componentArray: []
+        };
+        const rotateTool = {
+            componentName: Button,
+            name: '',
+            iconType: 'Redo',
+            iconSize: '1x',
+            id: 3,
+            componentArray: []
+        };
+        const scaleTool = {
+            componentName: Button,
+            name: 'Hide screen scene',
+            iconType: 'Expand',
+            iconSize: '1x',
+            id: 4,
+            componentArray: []
+        };
+        const rectTool = {
+            componentName: Button,
+            name: '',
+            iconType: 'ObjectUngroup',
+            iconSize: '1x',
+            id: 4,
+            componentArray: []
+        };
+        const customEditorTool = {componentName: Button, iconType: 'List', iconSize: '1x', id: 4, componentArray: []};
 
         const bottomMenuHeader = {
             componentName: TopMenu,
@@ -186,9 +260,9 @@ export default class Editor extends React.Component {
             componentArray: [handTool, moveTool, rotateTool, scaleTool, rectTool, customEditorTool]
         };
 
-        const start = {componentName: Button, name: '',iconType:'Play',iconSize:'1x', id: 1, componentArray: []};
-        const pause = {componentName: Button, name: '',iconType:'Pause',iconSize:'1x', id: 2, componentArray: []};
-        const step = {componentName: Button, name: '',iconType:'Forward',iconSize:'1x', id: 3, componentArray: []};
+        const start = {componentName: Button, name: '', iconType: 'Play', iconSize: '1x', id: 1, componentArray: []};
+        const pause = {componentName: Button, name: '', iconType: 'Pause', iconSize: '1x', id: 2, componentArray: []};
+        const step = {componentName: Button, name: '', iconType: 'Forward', iconSize: '1x', id: 3, componentArray: []};
 
         const sceneTopMenuHeader = {
             componentName: ControllPanel,
@@ -245,6 +319,7 @@ export default class Editor extends React.Component {
                         <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
                         <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
                         <ImageEditor/>
+                        <ColorPalette/>
                     </div>
                 </GlobalEditorContext.Provider>
             </div>
