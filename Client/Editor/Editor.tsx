@@ -319,7 +319,7 @@ export default class Editor extends React.Component {
                         <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
                         <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
                         <ImageEditor/>
-                        {/*<ColorPalette/>*/}
+                        <ColorPalette/>
                     </div>
                 </GlobalEditorContext.Provider>
             </div>

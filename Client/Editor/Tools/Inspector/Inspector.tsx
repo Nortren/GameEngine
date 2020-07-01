@@ -9,6 +9,10 @@ import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
 
+import {
+    changeColorPalette, changeColorPaletteStatus
+} from '../../../Store/EditorStore/ColorPalette/Actions';
+
 /**
  * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
  * @returns {any}
@@ -206,9 +210,13 @@ function ComponentTemplateMesh(props) {
     </div>;
 
     const openInImageEditor = (e, imgSrc) => {
-        console.log('openInImageEditor', imgSrc);
         dispatch(changeImageEditor(imgSrc));
         dispatch(changeImageEditorStatus(true));
+    };
+
+    const openColorPalette = (e, imgSrc) => {
+        dispatch(changeColorPalette(imgSrc));
+        dispatch(changeColorPaletteStatus(true));
     };
 
     const findImageData = (imgSrc) => {
@@ -252,7 +260,7 @@ function ComponentTemplateMesh(props) {
                             {imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)}
                                                     class="containerSceneObject_mesh__container-type_img"
                                                     src={imgMaterial.map.image.currentSrc} alt=""/> :
-                                <div className="containerSceneObject_mesh__container-type_color"
+                                <div onClick={(e) => openColorPalette(e, imgMaterial.color.getStyle())} className="containerSceneObject_mesh__container-type_color"
                                      style={{backgroundColor: `${imgMaterial.color.getStyle()}`}}></div>
                             }
                         </div>
@@ -288,7 +296,7 @@ function ComponentTemplateMesh(props) {
                     {imgSrc.map ? <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
                                        class="containerSceneObject_mesh__container-type_img"
                                        src={imgSrc.map.image.currentSrc} alt=""/> :
-                        <div className="containerSceneObject_mesh__container-type_color"
+                        <div onClick={(e) => openColorPalette(e, imgSrc.color.getStyle())} className="containerSceneObject_mesh__container-type_color"
                              style={{backgroundColor: `${imgSrc.color.getStyle()}`}}></div>}
                 </div>
             </div>
