@@ -34,6 +34,8 @@ faPaperclip,
     faPlay,
     faPause,
     faForward,
+    faCheck,
+    faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
@@ -98,7 +100,9 @@ export default class Button extends React.Component {
             faCut = 'Cut',
             faPlay = 'Play',
             faPause = 'Pause',
-            faForward = 'Forward'
+            faForward = 'Forward',
+            faCheck = "Check",
+            faTimes = "Times",
         }
         if (this.props.options.type === 'EditorButton') {
             return <div className="editorButton_container">
