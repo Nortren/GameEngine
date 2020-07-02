@@ -11,9 +11,10 @@ import BL from "../BusinessLogic";
 import {CameraControl} from "../DevelopersTools/DevelopersTools"
 import {connect} from 'react-redux';
 
+
 import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
-
+import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
 interface primaryEngineInitializationData {
     userID: string;
     blData: BL;
@@ -87,12 +88,16 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         // (-1 to +1) for both components
         console.log(event.type);
         this.statusChangeObject = event.type === 'mousedown';
+        if (event.type === 'mouseup') {
+            this.selectedChangeObject = false;
+        }
+
         this.objectIsSelected = false;
         this.selectedObjectArray = [];
         this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
 
-        if(event.type === 'mouseup'){
+        if (event.type === 'mouseup') {
             this.objectIsSelected = false;
         }
 
@@ -214,7 +219,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
                     //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
                     const gridHelper = new THREE.GridHelper(100, 100);
-                    scene.add( gridHelper );
+                    scene.add(gridHelper);
 
                     const raycaster = new THREE.Raycaster();
 
@@ -449,6 +454,27 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     }
 
 
+    getInfo(structure, event, loaderEvent) {
+        //Если пользователь выбрал объект то не нужно обновлять state
+        // объекта на каждую операцию, считаем ,что мы получили нужные данные до следующего выбора
+        this.selectedChangeObject = true;
+        const readFile = new CustomEvent('ReadFile', {
+            bubbles: true,
+            cancelable: false,
+            detail: {structure: {name: structure.type, type: 'sceneObject', fileData: structure}}
+        });
+        const saveEvent = document;
+        //Включаем лоадер
+        saveEvent.dispatchEvent(loaderEvent);
+        saveEvent.dispatchEvent(readFile);
+        this.props.changeViewer({name: structure.type, type: 'sceneObject', fileData: structure});
+        console.log('read');
+        loaderEvent.detail.status = false;
+        //Выключаем лоадер
+        saveEvent.dispatchEvent(loaderEvent);
+        // this.statusChangeObject = false;
+    };
+
     /**
      * TODO использовать метод только в режими редактирования, прикрутить проверку на режим
      * Метод получения выбранного объекта в режими редактирования
@@ -460,22 +486,34 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     getSelectedObject(raycaster, mouse, camera, scene) {
         raycaster.setFromCamera(mouse, camera);
         const intersects = raycaster.intersectObjects(scene.children);
+        //Тестовый лодер загрузки данных с сервера
+        const loaderEvent = new CustomEvent('LoadStart', {
+            bubbles: true,
+            cancelable: true,
+            detail: {status: true}
+        });
+
 
         intersects.forEach((sceneData) => {
 
             this.selectedObjectArray.forEach((id) => {
+                const data = this.scene.getObjectById(id);
                 //Проверка на то что двигаем не helper сетки сегментов
-                if(sceneData.object.type !== 'LineSegments') {
-                    this.scene.getObjectById(id).position.x = sceneData.point.x;
+                if (sceneData.object.type !== 'LineSegments' && data.position) {
+
+                    if (!this.selectedChangeObject) {
+                        this.getInfo(data, event, loaderEvent);
+                    }
+
+
+                    data.position.x = sceneData.point.x;
                     //TODO из-за постоянной смены координат объект улетает в вверх, надо пофиксить
                     // sceneData.object.position.y = sceneData.point.y;
-                    this.scene.getObjectById(id).position.z = sceneData.point.z;
+                    data.position.z = sceneData.point.z;
                     //Тут выбираем объект по которому кликнули и пока пользователь не отпустил клик сохраняем uuid выбранных объектов
                     //Чтоб избежать пересечение выбора
                 }
             });
-
-
 
 
         });
@@ -483,7 +521,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         if (!this.objectIsSelected) {
             intersects.forEach((sceneData) => {
                 //Проверка на то что двигаем не helper сетки сегментов
-                if(sceneData.object.type !== 'LineSegments') {
+                if (sceneData.object.type !== 'LineSegments') {
                     this.selectedObjectArray.push(sceneData.object.id);
                 }
             });
@@ -549,8 +587,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         renderer.render(scene, camera);
         const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
 
-        this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
-            playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
+        // this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
+        //     playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
     }
 
     //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
@@ -637,13 +675,15 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 const mapStateToProps = state => {
     return {
         fps: state.fpsCounter.fps,
-        GWState: state.gameWorldState.GWState
+        GWState: state.gameWorldState.GWState,
+        viewer: state.viewer.viewData
     };
 };
 
 const mapDispatchToProps = {
     fpsCounter,
-    gameWorldState
+    gameWorldState,
+    changeViewer
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EngineInitialization);

@@ -180,7 +180,7 @@ export default class MapCreator {
         });
 
 
-        this.creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat);
+        // this.creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat);
 
 
         // Добавление статических объектов на карту

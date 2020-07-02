@@ -4,9 +4,9 @@ export const MapJSON = {
         src: "./Client/image/square-border.png",
         startPositionX: 0,
         startPositionY: 0,
-        width: 0,
+        width: 100,
         height: 0,
-        length: 0,
+        length: 100,
         zIndex: 3,
         mapSizeX: 1000,
         mapSizeY: 1000,
@@ -256,7 +256,7 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 0,
+                count: 5,
                 startPoint: {x:2,y:0,z:3},
                 distanceBetweenEnemies: 1
             },
@@ -268,7 +268,7 @@ export const MapJSON = {
             },
             {
                 typeEnemy: 'enemy3',
-                count: 0,
+                count: 5,
                 startPoint: {x:-5,y:0,z:-3},
                 distanceBetweenEnemies: 0.5
             },
