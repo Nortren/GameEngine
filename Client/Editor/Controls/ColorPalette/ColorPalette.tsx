@@ -7,6 +7,7 @@ import Button from "../Button/Button";
 export default function ColorPalette() {
     const [viewFile, setviewFile] = React.useState<object[]>('');
     const colorPaletteStatus = useSelector(state => state.colorPaletteStore.colorPaletteStatus);
+    const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
     React.useEffect(() => {
 
 
@@ -25,6 +26,14 @@ function ColorPicker() {
     document.addEventListener("offColorPalette", (event) => {
         dispatch(changeColorPaletteStatus(false));
     });
+    const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
+
+
+    const changeObjectColor = (color) => {
+        colorPaletteData.source.r = color.R;
+        colorPaletteData.source.g = color.G;
+        colorPaletteData.source.b = color.B;
+    };
 
     const [template, setTemplate] = React.useState<object[]>('');
     const [canvas, setCanvas] = React.useState<object[]>('');
@@ -49,8 +58,25 @@ function ColorPicker() {
                 </div>
             </div>
             <canvas id="colorPicker"/>
-            <div>
-                <Button options={ {name: 'offColorPalette',iconType:'PowerOff',iconSize:'2x', id: 1, componentArray: [],type:'EditorButton',style:{margin:'5px'}}}/>
+            <div className="colorPalette_container-buttonControl">
+                <Button options={ {
+                    name: 'saveColorPalette',
+                    iconType: 'Check',
+                    iconSize: '2x',
+                    id: 1,
+                    componentArray: [],
+                    type: 'EditorButton',
+                    style: {margin: '5px'}
+                }}/>
+                <Button options={ {
+                    name: 'offColorPalette',
+                    iconType: 'Times',
+                    iconSize: '2x',
+                    id: 1,
+                    componentArray: [],
+                    type: 'EditorButton',
+                    style: {margin: '5px'}
+                }}/>
             </div>
         </div>);
 
@@ -348,8 +374,10 @@ function ColorPicker() {
                             B = q;
                             break;
                     }
+                    const color = [parseInt(R * 255), parseInt(G * 255), parseInt(B * 255)];
 
-                    return [parseInt(R * 255), parseInt(G * 255), parseInt(B * 255)];
+                    changeObjectColor({R,G,B});
+                    return color;
                 }
 
             };
