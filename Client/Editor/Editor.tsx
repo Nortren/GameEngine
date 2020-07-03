@@ -7,6 +7,7 @@ import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
 
 import ImageEditor from './Controls/ImageEditor/ImageEditor';
 import ColorPalette from "./Controls/ColorPalette/ColorPalette";
+import DragAndDropContainer from "./Controls/DragAndDropContainer/DragAndDropContainer";
 
 import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
@@ -203,7 +204,7 @@ export default class Editor extends React.Component {
                         'SkinnedMesh',
                         'Sprite'
                     ]
-                },'Effect','Light','Audio','Video','UI','Camera']
+                }, 'Effect', 'Light', 'Audio', 'Video', 'UI', 'Camera']
         };
         const componentButton = {componentName: DropDownButton, name: 'component', id: 4, componentArray: []};
 
@@ -272,6 +273,10 @@ export default class Editor extends React.Component {
             componentArray: [start, pause, step]
         };
 
+        const ColorPaletteBlock = {
+            componentName: ColorPalette,
+            id: 3
+        };
 
         const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
         const ToolInspector = {
@@ -302,6 +307,8 @@ export default class Editor extends React.Component {
         };
         const inspectorData = this.state.inspectorData;
         const testLoaderStatus = this.state.testLoaderStatus;
+
+
         return (
             <div className="editor">
                 <div className="editor_visibleButton">
@@ -319,7 +326,8 @@ export default class Editor extends React.Component {
                         <EditorWindows id='inspector' position="right" componentArray={[tabInspector]}/>
                         <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
                         <ImageEditor/>
-                        <ColorPalette/>
+                        <DragAndDropContainer id="dragAndDropContainer_1" componentArray={[ColorPaletteBlock]}/>
+
                     </div>
                 </GlobalEditorContext.Provider>
             </div>
