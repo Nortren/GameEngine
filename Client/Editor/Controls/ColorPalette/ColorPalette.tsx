@@ -4,21 +4,19 @@ import {
     changeColorPalette, changeColorPaletteStatus
 } from '../../../Store/EditorStore/ColorPalette/Actions';
 import Button from "../Button/Button";
-export default function ColorPalette() {
-    const [viewFile, setviewFile] = React.useState<object[]>('');
+export default function ColorPalette(props) {
     const colorPaletteStatus = useSelector(state => state.colorPaletteStore.colorPaletteStatus);
-    const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
+    props.statusVisible(colorPaletteStatus);
     React.useEffect(() => {
 
 
     }, [colorPaletteStatus]);
 
-    return (
-        <div className="colorPalette_container">
-            { colorPaletteStatus ? <ColorPicker/> : ''}
-        </div>
-    );
-}
+    return colorPaletteStatus ?
+            <div className="colorPalette_container">
+                <ColorPicker/>
+            </div> : ''
+  }
 
 
 function ColorPicker() {
@@ -376,7 +374,7 @@ function ColorPicker() {
                     }
                     const color = [parseInt(R * 255), parseInt(G * 255), parseInt(B * 255)];
 
-                    changeObjectColor({R,G,B});
+                    changeObjectColor({R, G, B});
                     return color;
                 }
 
