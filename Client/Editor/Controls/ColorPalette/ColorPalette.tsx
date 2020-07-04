@@ -13,19 +13,17 @@ export default function ColorPalette(props) {
     }, [colorPaletteStatus]);
 
     return colorPaletteStatus ?
-            <div className="colorPalette_container">
-                <ColorPicker/>
-            </div> : ''
-  }
+        <div className="colorPalette_container">
+            <ColorPicker dragAndDropStatusChange={props.dragAndDropStatusChange}
+                         dragAndDropStatus={props.dragAndDropStatus}/>
+        </div> : ''
+}
 
 
-function ColorPicker() {
+function ColorPicker(props) {
     const dispatch = useDispatch();
-    document.addEventListener("offColorPalette", (event) => {
-        dispatch(changeColorPaletteStatus(false));
-    });
+    const [DnDStatus, setDnDStatus] = React.useState<object[]>(false);
     const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
-
 
     const changeObjectColor = (color) => {
         colorPaletteData.source.r = color.R;
@@ -37,6 +35,18 @@ function ColorPicker() {
     const [canvas, setCanvas] = React.useState<object[]>('');
 
     React.useEffect(() => {
+        document.addEventListener("offColorPalette", (event) => {
+            dispatch(changeColorPaletteStatus(false));
+        });
+        document.addEventListener("DnDStatus", (event) => {
+            if (DnDStatus) {
+                props.dragAndDropStatusChange(true);
+                setDnDStatus(true);
+            } else {
+                props.dragAndDropStatusChange(false);
+                setDnDStatus(false);
+            }
+        });
         setTemplate(<div className="colorPalette_container-picker">
             <div className="picker" id="primary_block">
                 <div id="block_picker">
@@ -75,9 +85,21 @@ function ColorPicker() {
                     type: 'EditorButton',
                     style: {margin: '5px'}
                 }}/>
+                <Button options={ {
+                    name: 'DnDStatus',
+                    iconType: 'ArrowsAlt',
+                    iconSize: '2x',
+                    id: 1,
+                    componentArray: [],
+                    type: 'EditorButton',
+                    style: {margin: '5px'}
+                }}/>
             </div>
         </div>);
-
+        return () => {
+            document.removeEventListener("offColorPalette",()=>{});
+            document.removeEventListener("DnDStatus",()=>{});
+        }
     }, []);
     React.useEffect(() => {
         setCanvas(document.getElementById("colorPicker")  as HTMLCanvasElement);

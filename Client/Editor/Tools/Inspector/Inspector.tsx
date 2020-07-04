@@ -8,11 +8,15 @@ import Button from "../../Controls/Button/Button";
 import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
+import {
+    changeCodeEditor, changeCodeEditorStatus
+} from '../../../Store/EditorStore/CodeEditor/Actions';
 
 import {
     changeColorPalette, changeColorPaletteStatus
 } from '../../../Store/EditorStore/ColorPalette/Actions';
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
 /**
  * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
  * @returns {any}
@@ -144,8 +148,29 @@ function ImageReaderTemplate(props) {
 }
 function TextReaderTemplate(props) {
     const source = props.source;
+    const name = source.inspectorData.structure.name;
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+        document.addEventListener("EditCode", (event) => {
+            dispatch(changeCodeEditor(source));
+            dispatch(changeCodeEditorStatus(true));
+        });
+    }, []);
+    const template = <div className="inspector_container__file-data"><FontAwesomeIcon
+        icon={fontAwesome['faFileSignature']}
+        size='2x'/>
+        <div className="inspector_container__file-name">{name}</div>
+        < Button options={ {
+            name: 'EditCode',
+            iconType: 'Edit',
+            iconSize: '1x',
+            id: 1,
+            componentArray: [],
+            style: {margin: '5px'}
+        }}/>
+    </div>;
 
-    return (<div>{source.fileData}</div>)
+    return template;
 }
 
 
@@ -214,8 +239,9 @@ function ComponentTemplateMesh(props) {
         dispatch(changeImageEditorStatus(true));
     };
 
-    const openColorPalette = (e,source, imgSrc) => {
-        dispatch(changeColorPalette({source,imgSrc}));
+    const openColorPalette = (e, source, imgSrc) => {
+        e.stopPropagation();
+        dispatch(changeColorPalette({source, imgSrc}));
         dispatch(changeColorPaletteStatus(true));
     };
 
@@ -260,7 +286,8 @@ function ComponentTemplateMesh(props) {
                             {imgMaterial.map ? <img onClick={(e) => openInImageEditor(e, imgMaterial.map.image.currentSrc)}
                                                     class="containerSceneObject_mesh__container-type_img"
                                                     src={imgMaterial.map.image.currentSrc} alt=""/> :
-                                <div onClick={(e) => openColorPalette(e,imgMaterial.color, imgMaterial.color.getStyle())} className="containerSceneObject_mesh__container-type_color"
+                                <div onClick={(e) => openColorPalette(e, imgMaterial.color, imgMaterial.color.getStyle())}
+                                     className="containerSceneObject_mesh__container-type_color"
                                      style={{backgroundColor: `${imgMaterial.color.getStyle()}`}}></div>
                             }
                         </div>
@@ -296,7 +323,8 @@ function ComponentTemplateMesh(props) {
                     {imgSrc.map ? <img onClick={(e) => openInImageEditor(e, imgSrc.map.image.currentSrc)}
                                        class="containerSceneObject_mesh__container-type_img"
                                        src={imgSrc.map.image.currentSrc} alt=""/> :
-                        <div onClick={(e) => openColorPalette(e,imgSrc.color, imgSrc.color.getStyle())} className="containerSceneObject_mesh__container-type_color"
+                        <div onClick={(e) => openColorPalette(e, imgSrc.color, imgSrc.color.getStyle())}
+                             className="containerSceneObject_mesh__container-type_color"
                              style={{backgroundColor: `${imgSrc.color.getStyle()}`}}></div>}
                 </div>
             </div>

@@ -6,6 +6,7 @@ import Button from "./Controls/Button/Button";
 import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
 
 import ImageEditor from './Controls/ImageEditor/ImageEditor';
+import CodeEditor from './Controls/CodeEditor/CodeEditor';
 import ColorPalette from "./Controls/ColorPalette/ColorPalette";
 import DragAndDropContainer from "./Controls/DragAndDropContainer/DragAndDropContainer";
 
@@ -277,7 +278,10 @@ export default class Editor extends React.Component {
             componentName: ColorPalette,
             id: 3
         };
-
+        const CodeEditorBlock = {
+            componentName: CodeEditor,
+            id: 3
+        };
         const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
         const ToolInspector = {
             componentName: Inspector,
@@ -327,7 +331,7 @@ export default class Editor extends React.Component {
                         <EditorWindows id='editorFooter' position="bottom" componentArray={[tabEditorFooter]}/>
                         <ImageEditor/>
                         <DragAndDropContainer id="dragAndDropContainer_1" componentArray={[ColorPaletteBlock]}/>
-
+                        <DragAndDropContainer id="dragAndDropContainer_2" componentArray={[CodeEditorBlock]}/>
                     </div>
                 </GlobalEditorContext.Provider>
             </div>

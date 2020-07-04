@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
     faEyeDropper,
     faPencilAlt,
@@ -35,7 +35,12 @@ faPaperclip,
     faPause,
     faForward,
     faCheck,
-    faTimes
+    faTimes,
+    faFileSignature,
+    faSave,
+    faSitemap,
+    faEllipsisH,
+    faCog,
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
@@ -103,6 +108,10 @@ export default class Button extends React.Component {
             faForward = 'Forward',
             faCheck = "Check",
             faTimes = "Times",
+            faSave = "Save",
+            faSitemap = "Sitemap",
+            faEllipsisH = "EllipsisH",
+            faCog = "Cog",
         }
         if (this.props.options.type === 'EditorButton') {
             return <div className="editorButton_container">
