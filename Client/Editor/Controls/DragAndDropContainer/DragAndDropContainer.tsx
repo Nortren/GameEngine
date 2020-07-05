@@ -6,11 +6,19 @@ import Button from "../Button/Button";
  * @returns {any}
  * @constructor
  */
-export const DragAndDropContainerContext = React.createContext();
+
 export default function DragAndDropContainer(props) {
-    const [DnDStatus, setDnDStatus] = React.useState<object[]>(false);
+    const [DnDStatus, setDnDStatus] = React.useState<object[]>();
     const [visibleContainer, setVisibleContainer] = React.useState<object[]>(false);
 
+    document.addEventListener("DnDStatusCodeEditor", (event) => {
+        event.preventDefault();
+        changeDnDStatus();
+    });
+    document.addEventListener("DnDStatusColorPalette", (event) => {
+        event.preventDefault();
+        changeDnDStatus();
+    });
     const changeDnDStatus = ()=>{
         if (DnDStatus) {
             setDnDStatus(false);
@@ -18,13 +26,6 @@ export default function DragAndDropContainer(props) {
             setDnDStatus(true);
         }
     };
-
-    React.useEffect(() => {
-        document.addEventListener("dragAndDropStatus", (event) => {
-            changeDnDStatus();
-        });
-    },[]);
-
     React.useEffect(() => {
         const targetContainer = document.querySelector('#' + props.id);
 
@@ -85,9 +86,8 @@ export default function DragAndDropContainer(props) {
     const getComponents = (props) => {
         const component = (
             props.componentArray.map(Component => (
-                <DragAndDropContainerContext.Provider value={{DnDStatus, changeDnDStatus}}>
                 <Component.componentName key={Component.componentName.name + Component.id} options={Component} statusVisible={statusVisible} dragAndDropStatus={DnDStatus}/>
-                </DragAndDropContainerContext.Provider>
+
             ))
         );
         return component;
