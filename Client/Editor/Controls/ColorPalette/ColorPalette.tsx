@@ -38,15 +38,6 @@ function ColorPicker(props) {
         document.addEventListener("offColorPalette", (event) => {
             dispatch(changeColorPaletteStatus(false));
         });
-        document.addEventListener("DnDStatus", (event) => {
-            if (DnDStatus) {
-                props.dragAndDropStatusChange(true);
-                setDnDStatus(true);
-            } else {
-                props.dragAndDropStatusChange(false);
-                setDnDStatus(false);
-            }
-        });
         setTemplate(<div className="colorPalette_container-picker">
             <div className="picker" id="primary_block">
                 <div id="block_picker">
@@ -86,7 +77,7 @@ function ColorPicker(props) {
                     style: {margin: '5px'}
                 }}/>
                 <Button options={ {
-                    name: 'DnDStatus',
+                    name: 'DnDStatusColorPalette',
                     iconType: 'ArrowsAlt',
                     iconSize: '2x',
                     id: 1,

@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {
     changeCodeEditor, changeCodeEditorStatus
 } from '../../../Store/EditorStore/CodeEditor/Actions';
-import {DragAndDropContainerContext} from '../../Controls/DragAndDropContainer/DragAndDropContainer';
 import Button from "../Button/Button";
 /**
  * Крмпонент простмотра изображений(TODO редактирования)
@@ -17,32 +16,19 @@ export default function CodeEditor(props) {
     const codeEditorStore = useSelector(state => state.codeEditorStore.codeEditorData);
     const codeEditorStatus = useSelector(state => state.codeEditorStore.codeEditorStatus);
     const dispatch = useDispatch();
-    const {DnDStatus, changeDnDStatus} = React.useContext(DragAndDropContainerContext);
     props.statusVisible(codeEditorStatus);
 
     React.useEffect(() => {
         document.addEventListener("off", (event) => {
             dispatch(changeCodeEditorStatus(false));
         });
-        document.addEventListener("DnDStatusCodeEditor", (event) => {
-            changeDnDCodeEitorStatus();
 
-        });
 
         return () => {
             document.removeEventListener("off", () => {
             });
-            document.removeEventListener("DnDStatusCodeEditor", () => {
-            });
         }
     }, []);
-    const changeDnDCodeEitorStatus = () => {
-        changeDnDStatus();
-    };
-
-    const closecodeEditor = () => {
-        dispatch(changeCodeEditorStatus(false));
-    };
 
 
     return codeEditorStatus ? <div className="codeEditor_container">
@@ -116,6 +102,40 @@ export default function CodeEditor(props) {
 
 function CodeEditorArea(props) {
     const source = props.source;
+
+    let statusType=false;
+    const parseCodeString = (string: string) => {
+        const keyword = ['class','constructor','super','this',';','let', 'const', 'string', 'number', 'object', 'boolean', 'function', 'return', 'export', 'default', 'import', 'from', 'as', 'void', 'typeof', 'void', 'any', 'keyof', 'never', 'symbol', 'for', 'if', 'else', 'try', 'catch'];
+       const statusTypekeyword = ['class','function'];
+
+        let template = '';
+
+
+        if (keyword.some((item) => {
+                return item === string
+            })) {
+            template = <div className="codeEditor-line_keyword">{string}</div>;
+        }
+        else if(statusType && string !== " "){
+            template = <div className="codeEditor-line_variable">{string}</div>;
+        } else{
+            template = <div className="">{string}</div>
+        }
+
+        if(statusTypekeyword.some((item) => {
+                return item === string
+            })){
+            statusType = string;
+        }
+        else if(string !== " "){
+            statusType = false;
+        }
+
+        if(string.length){
+            return {statusType,template}
+        }
+    };
+
     const template = <div className="codeEditor-wrapper">
         {source.fileData.split('\n').map((item, index) => {
 
@@ -125,9 +145,14 @@ function CodeEditorArea(props) {
                     <div className="codeEditor-auxiliaryData"></div>
                 </div>
                 <pre className="codeEditor-line">
-                     <span>
-                        {item}
-                     </span>
+                     {item.split(/([\u00200]|\;|\'|\)|\()/).map((item) => {
+                         const parseVariable = parseCodeString(item);
+                         statusType = parseVariable ? parseVariable.statusType : '';
+                         return parseVariable ? parseVariable.template : '';
+                     })}
+                    {/*  <span>
+                     {item}
+                     </span>*/}
                    </pre>
             </div>
 
