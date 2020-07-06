@@ -222,6 +222,14 @@ export default class Editor extends React.Component {
             id: 1,
             componentArray: []
         };
+        const cameraTool = {
+            componentName: Button,
+            name: 'CameraControl',
+            iconType: 'CameraRetro',
+            iconSize: '1x',
+            id: 2,
+            componentArray: []
+        };
         const moveTool = {
             componentName: Button,
             name: 'Full screen scene',
@@ -259,7 +267,7 @@ export default class Editor extends React.Component {
         const bottomMenuHeader = {
             componentName: TopMenu,
             id: 2,
-            componentArray: [handTool, moveTool, rotateTool, scaleTool, rectTool, customEditorTool]
+            componentArray: [handTool, cameraTool, moveTool, rotateTool, scaleTool, rectTool, customEditorTool]
         };
 
         const start = {componentName: Button, name: '', iconType: 'Play', iconSize: '1x', id: 1, componentArray: []};
