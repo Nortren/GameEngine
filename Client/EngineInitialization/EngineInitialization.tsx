@@ -72,18 +72,16 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
     onMouseMove(event) {
 
-
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
-
+        // event.stopPropagation();
+        // event.preventDefault();
         this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
 
     }
 
     onMouseClick(event) {
-
-
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
         console.log(event.type);
@@ -120,7 +118,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     createCameraScene(canvas, userData) {
         const userStartPositionCamera = userData[0];
         const camera = this._camera.createCamera(userStartPositionCamera);
-        this._camera.сameraON(globalVariables.camera.cameraControl, camera, canvas);
+        let orbitControlObject = document.getElementById('scene');
+        this._camera.сameraON(this.cameraControlStatus, camera, orbitControlObject);
         return camera;
     }
 
@@ -547,14 +546,21 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
 
         if (this.props.editorData && this.props.editorData.name) {
+            if(this.props.editorData.name === "CameraControl"){
+                let orbitControlObject = document.getElementById('scene');
+                this.cameraControlStatus = this.props.editorData.data.cameraControlStatus;
+                this._camera.сameraON(this.cameraControlStatus , camera, orbitControlObject);
+                console.log(this.cameraControlStatus ,"editorData CameraControl");
+            }
+
             if (this.props.editorData.name === "EditorEventBus") {
-                const idSearchElement = this.props.editorData.event.source.id;
+                const idSearchElement = this.props.editorData.data.source.id;
                 const searchObject = this.scene.getObjectById(idSearchElement);
-                const changeData = this.props.editorData.event.data;
-                searchObject[this.props.editorData.event.item][this.props.editorData.event.name] = changeData;
+                const changeData = this.props.editorData.data.data;
+                searchObject[this.props.editorData.data.item][this.props.editorData.data.name] = changeData;
             }
             if (this.props.editorData.name === "CreateObject") {
-                const createGeometryName = this.props.editorData.event.buttonName;
+                const createGeometryName = this.props.editorData.data.buttonName;
                 const geometry = this.createGeometry(createGeometryName);
                 this.scene.add(geometry);
             }
@@ -617,7 +623,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 data.arrayUser.forEach((item, i) => {
                         userProps.id = data.arrayUser[i].id;
                         if (playerInMaps[i]) {
-                            if (!globalVariables.camera.cameraControl && (data.thisUser.id === this.userID)) {
+                            if (!this.cameraControlStatus && (data.thisUser.id === this.userID)) {
                                 this.updateCameraClientPosition(camera, i, cameraProps, data.thisUser);
                             }
                             playerInMaps[i].update(data.arrayUser[i], enemyArray);

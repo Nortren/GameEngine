@@ -28,13 +28,21 @@ export default class Camera {
     }
 
     сameraON(turnCamera, camera, canvas) {
-
-        if (turnCamera) {
-            const controls = new OrbitControls(camera, canvas);
-            controls.target.set(0, 0, 0);
-            controls.update();
+        if(!this.controls && turnCamera) {
+            this.controls = new OrbitControls(camera, canvas);
+            this.controls.saveState();
         }
+        if(this.controls) {
+            if (turnCamera) {
+                // this.controls.target.set(0, 0, 0);
+                this.controls.update();
+            } else {
 
+                this.controls.dispose();
+                this.controls.update();
+                this.controls = null;
+            }
+        }
     }
 
     /**

@@ -41,6 +41,8 @@ faPaperclip,
     faSitemap,
     faEllipsisH,
     faCog,
+    faCamera,
+    faCameraRetro,
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
@@ -112,6 +114,8 @@ export default class Button extends React.Component {
             faSitemap = "Sitemap",
             faEllipsisH = "EllipsisH",
             faCog = "Cog",
+            faCamera = 'Camera',
+            faCameraRetro = 'CameraRetro',
         }
         if (this.props.options.type === 'EditorButton') {
             return <div className="editorButton_container">
