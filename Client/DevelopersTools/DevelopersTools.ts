@@ -61,15 +61,20 @@ export class CameraControl {
     }
 
     cameraControl(camera) {
-        this.cameraStartPositionZ = camera.position.z;
-        this.cameraStartPositionX = camera.scale.x;
-        this.cameraStartPositionY = camera.rotation._y;
-
-
-        camera.position.z = this.cameraPositionZ ? this.cameraPositionZ : camera.position.z;
-        camera.scale.x = this.cameraPositionX ? this.cameraPositionX : camera.scale.x;
-        camera.rotation._y = this.cameraPositionY ? this.cameraPositionY : camera.rotation._y;
-
+        camera = this.camera ? this.camera : camera;
+        if (!this.camera) {
+            //Сохраняем данные о камере, чтоб вернуть их после управления через OrbitControl
+            this.camera = {...camera};
+        }
+        //
+        // this.cameraStartPositionZ = camera.position.z;
+        // this.cameraStartPositionX = camera.scale.x;
+        // this.cameraStartPositionY = camera.rotation._y;
+        //
+        //
+        // camera.position.z = this.cameraPositionZ ? this.cameraPositionZ : camera.position.z;
+        // camera.scale.x = this.cameraPositionX ? this.cameraPositionX : camera.scale.x;
+        // camera.rotation._y = this.cameraPositionY ? this.cameraPositionY : camera.rotation._y;
 
 
     }

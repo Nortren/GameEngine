@@ -27,6 +27,7 @@ class GameEngineContainer extends React.Component {
     }
 
     componentDidMount() {
+        let cameraControlStatus = false;
         document.addEventListener("EditorEventBus", (event) => {
             this.eventBusEditor("EditorEventBus", event);
 
@@ -36,16 +37,27 @@ class GameEngineContainer extends React.Component {
             this.eventBusEditor("CreateObject", event);
         });
         document.addEventListener("changeEditorData", (event) => {
-            console.log(event,"changeEditorData");
+            console.log(event, "changeEditorData");
             this.eventBusEditor("", {});
+        });
+        document.addEventListener("CameraControl", (event) => {
+
+
+            const changeCameraStatus = ()=>{
+               return cameraControlStatus = !cameraControlStatus;
+            };
+
+            const data = {cameraControlStatus:changeCameraStatus()};
+
+            this.eventBusEditor("CameraControl", event,data);
         });
         //Обнуляем state для предотвращения повторноговыполнения события(т.к они будут постоянно храниться в стейте и проверка будет положительна)
 
 
     }
 
-    eventBusEditor(eventName, event) {
-        this.setState({editorData: {name: eventName, event: event.detail, syntheticEvent: event}});
+    eventBusEditor(eventName, event,data?) {
+        this.setState({editorData: {name: eventName, data: data || event.detail, syntheticEvent: event}});
     }
 
     startInit() {
