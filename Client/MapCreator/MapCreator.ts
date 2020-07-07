@@ -437,7 +437,7 @@ export default class MapCreator {
         }
         pathX[0] = startPointX;
         pathZ[0] = startPointZ;
-        this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep, mapLength, mapWidth);
+        // this.createPathSearch({pathX, pathZ, lengthPath}, scene, planeGeo, planeMatStep, mapLength, mapWidth);
         // теперь px[0..len] и py[0..len] - координаты ячеек пути
         return true;
     }

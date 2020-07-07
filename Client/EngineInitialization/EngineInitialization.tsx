@@ -57,7 +57,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         this.scene.scale.set(1, 1, 1);
         this.blData = new BL();
         this.mouse = new THREE.Vector2();
-
+        this.direction = new THREE.Vector3();
+        this.far = new THREE.Vector3();
         this.createUserRoom(this.scene, renderer, canvas);
         document.addEventListener('mousemove', this.onMouseMove.bind(this), false);
         document.addEventListener('mousedown', this.onMouseClick.bind(this), false);
@@ -84,7 +85,6 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     onMouseClick(event) {
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
-        console.log(event.type);
         this.statusChangeObject = event.type === 'mousedown';
         if (event.type === 'mouseup') {
             this.selectedChangeObject = false;
@@ -217,13 +217,13 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     this.props.gameWorldState(scene);
 
                     //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
-                    const gridHelper = new THREE.GridHelper(100, 100);
-                    scene.add(gridHelper);
+                    // const gridHelper = new THREE.GridHelper(100, 100);
+                    // scene.add(gridHelper);
 
                     const raycaster = new THREE.Raycaster();
 
 
-                    this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0, raycaster, this.mouse);
+                    this.update(renderer, scene, camera, this.playerInMaps, this._enemyArray, 0, raycaster, this.mouse, this.direction);
                 }
             }
         });
@@ -530,6 +530,21 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
     }
 
+    sightPlayer(raycaster, mouse, scene, direction) {
+        if (scene) {
+            const objStart = scene.getObjectById(12);
+            const objEnd= scene.getObjectById(13);
+            // raycaster.set(objStart.position,objEnd.position);
+            raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
+            // raycaster.far = this.far.subVectors(objEnd.position, objStart.position).length();
+
+            // const intersects = raycaster.intersectObjects(scene.children);
+            raycaster;
+        }
+
+    }
+
+
     /**
      * Функция покадрового обновления сцены для отображения всех изменений и анимаций
      * @param renderer
@@ -538,7 +553,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * @param map
      * @param user
      */
-    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse): void {
+    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse, direction): void {
+
+
+        this.sightPlayer(raycaster, mouse, scene, direction);
 
         if (this.statusChangeObject) {
             this.getSelectedObject(raycaster, mouse, camera, scene);
@@ -546,11 +564,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
 
         if (this.props.editorData && this.props.editorData.name) {
-            if(this.props.editorData.name === "CameraControl"){
+            if (this.props.editorData.name === "CameraControl") {
                 let orbitControlObject = document.getElementById('scene');
                 this.cameraControlStatus = this.props.editorData.data.cameraControlStatus;
-                this._camera.сameraON(this.cameraControlStatus , camera, orbitControlObject);
-                console.log(this.cameraControlStatus ,"editorData CameraControl");
+                this._camera.сameraON(this.cameraControlStatus, camera, orbitControlObject);
             }
 
             if (this.props.editorData.name === "EditorEventBus") {
@@ -588,26 +605,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         requestAnimationFrame(() => {
 
-            this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse);
+            this.update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse, direction);
         });
         renderer.render(scene, camera);
-        const playerInformation = this.seeWhichPlayersAreBots(playerInMaps);
-
-        // this.changePhysics(this._mapCreator.checkCollision(playerInformation.playerX, playerInformation.playerZ,
-        //     playerInformation.playerWidth, playerInformation.playerHeight, this.props.direction));
     }
-
-    //TODO пока костыль только первого юзера передаю врагам, надо перенести на сервер логику
-    seeWhichPlayersAreBots(playerInMaps) {
-        return {
-            playerX: playerInMaps[0].collaider.position.x,
-            playerZ: playerInMaps[0].collaider.position.z,
-            playerWidth: playerInMaps[0].colliderWidth,
-            playerHeight: playerInMaps[0].colliderLength,
-            playerData: playerInMaps[0]
-        };
-    }
-
 
     /**
      * Обновляем координаты игроков в комнате для корректного отображения на клиенте пришедшие с сервера

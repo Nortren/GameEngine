@@ -92,7 +92,7 @@ export const MapJSON = {
                 colliderLength: 10,
                 zIndex: 1,
             },
-            tree5: {
+        /*    tree5: {
                 src: "./Client/image/treeTest.png",
                 startPositionX: 0,
                 startPositionY: 0,
@@ -251,7 +251,7 @@ export const MapJSON = {
                 colliderHeight: 1,
                 colliderLength: 2,
                 zIndex: 1,
-            },
+            },*/
         },
         enemyOnMap: [
             {
