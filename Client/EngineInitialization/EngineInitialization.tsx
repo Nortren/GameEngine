@@ -217,8 +217,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     this.props.gameWorldState(scene);
 
                     //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
-                    // const gridHelper = new THREE.GridHelper(100, 100);
-                    // scene.add(gridHelper);
+                    const gridHelper = new THREE.GridHelper(100, 100);
+                    scene.add(gridHelper);
 
                     const raycaster = new THREE.Raycaster();
 
