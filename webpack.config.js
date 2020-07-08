@@ -8,15 +8,15 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 // import CopyWebpackPlugin from 'copy-webpack-plugin';
 module.exports = {
 	entry: "./Client/App.js",
-	output: {
-		path: path.join(__dirname, "/dist"),
-		filename: "index-bundle.js"
-	},
     devServer: {
         host: '127.0.0.1',
         compress: true,
         disableHostCheck: true
     },
+	output: {
+		path: path.join(__dirname, "/dist"),
+		filename: "index-bundle.js"
+	},
 	module: {
 		rules: [
 			{
