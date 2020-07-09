@@ -3,7 +3,7 @@
     "target": "es6",
     "module": "commonjs",
     "sourceMap": true,
-    "jsx": "react"
+    "tsx": "react"
   },
   "compileOnSave": true
 }
