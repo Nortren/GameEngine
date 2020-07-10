@@ -69,7 +69,7 @@ export default class DropDownButton extends React.Component {
 
 
     render() {
-        enum fontAwesomeArray {
+   /*     enum fontAwesomeArray {
             faEyeDropper = 'Dropper',
             faPencilAlt = 'PencilAlt',
             faPaintBrush = 'PaintBrush',
@@ -98,8 +98,51 @@ export default class DropDownButton extends React.Component {
             faTools = 'Tools',
             faPaperclip = 'Paperclip',
             faRedo = 'Redo'
-        }
-
+        }*/
+        const fontAwesomeArray = {
+            Dropper: 'faEyeDropper',
+            PencilAlt: 'faPencilAlt',
+            faPaintBrush: 'faPaintBrush',
+            PaintBrush: 'faPaintBrush',
+            Tint: 'faTint',
+            faPhotoVideo: 'PhotoVideo',
+            faPowerOff: 'PowerOff',
+            HandScissors: 'faHandScissors',
+            Bold: 'faBold',
+            ExpandAlt: 'faExpandAlt',
+            ExpandArrowsAlt: 'faExpandArrowsAlt',
+            Expand: 'faExpand',
+            Wrench: 'faWrench',
+            SlidersH: 'faSlidersH',
+            Palette: 'faPalette',
+            MousePointer: 'faMousePointer',
+            Hammer: 'faHammer',
+            FolderOpen: 'faFolderOpen',
+            FolderMinus: 'faFolderMinus',
+            FolderPlus: 'faFolderPlus',
+            File: 'faFile',
+            CompressArrowsAlt: 'faCompressArrowsAlt',
+            ArrowsAlt: 'faArrowsAlt',
+            Edit: 'faEdit',
+            Eraser: 'faEraser',
+            Tools: 'faTools',
+            Paperclip: 'faPaperclip',
+            Redo: 'faRedo',
+            List: 'faList',
+            ObjectUngroup: 'faObjectUngroup',
+            Cut: 'faCut',
+            Play: 'faPlay',
+            Pause: 'faPause',
+            Forward: 'faForward',
+            Check: 'faCheck',
+            Times: 'faTimes',
+            Save: 'faSave',
+            Sitemap: 'faSitemap',
+            EllipsisH: 'faEllipsisH',
+            Cog: 'faCog',
+            Camera: 'faCamera',
+            CameraRetro: 'faCameraRetro'
+        };
         return (
             <div key={this.props.options.key+this.props.options.name} className="dropDownButton_container" style={this.state.style}>
                 <button className="dropDownButton_container-button"
