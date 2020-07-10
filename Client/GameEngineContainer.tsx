@@ -27,6 +27,8 @@ class GameEngineContainer extends React.Component {
     }
 
     componentDidMount() {
+        this.thisMobileDevice = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
         let cameraControlStatus = false;
         document.addEventListener("EditorEventBus", (event) => {
             this.eventBusEditor("EditorEventBus", event);
@@ -75,7 +77,7 @@ class GameEngineContainer extends React.Component {
                     skillButton={this.props.skillButton}
                     editorData={this.state.editorData}
                 />
-                <StickController className=".container-fluid"
+                { this.thisMobileDevice ?<StickController className=".container-fluid"
                                  showElement={this.props.userStatusAuthorization}
                                  physicalCollision={this.props.physicalCollision}
                                  changePhysics={this.props.changePhysics}
@@ -84,7 +86,7 @@ class GameEngineContainer extends React.Component {
                                  directionOfMovement={this.props.directionOfMovement}
                                  animationStatusChange={this.props.animationStatusChange}
                                  clickedSkillButton={this.props.clickedSkillButton}
-                />
+                /> : ''}
             </div>;
         }
 
