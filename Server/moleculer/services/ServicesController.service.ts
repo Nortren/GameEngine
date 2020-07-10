@@ -37,7 +37,7 @@ class ServicesController extends Service {
 
 	serviceStarted() {
 		this.createClientConnection();
-		this.constantUpdate();
+		//this.constantUpdate();
 		console.log('Started ServicesController');
 		//опрашиваем сервер об изменениях
 

@@ -1,6 +1,6 @@
 import * as openSocket from 'socket.io-client';
 
-const socket = openSocket('http://localhost:8010');
+const socket = openSocket('image-life.ru:8010');
 export default class BusinessLogic {
 
 
@@ -14,7 +14,7 @@ export default class BusinessLogic {
 
     static  getInfoAboutStructute(structure:object) {
 
-        let url = 'http://localhost:3001/api/getInfoAboutStructure';
+        let url = 'http://image-life.ru:3001/api/getInfoAboutStructure';
 
         return fetch(url, {
             method: 'POST',
@@ -30,7 +30,7 @@ export default class BusinessLogic {
      * @returns {Promise<Response>}
      */
     static  getDirectoryProject(): Promise<Response> {
-        let url = 'http://localhost:3001/api/getProjectStructure';
+        let url = 'http://image-life.ru:3001/api/getProjectStructure';
 
         return fetch(url, {
             method: 'GET',

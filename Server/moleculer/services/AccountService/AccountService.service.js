@@ -1,12 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const Service = require("moleculer").Service;
-const Authorization_1 = require("./ClientAuthorization/Authorization");
 class AccountService extends Service {
-    // services/AccountService/AccountService.service.js
     constructor(broker) {
         super(broker);
-        this._authorization = new Authorization_1.default;
         this.parseServiceSchema({
             name: "AccountService",
             // version: "v2",
@@ -14,7 +9,7 @@ class AccountService extends Service {
                 scalable: true
             },
             settings: {
-                upperCase: true
+                upperCase: true,
             },
             actions: {
                 checkUserAuthorization: this.userAuthorization
@@ -25,13 +20,11 @@ class AccountService extends Service {
             stopped: this.serviceStopped,
         });
     }
-    testH() {
-        console.log('Test Hello');
-    }
     userAuthorization(ctx) {
-        console.log(ctx.params);
-        const authorization = new Authorization_1.default();
-        return authorization.checkAuthorizationData(ctx.params);
+        const userParams = ctx.params;
+        return this.broker.call("DB.checkAuthorization", userParams).then(result => {
+            return result;
+        }, error => { console.log('Ошибка Авторизации пользователя DB'); });
     }
     serviceCreated() {
         this.logger.info("ES6 Service created.");

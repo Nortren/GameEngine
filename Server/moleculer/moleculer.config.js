@@ -197,7 +197,7 @@ module.exports = {
 
 	// Called after broker created.
 	created(broker) {
-
+console.log('CREATE MOLECULER');
 	},
 
 	// Called after broker started.

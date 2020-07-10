@@ -16,7 +16,7 @@ module.exports = {
 	settings: {
 		// Exposed port
 		port: process.env.PORT || 3000,
-
+		host:"0.0.0.0",
 		// Exposed IP
 		ip: "0.0.0.0",
 

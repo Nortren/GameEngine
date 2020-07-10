@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.testMapJSON = {
+exports.room = void 0;
+exports.room = {
     map: {
         src: "./Client/image/testRepeatGround.png",
         startPositionX: 0,
@@ -62,7 +63,7 @@ exports.testMapJSON = {
     enemy: {
         src: "./Client/image/hero.png",
         collaid: "./Client/image/collaid.png",
-        scope: "./Client/image/persecutionRadius.png",
+        scope: "./Client/image/persecutionRadius_old.png",
         scopeRadius: 16,
         colliderPosition: {
             x: 3,
@@ -73,7 +74,7 @@ exports.testMapJSON = {
         colliderHeight: 1,
         colliderLength: 1,
         pursuitZone: 60,
-        persecutionRadius: "./Client/image/persecutionRadius.png",
+        persecutionRadius: "./Client/image/persecutionRadius_old.png",
         health: 100,
         damage: 1,
         attackDistance: 1,

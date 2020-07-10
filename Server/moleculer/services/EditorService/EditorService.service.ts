@@ -21,7 +21,7 @@ class EditorService extends Service {
                 routes: [{
                     path: "/",
                     cors: {
-                        origin: ["http://localhost:3001", "http://localhost:8080"],
+                        origin: ["http://image-life.ru:3001", "http://image-life.ru:8080"],
                         methods: ["GET", "OPTIONS", "POST"]
                     },
                     bodyParsers: {
@@ -33,7 +33,6 @@ class EditorService extends Service {
                         "POST /api/getInfoAboutStructure": 'EditorService.getInfoAboutStructure',
                     },
                     onBeforeCall(ctx, route, req, res) {
-
                         ctx.meta.userAgent = req.headers["user-agent"];
 
                     },
@@ -133,8 +132,8 @@ class EditorService extends Service {
      * @param request
      */
     sendDirectoryEngine(request: Context<object>): void {
-        const folder = '/GameEngine/Client';
-        const structure = this.readFolder(folder, [{}]);
+        const folder = '/home/nortren/GameEngine/Client';
+const structure = this.readFolder(folder, [{}]);
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end(JSON.stringify({
