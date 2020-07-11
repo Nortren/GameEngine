@@ -16,7 +16,8 @@ import {
     changeColorPalette, changeColorPaletteStatus
 } from '../../../Store/EditorStore/ColorPalette/Actions';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
+import * as fontAwesome from '@fortawesome/free-solid-svg-icons';
+import {globalVariables} from "../../../GlobalVariables";
 /**
  * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
  * @returns {any}
@@ -102,6 +103,12 @@ function ImageReaderTemplate(props) {
     const structure = source.inspectorData.structure;
     const imgSize = structure.stats.size;
     const imgPath = props.imgPath;
+
+    //Если на на бою то путь строим относительный
+    if (globalVariables.server) {
+        imgPath= props.imgPath.match(/(\/Client.*)/)[0];
+    }
+
     const imgName = structure.name.replace(/\.[^/.]+$/g, '');
     const createDate = new Date(structure.stats.birthtime).toLocaleString();
     const templateName = 'ImageViewer';

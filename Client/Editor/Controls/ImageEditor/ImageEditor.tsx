@@ -5,7 +5,7 @@ import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
 import Button from "../Button/Button";
-import {globalVariables} from "../../../GlobalVariables";
+
 /**
  * Крмпонент простмотра изображений(TODO редактирования)
  * @returns {any}
@@ -29,11 +29,7 @@ export default function ImageEditor(props) {
         if (canvas) {
             const img = new Image();
             img.src = imageEditorStore;
-            //Если на на бою то путь строим относительный
-            if (globalVariables.server) {
-                const serverImageSRC = imageEditorStore.match(/(\/Client.*)/)[0];
-                img.src = serverImageSRC;
-            }
+
 
 
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
