@@ -65,7 +65,7 @@ class GameEngineContainer extends React.Component {
     startInit() {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
             return <div>
-                {globalVariables.enableEditor ? <Editor/> : '' }
+                {this.props.userStatusAuthorization.adminRoot ? <Editor/> : '' }
 
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
