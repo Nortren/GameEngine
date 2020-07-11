@@ -168,8 +168,9 @@ export default class StickController extends React.Component {
     }
 
     render() {
+        const display = this.props.showMobileController ? 'flex' : 'none';
         return (
-            <div className="Sticks">
+            <div className="Sticks" style={{display}}>
                 <div className="leftStick">
                     <canvas id="UserLeftStick"></canvas>
                 </div>

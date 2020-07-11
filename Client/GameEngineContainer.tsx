@@ -45,20 +45,20 @@ class GameEngineContainer extends React.Component {
         document.addEventListener("CameraControl", (event) => {
 
 
-            const changeCameraStatus = ()=>{
-               return cameraControlStatus = !cameraControlStatus;
+            const changeCameraStatus = () => {
+                return cameraControlStatus = !cameraControlStatus;
             };
 
-            const data = {cameraControlStatus:changeCameraStatus()};
+            const data = {cameraControlStatus: changeCameraStatus()};
 
-            this.eventBusEditor("CameraControl", event,data);
+            this.eventBusEditor("CameraControl", event, data);
         });
         //Обнуляем state для предотвращения повторноговыполнения события(т.к они будут постоянно храниться в стейте и проверка будет положительна)
 
 
     }
 
-    eventBusEditor(eventName, event,data?) {
+    eventBusEditor(eventName, event, data?) {
         this.setState({editorData: {name: eventName, data: data || event.detail, syntheticEvent: event}});
     }
 
@@ -77,7 +77,8 @@ class GameEngineContainer extends React.Component {
                     skillButton={this.props.skillButton}
                     editorData={this.state.editorData}
                 />
-                { this.thisMobileDevice ?<StickController className=".container-fluid"
+                <StickController className=".container-fluid"
+                                 showMobileController={this.thisMobileDevice}
                                  showElement={this.props.userStatusAuthorization}
                                  physicalCollision={this.props.physicalCollision}
                                  changePhysics={this.props.changePhysics}
@@ -86,7 +87,7 @@ class GameEngineContainer extends React.Component {
                                  directionOfMovement={this.props.directionOfMovement}
                                  animationStatusChange={this.props.animationStatusChange}
                                  clickedSkillButton={this.props.clickedSkillButton}
-                /> : ''}
+                />
             </div>;
         }
 
