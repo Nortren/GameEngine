@@ -5,7 +5,7 @@ import BL from "../BusinessLogic";
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
-    userSpeed: number = 30
+    userSpeed: number = 30;
     blData: BL;
 
     constructor(props) {
