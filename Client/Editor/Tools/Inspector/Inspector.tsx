@@ -102,7 +102,7 @@ function ImageReaderTemplate(props) {
     const source = props.source;
     const structure = source.inspectorData.structure;
     const imgSize = structure.stats.size;
-    const imgPath = props.imgPath;
+    let imgPath = props.imgPath;
 
     //Если на на бою то путь строим относительный
     if (globalVariables.server) {
