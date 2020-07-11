@@ -112,7 +112,7 @@ class EditorService extends Service {
 
                 arrayOfStructures.push({
                     name: file,
-                    path: folder.concat('\\' + file),
+                    path: folder.concat('\/' + file),
                     extension: path.extname(file),
                     stats:fileStats,
                     type: 'file'
