@@ -43,6 +43,7 @@ import {
     faCog,
     faCamera,
     faCameraRetro,
+
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
@@ -57,6 +58,8 @@ export default class Button extends React.Component {
         this.id = props.id;
         this.state = {
             style: {
+                width: props.options.style ? props.options.style.width : '',
+                height: props.options.style ? props.options.style.height : '',
                 margin: props.options.style ? props.options.style.margin : '',
                 border: props.options.style ? props.options.style.border : ''
             },

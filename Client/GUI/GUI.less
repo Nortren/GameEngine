@@ -1,0 +1,28 @@
+@import "Chat/Chat";
+.GUI-container {
+   width: 100%;
+   height: 100%;
+   position: fixed;
+   z-index: 2;
+   display: grid;
+   grid-template-areas: 'leftTopCorner centerTopCorner rightTopCorner' 'leftCenterCorner centerCenterCorner rightCenterCorner' 'leftDownCorner centerDownCorner RightDownCorner';
+   grid-template-rows: 5fr 10fr 5fr;
+   grid-template-columns: 1fr 3fr 1fr;
+   color: red;
+
+   #leftTopCorner {
+      background-color: #2A2A2A;
+      grid-area: leftTopCorner;
+   }
+   #rightTopCorner {
+      background-color: #2A2A2A;
+      grid-area: rightTopCorner;
+   }
+   #leftDownCorner {
+      grid-area: leftDownCorner;
+   }
+   #rightDownCorner {
+      background-color: #2A2A2A;
+      grid-area: RightDownCorner;
+   }
+}

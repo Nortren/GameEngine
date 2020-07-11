@@ -16,6 +16,7 @@ import StickController from "./StickController/StickController";
 import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
+import GUI from "./GUI/GUI";
 import {globalVariables} from "./GlobalVariables";
 
 class GameEngineContainer extends React.Component {
@@ -66,7 +67,7 @@ class GameEngineContainer extends React.Component {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
             return <div>
                 {this.props.userStatusAuthorization.adminRoot ? <Editor/> : '' }
-
+                <GUI deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}
