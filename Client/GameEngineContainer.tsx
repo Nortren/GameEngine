@@ -16,6 +16,7 @@ import StickController from "./StickController/StickController";
 import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
+import GUI from "./GUI/GUI";
 import {globalVariables} from "./GlobalVariables";
 
 class GameEngineContainer extends React.Component {
@@ -30,16 +31,27 @@ class GameEngineContainer extends React.Component {
         this.thisMobileDevice = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
         let cameraControlStatus = false;
+        let movingObjectStatus = false;
         document.addEventListener("EditorEventBus", (event) => {
             this.eventBusEditor("EditorEventBus", event);
 
         });
         document.addEventListener("Create 3d Object", (event) => {
-            console.log(event, "Create 3d Object");
             this.eventBusEditor("CreateObject", event);
         });
+        document.addEventListener("movingObject", (event) => {
+            console.log(event, "movingObject");
+
+
+            const changeMovingObjectStatus = () => {
+                return movingObjectStatus = !movingObjectStatus;
+            };
+
+            const data = {movingObjectStatus: changeMovingObjectStatus()};
+
+            this.eventBusEditor("movingObject", event, data);
+        });
         document.addEventListener("changeEditorData", (event) => {
-            console.log(event, "changeEditorData");
             this.eventBusEditor("", {});
         });
         document.addEventListener("CameraControl", (event) => {
@@ -66,7 +78,7 @@ class GameEngineContainer extends React.Component {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
             return <div>
                 {this.props.userStatusAuthorization.adminRoot ? <Editor/> : '' }
-
+                <GUI deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}

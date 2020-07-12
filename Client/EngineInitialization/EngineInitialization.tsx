@@ -533,7 +533,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     sightPlayer(raycaster, mouse, scene, direction) {
         if (scene) {
             const objStart = scene.getObjectById(12);
-            const objEnd= scene.getObjectById(13);
+            const objEnd = scene.getObjectById(13);
             // raycaster.set(objStart.position,objEnd.position);
             raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
             // raycaster.far = this.far.subVectors(objEnd.position, objStart.position).length();
@@ -558,12 +558,14 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         this.sightPlayer(raycaster, mouse, scene, direction);
 
-        if (this.statusChangeObject) {
+        if (this.statusChangeObject && this.movingObject) {
             this.getSelectedObject(raycaster, mouse, camera, scene);
         }
-
-
         if (this.props.editorData && this.props.editorData.name) {
+
+            if (this.props.editorData.name === "movingObject") {
+              this.movingObject = this.props.editorData.data.movingObjectStatus;
+            }
             if (this.props.editorData.name === "CameraControl") {
                 let orbitControlObject = document.getElementById('scene');
                 this.cameraControlStatus = this.props.editorData.data.cameraControlStatus;
