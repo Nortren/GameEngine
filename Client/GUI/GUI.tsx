@@ -3,7 +3,7 @@ import {useDispatch, useSelector, useEffect} from 'react-redux';
 import Chat from "./Chat/Chat";
 
 export default function GUI(props) {
-    return <PCGrid/>
+    return props.deviceType ? <MobileGrid/> : <PCGrid/>;
 }
 
 function PCGrid(props) {
