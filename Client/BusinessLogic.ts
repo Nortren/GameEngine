@@ -33,6 +33,16 @@ export default class BusinessLogic {
         });
     }
 
+    sendUserMessage(message){
+        socket.emit('sendMessage',message);
+    }
+    getUserMessage(callback){
+        socket.on('getUserMessage', (data) => {
+            callback(data);
+        });
+    }
+
+
     getTestDataServerConnect(callback){
         socket.on('getTestServerConnect', (data) => {
             callback(data);
