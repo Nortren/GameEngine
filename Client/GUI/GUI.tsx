@@ -8,17 +8,17 @@ export default function GUI(props) {
 
 function PCGrid(props) {
     return <div className="GUI-container">
-        <div id='leftTopCorner'>avatarInfo</div>
-        <div id='rightTopCorner'>map</div>
+        <div id='leftTopCorner'></div>
+        <div id='rightTopCorner'></div>
         <div id='leftDownCorner'><Chat/></div>
-        <div id='rightDownCorner'>playerControls</div>
+        <div id='rightDownCorner'></div>
     </div>
 }
 function MobileGrid(props) {
     return <div className="GUI-container">
-        <div id='leftTopCorner'>avatarInfo</div>
-        <div id='rightTopCorner'>map</div>
-        <div id='leftDownCorner'>chat</div>
-        <div id='rightDownCorner'>playerControls</div>
+        <div id='leftTopCorner'></div>
+        <div id='rightTopCorner'></div>
+        <div id='leftDownCorner'></div>
+        <div id='rightDownCorner'></div>
     </div>
 }

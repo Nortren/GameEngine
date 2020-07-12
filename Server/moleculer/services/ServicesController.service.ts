@@ -56,6 +56,7 @@ class ServicesController extends Service {
 			console.log('UserConnect');
 			this.checkUserAuthorization(client);
 			this.getRoom(client);
+			this.serviceChat(client);
 			client.on('disconnect', (client) => {
 				console.log('UserDisconnect');
 
@@ -122,6 +123,20 @@ class ServicesController extends Service {
 			});
 
 		});
+
+
+
+
+		client.on('sendMessage', (message) => {
+
+			this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
+				const player = this.getPlayerBySocketIOID(room.playersInTheRoom, client.id);
+				io.to(room.id).emit('getUserMessage', {userName:player.id,message});
+				console.log(message,player.id);
+			});
+
+		});
+
 		client.on('disconnect', () => {
 			this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
 				const player = this.getPlayerBySocketIOID(room.playersInTheRoom, client.id);
@@ -138,6 +153,10 @@ class ServicesController extends Service {
 				this.playerControls(client, room);
 			})
 		});
+
+	}
+
+	serviceChat(client){
 
 	}
 
