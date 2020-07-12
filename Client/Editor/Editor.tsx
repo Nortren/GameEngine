@@ -216,7 +216,7 @@ export default class Editor extends React.Component {
         };
         const handTool = {
             componentName: Button,
-            name: '',
+            name: 'movingObject',
             iconType: 'MousePointer',
             iconSize: '1x',
             id: 1,
