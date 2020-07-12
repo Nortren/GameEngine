@@ -18,9 +18,9 @@ class PlayerController extends Service {
                 upperCase: true
             },
             actions: {
-                createRoom:this.createRoom,
-                createPlayer:this.createPlayer,
-                getRoomsList:this.getRoomsList,
+                createRoom: this.createRoom,
+                createPlayer: this.createPlayer,
+                getRoomsList: this.getRoomsList,
 
             },
             events: {},
@@ -34,7 +34,9 @@ class PlayerController extends Service {
 
 
         const id = ctx.params.playerID;
-        const player =ctx.params.playerDBData;
+
+        const player = ctx.params.playerDBData;
+        const name = player.avatarName;
         const health = player.health;
         const damage = player.damage;
         const attackDistance = player.attackDistance;
@@ -50,25 +52,26 @@ class PlayerController extends Service {
         const sprite = player.sprite;
         const collaid = player.collaid;
 
-        const playerAvatar = new PlayerAvatar(id,health,damage,
-            attackSpeed,moveSpeed,attackDistance,
-            colliderPositionX,colliderPositionY,colliderPositionZ,
-            colliderWidth,colliderHeight,colliderLength,
-			sprite,collaid
+        const playerAvatar = new PlayerAvatar(id, name, health, damage,
+            attackSpeed, moveSpeed, attackDistance,
+            colliderPositionX, colliderPositionY, colliderPositionZ,
+            colliderWidth, colliderHeight, colliderLength,
+            sprite, collaid
         );
 
         return playerAvatar;
 
     }
+
     createRoom(ctx) {
         let playerAvatar = new PlayerAvatar();
         // console.log('Test createPlayer',ctx.params);
     }
+
     getRoomsList(ctx) {
         let playerAvatar = new PlayerAvatar();
         // console.log('Test createPlayer',ctx.params);
     }
-
 
 
     userAuthorization(ctx) {

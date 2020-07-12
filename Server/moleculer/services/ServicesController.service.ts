@@ -131,8 +131,7 @@ class ServicesController extends Service {
 
 			this.broker.call("RoomCreator.getRoom", this.connectionPlayerName).then(room => {
 				const player = this.getPlayerBySocketIOID(room.playersInTheRoom, client.id);
-				io.to(room.id).emit('getUserMessage', {userName:player.id,message});
-				console.log(message,player.id);
+				io.to(room.id).emit('getUserMessage', {userName:player.name,message});
 			});
 
 		});
