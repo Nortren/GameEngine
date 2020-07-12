@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 export const PlayerJson = {
 	777: {
+		avatarName:'Admin',
 		sprite:{
 			src: "./Client/image/Player_v0_0_4.png",
 			numberOfFramesX: 17,
@@ -37,6 +38,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	123: {
+		avatarName:'TestUser_123',
 		sprite:{
 			src: "./Client/image/Player_v0_0_4.png",
 			numberOfFramesX: 17,
@@ -72,6 +74,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	1: {
+		avatarName:'TestUser_1',
 		sprite:{
 			src: "./Client/image/Player_v0_0_4.png",
 			numberOfFramesX: 17,
@@ -107,6 +110,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	2: {
+		avatarName:'TestUser_2',
 		sprite:{
 			src: "./Client/image/Player_v0_0_4.png",
 			numberOfFramesX: 17,
@@ -137,6 +141,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	3: {
+		avatarName:'TestUser_3',
 		src: "./Client/image/Player_v0.0.4.png",
 		collaid: "./Client/image/collaid.png",
 		colliderPositionX: 0,
@@ -152,6 +157,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	4: {
+		avatarName:'TestUser_4',
 		src: "./Client/image/Player_v0.0.4.png",
 		collaid: "./Client/image/collaid.png",
 		colliderPositionX: 0,
@@ -167,6 +173,7 @@ export const PlayerJson = {
 		moveSpeed: 1
 	},
 	5: {
+		avatarName:'TestUser_5',
 		src: "./Client/image/Player_v0.0.4.png",
 		collaid: "./Client/image/collaid.png",
 		colliderPositionX: 0,

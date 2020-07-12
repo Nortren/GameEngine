@@ -1,115 +1,117 @@
 interface BasicProperty {
-	id: number;
-	health: number;
-	damage: number;
-	attackSpeed: number;
-	moveSpeed: number;
-	attackDistance: number;
-	colliderPositionX: number;
-	colliderPositionY: number;
-	colliderPositionZ: number;
-	colliderWidth: number;
-	colliderHeight: number;
-	colliderLength: number;
-	src: string;
-	collaid: string;
-	moveDirection: string;
-	attackStatus: boolean;
-	moveContinue: boolean;
-	clientSocketIOID: string;
+    id: number;
+    health: number;
+    damage: number;
+    attackSpeed: number;
+    moveSpeed: number;
+    attackDistance: number;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    src: string;
+    collaid: string;
+    moveDirection: string;
+    attackStatus: boolean;
+    moveContinue: boolean;
+    clientSocketIOID: string;
 
-	create();
+    create();
 
-	update(room);
+    update(room);
 
-	move();
+    move();
 
-	attack();
+    attack();
 
-	death();
+    death();
 
-	changeSocketIOID();
+    changeSocketIOID();
 }
 
 interface ISprite {
-	src: string,
-	numberOfFramesX: number,
-	numberOfFramesY: number,
-	firstFrameMove: number,
-	lastFrameMove: number,
-	firstFrameAttack: number,
-	lastFrameAttack: number,
-	firstFrameDeath: number,
-	lastFrameDeath: number,
+    src: string,
+    numberOfFramesX: number,
+    numberOfFramesY: number,
+    firstFrameMove: number,
+    lastFrameMove: number,
+    firstFrameAttack: number,
+    lastFrameAttack: number,
+    firstFrameDeath: number,
+    lastFrameDeath: number,
 }
 
 export default class PlayerMainClass implements BasicProperty {
 
-	health: number;
-	damage: number;
-	attackSpeed: number;
-	moveSpeed: number;
-	attackDistance: number;
-	id: number;
+    health: number;
+    damage: number;
+    attackSpeed: number;
+    moveSpeed: number;
+    attackDistance: number;
+    id: number;
+    name: string;
 
-	colliderPositionX: number;
-	colliderPositionY: number;
-	colliderPositionZ: number;
-	colliderWidth: number;
-	colliderHeight: number;
-	colliderLength: number;
-	sprite: ISprite;
-	collaid: string;
-	moveDirection: string;
-	attackStatus: boolean;
-	moveContinue: boolean;
-	clientSocketIOID: string;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    colliderHeight: number;
+    colliderLength: number;
+    sprite: ISprite;
+    collaid: string;
+    moveDirection: string;
+    attackStatus: boolean;
+    moveContinue: boolean;
+    clientSocketIOID: string;
 
-	constructor(id: number, health: number, damage: number,
-				attackSpeed: number, moveSpeed: number, attackDistance: number,
-				colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
-				colliderWidth: number, colliderHeight: number, colliderLength: number,
-				sprite: ISprite, collaid: string) {
-		this.id = id;
-		this.health = health;
-		this.damage = damage;
-		this.attackSpeed = attackSpeed;
-		this.moveSpeed = moveSpeed;
-		this.attackDistance = attackDistance;
+    constructor(id: number,name:string, health: number, damage: number,
+                attackSpeed: number, moveSpeed: number, attackDistance: number,
+                colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
+                colliderWidth: number, colliderHeight: number, colliderLength: number,
+                sprite: ISprite, collaid: string) {
+        this.id = id;
+        this.name = name;
+        this.health = health;
+        this.damage = damage;
+        this.attackSpeed = attackSpeed;
+        this.moveSpeed = moveSpeed;
+        this.attackDistance = attackDistance;
 
-		this.colliderPositionX = colliderPositionX;
-		this.colliderPositionY = colliderPositionY;
-		this.colliderPositionZ = colliderPositionZ;
-		this.colliderWidth = colliderWidth;
-		this.colliderHeight = colliderHeight;
-		this.colliderLength = colliderLength;
-		this.sprite = sprite;
-		this.collaid = collaid;
-	}
+        this.colliderPositionX = colliderPositionX;
+        this.colliderPositionY = colliderPositionY;
+        this.colliderPositionZ = colliderPositionZ;
+        this.colliderWidth = colliderWidth;
+        this.colliderHeight = colliderHeight;
+        this.colliderLength = colliderLength;
+        this.sprite = sprite;
+        this.collaid = collaid;
+    }
 
-	create() {
+    create() {
 
-	}
+    }
 
-	changeSocketIOID() {
+    changeSocketIOID() {
 
-	}
+    }
 
-	update(room): void {
+    update(room): void {
 
-	}
+    }
 
-	move() {
+    move() {
 
-	}
+    }
 
-	attack() {
+    attack() {
 
-	}
+    }
 
-	death() {
+    death() {
 
-	}
+    }
 
 }
 

@@ -1,5 +1,6 @@
 interface BasicProperty {
 	id: number;
+	name: string;
 	type: string;
 	numberPlaces: number;
 	numberTakePlaces: number;
@@ -15,6 +16,7 @@ export default class Room implements BasicProperty {
 
 	id: number;
 	type: string;
+	name: string;
 	numberPlaces: number;
 	numberTakePlaces: number;
 	playersInTheRoom: Array<object> = [];

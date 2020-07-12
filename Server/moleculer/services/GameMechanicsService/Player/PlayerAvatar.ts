@@ -16,13 +16,13 @@ interface ISprite {
 export default class PlayerAvatar extends PlayerMainClass {
 
 
-    constructor(id: number, health: number, damage: number,
+    constructor(id: number,name:string, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 sprite: ISprite, collaid: string) {
 
-        super(id, health, damage,
+        super(id,name, health, damage,
             attackSpeed, moveSpeed, attackDistance,
             colliderPositionX, colliderPositionY, colliderPositionZ,
             colliderWidth, colliderHeight, colliderLength,
@@ -30,6 +30,7 @@ export default class PlayerAvatar extends PlayerMainClass {
         );
 
         this.id = id;
+        this.name = name;
         this.health = health;
         this.damage = damage;
         this.attackSpeed = attackSpeed;
