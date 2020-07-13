@@ -43,6 +43,14 @@ import {
     faCog,
     faCamera,
     faCameraRetro,
+    faUser,
+    faUserFriends,
+    faMap,
+    faFlag,
+    faHandRock,
+    faChild,
+    faGamepad,
+    faGasPump
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -162,7 +170,14 @@ export default class Button extends React.Component {
             EllipsisH: 'faEllipsisH',
             Cog: 'faCog',
             Camera: 'faCamera',
-            CameraRetro: 'faCameraRetro'
+            CameraRetro: 'faCameraRetro',
+            Map: 'faMap',
+            Flag: 'faFlag',
+            Gamepad: 'faGamepad',
+            GasPump: 'faGasPump',
+            HandRock: 'faHandRock',
+            Child: 'faChild',
+            UserFriends: 'faUserFriends'
         };
 
 
