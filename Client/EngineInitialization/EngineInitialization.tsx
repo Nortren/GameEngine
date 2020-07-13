@@ -674,7 +674,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     render() {
         return (
             <div className="fps-counter">
-                <div className="fps-counter-view">{this.state.fps}</div>
+                {/*<div className="fps-counter-view">{this.state.fps}</div>*/}
                 <canvas id="canvas"/>
             </div>
         );
