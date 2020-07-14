@@ -34,11 +34,11 @@ export const NPCJson = {
         colliderWidth: 1,
         colliderHeight: 1,
         colliderLength: 1,
-        pursuitZone: 60,
+        pursuitZone: 10,
         persecutionRadius: "./Client/image/scope_circle.png",
-        health: 10,
+        health: 100,
         damage: 1,
-        attackDistance: 10,
+        attackDistance: 5,
         attackSpeed: 10,
         moveSpeed: 0.1
     },
@@ -81,7 +81,7 @@ export const NPCJson = {
         persecutionRadius: "./Client/image/scope_circle.png",
         health: 10,
         damage: 1,
-        attackDistance: 10,
+        attackDistance: 5,
         attackSpeed: 10,
         moveSpeed: 0.1
     },
@@ -120,12 +120,12 @@ export const NPCJson = {
         colliderWidth: 1,
         colliderHeight: 1,
         colliderLength: 1,
-        pursuitZone: 60,
+        pursuitZone: 10,
         persecutionRadius: "./Client/image/scope_circle.png",
         health: 10,
         damage: 1,
-        attackDistance: 10,
-        attackSpeed: 10,
+        attackDistance: 3,
+        attackSpeed: 1000,
         moveSpeed: 0.1
     }, enemy4: {
         sprite: {
@@ -166,7 +166,7 @@ export const NPCJson = {
         persecutionRadius: "./Client/image/scope_circle.png",
         health: 10,
         damage: 1,
-        attackDistance: 10,
+        attackDistance: 5,
         attackSpeed: 10,
         moveSpeed: 0.1
     },
