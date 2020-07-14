@@ -13,13 +13,15 @@ export default function Map(props) {
         , []);
 
 
-    return <MapArea source={messageStore}/>
+    return <MapArea mobile={props.mobile} source={messageStore}/>
 }
 function MapArea(props) {
 
     return <div className="map-container">
-        <div className="map-container__map">
+        {props.mobile ?<div className="map-containerMobile__map">
 
-        </div>
+            </div> : <div className="map-container__map">
+
+        </div>}
     </div>
 }

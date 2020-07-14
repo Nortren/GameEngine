@@ -28,9 +28,11 @@ function PCGrid(props) {
     </div>
 }
 function MobileGrid(props) {
+    const source = props.source;
+    const userName = source.userName;
     return <div className="GUI-container">
-        <div id='leftTopCorner'></div>
-        <div id='rightTopCorner'></div>
+        <div id='leftTopCorner'><AvatarInfo mobile={true} source={{userName}}/></div>
+        <div id='rightTopCorner'><Map mobile={true}/></div>
         <div id='leftDownCorner'></div>
         <div id='rightDownCorner'></div>
     </div>

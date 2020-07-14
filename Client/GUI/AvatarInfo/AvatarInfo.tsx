@@ -15,12 +15,13 @@ export default function AvatarInfo(props) {
         , []);
 
 
-    return <AvatarInfoArea source={{userName}}/>
+    return <AvatarInfoArea mobile={props.mobile} source={{userName}}/>
 }
 function AvatarInfoArea(props) {
     const source = props.source;
     const userName = source.userName;
-    return <div className="avatarInfo-container">
+
+    const template = <div className="avatarInfo-container">
         <div className="avatarInfo-container__avatarInfo">
             <div className="avatarInfo-container__avatarInfo-name">
                 {userName}
@@ -30,5 +31,18 @@ function AvatarInfoArea(props) {
                 <span className="avatarInfo-container__avatarInfo-infoContainer_energy"/>
             </div>
         </div>
-    </div>
+    </div>;
+    const mobileTemplate = <div className="avatarInfo-containerMobile">
+        <div className="avatarInfo-containerMobile__avatarInfo">
+            <div className="avatarInfo-containerMobile__avatarInfo-name">
+                {userName}
+            </div>
+            <div className="avatarInfo-containerMobile__avatarInfo-infoContainer">
+                <span className="avatarInfo-containerMobile__avatarInfo-infoContainer_health"/>
+                <span className="avatarInfo-containerMobile__avatarInfo-infoContainer_energy"/>
+            </div>
+        </div>
+    </div>;
+
+    return props.mobile ? mobileTemplate : template;
 }
