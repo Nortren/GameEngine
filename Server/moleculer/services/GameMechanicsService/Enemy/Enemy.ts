@@ -72,7 +72,7 @@ export default class Enemy {
         this.findPositionX = 0;
         this.findPositionZ = 0;
         //Проверка для корректного отображенияанимации без движения
-        this.permissionMove = false;
+        this.permissionMove = true;
     }
 
     create() {
@@ -117,6 +117,7 @@ export default class Enemy {
         const findObjectZ = this.findPointToLeeArray(Math.ceil(needPlayer.colliderPositionZ), map.length);
         const mapLength = map.length;
         const mapWidth = map.width;
+
         if (this.permissionMove) {
             this.enemyAnimationRotation(needPlayer);
         }
@@ -126,9 +127,9 @@ export default class Enemy {
             if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
 
                 this.countMove = 0;
-                // if (!this.attack(needPlayer)) {
-                    this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
-                // }
+
+                this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+
                 //Запоминаем прошлую позицию цели, чтобы понимать необходимость повторного пересчета
                 this.findPositionX = findObjectX;
                 this.findPositionZ = findObjectZ;
@@ -136,8 +137,9 @@ export default class Enemy {
 
             this.countLee = 0;
         }
-
-        this.enemyMove(this.resultSearch, mapLength, mapWidth);
+        if (!this.attack(needPlayer)) {
+            this.enemyMove(this.resultSearch, mapLength, mapWidth);
+        }
     }
 
 
@@ -455,7 +457,6 @@ export default class Enemy {
 
         let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
         let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength, this.attackDistance);
-        console.log(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
         if (CollisionZ && CollisionX) {
             this.attackStatus = true;
 
