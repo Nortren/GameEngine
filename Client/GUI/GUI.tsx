@@ -32,7 +32,7 @@ function MobileGrid(props) {
     const userName = source.userName;
     return <div className="GUI-container">
         <div id='leftTopCorner'><AvatarInfo mobile={true} source={{userName}}/></div>
-        <div id='rightTopCorner'><Map mobile={true}/></div>
+        <div id='rightTopCorner'><Map mobile={true}/><PlayerControls mobile={true}/></div>
         <div id='leftDownCorner'></div>
         <div id='rightDownCorner'></div>
     </div>
