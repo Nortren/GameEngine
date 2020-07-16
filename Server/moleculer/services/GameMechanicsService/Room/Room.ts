@@ -1,12 +1,12 @@
 interface BasicProperty {
-	id: number;
-	name: string;
-	type: string;
-	numberPlaces: number;
-	numberTakePlaces: number;
-	playersInTheRoom: Array<object>;
-	map: object;
-	enemy: Array<object>;
+    id: number;
+    name: string;
+    type: string;
+    numberPlaces: number;
+    numberTakePlaces: number;
+    playersInTheRoom: Array<object>;
+    map: object;
+    enemy: Array<object>;
 }
 
 /**
@@ -14,112 +14,126 @@ interface BasicProperty {
  */
 export default class Room implements BasicProperty {
 
-	id: number;
-	type: string;
-	name: string;
-	numberPlaces: number;
-	numberTakePlaces: number;
-	playersInTheRoom: Array<object> = [];
-	map: object;
-	enemy: Array<object>;
+    id: number;
+    type: string;
+    name: string;
+    numberPlaces: number;
+    numberTakePlaces: number;
+    playersInTheRoom: Array<object> = [];
+    map: object;
+    enemy: Array<object>;
 
-	constructor(id: number, type: string, numberPlaces: number, numberTakePlaces: number, map: object, enemy: Array<object>) {
-		this.id = id;
-		this.numberPlaces = numberPlaces;
-		this.numberTakePlaces = numberTakePlaces;
-		this.type = type;
-		this.map = map;
-		this.enemy = enemy;
-	}
+    constructor(id: number, type: string, numberPlaces: number, numberTakePlaces: number, map: object, enemy: Array<object>) {
+        this.id = id;
+        this.numberPlaces = numberPlaces;
+        this.numberTakePlaces = numberTakePlaces;
+        this.type = type;
+        this.map = map;
+        this.enemy = enemy;
+    }
 
-	getNumberPlaces() {
-		return this.numberPlaces;
-	}
+    getNumberPlaces() {
+        return this.numberPlaces;
+    }
 
-	setNumberPlaces(count: number) {
-		this.numberPlaces = count;
-	}
+    setNumberPlaces(count: number) {
+        this.numberPlaces = count;
+    }
 
-	getNumberTakePlaces() {
-		return this.numberTakePlaces;
-	}
+    getNumberTakePlaces() {
+        return this.numberTakePlaces;
+    }
 
-	setNumberTakePlaces(count: number) {
-		this.numberTakePlaces = count;
-	}
+    setNumberTakePlaces(count: number) {
+        this.numberTakePlaces = count;
+    }
 
-	getPlayersList() {
-		return this.playersInTheRoom;
-	}
+    getPlayersList() {
+        return this.playersInTheRoom;
+    }
 
-	getPlayerInRoom(player) {
+    getPlayerInRoom(player) {
 
-		return this.playersInTheRoom.filter((playerInRoom) => {
-			return playerInRoom.id === player.id;
-		});
-		// return this.playersInTheRoom;
-	}
+        return this.playersInTheRoom.filter((playerInRoom) => {
+            return playerInRoom.id === player.id;
+        });
+        // return this.playersInTheRoom;
+    }
 
-	/**
-	 * Удаляем игрока из комнаты по заданному ID
-	 * @param playerID
-	 */
-	removePlayerInRoom(playerID) {
-		this.playersInTheRoom.forEach((item, i) => {
-			if (item.id === playerID) {
-				this.playersInTheRoom.splice(i, 1)
-			}
-		});
-		this.setNumberTakePlaces(this.getNumberTakePlaces() - 1);
+    /**
+     * Удаляем игрока из комнаты по заданному ID
+     * @param playerID
+     */
+    removePlayerInRoom(playerID) {
+        this.playersInTheRoom.forEach((item, i) => {
+            if (item.id === playerID) {
+                this.playersInTheRoom.splice(i, 1)
+            }
+        });
+        this.setNumberTakePlaces(this.getNumberTakePlaces() - 1);
 
-		return this.playersInTheRoom;
-	}
+        return this.playersInTheRoom;
+    }
 
-	/**
-	 * Удаляем бота из комнаты по заданному ID
-	 * @param enemyID
-	 */
-	removeEnemyInRoom(enemyID) {
-		this.enemy.forEach((item, i) => {
-			if (item.id === enemyID) {
-				this.enemy.splice(i, 1)
-			}
-		});
-		return this.enemy;
-	}
+    /**
+     * Удаляем бота из комнаты по заданному ID
+     * @param enemyID
+     */
+    removeEnemyInRoom(enemyID) {
+        console.log('RemoveEnemy', this.enemy);
+        if (this.enemy.length) {
+            this.enemy.forEach((item, i) => {
+                if (item.id === enemyID) {
+                    this.enemy.splice(i, 1)
+                }
+            });
+        }
+        return this.enemy;
+    }
 
-	setPlayersList(player: object) {
 
-		let isTherePlayer = [];
-		if (this.playersInTheRoom) {
-			isTherePlayer = this.playersInTheRoom.filter(playerInList => {
+    /**
+     * Добавляем бота в комнаты по заданному ID
+     * @param enemyID
+     */
+    addEnemyInRoom(enemy) {
+        this.enemy = enemy;
+    }
 
-				return player.id === playerInList.id;
-			});
-		}
+    setPlayersList(player: object) {
 
-		if (isTherePlayer.length === 0) {
+        let isTherePlayer = [];
+        if (this.playersInTheRoom) {
+            isTherePlayer = this.playersInTheRoom.filter(playerInList => {
 
-			this.playersInTheRoom.push(player);
-			this.setNumberTakePlaces(this.getNumberTakePlaces() + 1);
-		}
-	}
+                return player.id === playerInList.id;
+            });
+        }
 
-	/**
-	 * обновляемсостояние комнаты (всех сущностей нахоядихся в комнате)
-	 */
-	//TODO пока обновляемсостояние только врагов на каждый тик сервера
-	updateRoomState() {
+        if (isTherePlayer.length === 0) {
 
-		const room = this;
-		this.enemy.forEach((enemy) => {
-			enemy.update(room);
-		});
-		this.playersInTheRoom.forEach((playerAvatar) => {
-			playerAvatar.update(room);
-		})
+            this.playersInTheRoom.push(player);
+            this.setNumberTakePlaces(this.getNumberTakePlaces() + 1);
+        }
+    }
 
-	}
+    /**
+     * обновляемсостояние комнаты (всех сущностей нахоядихся в комнате)
+     */
+    //TODO пока обновляемсостояние только врагов на каждый тик сервера
+    updateRoomState() {
+
+        const room = this;
+        if (this.enemy.length) {
+            this.enemy.forEach((enemy) => {
+                enemy.update(room);
+            });
+        }
+        this.playersInTheRoom.forEach((playerAvatar) => {
+            playerAvatar.update(room);
+        })
+
+    }
 
 
 }

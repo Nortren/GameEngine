@@ -36,7 +36,7 @@ export const NPCJson = {
         colliderLength: 1,
         pursuitZone: 10,
         persecutionRadius: "./Client/image/scope_circle.png",
-        health: 100,
+        health: 10,
         damage: 1,
         attackDistance: 5,
         attackSpeed: 10,
