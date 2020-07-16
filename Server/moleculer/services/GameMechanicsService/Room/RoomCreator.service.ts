@@ -29,6 +29,13 @@ class RoomCreator extends Service {
     }
 
     getRoomList(ctx) {
+        // console.log(this.roomList[0].enemy);
+        if(!this.roomList[0].enemy.length){
+
+            const enemy = this.addEnemyToRoom(this.roomList[0].map);
+            this.roomList[0].addEnemyInRoom(enemy);
+        }
+
 
         return this.roomList;
 

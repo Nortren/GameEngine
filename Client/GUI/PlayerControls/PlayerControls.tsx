@@ -13,83 +13,88 @@ export default function PlayerControls(props) {
         , []);
 
 
-    return <PlayerControlsArea source={messageStore}/>
+    return <PlayerControlsArea mobile={props.mobile} source={messageStore}/>
 }
 function PlayerControlsArea(props) {
 
-    return <div className="playerControls-container">
-        <div className="playerControls-container__playerControls">
+    const buttonSize = props.mobile ? '1x' : '2x';
+    const buttonMargin = props.mobile ? '0' : '5px';
+    const buttonType = props.mobile ? '' : 'EditorButton';
+
+
+    return <div className={ props.mobile ? 'playerControls-containerMobile' : 'playerControls-container'}>
+        <div className={ props.mobile ? 'playerControls-containerMobile__playerControls' : 'playerControls-container__playerControls'}>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'HandRock',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'Child',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'Gamepad',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'GasPump',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'Flag',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'Map',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'sendMessage',
                 iconType: 'UserFriends',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
             <Button options={ {
                 name: 'setting',
                 iconType: 'Cog',
-                iconSize: '2x',
+                iconSize: buttonSize,
                 id: 2,
                 componentArray: [],
-                type: 'EditorButton',
-                style: {margin: '5px'}
+                type: buttonType,
+                style: {margin: buttonMargin}
             }}/>
         </div>
     </div>
