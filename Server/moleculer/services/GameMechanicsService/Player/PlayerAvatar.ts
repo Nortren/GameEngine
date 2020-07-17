@@ -301,14 +301,13 @@ export default class PlayerAvatar extends PlayerMainClass {
 
 
     attack(enemy) {
-        if (this.attackStatus) {
 
+        if (this.attackStatus) {
             enemy.forEach((target) => {
                 if (this.immediateObjective(target)) {
                     target.health = target.health - this.damage;
                 }
             })
-
         }
     }
 

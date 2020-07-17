@@ -80,7 +80,6 @@ export default class Room implements BasicProperty {
      * @param enemyID
      */
     removeEnemyInRoom(enemyID) {
-        console.log('RemoveEnemy', this.enemy);
         if (this.enemy.length) {
             this.enemy.forEach((item, i) => {
                 if (item.id === enemyID) {
