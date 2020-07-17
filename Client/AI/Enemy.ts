@@ -167,7 +167,7 @@ export default class Enemy implements BasicPropertyEnemy {
         const enemyColor = 0xff0000;
         const enemyTexture = new THREE.SpriteMaterial({
             map: enemyImg,
-            // color: enemyColor,
+            color: enemyColor,
             useScreenCoordinates: false, transparent: true
         });
 
