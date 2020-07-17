@@ -189,6 +189,16 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 let counter = 0;
 
                 this.blData.getTestDataServerConnect((data) => {
+
+                    //TODO Временная функция проверки здоровья и удаления из масива если оно 0(надо сделать проверку id ботов)
+                    this._enemyArray.forEach((itemEnemy, index)=>{
+
+                        if(itemEnemy.health <= 0){
+                            this._enemyArray.splice(index,1);
+                        }
+
+                    });
+
                     counter = this._mapCreator.update(scene, data.room, counter);
                     if (counter >= 100) {
                         counter = 0;
@@ -198,16 +208,27 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
                             return enemy.id === enemyClient.id
                         })[0];
-                        thisEnemy.colliderPositionX = enemy.colliderPositionX;
-                        thisEnemy.colliderPositionY = enemy.colliderPositionY;
-                        thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
-                        thisEnemy.directionMove = enemy.directionMove;
-                        thisEnemy.attackStatus = enemy.attackStatus;
-                        thisEnemy.health = enemy.health;
 
-                        thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
+                        //TODO Если бота нет на клиенте то пересоздаём его
+                        if(!this._enemyArray.length){
+                            this._enemyArray = [];
+                            this._enemyArray =this.createEnemyArray(data.room.enemy, scene);
+                        }
+
+                        if(thisEnemy) {
+                            thisEnemy.colliderPositionX = enemy.colliderPositionX;
+                            thisEnemy.colliderPositionY = enemy.colliderPositionY;
+                            thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
+                            thisEnemy.directionMove = enemy.directionMove;
+                            thisEnemy.attackStatus = enemy.attackStatus;
+                            thisEnemy.health = enemy.health;
+
+                            thisEnemy.informationAboutWorld(thisEnemy, data.room.playersInTheRoom[0], this._mapCreator, scene);
+                        }
                     });
                 });
+
+
 
                 let userProps = {};
                 let cameraProps = {};
@@ -674,7 +695,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     render() {
         return (
             <div className="fps-counter">
-                {/*<div className="fps-counter-view">{this.state.fps}</div>*/}
+                <div className="fps-counter-view">{this.state.fps}</div>
                 <canvas id="canvas"/>
             </div>
         );

@@ -256,26 +256,26 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 1,
+                count: 15,
                 startPoint: {x:20,y:0,z:3},
                 distanceBetweenEnemies: 1
             },
             {
                 typeEnemy: 'enemy2',
-                count: 0,
-                startPoint:{x:15,y:0,z:-30},
+                count: 15,
+                startPoint:{x:20,y:0,z:-10},
                 distanceBetweenEnemies: 2
             },
             {
                 typeEnemy: 'enemy3',
-                count: 1,
-                startPoint: {x:-15,y:0,z:-3},
+                count: 10,
+                startPoint: {x:-20,y:0,z:-3},
                 distanceBetweenEnemies: 0.5
             },
             {
                 typeEnemy: 'enemy4',
-                count: 0,
-                startPoint: {x:-20,y:0,z:30},
+                count: 10,
+                startPoint: {x:-20,y:0,z:10},
                 distanceBetweenEnemies: 0.5
             },
         ]
