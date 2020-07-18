@@ -16,20 +16,41 @@ export const HierarchyContext = React.createContext();
 export default function ImageEditor(props) {
     const imageEditorStore = useSelector(state => state.imageEditorStore.imageEditorData);
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
+    const [selectedTool, setSelectedTool] = React.useState<object[]>('');
+
     const dispatch = useDispatch();
 
+    React.useEffect(() => {
+        const selectedTool = ['pencil', 'dropper', 'brush', 'tint', 'photo', 'bold', 'scissors', 'eraser'];
+
+
+        const testTool = (event) => {
+            console.log(event);
+        };
+        selectedTool.forEach((toolName) => {
+            document.addEventListener(toolName, (event) => {
+                setSelectedTool(event.type);
+            });
+        });
+
+
+    }, []);
 
     React.useEffect(() => {
 
+
+        document.addEventListener("Draw", (event) => {
+
+        });
         document.addEventListener("off", (event) => {
             dispatch(changeImageEditorStatus(false));
         });
 
         const canvas = document.getElementById("imageEditorCanvas")  as HTMLCanvasElement;
         if (canvas) {
+            let drawStatus = false;
             const img = new Image();
             img.src = imageEditorStore;
-
 
 
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
@@ -63,6 +84,40 @@ export default function ImageEditor(props) {
                     console.log(err, '_Ошибка');
                 }
             };
+            canvas.onmousedown = (event) => {
+                startDrawing(event);
+            };
+            canvas.onmousemove = (event) => {
+                drawing(event);
+            };
+            canvas.onmouseup = (event) => {
+                drawStatus = false;
+            };
+            canvas.onmouseout = (event) => {
+                drawStatus = false;
+            };
+            const startDrawing = (event) => {
+                drawStatus = true;
+                context.beginPath();
+                context.moveTo(event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop);
+            };
+
+            const drawing = (event) => {
+                if (drawStatus) {
+
+
+
+                    // Определяем текущие координаты указателя мыши
+                    var x = event.pageX - canvas.offsetLeft;
+                    var y = event.pageY - canvas.offsetTop;
+
+                    context.strokeStyle = "red";
+                    // Рисуем линию до новой координаты
+
+                    context.lineTo(x, y);
+                    context.stroke();
+                }
+            }
 
         }
     }, [imageEditorStatus]);
@@ -81,19 +136,19 @@ export default function ImageEditor(props) {
             <div className="imageEditor_container-body_editorTools">
                 <div className="imageEditor_container-body_editorTools-tools">
                     <Button options={ {
-                        name: 'dropper',
-                        iconType: 'Dropper',
+                        name: 'pencil',
+                        iconType: 'PencilAlt',
                         iconSize: '2x',
-                        id: 1,
+                        id: 2,
                         componentArray: [],
                         type: 'EditorButton',
                         style: {margin: '5px'}
                     }}/>
                     <Button options={ {
-                        name: 'pencil',
-                        iconType: 'PencilAlt',
+                        name: 'dropper',
+                        iconType: 'Dropper',
                         iconSize: '2x',
-                        id: 2,
+                        id: 1,
                         componentArray: [],
                         type: 'EditorButton',
                         style: {margin: '5px'}
