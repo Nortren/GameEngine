@@ -25,10 +25,17 @@ function ColorPicker(props) {
     const [DnDStatus, setDnDStatus] = React.useState<object[]>(false);
     const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
 
-    const changeObjectColor = (color) => {
-        colorPaletteData.source.r = color.R;
-        colorPaletteData.source.g = color.G;
-        colorPaletteData.source.b = color.B;
+    const changeObjectColor = (color,normalColor) => {
+        if(colorPaletteData.normalRGB){
+            colorPaletteData.source.r = normalColor[0];
+            colorPaletteData.source.g = normalColor[1];
+            colorPaletteData.source.b = normalColor[2];
+        }else{
+            colorPaletteData.source.r = color.R;
+            colorPaletteData.source.g = color.G;
+            colorPaletteData.source.b = color.B;
+        }
+
     };
 
     const [template, setTemplate] = React.useState<object[]>('');
@@ -316,7 +323,6 @@ function ColorPicker(props) {
                         picker.out_color.style.backgroundColor = "rgb(" + convert.hsv_rgb(Line.Hue, S, V) + ")";
                         let _res = convert.hsv_rgb(Line.Hue, S, V);
                         _res = _res[0].toString(16) + "" + _res[1].toString(16) + "" + _res[2].toString(16);
-                        console.log(_res);
                     };
 
                     block.onclick = function (e) {
@@ -387,7 +393,7 @@ function ColorPicker(props) {
                     }
                     const color = [parseInt(R * 255), parseInt(G * 255), parseInt(B * 255)];
 
-                    changeObjectColor({R, G, B});
+                    changeObjectColor({R, G, B},color);
                     return color;
                 }
 
