@@ -4,6 +4,9 @@ import {connect} from 'react-redux';
 import {
     changeImageEditor, changeImageEditorStatus
 } from '../../../Store/EditorStore/ImageEditor/Actions';
+import {
+    changeColorPalette, changeColorPaletteStatus
+} from '../../../Store/EditorStore/ColorPalette/Actions';
 import Button from "../Button/Button";
 
 /**
@@ -17,6 +20,8 @@ export default function ImageEditor(props) {
     const imageEditorStore = useSelector(state => state.imageEditorStore.imageEditorData);
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
     const [selectedTool, setSelectedTool] = React.useState<object[]>('');
+    const [colorTools, setColorTools] = React.useState<object[]>({r: 255, g: 0, b: 0});
+
 
     const dispatch = useDispatch();
 
@@ -35,6 +40,21 @@ export default function ImageEditor(props) {
 
 
     }, []);
+
+    React.useEffect(() => {
+
+        if (selectedTool === 'tint') {
+            openColorPalette(null, colorTools, {});
+        }
+
+        console.log(selectedTool);
+    }, [selectedTool]);
+
+    React.useEffect(() => {
+        console.log(colorTools);
+
+
+    }, [colorTools]);
 
     React.useEffect(() => {
 
@@ -111,7 +131,7 @@ export default function ImageEditor(props) {
                     var x = event.pageX - canvas.offsetLeft;
                     var y = event.pageY - canvas.offsetTop;
 
-                    context.strokeStyle = "red";
+                    context.strokeStyle = colorFormatter(colorTools);
                     // Рисуем линию до новой координаты
 
                     context.lineTo(x, y);
@@ -120,9 +140,20 @@ export default function ImageEditor(props) {
             }
 
         }
+        return () => {
+            dispatch(changeColorPaletteStatus(false));
+        }
     }, [imageEditorStatus]);
 
+    const colorFormatter = (colorTools) => {
+        return `rgb(${colorTools.r},${colorTools.g},${colorTools.b},1)`;
+    };
 
+    const openColorPalette = (e, source, imgSrc) => {
+        const normalRGB = true;
+        dispatch(changeColorPalette({source, imgSrc, normalRGB}));
+        dispatch(changeColorPaletteStatus(true));
+    };
     const closeImageEditor = () => {
         dispatch(changeImageEditorStatus(false));
     };
