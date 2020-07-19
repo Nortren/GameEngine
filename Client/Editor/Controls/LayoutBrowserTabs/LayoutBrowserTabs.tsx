@@ -181,7 +181,7 @@ export default class LayoutBrowserTabs extends React.Component {
                             componentArray: [],
                             linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab', {
                                 name: 'Add Tab',
-                                arrayList: ['Hierarchy', 'Inspector', 'Project']
+                                arrayList: ['Hierarchy', 'Inspector', 'Project','MapCreator']
                             }, 'UI element Debugger']
                         }}/>
                     </div>
