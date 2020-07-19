@@ -21,8 +21,9 @@ export default function ImageEditor(props) {
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
     const [selectedTool, setSelectedTool] = React.useState<object[]>('');
     const [colorTools, setColorTools] = React.useState<object[]>({r: 255, g: 0, b: 0});
-
-
+    const [drawTools, setDrawTools] = React.useState<object[]>({name: ''});
+    // const drawTools = {name: ''};
+    let testDraw = '';
     const dispatch = useDispatch();
 
     React.useEffect(() => {
@@ -42,19 +43,29 @@ export default function ImageEditor(props) {
     }, []);
 
     React.useEffect(() => {
-
+        testDraw = selectedTool;
         if (selectedTool === 'tint') {
+            drawTools.name = 'tint';
             openColorPalette(null, colorTools, {});
         }
 
-        console.log(selectedTool);
+        if (selectedTool === 'pencil') {
+            drawTools.name = 'pencil';
+        }
+
+        if (selectedTool === 'photo') {
+            drawTools.name = 'photo';
+        }
+
+        if (selectedTool === 'brush') {
+            drawTools.name = 'brush';
+        }
+
+        if (selectedTool === 'eraser') {
+            setDrawTools({name: 'eraser'});
+        }
+
     }, [selectedTool]);
-
-    React.useEffect(() => {
-        console.log(colorTools);
-
-
-    }, [colorTools]);
 
     React.useEffect(() => {
 
@@ -117,12 +128,15 @@ export default function ImageEditor(props) {
                 drawStatus = false;
             };
             const startDrawing = (event) => {
-                drawStatus = true;
-                context.beginPath();
-                context.moveTo(event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop);
+                if (drawTools.name !== 'eraser') {
+                    drawStatus = true;
+                    context.beginPath();
+                    context.moveTo(event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop);
+                }
             };
 
             const drawing = (event) => {
+
                 if (drawStatus) {
 
 
@@ -134,16 +148,27 @@ export default function ImageEditor(props) {
                     context.strokeStyle = colorFormatter(colorTools);
                     // Рисуем линию до новой координаты
 
+                    if(drawTools.name === 'pencil'){
+                        context.lineWidth = 1;
+                    }
+                    if(drawTools.name === 'brush'){
+                        context.lineWidth = 5;
+                    }
+
                     context.lineTo(x, y);
                     context.stroke();
                 }
-            }
+            };
+
+            const clearCanvas = () => {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            };
 
         }
         return () => {
             dispatch(changeColorPaletteStatus(false));
         }
-    }, [imageEditorStatus]);
+    }, [imageEditorStatus, drawTools]);
 
     const colorFormatter = (colorTools) => {
         return `rgb(${colorTools.r},${colorTools.g},${colorTools.b},1)`;
