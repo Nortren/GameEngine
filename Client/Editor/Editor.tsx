@@ -13,6 +13,7 @@ import DragAndDropContainer from "./Controls/DragAndDropContainer/DragAndDropCon
 import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
 import Project from "./Tools/Project/Project";
+import MapCreator from "./Tools/MapCreator/MapCreator";
 import ControllPanel from "./Tools/ControllPanel/ControllPanel";
 
 export const GlobalEditorContext = React.createContext();
@@ -291,6 +292,7 @@ export default class Editor extends React.Component {
             id: 3
         };
         const ToolHierarch = {componentName: Hierarchy, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
+        const ToolMapCreator = {componentName: MapCreator, id: 1, componentArray: [], style: {maxHeight: '77vh'}};
         const ToolInspector = {
             componentName: Inspector,
             id: 1,
@@ -303,13 +305,13 @@ export default class Editor extends React.Component {
         const tabSceneObject = {
             componentName: LayoutBrowserTabs,
             id: 1,
-            componentArray: [ToolHierarch, ToolInspector, ToolProject],
+            componentArray: [ToolHierarch, ToolInspector, ToolProject,ToolMapCreator],
             style: {maxHeight: '58vh'}
         };
         const tabInspector = {
             componentName: LayoutBrowserTabs,
             id: 2,
-            componentArray: [ToolInspector, ToolHierarch],
+            componentArray: [ToolInspector, ToolHierarch,ToolMapCreator],
             style: {maxHeight: '58vh'}
         };
         const tabEditorFooter = {
