@@ -42,7 +42,6 @@ class DB extends Service {
         let result = UserDataJSON.filter((user) => {
             return user.id === userID;
         });
-
         return result[0];
     }
 
@@ -60,7 +59,7 @@ class DB extends Service {
             let enemyType = enemy.typeEnemy;
             let enemyProperty = NPCJson[enemyType];
 
-            enemyMap.set(enemyType,enemyProperty);
+            enemyMap.set(enemyType, enemyProperty);
         });
         return enemyMap;
     }

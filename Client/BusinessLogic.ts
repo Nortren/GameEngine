@@ -1,6 +1,6 @@
 import * as openSocket from 'socket.io-client';
-
-const socket = openSocket('image-life.ru:8010');
+import {globalVariables} from "../Client/GlobalVariables";
+const socket = openSocket(`${globalVariables.serverPath}:8010`);
 export default class BusinessLogic {
 
 

@@ -1,5 +1,9 @@
 export const globalVariables = {
-        server: true,
+        server: false,
+        // serverPath: 'http://localhost',
+        // serverFolderPath: '',
+        serverPath: 'http://image-life.ru',
+        serverFolderPath: '/home/nortren',
         camera: {
             cameraControl: false
         },
