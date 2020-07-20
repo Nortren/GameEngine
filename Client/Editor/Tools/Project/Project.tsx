@@ -142,7 +142,7 @@ export default function Project() {
             showContents(null, structure.name);
         }
         else if (structure.type === 'file' && !checkStore(structure.name)) {
-            const elementStructure = BusinessLogic.getInfoAboutStructute(structure);
+            const elementStructure = BusinessLogic.getInfoAboutStructure(structure);
             elementStructure.then(response => response.json())
                 .then(result => {
                     dispatch(changeViewer(result.data));

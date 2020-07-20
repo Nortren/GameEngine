@@ -1,4 +1,4 @@
-import {async} from "q";
+import {globalVariables} from "../../../../Client/GlobalVariables";
 const Service = require("moleculer").Service;
 const ApiGateway = require("moleculer-web");
 const fs = require('fs');
@@ -21,7 +21,7 @@ class EditorService extends Service {
                 routes: [{
                     path: "/",
                     cors: {
-                        origin: ["http://image-life.ru:3001", "http://image-life.ru:8080"],
+                        origin: [`${globalVariables.serverPath}:3001`, `${globalVariables.serverPath}:8080`],
                         methods: ["GET", "OPTIONS", "POST"]
                     },
                     bodyParsers: {
@@ -132,8 +132,8 @@ class EditorService extends Service {
      * @param request
      */
     sendDirectoryEngine(request: Context<object>): void {
-        const folder = '/home/nortren/GameEngine/Client';
-const structure = this.readFolder(folder, [{}]);
+        const folder = `${globalVariables.serverFolderPath}/GameEngine/Client`;
+        const structure = this.readFolder(folder, [{}]);
 
         request.options.parentCtx.params.res.writeHead(200, {'Content-Type': 'text/plain'});
         request.options.parentCtx.params.res.end(JSON.stringify({

@@ -1,20 +1,26 @@
 import * as openSocket from 'socket.io-client';
+import {globalVariables} from "../GlobalVariables";
+const socket = openSocket(`${globalVariables.serverPath}:8010`);
 
-const socket = openSocket('image-life.ru:8010');
+interface ISelectedStructure {
+    extension: string,
+    name: string,
+    path: string,
+    stats: object,
+    type: string,
+}
+
+
 export default class BusinessLogic {
 
+    /**
+     * Метод получение данных о выбранной сущности
+     * @param structure
+     * @returns {Promise<Response>}
+     */
+    static  getInfoAboutStructure(structure: ISelectedStructure) {
 
-    checkUserAuthorization(userData, callback) {
-        socket.emit('checkUserAuthorization', userData);
-        socket.on('resultUserAuthorization', (data) => {
-            callback(data);
-        });
-    }
-
-
-    static  getInfoAboutStructute(structure:object) {
-
-        let url = 'http://image-life.ru:3001/api/getInfoAboutStructure';
+        let url = `${globalVariables.serverPath}:3001/api/getInfoAboutStructure`;
 
         return fetch(url, {
             method: 'POST',
@@ -30,7 +36,7 @@ export default class BusinessLogic {
      * @returns {Promise<Response>}
      */
     static  getDirectoryProject(): Promise<Response> {
-        let url = 'http://image-life.ru:3001/api/getProjectStructure';
+        let url = `${globalVariables.serverPath}:3001/api/getProjectStructure`;
 
         return fetch(url, {
             method: 'GET',
