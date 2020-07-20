@@ -1,27 +1,26 @@
 import * as React from 'react';
-import {useDispatch, useSelector, useEffect} from 'react-redux';
-import Button from "../../Editor/Controls/Button/Button";
-import BusinessLogic from '../../BusinessLogic'
 
+interface IMap {
+    mobile?: boolean
+}
 
-export default function Map(props) {
+/**
+ * Компонент инициализации карты игрового интерфейса
+ * @param props
+ * @constructor
+ */
+export default function Map(props: IMap) {
     const [messageStore, setMessageStore] = React.useState([]);
-
-    React.useEffect(() => {
-
-        }
-        , []);
-
-
     return <MapArea mobile={props.mobile} source={messageStore}/>
 }
+/**
+ * Компонент контейнер карты
+ * @param props
+ * @constructor
+ */
 function MapArea(props) {
-
     return <div className="map-container">
-        {props.mobile ?<div className="map-containerMobile__map">
-
-            </div> : <div className="map-container__map">
-
-        </div>}
+        {props.mobile ? <div className="map-containerMobile__map">
+        </div> : <div className="map-container__map"> </div>}
     </div>
 }

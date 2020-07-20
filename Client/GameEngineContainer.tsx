@@ -77,8 +77,8 @@ class GameEngineContainer extends React.Component {
     startInit() {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
             return <div>
-                {this.props.userStatusAuthorization.adminRoot ? <Editor/> : '' }
-                <GUI source={{userName:this.props.userStatusAuthorization.name,deviceType:this.thisMobileDevice}}/>
+                {this.props.userStatusAuthorization.adminRoot ? <Editor/> : ''}
+                <GUI userName={this.props.userStatusAuthorization.name} deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
                     moveX={this.props.moveX}
