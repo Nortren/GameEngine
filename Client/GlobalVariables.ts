@@ -3,7 +3,7 @@ export const globalVariables = {
         // serverPath: 'http://localhost',
         // serverFolderPath: '',
         serverPath: 'http://image-life.ru',
-        serverFolderPath: '/home/nortren',
+        serverFolderPath: '',
         camera: {
             cameraControl: false
         },
