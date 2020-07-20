@@ -1,25 +1,26 @@
 import * as React from 'react';
-import {useDispatch, useSelector, useEffect} from 'react-redux';
-import Button from "../../Editor/Controls/Button/Button";
-import BusinessLogic from '../../BusinessLogic'
 
-
-export default function AvatarInfo(props) {
-    const source = props.source;
-    const userName = source.userName;
-    const [messageStore, setMessageStore] = React.useState([]);
-
-    React.useEffect(() => {
-
-        }
-        , []);
-
-
-    return <AvatarInfoArea mobile={props.mobile} source={{userName}}/>
+interface IAvatarInfo {
+    userName:string,
+    mobile?: boolean
 }
+
+/**
+ * Компонент визуализирующий пользовательскую информацию (здоровье,энергия и т.д)
+ * @param props
+ * @constructor
+ */
+export default function AvatarInfo(props: IAvatarInfo) {
+    const userName = props.userName;
+    return <AvatarInfoArea mobile={props.mobile} userName={userName}/>
+}
+/**
+ * Компонент контейнер пользовательского меню
+ * @param props
+ * @constructor
+ */
 function AvatarInfoArea(props) {
-    const source = props.source;
-    const userName = source.userName;
+    const userName = props.userName;
 
     const template = <div className="avatarInfo-container">
         <div className="avatarInfo-container__avatarInfo">
@@ -32,6 +33,7 @@ function AvatarInfoArea(props) {
             </div>
         </div>
     </div>;
+
     const mobileTemplate = <div className="avatarInfo-containerMobile">
         <div className="avatarInfo-containerMobile__avatarInfo">
             <div className="avatarInfo-containerMobile__avatarInfo-name">

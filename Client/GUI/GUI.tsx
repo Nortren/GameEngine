@@ -5,33 +5,48 @@ import Map from "./Map/Map";
 import AvatarInfo from "./AvatarInfo/AvatarInfo";
 import PlayerControls from "./PlayerControls/PlayerControls";
 
-export default function GUI(props) {
-    const [userName, setUserName] = React.useState();
-
-
-
-    const source = props.source;
-    if(!userName){
-        setUserName(source.userName);
-    }
-    return source.deviceType ? <MobileGrid source={{userName}}/> : <PCGrid source={{userName}}/>;
+interface IGUI {
+    userName: string,
+    deviceType?: boolean,
 }
 
-function PCGrid(props) {
-    const source = props.source;
-    const userName = source.userName;
+
+/**
+ * Компонент инициализации пользовательского игрового интерфейса
+ * @param props
+ * @constructor
+ */
+export default function GUI(props: IGUI) {
+    const [userName, setUserName] = React.useState('');
+    if (!userName) {
+        setUserName(props.userName);
+    }
+    return props.deviceType ? <MobileGrid userName={userName}/> : <PCGrid userName={userName}/>;
+}
+
+/**
+ * Компонент инициализирующий игровой интерфейс для PC
+ * @param props
+ * @constructor
+ */
+function PCGrid(props:IGUI) {
+    const userName = props.userName;
     return <div className="GUI-container">
-        <div id='leftTopCorner'><AvatarInfo source={{userName}}/></div>
+        <div id='leftTopCorner'><AvatarInfo userName={userName}/></div>
         <div id='rightTopCorner'><Map/></div>
         <div id='leftDownCorner'><Chat/></div>
         <div id='rightDownCorner'><PlayerControls/></div>
     </div>
 }
-function MobileGrid(props) {
-    const source = props.source;
-    const userName = source.userName;
+/**
+ * Компонент инициализирующий игровой интерфейс для Мобильных типов устройств
+ * @param props
+ * @constructor
+ */
+function MobileGrid(props:IGUI) {
+    const userName = props.userName;
     return <div className="GUI-container">
-        <div id='leftTopCorner'><AvatarInfo mobile={true} source={{userName}}/></div>
+        <div id='leftTopCorner'><AvatarInfo mobile={true} userName={userName}/></div>
         <div id='rightTopCorner'><Map mobile={true}/></div>
         <div id='leftDownCorner'></div>
         <div id='rightDownCorner'></div>
