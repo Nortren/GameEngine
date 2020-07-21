@@ -14,9 +14,9 @@ import Button from "../Button/Button";
  * @returns {any}
  * @constructor
  */
-export const HierarchyContext = React.createContext();
+export const HierarchyContext = React.createContext(0);
 
-export default function ImageEditor(props) {
+export default function ImageEditor() {
     const imageEditorStore = useSelector(state => state.imageEditorStore.imageEditorData);
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
     const [selectedTool, setSelectedTool] = React.useState<object[]>('');
@@ -278,6 +278,6 @@ export default function ImageEditor(props) {
                 <canvas id="imageEditorCanvas"></canvas>
             </div>
         </div>
-    </div> : ''
+    </div> : <span/>
 }
 
