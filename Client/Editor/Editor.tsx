@@ -16,17 +16,22 @@ import Project from "./Tools/Project/Project";
 import MapCreator from "./Tools/MapCreator/MapCreator";
 import ControllPanel from "./Tools/ControllPanel/ControllPanel";
 
-export const GlobalEditorContext = React.createContext();
+export const GlobalEditorContext = React.createContext(0);
 
 export default class Editor extends React.Component {
 
     private testSt = false;
     private testTarget = null;
-    private _styleTargetElement = 0;
-    private _startWidth = 0;
-    private _startHight = 0;
-
-
+    private _styleTargetElement:number = 0;
+    private _startWidth:number = 0;
+    private _startHeight:number = 0;
+    private _styleTargetElementX:number;
+    private _styleTargetElementY:number;
+    private _editorWindowStartPositionX:number;
+    private _editorWindowStartPositionY:number;
+    moveElement:string;
+    startPositionX:number;
+    startPositionY:number;
     constructor(props: object) {
         super(props);
         this.state = {
@@ -40,19 +45,21 @@ export default class Editor extends React.Component {
     componentDidMount() {
         this.resizeWindows();
         this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width);
-        this._startHight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
+        this._startHeight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
 
         document.addEventListener("Hide screen scene", (event) => {
             this.hideEditorToolbar();
         });
-        document.addEventListener("ReadFile", (event) => {
+        document.addEventListener("ReadFile", (event:CustomEvent) => {
             this.setState({inspectorData: event.detail})
         });
-        document.addEventListener("LoadStart", (event) => {
-            this.setState({testLoaderStatus: event.detail.status})
+        document.addEventListener("LoadStart", (event:CustomEvent) => {
+            this.setState({loaderStatus: event.detail.status})
         });
     }
-
+    /**
+     * Метод скрывающий окна редактора оставляет только кнопку вернуть в первоначальное положение
+     */
     hideEditorToolbar() {
         document.querySelector('.editor_container').classList.add('editor_container-full');
         document.getElementById('sceneObject').classList.add('editor_container-sceneObject');
@@ -60,6 +67,9 @@ export default class Editor extends React.Component {
         document.querySelector('.editor_visibleButton-button').classList.add('editor_visibleButton-button-visible');
     }
 
+    /**
+     * Метод разворачивающий окна редактора на весь экран
+     */
     fullscreenEditorToolbar() {
         document.querySelector('.editor_container').classList.remove('editor_container-full');
         document.getElementById('sceneObject').classList.remove('editor_container-sceneObject');
@@ -99,24 +109,24 @@ export default class Editor extends React.Component {
         });
         document.addEventListener('mousemove', (event) => {
             if (this.testSt) {
-                if (!this.testSPX) {
-                    this.testSPX = this.startPositionX;
+                if (!this._editorWindowStartPositionX) {
+                    this._editorWindowStartPositionX = this.startPositionX;
                 }
-                if (!this.testSPY) {
-                    this.testSPY = this.startPositionY;
+                if (!this._editorWindowStartPositionY) {
+                    this._editorWindowStartPositionY = this.startPositionY;
                 }
 
                 if (this.moveElement === 'resizeLineTop') {
                     let resultResizeY = this.startPositionY - event.y;
 
-                    if (resultResizeY > 0 || parseInt(this.testTarget.parentNode.style.height) > this._startHight) {
+                    if (resultResizeY > 0 || parseInt(this.testTarget.parentNode.style.height) > this._startHeight) {
                         this.testTarget.parentNode.style.position = '';
                         this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
-                        this.testSPY = event.y;
+                        this._editorWindowStartPositionY = event.y;
                     }
                     else {
                         this.testTarget.parentNode.style.position = 'absolute';
-                        this.testTarget.parentNode.style.top = Math.abs(event.y - this.testSPY) + 'px';
+                        this.testTarget.parentNode.style.top = Math.abs(event.y - this._editorWindowStartPositionY) + 'px';
                         this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
                     }
                 }
@@ -127,11 +137,11 @@ export default class Editor extends React.Component {
                     if (resultResizeX > 0 || parseInt(this.testTarget.parentNode.style.width) > this._startWidth) {
                         this.testTarget.parentNode.style.position = '';
                         this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
-                        this.testSPX = event.x;
+                        this._editorWindowStartPositionX = event.x;
                     }
                     else {
                         this.testTarget.parentNode.style.position = 'absolute';
-                        this.testTarget.parentNode.style.left = Math.abs(event.x - this.testSPX) + 'px';
+                        this.testTarget.parentNode.style.left = Math.abs(event.x - this._editorWindowStartPositionX) + 'px';
                         this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
                     }
 
@@ -149,10 +159,6 @@ export default class Editor extends React.Component {
                 this.testSt = false;
             }
         });
-    }
-
-    componentDidUpdate() {
-        this._animate = this.props.animations;
     }
 
     render() {
@@ -320,7 +326,7 @@ export default class Editor extends React.Component {
             componentArray: [ToolProject]
         };
         const inspectorData = this.state.inspectorData;
-        const testLoaderStatus = this.state.testLoaderStatus;
+        const loaderStatus = this.state.loaderStatus;
 
 
         return (
@@ -330,7 +336,7 @@ export default class Editor extends React.Component {
                         
                     </button>
                 </div>
-                <GlobalEditorContext.Provider value={{inspectorData, testLoaderStatus}}>
+                <GlobalEditorContext.Provider value={{inspectorData, loaderStatus}}>
                     <div className="editor_container">
                         <EditorWindows id='editorHeader' position="top"
                                        componentArray={[topMenuHeader, bottomMenuHeader]}/>

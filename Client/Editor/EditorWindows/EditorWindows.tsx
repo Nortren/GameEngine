@@ -1,9 +1,34 @@
 import * as React from 'react';
 
-export default class EditorWindows extends React.Component {
+interface IEditorWindows {
+    id: string | number,
+    mobile?: boolean,
+    height?: string,
+    width?: string,
+    justifySelf?: string,
+    templateStyle?: string,
+    position: string,
+    componentArray: object[]
+}
 
+type MyState = {
+    id: string | number,
+    mobile?: boolean,
+    height?: string,
+    width?: string,
+    justifySelf?: string,
+    templateStyle?: string,
+    position: string
+    style: object;
+    componentArray: object[];
+};
+export default class EditorWindows extends React.Component<MyState> {
+    id: string | number;
+    count: number;
+    componentArray: object[];
+    position: string;
 
-    constructor(props: object) {
+    constructor(props: IEditorWindows) {
         super(props);
         this.id = props.id;
         this.count = 0;
@@ -34,10 +59,6 @@ export default class EditorWindows extends React.Component {
 
     };
 
-    componentDidUpdate() {
-        this._animate = this.props.animations;
-    }
-
     /**
      * Метод который рендерит переданные в наш компонент сторонние компоненты
      * @returns {any}
@@ -46,7 +67,7 @@ export default class EditorWindows extends React.Component {
 
         return (
             this.props.componentArray.map(Component => (
-                <Component.componentName key={Component.componentName.name + Component.id} options={Component} />
+                <Component.componentName key={Component.componentName.name + Component.id} options={Component}/>
 
             ))
         );
@@ -66,10 +87,8 @@ export default class EditorWindows extends React.Component {
         leftResizeLine = this.props.position === 'left' ? leftResizeLine : leftResizeLine + ' resizeActive';
         rightResizeLine = this.props.position === 'right' ? rightResizeLine : rightResizeLine + ' resizeActive';
         bottomResizeLine = this.props.position === 'bottom' ? bottomResizeLine : bottomResizeLine + ' resizeActive';
-        this.componentE = '';
-
         return (
-            <div  className="editor_windows_container" id={this.id} style={this.state.style}>
+            <div className="editor_windows_container" id={this.id} style={this.state.style}>
                 <div className={topResizeLine}></div>
                 <div className={leftResizeLine}></div>
                 <div className={rightResizeLine}></div>

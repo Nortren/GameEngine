@@ -516,17 +516,17 @@ function TransformControl(props) {
  */
 export default function Inspector() {
     const [viewFile, setviewFile] = React.useState<object[]>('');
-    const {testLoaderStatus} = React.useContext(GlobalEditorContext);
+    const {loaderStatus} = React.useContext(GlobalEditorContext);
 
     React.useEffect(() => {
-        if (testLoaderStatus === false) {
+        if (loaderStatus === false) {
             setviewFile(<InspectorEditor/>);
-        } else if (testLoaderStatus === true) {
+        } else if (loaderStatus === true) {
             setviewFile(<FileLoad/>);
         }
 
-        console.log(testLoaderStatus);
-    }, [testLoaderStatus]);
+        console.log(loaderStatus);
+    }, [loaderStatus]);
 
     return (
         <div className="inspector_container">
