@@ -18,6 +18,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons';
 import {globalVariables} from "../../../GlobalVariables";
+
 /**
  * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
  * @returns {any}
@@ -87,8 +88,7 @@ function FileReaderTemplate(props) {
             const imgPath = source.inspectorData.structure.path.replace(/\\GameEngine/, "").replace(/\\/g, '/');
 
             template = <ImageReaderTemplate source={source} imgPath={imgPath}/>
-        }
-        else {
+        } else {
             template = <TextReaderTemplate source={source}/>
         }
     }
@@ -105,9 +105,8 @@ function ImageReaderTemplate(props) {
     let imgPath = props.imgPath;
 
     //Если на на бою то путь строим относительный
-    if (globalVariables.server) {
-        imgPath= props.imgPath.match(/(\/Client.*)/)[0];
-    }
+    imgPath = props.imgPath.match(/(\/Client.*)/)[0];
+
 
     const imgName = structure.name.replace(/\.[^/.]+$/g, '');
     const createDate = new Date(structure.stats.birthtime).toLocaleString();
@@ -138,7 +137,7 @@ function ImageReaderTemplate(props) {
             <div className="fileReader_container-data_body">{createDate}</div>
         </div>
         <div className="fileReader_container-header">
-            <Button options={ {
+            <Button options={{
                 name: 'Edit',
                 iconType: 'Edit',
                 iconSize: '1x',
@@ -153,6 +152,7 @@ function ImageReaderTemplate(props) {
 
     return <TemplateManagementContainer template={template} templateName={templateName}/>;
 }
+
 function TextReaderTemplate(props) {
     const source = props.source;
     const name = source.inspectorData.structure.name;
@@ -167,7 +167,7 @@ function TextReaderTemplate(props) {
         icon={fontAwesome['faFileSignature']}
         size='2x'/>
         <div className="inspector_container__file-name">{name}</div>
-        < Button options={ {
+        < Button options={{
             name: 'EditCode',
             iconType: 'Edit',
             iconSize: '1x',
@@ -188,11 +188,9 @@ function SceneObjectTemplate(props) {
 
     if (type === 'HemisphereLight') {
         template = <ComponentTemplateLight source={source}/>
-    }
-    else if (type === 'Mesh' || type === 'Sprite') {
+    } else if (type === 'Mesh' || type === 'Sprite') {
         template = <ComponentTemplateMesh source={source}/>
-    }
-    else {
+    } else {
         template =
             <TransformControl key={source.uuid} source={source} position={source.position} rotation={source.rotation}
                               scale={source.scale}/>
@@ -430,8 +428,7 @@ function TemplateManagementContainer(props) {
                     item.classList.add('containerSceneObject-body-hide');
                 }
             });
-        }
-        else {
+        } else {
 
             event.target.innerHTML = "&#9660;";
             event.target.parentElement.parentElement.childNodes.forEach((item) => {
@@ -524,8 +521,7 @@ export default function Inspector() {
     React.useEffect(() => {
         if (testLoaderStatus === false) {
             setviewFile(<InspectorEditor/>);
-        }
-        else if (testLoaderStatus === true) {
+        } else if (testLoaderStatus === true) {
             setviewFile(<FileLoad/>);
         }
 
