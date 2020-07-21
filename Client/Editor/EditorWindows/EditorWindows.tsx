@@ -10,23 +10,26 @@ interface IEditorWindows {
     position: string,
     componentArray: object[]
 }
-
-type MyState = {
-    id: string | number,
-    mobile?: boolean,
-    height?: string,
-    width?: string,
-    justifySelf?: string,
-    templateStyle?: string,
-    position: string
-    style: object;
+type MyProps = {
     componentArray: object[];
+    id:string;
+    position:string;
 };
-export default class EditorWindows extends React.Component<MyState> {
+type MyState = {
+    style: object;
+    templateStyle: string;
+    moveY: number;
+    countMove: number;
+    moveXBoll: boolean;
+    fps: number;
+};
+export default class EditorWindows extends React.Component {
     id: string | number;
     count: number;
     componentArray: object[];
     position: string;
+    state: MyState;
+    props: MyProps;
 
     constructor(props: IEditorWindows) {
         super(props);
@@ -39,7 +42,8 @@ export default class EditorWindows extends React.Component<MyState> {
                 justifySelf: props.justifySelf,
             },
             templateStyle: props.templateStyle,
-            moveY: 0, countMove: 0,
+            moveY: 0,
+            countMove: 0,
             moveXBoll: true,
             fps: 0
         };
@@ -66,7 +70,7 @@ export default class EditorWindows extends React.Component<MyState> {
     getComponents() {
 
         return (
-            this.props.componentArray.map(Component => (
+            this.props.componentArray.map((Component:React.Component<IEditorWindows>) => (
                 <Component.componentName key={Component.componentName.name + Component.id} options={Component}/>
 
             ))

@@ -19,6 +19,11 @@ export default function MapCreator() {
     return <div className="mapCreator-container"><TileList/><ToolsList/></div>
 }
 
+/**
+ * Метод визуализации спискатайлов собранного на основе атласа
+ * @returns {any}
+ * @constructor
+ */
 function TileList() {
     const template = <div className="tileList-container">
         <div className="tileList-container__item">1</div>
@@ -44,6 +49,12 @@ function TileList() {
     </div>;
     return template;
 }
+/**
+ * Метод визуализации инструментов при работе с редактором карт
+ * @returns {any}
+ * @constructor
+ */
+
 function ToolsList() {
     const template = <div className="toolsList-container">
         <div className="tileList-container__item">1</div>

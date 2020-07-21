@@ -14,7 +14,7 @@ import Hierarchy from "./Tools/Hierarchy/Hierarchy";
 import Inspector from "./Tools/Inspector/Inspector";
 import Project from "./Tools/Project/Project";
 import MapCreator from "./Tools/MapCreator/MapCreator";
-import ControllPanel from "./Tools/ControllPanel/ControllPanel";
+import ControlPanel from "./Tools/ControlPanel/ControlPanel";
 
 export const GlobalEditorContext = React.createContext(0);
 
@@ -282,7 +282,7 @@ export default class Editor extends React.Component {
         const step = {componentName: Button, name: '', iconType: 'Forward', iconSize: '1x', id: 3, componentArray: []};
 
         const sceneTopMenuHeader = {
-            componentName: ControllPanel,
+            componentName: ControlPanel,
             id: 3,
             height: '5%',
             justifyContent: 'center',

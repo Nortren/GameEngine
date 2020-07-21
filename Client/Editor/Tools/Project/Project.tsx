@@ -13,7 +13,13 @@ interface IDirectoryProject {
     type: string;
     arrayOfStructures: IDirectoryProject[];
 }
-
+interface ISelectedStructure {
+    extension: string,
+    name: string,
+    path: string,
+    stats: object,
+    type: string,
+}
 
 interface IStructureSelectedFolder {
     clickOnElement(structure: object, event: Event): void;
@@ -22,10 +28,14 @@ interface IStructureSelectedFolder {
 }
 interface IStructure {
     clickOnElement(structure: object, event: Event): void;
-    data: IDirectoryProject;
+    data: IDirectoryProject[];
     showContents(event: Event, name: string): void;
 }
-
+/**
+ * Компонент визуализации древовидной структуры проекта (перемещения по папкам и выбор файлов)
+ * @returns {any}
+ * @constructor
+ */
 export default function Project() {
     const [directoryProject, setDirectoryProject] = React.useState<object[]>('');
     const [selectedDirectory, setSelectedDirectory] = React.useState<object[]>('');
@@ -108,8 +118,12 @@ export default function Project() {
         state.viewer.viewData
     );
 
-
-    const getInfo = (structure: IDirectoryProject, event) => {
+    /**
+     * Метод получения информации по выбранному пользователем файлу
+     * @param structure
+     * @param event
+     */
+    const getInfo = (structure: ISelectedStructure, event) => {
         const readFile = new CustomEvent('ReadFile', {
             bubbles: true,
             cancelable: true,
