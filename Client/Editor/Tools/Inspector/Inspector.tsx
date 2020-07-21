@@ -20,7 +20,7 @@ import * as fontAwesome from '@fortawesome/free-solid-svg-icons';
 import {globalVariables} from "../../../GlobalVariables";
 
 /**
- * Крмпонент визуализации полученных данных (в дальнейшем можно развить до полноценного редактора текста/картинок и т.д)
+ * Крмпонент визуализации полученных данных (файлы/объекты сцены/картинки и т.д)
  * @returns {any}
  * @constructor
  */
@@ -65,6 +65,12 @@ function InspectorEditor() {
     return template;
 }
 
+/**
+ * Компонент визуализациифайловой структуры (запуск редактора/просмоторщикуа кода/текста)
+ * @param props
+ * @returns {Object}
+ * @constructor
+ */
 function FileReaderTemplate(props) {
 
     const source = props.source;
@@ -96,7 +102,12 @@ function FileReaderTemplate(props) {
 
     return template;
 }
-
+/**
+ * Компонент визуализации полученных графическихфайлов и запуска редактора изображений
+ * @param props
+ * @returns {any}
+ * @constructor
+ */
 function ImageReaderTemplate(props) {
     const dispatch = useDispatch();
     const source = props.source;
@@ -104,7 +115,7 @@ function ImageReaderTemplate(props) {
     const imgSize = structure.stats.size;
     let imgPath = props.imgPath;
 
-    //Если на на бою то путь строим относительный
+    //Если на бою то путь строим относительный
     imgPath = props.imgPath.match(/(\/Client.*)/)[0];
 
 
@@ -152,7 +163,12 @@ function ImageReaderTemplate(props) {
 
     return <TemplateManagementContainer template={template} templateName={templateName}/>;
 }
-
+/**
+ * Превью текстового файла
+ * @param props
+ * @returns {any}
+ * @constructor
+ */
 function TextReaderTemplate(props) {
     const source = props.source;
     const name = source.inspectorData.structure.name;
@@ -180,7 +196,12 @@ function TextReaderTemplate(props) {
     return template;
 }
 
-
+/**
+ * Компонент визуализации данных объектов сцены
+ * @param props
+ * @returns {Object}
+ * @constructor
+ */
 function SceneObjectTemplate(props) {
     const source = props.source;
     const type = props.source.type;
@@ -198,7 +219,12 @@ function SceneObjectTemplate(props) {
 
     return template;
 }
-
+/**
+ * Компонент работы с данными о меше (размер/позиция/угол поворота)
+ * @param props
+ * @returns {any}
+ * @constructor
+ */
 function ComponentTemplateMesh(props) {
     const source = props.source;
     const dispatch = useDispatch();
@@ -255,7 +281,6 @@ function ComponentTemplateMesh(props) {
     };
 
     const templateMeshRendererName = 'Mesh Renderer';
-    // const imgSrc = source.material.map.image.currentSrc;
     const imgSrc = source.material;
     const imageResultArray = findImageData(imgSrc);
     const templatesMaterials = <div>
@@ -359,7 +384,12 @@ function ComponentTemplateMesh(props) {
         </div>
     );
 }
-
+/**
+ * Компонентиа работы и настройки источников освещения
+ * @param props
+ * @returns {any}
+ * @constructor
+ */
 function ComponentTemplateLight(props) {
     const source = props.source;
 

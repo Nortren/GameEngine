@@ -68,7 +68,7 @@ export default function Hierarchy() {
         // event.target.dispatchEvent(loaderEvent);
 
     };
-
+    //TODO функция которая в идеале хотела показывать числовую визуализацию прогресса загрузки
     const progressBarStatus = count => {
         if (Object.keys(viewData).length && viewData.children.length === count) {
             document.querySelector('.hierarchy_container-progressBarStatus').classList.remove('hierarchy_container-progressBarStatus');
@@ -91,7 +91,7 @@ export default function Hierarchy() {
         });
         event.currentTarget.querySelector('.'.concat(itemFindClass)).classList.add(itemChangeClass);
     };
-    const renderTest = React.useMemo(()=>{
+    const renderTest = React.useMemo(() => {
         return <HierarchyContext.Provider value={{progressBarStatus, progressBarLength}}>
             <div className="hierarchy_container hierarchy_container-progressBarStatus">
                 <ItemChildrenList item={viewData}
@@ -108,12 +108,17 @@ export default function Hierarchy() {
 
     return renderTest;
 }
-
+/**
+ * Компонент реазилующий структуру объектов находящихся на сцене
+ * @param props
+ * @returns {any}
+ * @constructor
+ */
 function ItemChildrenList(props) {
     let {progressBarStatus} = React.useContext(HierarchyContext);
     let keyUUID = props.item.uuid;
-let keyUl = props.indexKey+'_ul';
-let keyLi = props.indexKey+'_li';
+    let keyUl = props.indexKey + '_ul';
+    let keyLi = props.indexKey + '_li';
 
     let count = props.count;
 
@@ -142,14 +147,12 @@ let keyLi = props.indexKey+'_li';
         }
     };
 
-    // счетчик объектов на сцене
-    // {/*<div>    {(Object.keys(props.item).length && props.parent) ? props.item.children.length : ''}</div>*/}
     return <ul key={keyUl} className="hierarchy_container"
                name={props.item.type}
                type={props.item.type}
     >
 
-        <li key={keyLi}  className="hierarchy_container_containerItem-list"
+        <li key={keyLi} className="hierarchy_container_containerItem-list"
             onClick={props.clickOnElement.bind(null, props.item)}>
 
             <div className="hierarchy_container_containerItem_view">
@@ -164,12 +167,13 @@ let keyLi = props.indexKey+'_li';
             </div>
             <div className="hierarchy_container_containerItem_array">
 
-                {Object.keys(props.item).length ? props.item.children.map((item,index) => {
-                    let indexKey = index+'_'+keyUUID;
+                {Object.keys(props.item).length ? props.item.children.map((item, index) => {
+                    let indexKey = index + '_' + keyUUID;
                     count++;
                     progressBarStatus(count);
                     // return <div className="hierarchy_container_containerItem_array-item">{item.type}</div>
-                    return <ItemChildrenList key={indexKey} indexKey={indexKey} item={item} clickOnElement={props.clickOnElement} count={count}/>
+                    return <ItemChildrenList key={indexKey} indexKey={indexKey} item={item}
+                                             clickOnElement={props.clickOnElement} count={count}/>
                 }) : ''}
             </div>
         </li>
