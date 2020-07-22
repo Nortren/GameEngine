@@ -180,22 +180,22 @@ export default class Button extends React.Component {
             UserFriends: 'faUserFriends'
         };
 
-
         if (this.props.options.type === 'EditorButton') {
             return <div className="editorButton_container">
                 <button className="editorButton_container-button"
                         onClick={this.clickButton.bind(this, this.props.options.name)} style={this.state.style}>
-                    <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
-                                     size={this.props.options.iconSize}/>
+                    {this.props.options.iconType ? <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
+                                     size={this.props.options.iconSize}/>: this.props.options.name}
                 </button>
             </div>
         }
         else {
             return <div className="button_container" style={this.state.style}>
                 <button className="button_container-button"
-                        onClick={this.clickButton.bind(this, this.props.options.name)}><FontAwesomeIcon
+                        onClick={this.clickButton.bind(this, this.props.options.name)}>
+                    {this.props.options.iconType ? <FontAwesomeIcon
                     icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
-                    size={this.props.options.iconSize}/></button>
+                    size={this.props.options.iconSize}/> : this.props.options.name}</button>
             </div>
         }
     }

@@ -16,6 +16,7 @@ import StickController from "./StickController/StickController";
 import Editor from "./Editor/Editor";
 import 'bootstrap/dist/css/bootstrap.css'
 import Authorization from "./ClientAuthorization/ClientAuthorization";
+
 import GUI from "./GUI/GUI";
 import {globalVariables} from "./GlobalVariables";
 
@@ -26,7 +27,7 @@ class GameEngineContainer extends React.Component {
             editorData: null
         };
     }
-
+    private thisMobileDevice: boolean;
     componentDidMount() {
         this.thisMobileDevice = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
@@ -69,6 +70,7 @@ class GameEngineContainer extends React.Component {
 
 
     }
+
 
     eventBusEditor(eventName, event, data?) {
         this.setState({editorData: {name: eventName, data: data || event.detail, syntheticEvent: event}});

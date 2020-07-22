@@ -1,0 +1,72 @@
+.dialogPopup-container {
+   position: fixed;
+   display: flex;
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+   &__dialogPopup {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      height: 50%;
+      background-color: rgba(42, 42, 42, 0.71);
+      border: 1px solid red;
+      &-textMessage {
+         margin: 5px;
+         color: #cb6c2f;
+      }
+      &-infoContainer {
+         width: 100%;
+         height: 100%;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+      }
+      &-infoContainer_health {
+         background-color: #840000;
+         width: 90%;
+         height: 20%;
+         margin: 5px;
+         border: 3px solid #595959;
+      }
+      &-infoContainer_energy {
+         background-color: #002aa6;
+         width: 90%;
+         height: 20%;
+         margin: 5px;
+         border: 3px solid #595959;
+      }
+   }
+}
+
+.dialogPopup-containerMobile {
+   position: fixed;
+   display: flex;
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+   &__dialogPopup {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      height: 50%;
+      background-color: rgba(42, 42, 42, 0.71);
+      border: 1px solid red;
+      &-textMessage {
+         margin: 5px;
+         color: #cb6c2f;
+         font-size: 50%;
+      }
+      &-infoContainer {
+         width: 100%;
+         height: 100%;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         align-items: center;
+      }
+   }
+}
