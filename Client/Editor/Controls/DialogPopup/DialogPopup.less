@@ -5,38 +5,28 @@
    height: 100%;
    justify-content: center;
    align-items: center;
+   z-index: 1;
    &__dialogPopup {
       display: flex;
       flex-direction: column;
       width: 50%;
       height: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
-      border: 1px solid red;
+      background-color: rgb(42, 42, 42);
+      border: 1px solid rgba(89, 89, 89, 0.98);
       &-textMessage {
          margin: 5px;
          color: #cb6c2f;
+         height: 50%;
+         text-align: center;
+
       }
-      &-infoContainer {
+      &-buttonContainer {
          width: 100%;
          height: 100%;
          display: flex;
-         flex-direction: column;
+         flex-direction: row;
          justify-content: center;
          align-items: center;
-      }
-      &-infoContainer_health {
-         background-color: #840000;
-         width: 90%;
-         height: 20%;
-         margin: 5px;
-         border: 3px solid #595959;
-      }
-      &-infoContainer_energy {
-         background-color: #002aa6;
-         width: 90%;
-         height: 20%;
-         margin: 5px;
-         border: 3px solid #595959;
       }
    }
 }
@@ -48,23 +38,25 @@
    height: 100%;
    justify-content: center;
    align-items: center;
+   z-index: 1;
    &__dialogPopup {
       display: flex;
       flex-direction: column;
       width: 50%;
       height: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
-      border: 1px solid red;
+      background-color: rgb(42, 42, 42);
+      border: 1px solid rgba(89, 89, 89, 0.98);
       &-textMessage {
          margin: 5px;
          color: #cb6c2f;
-         font-size: 50%;
+         height: 50%;
+         text-align: center;
       }
-      &-infoContainer {
+      &-buttonContainer {
          width: 100%;
          height: 100%;
          display: flex;
-         flex-direction: column;
+         flex-direction: row;
          justify-content: center;
          align-items: center;
       }

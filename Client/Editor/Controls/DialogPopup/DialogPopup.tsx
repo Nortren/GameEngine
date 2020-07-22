@@ -32,29 +32,26 @@ function DialogPopupContainer(props) {
     const buttonMargin = props.mobile ? '0' : '5px';
     const buttonType = props.mobile ? '' : 'EditorButton';
 
-
+    const clickButton = (data) => {
+        let getData = new CustomEvent(data, {bubbles: true, cancelable: true, detail: {options: {}}});
+        document.dispatchEvent(getData);
+    };
     const template = <div className="dialogPopup-container" style={{visible}}>
         <div className="dialogPopup-container__dialogPopup">
             <div className="dialogPopup-container__dialogPopup-textMessage">
                 {textMessage}
             </div>
             <div className="dialogPopup-container__dialogPopup-buttonContainer">
-                <Button options={ {
-                    name: 'ok',
-                    iconSize: buttonSize,
-                    id: 2,
-                    componentArray: [],
-                    type: buttonType,
-                    style: {margin: buttonMargin}
-                }}/>
-                <Button options={ {
-                    name: 'cancel',
-                    iconSize: buttonSize,
-                    id: 2,
-                    componentArray: [],
-                    type: buttonType,
-                    style: {margin: buttonMargin}
-                }}/>
+                <button id="authorization_button_registration"
+                        className="Authorization_page-window-controls-button_registration"
+                        onClick={clickButton('cancel')}>
+                    Ok
+                </button>
+                <button id="authorization_button_registration"
+                        className="Authorization_page-window-controls-button_registration"
+                        onClick={clickButton('cancel')}>
+                    Cancel
+                </button>
             </div>
         </div>
     </div>;
