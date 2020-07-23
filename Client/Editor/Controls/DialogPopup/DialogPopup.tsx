@@ -53,11 +53,11 @@ function DialogPopupContainer(props) {
                 {textMessage}
             </div>
             <div className="dialogPopup-containerMobile__dialogPopup-buttonContainer">
-                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                <button className="dialogPopup-containerMobile__dialogPopup-buttonContainer-button"
                         onClick={ () =>{clickButton('ok')}}>
                     Ok
                 </button>
-                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                <button className="dialogPopup-containerMobile__dialogPopup-buttonContainer-button"
                         onClick={() =>{clickButton('cancel')}}>
                     Cancel
                 </button>
