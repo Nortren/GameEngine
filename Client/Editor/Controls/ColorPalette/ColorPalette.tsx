@@ -4,6 +4,12 @@ import {
     changeColorPalette, changeColorPaletteStatus
 } from '../../../Store/EditorStore/ColorPalette/Actions';
 import Button from "../Button/Button";
+
+/**
+ * Компонент инициализирующий палитру
+ * @param props
+ * @constructor
+ */
 export default function ColorPalette(props) {
     const colorPaletteStatus = useSelector(state => state.colorPaletteStore.colorPaletteStatus);
     props.statusVisible(colorPaletteStatus);
@@ -19,18 +25,22 @@ export default function ColorPalette(props) {
         </div> : ''
 }
 
-
+/**
+ * Компонент палитры (выбора цвета)
+ * @param props
+ * @constructor
+ */
 function ColorPicker(props) {
     const dispatch = useDispatch();
     const [DnDStatus, setDnDStatus] = React.useState<object[]>(false);
     const colorPaletteData = useSelector(state => state.colorPaletteStore.colorPaletteData);
 
-    const changeObjectColor = (color,normalColor) => {
-        if(colorPaletteData.normalRGB){
+    const changeObjectColor = (color, normalColor) => {
+        if (colorPaletteData.normalRGB) {
             colorPaletteData.source.r = normalColor[0];
             colorPaletteData.source.g = normalColor[1];
             colorPaletteData.source.b = normalColor[2];
-        }else{
+        } else {
             colorPaletteData.source.r = color.R;
             colorPaletteData.source.g = color.G;
             colorPaletteData.source.b = color.B;
@@ -38,8 +48,8 @@ function ColorPicker(props) {
 
     };
 
-    const [template, setTemplate] = React.useState<object[]>('');
-    const [canvas, setCanvas] = React.useState<object[]>('');
+    const [template, setTemplate] = React.useState<object | string>('');
+    const [canvas, setCanvas] = React.useState<object | string>('');
 
     React.useEffect(() => {
         document.addEventListener("offColorPalette", (event) => {
@@ -65,7 +75,7 @@ function ColorPicker(props) {
             </div>
             <canvas id="colorPicker"/>
             <div className="colorPalette_container-buttonControl">
-                <Button options={ {
+                <Button options={{
                     name: 'saveColorPalette',
                     iconType: 'Check',
                     iconSize: '2x',
@@ -74,7 +84,7 @@ function ColorPicker(props) {
                     type: 'EditorButton',
                     style: {margin: '5px'}
                 }}/>
-                <Button options={ {
+                <Button options={{
                     name: 'offColorPalette',
                     iconType: 'Times',
                     iconSize: '2x',
@@ -83,7 +93,7 @@ function ColorPicker(props) {
                     type: 'EditorButton',
                     style: {margin: '5px'}
                 }}/>
-                <Button options={ {
+                <Button options={{
                     name: 'DnDStatusColorPalette',
                     iconType: 'ArrowsAlt',
                     iconSize: '2x',
@@ -95,12 +105,14 @@ function ColorPicker(props) {
             </div>
         </div>);
         return () => {
-            document.removeEventListener("offColorPalette",()=>{});
-            document.removeEventListener("DnDStatus",()=>{});
+            document.removeEventListener("offColorPalette", () => {
+            });
+            document.removeEventListener("DnDStatus", () => {
+            });
         }
     }, []);
     React.useEffect(() => {
-        setCanvas(document.getElementById("colorPicker")  as HTMLCanvasElement);
+        setCanvas(document.getElementById("colorPicker") as HTMLCanvasElement);
 
         if (canvas) {
 
@@ -188,8 +200,8 @@ function ColorPicker(props) {
                         let top, rgb;
 
                         top = mouse.pageY(e) - pst;
-                        top = (top < 0 ) ? 0 : top;
-                        top = (top > elem.height ) ? elem.height : top;
+                        top = (top < 0) ? 0 : top;
+                        top = (top > elem.height) ? elem.height : top;
 
                         cAr.style.top = top - 2 + "px";
                         t = Math.round(top / (elem.height / 360));
@@ -297,14 +309,14 @@ function ColorPicker(props) {
 
                         left = mouse.pageX(e) - bPstX - cW / 2;
                         left = (left < 0) ? 0 : left;
-                        left = (left > bWi  ) ? bWi : left;
+                        left = (left > bWi) ? bWi : left;
 
                         circle.style.left = left + "px";
 
                         S = Math.ceil(left / pxX);
 
                         top = mouse.pageY(e) - bPstY - cH / 2;
-                        top = (top > bHe  ) ? bHe : top;
+                        top = (top > bHe) ? bHe : top;
 
                         top = (top < 0) ? 0 : top;
 
@@ -393,7 +405,7 @@ function ColorPicker(props) {
                     }
                     const color = [parseInt(R * 255), parseInt(G * 255), parseInt(B * 255)];
 
-                    changeObjectColor({R, G, B},color);
+                    changeObjectColor({R, G, B}, color);
                     return color;
                 }
 

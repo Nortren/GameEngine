@@ -8,8 +8,8 @@ import Button from "../Button/Button";
  */
 
 export default function DragAndDropContainer(props) {
-    const [DnDStatus, setDnDStatus] = React.useState<object[]>();
-    const [visibleContainer, setVisibleContainer] = React.useState<object[]>(false);
+    const [DnDStatus, setDnDStatus] = React.useState<boolean>(false);
+    const [visibleContainer, setVisibleContainer] = React.useState<boolean>(false);
 
     document.addEventListener("DnDStatusCodeEditor", (event) => {
         event.preventDefault();

@@ -11,14 +11,9 @@ interface IDialogPopup {
  * @constructor
  */
 export default function DialogPopup(props: IDialogPopup) {
-    const [visible, setVisible] = React.useState<object[]>(props.visible);
-    React.useEffect(() => {
-        console.log(visible);
-    }, [visible]);
-
     const textMessage = props.textMessage;
     const mobile = props.mobile;
-    return <DialogPopupContainer textMessage={textMessage} mobile={mobile} visible={visible}/>
+    return <DialogPopupContainer textMessage={textMessage} mobile={mobile}/>
 }
 /**
  * Компонент контейнер пользовательского меню
@@ -26,60 +21,46 @@ export default function DialogPopup(props: IDialogPopup) {
  * @constructor
  */
 function DialogPopupContainer(props) {
-    let visible = props.visible ? 'display:flex' : 'display:none';
+    const [display, setDisplay] = React.useState<string>('flex');
     const textMessage = props.textMessage;
-    const buttonSize = props.mobile ? '1x' : '2x';
-    const buttonMargin = props.mobile ? '0' : '5px';
-    const buttonType = props.mobile ? '' : 'EditorButton';
-
     const clickButton = (data) => {
         let getData = new CustomEvent(data, {bubbles: true, cancelable: true, detail: {options: {}}});
         document.dispatchEvent(getData);
+        setDisplay('none');
     };
-    const template = <div className="dialogPopup-container" style={{visible}}>
+
+    const template = <div className="dialogPopup-container" style={{display}}>
         <div className="dialogPopup-container__dialogPopup">
             <div className="dialogPopup-container__dialogPopup-textMessage">
                 {textMessage}
             </div>
             <div className="dialogPopup-container__dialogPopup-buttonContainer">
-                <button id="authorization_button_registration"
-                        className="Authorization_page-window-controls-button_registration"
-                        onClick={clickButton('cancel')}>
+                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                        onClick={ () =>{clickButton('ok')}}>
                     Ok
                 </button>
-                <button id="authorization_button_registration"
-                        className="Authorization_page-window-controls-button_registration"
-                        onClick={clickButton('cancel')}>
+                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                        onClick={() =>{clickButton('cancel')}}>
                     Cancel
                 </button>
             </div>
         </div>
     </div>;
 
-    const mobileTemplate = <div className="dialogPopup-containerMobile" style={{visible}}>
+    const mobileTemplate = <div className="dialogPopup-containerMobile" style={{display}}>
         <div className="dialogPopup-containerMobile__dialogPopup">
             <div className="dialogPopup-containerMobile__dialogPopup-textMessage">
                 {textMessage}
             </div>
             <div className="dialogPopup-containerMobile__dialogPopup-buttonContainer">
-                <Button options={ {
-                    name: 'sendMessage',
-                    iconType: 'HandRock',
-                    iconSize: buttonSize,
-                    id: 2,
-                    componentArray: [],
-                    type: buttonType,
-                    style: {margin: buttonMargin}
-                }}/>
-                <Button options={ {
-                    name: 'sendMessage',
-                    iconType: 'Child',
-                    iconSize: buttonSize,
-                    id: 2,
-                    componentArray: [],
-                    type: buttonType,
-                    style: {margin: buttonMargin}
-                }}/>
+                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                        onClick={ () =>{clickButton('ok')}}>
+                    Ok
+                </button>
+                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
+                        onClick={() =>{clickButton('cancel')}}>
+                    Cancel
+                </button>
             </div>
         </div>
     </div>;
