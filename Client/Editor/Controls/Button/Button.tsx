@@ -56,24 +56,50 @@ import {
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
 
+
+interface IProps {
+    options: IButtonOptions;
+}
+
+interface IState {
+    style: IButtonOptionsStyle;
+}
+
+interface IButtonOptions {
+    componentArray: object[];
+    iconSize: string;
+    iconType: string;
+    id: number;
+    name: string;
+    style: IButtonOptionsStyle;
+    type: string;
+}
+
+interface IButtonOptionsStyle {
+    height?: string;
+    margin?: string;
+    width?: string;
+    border?: string;
+}
+
 export default class Button extends React.Component {
 
     private ButtonIcon: boolean;
+    props: IProps;
+    state: IState;
+    id: number;
 
-    constructor(props: object) {
+    constructor(props: IProps) {
 
         super(props);
-        this.id = props.id;
+        this.id = props.options.id;
         this.state = {
             style: {
                 width: props.options.style ? props.options.style.width : '',
                 height: props.options.style ? props.options.style.height : '',
                 margin: props.options.style ? props.options.style.margin : '',
                 border: props.options.style ? props.options.style.border : ''
-            },
-            moveY: 0, countMove: 0,
-            moveXBoll: true,
-            fps: 0,
+            }
         };
         this.clickButton = this.clickButton.bind(this);
     }
@@ -84,50 +110,6 @@ export default class Button extends React.Component {
     };
 
     startInit() {
-        /*enum fontAwesomeArray {
-         faEyeDropper = 'Dropper',
-         faPencilAlt = 'PencilAlt',
-         faPaintBrush = 'PaintBrush',
-         faTint = 'Tint',
-         faPhotoVideo = 'PhotoVideo',
-         faPowerOff = 'PowerOff',
-         faHandScissors = 'HandScissors',
-         faBold = 'Bold',
-         faExpandAlt = 'ExpandAlt',
-         faExpandArrowsAlt = 'ExpandArrowsAlt',
-         faExpand = 'Expand',
-         faWrench = 'Wrench',
-         faSlidersH = 'SlidersH',
-         faPlay = 'Play',
-         faPalette = 'Palette',
-         faMousePointer = 'MousePointer',
-         faHammer = 'Hammer',
-         faFolderOpen = 'FolderOpen',
-         faFolderMinus = 'FolderMinus',
-         faFolderPlus = 'FolderPlus',
-         faFile = 'File',
-         faCompressArrowsAlt = 'CompressArrowsAlt',
-         faArrowsAlt = 'ArrowsAlt',
-         faEdit = 'Edit',
-         faEraser = 'Eraser',
-         faTools = 'Tools',
-         faPaperclip = 'Paperclip',
-         faRedo = 'Redo',
-         faList = 'List',
-         faObjectUngroup = 'ObjectUngroup',
-         faCut = 'Cut',
-         faPlay = 'Play',
-         faPause = 'Pause',
-         faForward = 'Forward',
-         faCheck = "Check",
-         faTimes = "Times",
-         faSave = "Save",
-         faSitemap = "Sitemap",
-         faEllipsisH = "EllipsisH",
-         faCog = "Cog",
-         faCamera = 'Camera',
-         faCameraRetro = 'CameraRetro',
-         }*/
         const fontAwesomeArray = {
             Dropper: 'faEyeDropper',
             PencilAlt: 'faPencilAlt',
@@ -184,18 +166,18 @@ export default class Button extends React.Component {
             return <div className="editorButton_container">
                 <button className="editorButton_container-button"
                         onClick={this.clickButton.bind(this, this.props.options.name)} style={this.state.style}>
-                    {this.props.options.iconType ? <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
-                                     size={this.props.options.iconSize}/>: this.props.options.name}
+                    {this.props.options.iconType ?
+                        <FontAwesomeIcon icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
+                                         size={this.props.options.iconSize}/> : this.props.options.name}
                 </button>
             </div>
-        }
-        else {
+        } else {
             return <div className="button_container" style={this.state.style}>
                 <button className="button_container-button"
                         onClick={this.clickButton.bind(this, this.props.options.name)}>
                     {this.props.options.iconType ? <FontAwesomeIcon
-                    icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
-                    size={this.props.options.iconSize}/> : this.props.options.name}</button>
+                        icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
+                        size={this.props.options.iconSize}/> : this.props.options.name}</button>
             </div>
         }
     }

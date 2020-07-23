@@ -6,7 +6,7 @@ import {
 } from '../../../Store/EditorStore/CodeEditor/Actions';
 import Button from "../Button/Button";
 /**
- * Крмпонент простмотра изображений(TODO редактирования)
+ * Крмпонент просмотра файлов
  * @returns {any}
  * @constructor
  */
@@ -100,15 +100,20 @@ export default function CodeEditor(props) {
     </div> : ''
 }
 
+/**
+ * Компонент просмотра кода(TODO в будующем доработать до редактора кода)
+ * @param props
+ * @constructor
+ */
 function CodeEditorArea(props) {
     const source = props.source;
 
-    let statusType=false;
+    let statusType;
     const parseCodeString = (string: string) => {
         const keyword = ['class','constructor','super','this',';','let', 'const', 'string', 'number', 'object', 'boolean', 'function', 'return', 'export', 'default', 'import', 'from', 'as', 'void', 'typeof', 'void', 'any', 'keyof', 'never', 'symbol', 'for', 'if', 'else', 'try', 'catch'];
        const statusTypekeyword = ['class','function'];
 
-        let template = '';
+        let template;
 
 
         if (keyword.some((item) => {
