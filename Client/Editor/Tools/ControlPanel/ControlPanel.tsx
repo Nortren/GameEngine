@@ -7,7 +7,7 @@ interface IControlPanel {
         componentArray: object[],
         componentName: ControlPanel,
         height: string,
-        id: number,
+        id: string | number,
         width: string,
         justifyContent: string,
         justifySelf: string
@@ -16,7 +16,7 @@ interface IControlPanel {
 interface IComponent {
     componentName:object;
     name:string;
-    id:number;
+    id: string | number;
 }
 
 type MyState = {
@@ -28,7 +28,7 @@ type MyState = {
  */
 export default class ControlPanel extends React.Component {
 
-    id: number;
+    id: string | number;
     state:MyState;
     props:IControlPanel;
     constructor(props: IControlPanel) {

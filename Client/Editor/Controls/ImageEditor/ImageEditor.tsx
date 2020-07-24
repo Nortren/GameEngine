@@ -19,21 +19,21 @@ export const HierarchyContext = React.createContext(0);
 export default function ImageEditor() {
     const imageEditorStore = useSelector(state => state.imageEditorStore.imageEditorData);
     const imageEditorStatus = useSelector(state => state.imageEditorStore.imageEditorStatus);
-    const [selectedTool, setSelectedTool] = React.useState<object[]>('');
-    const [colorTools, setColorTools] = React.useState<object[]>({r: 255, g: 0, b: 0});
-    const [drawTools, setDrawTools] = React.useState<object[]>({name: ''});
+    const [selectedTool, setSelectedTool] = React.useState<string>('');
+    const [colorTools, setColorTools] = React.useState<object>({r: 255, g: 0, b: 0});
+    const [drawTools, setDrawTools] = React.useState<object>({name: ''});
     // const drawTools = {name: ''};
     let testDraw = '';
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        const selectedTool = ['pencil', 'dropper', 'brush', 'tint', 'photo', 'bold', 'scissors', 'eraser'];
+        const selectedToolArray = ['pencil', 'dropper', 'brush', 'tint', 'photo', 'bold', 'scissors', 'eraser'];
 
 
         const testTool = (event) => {
             console.log(event);
         };
-        selectedTool.forEach((toolName) => {
+        selectedToolArray.forEach((toolName) => {
             document.addEventListener(toolName, (event) => {
                 setSelectedTool(event.type);
             });
@@ -82,7 +82,6 @@ export default function ImageEditor() {
             let drawStatus = false;
             const img = new Image();
             img.src = imageEditorStore;
-
 
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
             const bodySize = document.getElementsByClassName('imageEditor_container-body')[0] as HTMLCanvasElement;
@@ -136,11 +135,7 @@ export default function ImageEditor() {
             };
 
             const drawing = (event) => {
-
                 if (drawStatus) {
-
-
-
                     // Определяем текущие координаты указателя мыши
                     var x = event.pageX - canvas.offsetLeft;
                     var y = event.pageY - canvas.offsetTop;
