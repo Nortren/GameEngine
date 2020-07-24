@@ -1,20 +1,8 @@
 import * as React from 'react';
 import EditorWindows from "./EditorWindows/EditorWindows";
-import TopMenu from "./Controls/TopMenu/TopMenu";
-import DropDownButton from "./Controls/DropDownButton/DropDownButton";
-import Button from "./Controls/Button/Button";
-import LayoutBrowserTabs from "./Controls/LayoutBrowserTabs/LayoutBrowserTabs";
 
-import ImageEditor from './Controls/ImageEditor/ImageEditor';
-import CodeEditor from './Controls/CodeEditor/CodeEditor';
-import ColorPalette from "./Controls/ColorPalette/ColorPalette";
-import DragAndDropContainer from "./Controls/DragAndDropContainer/DragAndDropContainer";
-
-import Hierarchy from "./Tools/Hierarchy/Hierarchy";
-import Inspector from "./Tools/Inspector/Inspector";
-import Project from "./Tools/Project/Project";
-import MapCreator from "./Tools/MapCreator/MapCreator";
-import ControlPanel from "./Tools/ControlPanel/ControlPanel";
+import {Hierarchy,Inspector,Project,MapCreator,ControlPanel} from "./Tools/Tools";
+import {TopMenu,DropDownButton,LayoutBrowserTabs,ImageEditor,CodeEditor,ColorPalette,DragAndDropContainer,Button} from './Controls/Controls'
 
 export const GlobalEditorContext = React.createContext(0);
 
@@ -22,16 +10,17 @@ export default class Editor extends React.Component {
 
     private testSt = false;
     private testTarget = null;
-    private _styleTargetElement:number = 0;
-    private _startWidth:number = 0;
-    private _startHeight:number = 0;
-    private _styleTargetElementX:number;
-    private _styleTargetElementY:number;
-    private _editorWindowStartPositionX:number;
-    private _editorWindowStartPositionY:number;
-    moveElement:string;
-    startPositionX:number;
-    startPositionY:number;
+    private _styleTargetElement: number = 0;
+    private _startWidth: number = 0;
+    private _startHeight: number = 0;
+    private _styleTargetElementX: number;
+    private _styleTargetElementY: number;
+    private _editorWindowStartPositionX: number;
+    private _editorWindowStartPositionY: number;
+    moveElement: string;
+    startPositionX: number;
+    startPositionY: number;
+
     constructor(props: object) {
         super(props);
         this.state = {
@@ -50,13 +39,14 @@ export default class Editor extends React.Component {
         document.addEventListener("Hide screen scene", (event) => {
             this.hideEditorToolbar();
         });
-        document.addEventListener("ReadFile", (event:CustomEvent) => {
+        document.addEventListener("ReadFile", (event: CustomEvent) => {
             this.setState({inspectorData: event.detail})
         });
-        document.addEventListener("LoadStart", (event:CustomEvent) => {
+        document.addEventListener("LoadStart", (event: CustomEvent) => {
             this.setState({loaderStatus: event.detail.status})
         });
     }
+
     /**
      * Метод скрывающий окна редактора оставляет только кнопку вернуть в первоначальное положение
      */
@@ -95,14 +85,11 @@ export default class Editor extends React.Component {
 
             if (event.target.classList.contains('resizeLineTop')) {
                 this.moveElement = 'resizeLineTop';
-            }
-            else if (event.target.classList.contains('resizeLineLeft')) {
+            } else if (event.target.classList.contains('resizeLineLeft')) {
                 this.moveElement = 'resizeLineLeft';
-            }
-            else if (event.target.classList.contains('resizeLineRight')) {
+            } else if (event.target.classList.contains('resizeLineRight')) {
                 this.moveElement = 'resizeLineRight';
-            }
-            else if (event.target.classList.contains('resizeLineBottom')) {
+            } else if (event.target.classList.contains('resizeLineBottom')) {
                 this.moveElement = 'resizeLineBottom';
             }
 
@@ -123,8 +110,7 @@ export default class Editor extends React.Component {
                         this.testTarget.parentNode.style.position = '';
                         this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
                         this._editorWindowStartPositionY = event.y;
-                    }
-                    else {
+                    } else {
                         this.testTarget.parentNode.style.position = 'absolute';
                         this.testTarget.parentNode.style.top = Math.abs(event.y - this._editorWindowStartPositionY) + 'px';
                         this.testTarget.parentNode.style.height = this._styleTargetElementY + (this.startPositionY - event.y) + 'px';
@@ -138,18 +124,15 @@ export default class Editor extends React.Component {
                         this.testTarget.parentNode.style.position = '';
                         this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
                         this._editorWindowStartPositionX = event.x;
-                    }
-                    else {
+                    } else {
                         this.testTarget.parentNode.style.position = 'absolute';
                         this.testTarget.parentNode.style.left = Math.abs(event.x - this._editorWindowStartPositionX) + 'px';
                         this.testTarget.parentNode.style.width = this._styleTargetElementX + (this.startPositionX - event.x) + 'px';
                     }
 
-                }
-                else if (this.moveElement === 'resizeLineRight') {
+                } else if (this.moveElement === 'resizeLineRight') {
                     this.testTarget.parentNode.style.width = event.x + 'px';
-                }
-                else if (this.moveElement === 'resizeLineBottom') {
+                } else if (this.moveElement === 'resizeLineBottom') {
                     this.testTarget.parentNode.style.height = event.y + 'px';
                 }
             }
@@ -311,13 +294,13 @@ export default class Editor extends React.Component {
         const tabSceneObject = {
             componentName: LayoutBrowserTabs,
             id: 1,
-            componentArray: [ToolHierarch, ToolInspector, ToolProject,ToolMapCreator],
+            componentArray: [ToolHierarch, ToolInspector, ToolProject, ToolMapCreator],
             style: {maxHeight: '58vh'}
         };
         const tabInspector = {
             componentName: LayoutBrowserTabs,
             id: 2,
-            componentArray: [ToolInspector, ToolHierarch,ToolMapCreator],
+            componentArray: [ToolInspector, ToolHierarch, ToolMapCreator],
             style: {maxHeight: '58vh'}
         };
         const tabEditorFooter = {
