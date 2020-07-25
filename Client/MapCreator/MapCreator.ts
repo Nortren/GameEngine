@@ -19,120 +19,14 @@ export default class MapCreator {
     /**
      * Создаём игровую локацию
      */
-    // createGameLocation(scene,mapStaticData) {
-    //     this.collisionPoint = [];
-    //     const mapObject = [];
-    //     const planeSize = 100;
-    //
-    //
-    //     const loader = new THREE.TextureLoader();
-    //     const texture = loader.load(mapStaticData.src);
-    //     const mapColor = 0xf3f3f3;
-    //     texture.wrapS = THREE.RepeatWrapping;
-    //     texture.wrapT = THREE.RepeatWrapping;
-    //     texture.magFilter = THREE.NearestFilter;
-    //
-    //     //добавлям свет
-    //     const color = 0xFFFFFF;
-    //     const intensity = 1;
-    //     const colorLight = 0xFFFFFF;
-    //     const intensityLight = 0.4;
-    //     const light = new THREE.PointLight(colorLight, intensityLight);
-    //     if (globalVariables.shadow.materialShadow) {
-    //         light.castShadow = true;
-    //     }
-    //     light.position.set(0, 11, 0);
-    //     scene.add(light, light.target);
-    //
-    //
-    //     const repeats = planeSize / 2;
-    //     texture.repeat.set(repeats, repeats);
-    //
-    //     const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
-    //     const planeMat = new THREE.MeshPhongMaterial({
-    //         color: mapColor,
-    //         side: THREE.DoubleSide,
-    //     });
-    //     const map = new THREE.Mesh(planeGeo, planeMat);
-    //     map.rotation.x = Math.PI * -.5;
-    //     map.position.set(0, 0, 0);
-    //     map.receiveShadow = true;
-    //     mapObject.push(map);
-    //     for (let key in mapStaticData.mapElement) {
-    //         let mapElementObject = mapStaticData.mapElement[key];
-    //
-    //         if (globalVariables.models.sprite) {
-    //             let mapElementObjectIMG = loader.load(mapElementObject.src);
-    //             mapElementObjectIMG.magFilter = THREE.NearestFilter;
-    //             let mapElementObjectTexture = new THREE.SpriteMaterial({
-    //                 map: mapElementObjectIMG,
-    //             });
-    //
-    //             const elementObj = new THREE.Sprite(mapElementObjectTexture);
-    //             elementObj.scale.set(mapElementObject.width, mapElementObject.height, mapElementObject.zIndex);
-    //             elementObj.position.set(mapElementObject.startPositionX, mapElementObject.startPositionY, mapElementObject.startPositionZ);
-    //             elementObj.center.y = 0;
-    //             scene.add(elementObj);
-    //             mapObject.push(elementObj);
-    //         }
-    //
-    //         let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
-    //         const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
-    //         const planeCollaiderMat = new THREE.MeshPhongMaterial({
-    //             map: mapElementObjectCollaider,
-    //             side: THREE.DoubleSide,
-    //         });
-    //         let materials = [
-    //             //делаем каждую сторону своего цвета
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // левая сторона
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // правая сторона
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), //зaдняя сторона
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // лицевая сторона
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}), // верх
-    //             new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-    //         ];
-    //
-    //         if (globalVariables.collider.showCollider) {
-    //             materials = [
-    //                 //делаем каждую сторону своего цвета
-    //                 new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
-    //                 new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
-    //                 new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), //зaдняя сторона
-    //                 new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
-    //                 new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), // верх
-    //                 new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
-    //             ];
-    //         }
-    //
-    //         const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
-    //         elementObjCollaider.position.set(mapElementObject.colliderPositionX, mapElementObject.colliderPositionY, mapElementObject.colliderPositionZ);
-    //         if (globalVariables.shadow.materialShadow) {
-    //             elementObjCollaider.castShadow = true;
-    //         }
-    //         elementObjCollaider.rotation.x = Math.PI * -.5;
-    //         this.createObjectCollision('mapElement' + key,
-    //             mapElementObject.colliderPositionX,
-    //             mapElementObject.colliderPositionY,
-    //             mapElementObject.colliderPositionZ,
-    //             mapElementObject.colliderWidth,
-    //             mapElementObject.colliderLength,
-    //             'mapElement');
-    //         scene.add(elementObjCollaider);
-    //
-    //
-    //     }
-    //
-    //     scene.add(map);
-    // }
-
-
     createGameLocation(scene, mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
-        const planeSize = 1;
+        const planeSize = 100;
 
 
         const loader = new THREE.TextureLoader();
+        console.log(mapStaticData.src);
         const texture = loader.load(mapStaticData.src);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -179,7 +73,7 @@ export default class MapCreator {
             map: textureStep,
         });
 
-
+        scene.add(this.createPointMap(0, 0, planeGeo, planeMat));
         // this.creatingMapGrid(planeSize, mapStaticData, scene, planeGeo, planeMat);
 
 
@@ -187,7 +81,7 @@ export default class MapCreator {
         for (let key in mapStaticData.mapElement) {
             let mapElementObject = mapStaticData.mapElement[key];
 
-            if (globalVariables.models.sprite) {
+            if (globalVariables.models.sprite && mapElementObject.src) {
                 let mapElementObjectIMG = loader.load(mapElementObject.src);
                 mapElementObjectIMG.magFilter = THREE.NearestFilter;
                 let mapElementObjectTexture = new THREE.SpriteMaterial({
@@ -201,7 +95,12 @@ export default class MapCreator {
                 mapObject.push(elementObj);
             }
 
-            let mapElementObjectCollaider = loader.load(mapElementObject.collaid);
+            let mapElementObjectCollaider = mapElementObject.collaidTexture ? {map:loader.load(mapElementObject.collaidTexture)} : {color:0xED7700};
+
+            mapElementObjectCollaider.map.repeat.set(2, 2);
+            mapElementObjectCollaider.map.wrapS = THREE.RepeatWrapping;
+            mapElementObjectCollaider.map.wrapT = THREE.RepeatWrapping;
+
             const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
             const planeCollaiderMat = new THREE.MeshPhongMaterial({
                 map: mapElementObjectCollaider,
@@ -217,17 +116,17 @@ export default class MapCreator {
                 new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
             ];
 
-            if (globalVariables.collider.showCollider) {
+            if (globalVariables.collider.showCollider || mapElementObject.dimensional) {
                 materials = [
                     //делаем каждую сторону своего цвета
-                    new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
-                    new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
-                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), //зaдняя сторона
-                    new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
-                    new THREE.MeshBasicMaterial({map: mapElementObjectCollaider,}), // верх
+                    new THREE.MeshBasicMaterial(mapElementObjectCollaider), // левая сторона
+                    new THREE.MeshBasicMaterial(mapElementObjectCollaider), // правая сторона
+                    new THREE.MeshBasicMaterial(mapElementObjectCollaider), //зaдняя сторона
+                    new THREE.MeshBasicMaterial(mapElementObjectCollaider), // лицевая сторона
+                    new THREE.MeshBasicMaterial(mapElementObjectCollaider), // верх
                     new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
                 ];
-            }
+
 
             const elementObjCollaider = new THREE.Mesh(planeCollaiderGeo, materials);
             elementObjCollaider.position.set(mapElementObject.colliderPositionX,this.calculatingCorrectHeightCollider(mapElementObject.colliderPositionY, mapElementObject.colliderHeight), mapElementObject.colliderPositionZ);
@@ -243,7 +142,7 @@ export default class MapCreator {
                 mapElementObject.colliderLength,
                 'mapElement');
             scene.add(elementObjCollaider);
-
+            }
 
         }
 
