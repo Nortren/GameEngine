@@ -191,10 +191,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 this.blData.getTestDataServerConnect((data) => {
 
                     //TODO Временная функция проверки здоровья и удаления из масива если оно 0(надо сделать проверку id ботов)
-                    this._enemyArray.forEach((itemEnemy, index)=>{
+                    this._enemyArray.forEach((itemEnemy, index) => {
 
-                        if(itemEnemy.health <= 0){
-                            this._enemyArray.splice(index,1);
+                        if (itemEnemy.health <= 0) {
+                            this._enemyArray.splice(index, 1);
                         }
 
                     });
@@ -210,12 +210,12 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                         })[0];
 
                         //TODO Если бота нет на клиенте то пересоздаём его
-                        if(!this._enemyArray.length){
+                        if (!this._enemyArray.length) {
                             this._enemyArray = [];
-                            this._enemyArray =this.createEnemyArray(data.room.enemy, scene);
+                            this._enemyArray = this.createEnemyArray(data.room.enemy, scene);
                         }
 
-                        if(thisEnemy) {
+                        if (thisEnemy) {
                             thisEnemy.colliderPositionX = enemy.colliderPositionX;
                             thisEnemy.colliderPositionY = enemy.colliderPositionY;
                             thisEnemy.colliderPositionZ = enemy.colliderPositionZ;
@@ -229,7 +229,6 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 });
 
 
-
                 let userProps = {};
                 let cameraProps = {};
                 if (!this.init) {
@@ -237,10 +236,11 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     this.init = true;
                     this.props.gameWorldState(scene);
 
-                    //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
-                    const gridHelper = new THREE.GridHelper(100, 100);
-                    scene.add(gridHelper);
-
+                    if (globalVariables.showMapGrid) {
+                        //Сетка сцены TODO перенести в отдельный метод для последующей манипуляции
+                        const gridHelper = new THREE.GridHelper(100, 100);
+                        scene.add(gridHelper);
+                    }
                     const raycaster = new THREE.Raycaster();
 
 
@@ -585,7 +585,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         if (this.props.editorData && this.props.editorData.name) {
 
             if (this.props.editorData.name === "movingObject") {
-              this.movingObject = this.props.editorData.data.movingObjectStatus;
+                this.movingObject = this.props.editorData.data.movingObjectStatus;
             }
             if (this.props.editorData.name === "CameraControl") {
                 let orbitControlObject = document.getElementById('scene');
