@@ -2,12 +2,34 @@ import * as React from 'react';
 import DropDownButton from "../DropDownButton/DropDownButton";
 import Button from "../Button/Button";
 
+interface ILayoutBrowserTabsOptions {
+    id: string | number;
+    style: object;
+    componentArray: object[];
+}
+
+interface IProps {
+    id: string | number;
+    options: ILayoutBrowserTabsOptions;
+}
+
+interface IState {
+    style: object;
+    button: object[];
+}
 
 export default class LayoutBrowserTabs extends React.Component {
     private _tab: NodeListOf<Element>;
-    private _tabArea: [];
+    private _tabArea: NodeListOf<Element>;
+    props: IProps;
+    state: IState;
+    id: string | number;
+    specialIdentificationClass: string;
+    specialIdentificationClassArea: string;
+    tabClassName: string;
+    tabAreaClassName: string;
 
-    constructor(props: object) {
+    constructor(props: IProps) {
         super(props);
         this.id = props.id;
         this.state = {
@@ -28,13 +50,12 @@ export default class LayoutBrowserTabs extends React.Component {
             el.addEventListener("click", this.openTabs);
         });
 
-
-        document.addEventListener("Add Tab", (event) => {
+        document.addEventListener("Add Tab", (event: CustomEvent) => {
             if (event.detail.parentID === this.props.options.id) {
                 this.createNewTab(event);
             }
         });
-        this.openTabs();
+        this.openTabs(null);
     };
 
 
@@ -58,11 +79,8 @@ export default class LayoutBrowserTabs extends React.Component {
      * @returns {any}
      */
     addTab() {
-
         return (
             this.state.button.map(element => (
-
-
                 <button key={'button_' + element.id}
                         onClick={this.openTabs}
                         className={this.tabClassName}
@@ -72,8 +90,6 @@ export default class LayoutBrowserTabs extends React.Component {
 
                     {element.name ? element.name : element.id}
                 </button>
-
-
             ))
         );
     }
@@ -86,9 +102,6 @@ export default class LayoutBrowserTabs extends React.Component {
         let res = null;
         return (
             this.state.button.map(element => (
-
-
-
                 <div key={this.props.options.id} className={this.tabAreaClassName} id={this.props.options.id}
                      data-idtab={this.specialIdentificationClass + '_' + element.id}
                      data-idcontainerarea={this.specialIdentificationClassArea}>
@@ -102,7 +115,11 @@ export default class LayoutBrowserTabs extends React.Component {
         );
     }
 
-    selectComponent(nameComponent) {
+    /**
+     * Метод выбора таба
+     * @param nameComponent
+     */
+    selectComponent(nameComponent: string) {
         return this.props.options.componentArray.filter((component) => {
             return component.componentName.name === nameComponent
         })
@@ -112,7 +129,7 @@ export default class LayoutBrowserTabs extends React.Component {
      * Метод созданиянового таба
      * @param event
      */
-    createNewTab(event) {
+    createNewTab(event: CustomEvent) {
         this.state.button.push({id: this.state.button.length + 1, name: event.detail.buttonName});
         this.setState({button: this.state.button});
     }
@@ -156,8 +173,6 @@ export default class LayoutBrowserTabs extends React.Component {
 
 
     render() {
-
-
         return (
             <div className="tab_container" style={this.state.style}>
                 <div className="tab_container_header">
@@ -165,7 +180,7 @@ export default class LayoutBrowserTabs extends React.Component {
                         {this.addTab()}
                     </div>
                     <div className="tab_container_header-setting">
-                        <Button options={ {
+                        <Button options={{
                             name: 'dropper',
                             iconType: 'Paperclip',
                             iconSize: '1x',
@@ -181,14 +196,12 @@ export default class LayoutBrowserTabs extends React.Component {
                             componentArray: [],
                             linkList: ['Collapse All', 'Lock', 'Maximize', 'Close Tab', {
                                 name: 'Add Tab',
-                                arrayList: ['Hierarchy', 'Inspector', 'Project','MapCreator']
+                                arrayList: ['Hierarchy', 'Inspector', 'Project', 'MapCreator']
                             }, 'UI element Debugger']
                         }}/>
                     </div>
                 </div>
                 {this.addTabArea()}
-
-
             </div>
         );
     }

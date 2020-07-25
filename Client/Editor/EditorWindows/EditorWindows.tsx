@@ -49,17 +49,11 @@ export default class EditorWindows extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-
-    }
-
     resize = event => {
         //Получаем главную сетку которую будем двигать
         if (event) {
             let mainGrid = event.target.parentNode.parentNode;
         }
-
 
     };
 

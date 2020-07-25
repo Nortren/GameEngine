@@ -22,14 +22,6 @@ export default class DropDownButton extends React.Component {
         this.clicklLink = this.clicklLink.bind(this);
     }
 
-    componentDidMount() {
-
-    };
-
-    componentDidUpdate() {
-
-    }
-
     /**
      * Метод который рендерит переданные в наш компонент сторонние компоненты
      * @returns {any}
@@ -130,7 +122,6 @@ export default class DropDownButton extends React.Component {
 
                     </div>
                 </button>
-
             </div>
         );
     }
