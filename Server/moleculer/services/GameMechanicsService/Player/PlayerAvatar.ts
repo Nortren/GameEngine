@@ -53,7 +53,7 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
     /**
-     * Методж присвоения и изменения Socket ID игрока (нужнен нам для доп проверки пользователя например управление)
+     * Метод присвоения и изменения Socket ID игрока (нужнен нам для доп проверки пользователя например управление)
      * @param IOID
      */
     changeSocketIOID(IOID) {

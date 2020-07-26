@@ -689,7 +689,22 @@ export const MapJSON = {
                 colliderLength: 2,
                 zIndex: 1,
             },
-
+            home_1: {
+                src: "./Client/image/home.png",
+                startPositionX: 0,
+                startPositionY: 1.5,
+                startPositionZ: -23,
+                width: 15,
+                height: 15,
+                collaidTexture: "./Client/image/collaid.png",
+                colliderPositionX: -2,
+                colliderPositionY: 0,
+                colliderPositionZ: -23,
+                colliderWidth: 12,
+                colliderHeight: 1,
+                colliderLength: 10,
+                zIndex: 1,
+            },
         },
         enemyOnMap: [
             {

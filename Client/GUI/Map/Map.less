@@ -1,31 +1,34 @@
-.map-container {
+@import "../../../Client/variables";
+
+.mapParams(){
    display: flex;
    width: 100%;
    height: 100%;
    justify-content: flex-end;
    align-items: flex-start;
+}
+.mapFigure(){
+   border-radius: 50%;
+   .transparent-background(0.51);
+   margin: 1em 1em 0 0;
+}
+
+.map-container {
+   .mapParams();
 
    &__map {
       width: 10em;
       height: 10em;
-      border-radius: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
-      margin: 1em 1em 0 0;
+      .mapFigure();
    }
 }
 
 .map-containerMobile {
-   display: flex;
-   width: 100%;
-   height: 100%;
-   justify-content: flex-end;
-   align-items: flex-start;
+   .mapParams();
 
    &__map {
       width: 7em;
       height: 7em;
-      border-radius: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
-      margin: 1em 1em 0 0;
+      .mapFigure();
    }
 }

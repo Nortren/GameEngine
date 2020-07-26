@@ -1,80 +1,67 @@
-.avatarInfo-container {
+@import "../../../Client/variables";
+
+.avatarInfo {
+   display: flex;
+   flex-direction: column;
+   width: 50%;
+   height: 50%;
+   .transparent-background(0.51);
+}
+
+.infoContainer_status(@color) {
+   background-color: @color;
+   width: 90%;
+   height: 0.8em;
+   margin: 5px;
+   .border(3px);
+}
+
+.container {
    display: flex;
    width: 100%;
    height: 100%;
+}
 
-   &__avatarInfo {
+.infoContainer {
+   &-infoContainer {
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      width: 50%;
-      height: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
+      justify-content: center;
+      align-items: center;
+   }
+   &-infoContainer_health {
+      .infoContainer_status(#840000);
+   }
+   &-infoContainer_energy {
+      .infoContainer_status(#002aa6);
+   }
+}
+
+.avatarInfo-container {
+   .container;
+   &__avatarInfo {
+      .avatarInfo;
       &-name {
          margin: 5px;
          color: #cb6c2f;
       }
-      &-infoContainer {
-         width: 100%;
-         height: 100%;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-      }
-      &-infoContainer_health {
-         background-color: #840000;
-         width: 90%;
-         height: 20%;
-         margin: 5px;
-         border: 3px solid #595959;
-      }
-      &-infoContainer_energy {
-         background-color: #002aa6;
-         width: 90%;
-         height: 20%;
-         margin: 5px;
-         border: 3px solid #595959;
-      }
+      .infoContainer;
+
    }
 }
 
 .avatarInfo-containerMobile {
-   display: flex;
-   width: 100%;
-   height: 100%;
+   .container;
 
    &__avatarInfo {
-      display: flex;
-      flex-direction: column;
-      width: 50%;
-      height: 50%;
-      background-color: rgba(42, 42, 42, 0.71);
+      .avatarInfo;
       &-name {
          margin: 5px;
          color: #cb6c2f;
          font-size: 50%;
       }
-      &-infoContainer {
-         width: 100%;
-         height: 100%;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-      }
-      &-infoContainer_health {
-         background-color: #840000;
-         width: 90%;
-         height: 0.7em;
-         margin: 5px;
-         border: 3px solid #595959;
-      }
-      &-infoContainer_energy {
-         background-color: #002aa6;
-         width: 90%;
-         height: 0.7em;
-         margin: 5px;
-         border: 3px solid #595959;
-      }
+      .infoContainer;
    }
 }
