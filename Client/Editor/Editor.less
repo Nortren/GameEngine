@@ -1,3 +1,4 @@
+@import "../variables";
 .editor {
   &_visibleButton {
     display: flex;
@@ -7,9 +8,9 @@
     height: auto;
     z-index: 3;
     &-button {
-      border: 1px solid rgba(89, 89, 89, 0.98);
-      background-color: #2A2A2A;
-      color: #d2d5db;
+      .border(1px);
+      background-color: @backgroundColorTheme;
+      color: @textColorTheme;
       opacity: 0;
       transition: all 3s;
       font-size: 0.7em;
@@ -41,7 +42,6 @@
       outline: none;
     }
     #sceneObject {
-      //transition: all 1s;
       grid-area: sceneObject;
     }
     #editorFooter {
@@ -55,9 +55,7 @@
 
     }
     &-sceneObject {
-      //gap:200px;
-      //transition: absolute 1s
-      //width: 50% !important;
+
     }
     &-inspector {
 

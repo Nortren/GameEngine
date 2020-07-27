@@ -1,89 +1,71 @@
+@import "../../../variables";
+
+.buttonStatus {
+  &:hover {
+    background: #595959;
+  }
+
+  &:focus {
+    outline: none;
+    background: #202020;
+  }
+
+  &[disavled] {
+    color: #d2d5db;
+    background: #6c7589;
+    cursor: not-allowed;
+  }
+}
+
 .button {
   font-family: FontAwesome;
+
   &_container {
     &-button {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      border: 1px solid #595959;
+      .border(1px);
       border-radius: 1px;
-      color: #8a8a8a;
+      color: @textColorTheme;
       font-size: 0.7em;
-      background: #2A2A2A;
-      &:hover {
-        background: #595959;
-      }
-      &:focus {
-        outline: none;
-        background: #202020;
-      }
-      &[disavled]{
-        color: #d2d5db;
-        background: #6c7589;
-        cursor: not-allowed;
-      }
-    }    &-button:before {
-      width: 30px;height: 30px;
+      background: @backgroundColorTheme;
+      .buttonStatus;
+    }
+
+    &-button:before {
+      width: 30px;
+      height: 30px;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      border: 1px solid #595959;
+      .border(1px);
       border-radius: 1px;
-      color: #8a8a8a;
+      color: @textColorTheme;
       font-size: 0.7em;
-      background: #2A2A2A;
-      &:hover {
-        background: #595959;
-      }
-      &:focus {
-        outline: none;
-        background: #202020;
-      }
-      &[disavled]{
-        color: #d2d5db;
-        background: #6c7589;
-        cursor: not-allowed;
-      }
+      background: @backgroundColorTheme;
+      .buttonStatus;
     }
   }
 }
+
 .editorButton {
   &_container {
     &-button {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      border: 1px solid #595959;
+      .border(1px);
       border-radius: 1px;
-      color: #8a8a8a;
+      color: @textColorTheme;
       font-size: 0.7em;
-      background: #2A2A2A;
+      background: @backgroundColorTheme;
       width: 3em;
       height: 3em;
       display: flex;
       justify-content: center;
       align-items: center;
-      &:hover {
-        background: #595959;
-      }
-      &:focus {
-        outline: none;
-        background: #202020;
-      }
-      &[disavled]{
-        color: #d2d5db;
-        background: #6c7589;
-        cursor: not-allowed;
-      }
+      .buttonStatus;
     }
   }
 }

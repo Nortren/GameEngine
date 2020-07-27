@@ -1,16 +1,14 @@
+@import "../../../variables";
 .buttonVisible() {
    margin: 5px;
    -webkit-appearance: none;
    -moz-appearance: none;
    appearance: none;
-   -webkit-appearance: none;
-   -moz-appearance: none;
-   appearance: none;
    border: 0;
    border-radius: 1px;
-   color: #8a8a8a;
+   color: @textColorTheme;
    font-size: 0.7em;
-   background: #2A2A2A;
+   background: @backgroundColorTheme;
    &:hover {
 
    }
@@ -37,7 +35,7 @@
       display: inline-block;
       width: 16px;
       height: 16px;
-      background-color: #595959;
+      background-color: #464646;
       margin: 0 10px 0 10px;
    }
 
@@ -49,7 +47,7 @@
       content: "\2713";
       text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
       font-size: 15px;
-      color: #f3f3f3;
+      color:@textColorTheme;
       text-align: center;
       line-height: 15px;
    }
@@ -58,9 +56,6 @@
 .inputArea(@width) {
    input {
       margin: 0 3px 0 3px;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
@@ -124,7 +119,7 @@
 .containerSceneObject {
    display: flex;
    flex-direction: column;
-   border: 1px solid #595959;
+   .border(1px);
 
    &_checkbox {
       &__container {
@@ -195,7 +190,7 @@
 
             }
             &-body {
-               border: 1px solid #595959;
+               .border(1px);
                width: 70%;
                height: 20px;
                margin: 0 3px 0 3px;
@@ -220,12 +215,12 @@
             margin: 5px;
             &_img {
                width: 30px;
-               border: 1px solid #595959;
+               .border(1px);
             }
             &_color {
                width: 30px;
                height: 30px;
-               border: 1px solid #595959;
+               .border(1px);
             }
             &__light {
                width: 100%;
@@ -236,7 +231,7 @@
 
             }
             &-body {
-               border: 1px solid #595959;
+               .border(1px);
                width: 70%;
                height: 20px;
                margin: 0 3px 0 3px;
