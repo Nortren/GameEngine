@@ -1,3 +1,8 @@
+@import "../../../variables";
+
+@buttonBackground:#202020;
+@cornerBackground:#999;
+
 .scroll {
   &_container {
     height: 100%;
@@ -16,23 +21,23 @@
   height: 3px;
 }
 ::-webkit-scrollbar-button {
-  background-color: #595959;
+  background-color: @buttonBackground;
   border: 1px solid #202020;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-track {
-  background-color: #999;
+  background-color: @cornerBackground;
 }
 ::-webkit-scrollbar-track-piece {
-  background-color: #595959;
+  background-color: @buttonBackground;
 }
 ::-webkit-scrollbar-thumb {
 
-  background-color: #2A2A2A;
+  background-color: @backgroundColorTheme;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-corner {
-  background-color: #999;
+  background-color: @cornerBackground;
 }
 ::-webkit-resizer {
   background-color: #666;
