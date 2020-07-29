@@ -1,80 +1,76 @@
+@import "../../../variables";
+
 .dropDownButton {
-  &_container {
+   &_container {
 
-    &-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      border: 1px solid #595959;
-      border-radius: 1px;
-      color: #8a8a8a;
-      font-size: 0.7em;
-      background: #2A2A2A;
-      width: 100%;
-      &:hover {
+      &-button {
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         .border(1px);
+         border-radius: 1px;
+         color: @textColorTheme;
+         font-size: 0.7em;
+         background: @backgroundColorTheme;
+         width: 100%;
+         &:hover {
 
-        background: #595959;
-      }
-      &:focus {
-        outline: none;
-        background: #202020;
-      }
-      &:focus .dropDown_contentContainer {
-        display: flex;
-      }
-      &[disavled] {
-        color: #d2d5db;
-        background: #6c7589;
-        cursor: not-allowed;
-      }
+            background: @backgroundHoverColorTheme;
+         }
+         &:focus {
+            outline: none;
+            background: @backgroundFocusColorTheme;
+         }
+         &:focus .dropDown_contentContainer {
+            display: flex;
+         }
+         &[disavled] {
+            color: @disavledColor;
+            background: @disavledBackgroundColor;
+            cursor: not-allowed;
+         }
 
-    }
-  }
+      }
+   }
 }
 
 .dropDown_contentContainer {
-  display: none;
-  position: absolute;
-  background-color: #2A2A2A;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  flex-direction: column;
-  justify-content: flex-start;
-  max-height: 300px;
-  overflow: auto;
-  &-content {
-    color: #8a8a8a;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: flex;
-  }
-  &-content {
-    &:hover {
-      background: #595959;
-    }
-    &:hover .dropDown_arrayListContainer{
-    display: flex;
-    }
-    &:active {
-      outline: none;
-      background: #202020;
-    }
-  }
+   .dropDownButtonContainer(1);
+   max-height: 300px;
+   overflow: auto;
+   &-content {
+      color: @textColorTheme;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: flex;
+   }
+   &-content {
+      &:hover {
+         background: @backgroundHoverColorTheme;
+      }
+      &:hover .dropDown_arrayListContainer {
+         display: flex;
+      }
+      &:active {
+         outline: none;
+         background: @backgroundFocusColorTheme;
+      }
+   }
 }
-.dropDown_arrayListContainer{
-  display: none;
-  position: fixed;
-  background-color: #2A2A2A;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 5;
-  flex-direction: column;
-  justify-content: flex-start;
-  &:focus{
-    display: flex;
-  }
+
+.dropDown_arrayListContainer {
+   .dropDownButtonContainer(5);
+   &:focus {
+      display: flex;
+   }
+}
+
+.dropDownButtonContainer(@z-index) {
+   display: none;
+   position: fixed;
+   background-color: @backgroundColorTheme;
+   min-width: 160px;
+   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+   flex-direction: column;
+   justify-content: flex-start;
+   z-index: @z-index;
 }
