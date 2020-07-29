@@ -62,7 +62,7 @@ export default class ClientAuthorization extends React.Component {
     }
 
     render() {
-        const textMessage = 'Пожалуйста включите полноэкранный режим для комфортной игры';
+        const textMessage = 'Пожалуйста включите полноэкранный режим и переверните экран в горизонтальное положение для комфортной игры';
         return (
             <div className="Authorization_page">
                 <DialogPopup textMessage={textMessage} mobile={this.thisMobileDevice} />
