@@ -16,7 +16,7 @@
    .border(3px);
 }
 
-.infoContainer{
+.infoContainer {
    width: 100%;
    height: 100%;
    display: flex;
@@ -24,10 +24,12 @@
    justify-content: center;
    align-items: center;
 }
-.name{
+
+.name {
    margin: 5px;
    color: @specialTextColor;
 }
+
 .avatarInfo-container {
    display: flex;
    width: 100%;
@@ -35,16 +37,19 @@
 
    &__avatarInfo {
       .avatarInfo;
+
       &-name {
          .name;
       }
+
       &-infoContainer {
          .infoContainer;
       }
+
       &-infoContainer_health {
          .infoContainer_status(#840000);
-
       }
+
       &-infoContainer_energy {
          .infoContainer_status(#002aa6);
       }
@@ -58,17 +63,21 @@
 
    &__avatarInfo {
       .avatarInfo;
+
       &-name {
          .name;
+
          font-size: 50%;
       }
+
       &-infoContainer {
          .infoContainer;
       }
+
       &-infoContainer_health {
          .infoContainer_status(#840000);
-
       }
+
       &-infoContainer_energy {
          .infoContainer_status(#002aa6);
       }

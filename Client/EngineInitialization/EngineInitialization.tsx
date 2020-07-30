@@ -518,8 +518,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
             this.selectedObjectArray.forEach((id) => {
                 const data = this.scene.getObjectById(id);
-                //Проверка на то что двигаем не helper сетки сегментов
-                if (sceneData.object.type !== 'LineSegments' && data.position) {
+                //Проверка на то что двигаем не helper сетки сегментов и не основной терэйн карты
+                if (sceneData.object.name !== 'mapTerrain' && sceneData.object.type !== 'LineSegments' && data.position) {
 
                     if (!this.selectedChangeObject) {
                         this.getInfo(data, event, loaderEvent);
@@ -540,8 +540,8 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         if (!this.objectIsSelected) {
             intersects.forEach((sceneData) => {
-                //Проверка на то что двигаем не helper сетки сегментов
-                if (sceneData.object.type !== 'LineSegments') {
+                //Проверка на то что двигаем не helper сетки сегментов и не основной терэйн карты
+                if (sceneData.object.name !== 'mapTerrain' && sceneData.object.type !== 'LineSegments') {
                     this.selectedObjectArray.push(sceneData.object.id);
                 }
             });

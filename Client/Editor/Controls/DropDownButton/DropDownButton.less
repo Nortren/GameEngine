@@ -1,55 +1,22 @@
 @import "../../../variables";
 
-.dropDownButton {
-   &_container {
-
-      &-button {
-         -webkit-appearance: none;
-         -moz-appearance: none;
-         .border(1px);
-         border-radius: 1px;
-         color: @textColorTheme;
-         font-size: 0.7em;
-         background: @backgroundColorTheme;
-         width: 100%;
-         &:hover {
-
-            background: @backgroundHoverColorTheme;
-         }
-         &:focus {
-            outline: none;
-            background: @backgroundFocusColorTheme;
-         }
-         &:focus .dropDown_contentContainer {
-            display: flex;
-         }
-         &[disavled] {
-            color: @disavledColor;
-            background: @disavledBackgroundColor;
-            cursor: not-allowed;
-         }
-
-      }
-   }
-}
-
 .dropDown_contentContainer {
    .dropDownButtonContainer(1);
+
    max-height: 300px;
    overflow: auto;
+
    &-content {
       color: @textColorTheme;
       padding: 12px 16px;
       text-decoration: none;
       display: flex;
-   }
-   &-content {
+
       &:hover {
          background: @backgroundHoverColorTheme;
-      }
-      &:hover .dropDown_arrayListContainer {
          display: flex;
       }
+
       &:active {
          outline: none;
          background: @backgroundFocusColorTheme;
@@ -57,8 +24,44 @@
    }
 }
 
+.dropDownButton {
+   &_container {
+      &-button {
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         .border(1px);
+
+         border-radius: 1px;
+         color: @textColorTheme;
+         font-size: 0.7em;
+         background: @backgroundColorTheme;
+         width: 100%;
+      }
+
+      &-button:hover {
+         background: @backgroundHoverColorTheme;
+      }
+
+      &-button:focus {
+         outline: none;
+         background: @backgroundFocusColorTheme;
+      }
+
+      &-button:focus .dropDown_contentContainer {
+         display: flex;
+      }
+
+      &-button[disavled] {
+         color: @disavledColor;
+         background: @disavledBackgroundColor;
+         cursor: not-allowed;
+      }
+   }
+}
+
 .dropDown_arrayListContainer {
    .dropDownButtonContainer(5);
+
    &:focus {
       display: flex;
    }

@@ -1,5 +1,6 @@
 @import "../../../variables";
-.buttonVisible() {
+
+.buttonVisible {
    margin: 5px;
    -webkit-appearance: none;
    -moz-appearance: none;
@@ -9,12 +10,11 @@
    color: @textColorTheme;
    font-size: 0.7em;
    background: @backgroundColorTheme;
-   &:hover {
 
-   }
    &:focus {
       outline: none;
    }
+
    &[disavled] {
       color: #d2d5db;
       cursor: not-allowed;
@@ -25,7 +25,7 @@
    label {
       cursor: pointer;
       font-size: 13px;
-      margin: 0 10px 0 10px;
+      margin: 0 10px;
       display: flex;
       align-items: center;
    }
@@ -36,7 +36,7 @@
       width: 16px;
       height: 16px;
       background-color: #464646;
-      margin: 0 10px 0 10px;
+      margin: 0 10px;
    }
 
    input[type=checkbox] {
@@ -47,7 +47,7 @@
       content: "\2713";
       text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
       font-size: 15px;
-      color:@textColorTheme;
+      color: @textColorTheme;
       text-align: center;
       line-height: 15px;
    }
@@ -55,22 +55,25 @@
 
 .inputArea(@width) {
    input {
-      margin: 0 3px 0 3px;
+      margin: 0 3px;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
       border: 1px solid #595959;
       color: #8a8a8a;
       font-size: 1em;
-      background-color: #2A2A2A;
+      background-color: #2a2a2a;
       max-height: 20px;
       width: @width;
+
       &:hover {
 
       }
+
       &:focus {
          outline: none;
       }
+
       &[disavled] {
          color: #d2d5db;
          cursor: not-allowed;
@@ -82,36 +85,39 @@
    &_container {
       width: inherit;
       height: 100%;
-      &__file {
-         &-data{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 5px;
-         }
-         &-container {
-            height: 100%;
-            &_header {
-               height: 5%;
-               display: flex;
-               justify-content: space-between;
-            }
-            &_body {
-               height: 95%;
-               word-break: break-word;
-               overflow: auto;
-            }
-         }
+
+      &__file-container {
+         height: 100%;
       }
+
+      &__file-container_header {
+         height: 5%;
+         display: flex;
+         justify-content: space-between;
+      }
+
+      &__file-container_body {
+         height: 95%;
+         word-break: break-word;
+         overflow: auto;
+      }
+
+      &__file-data {
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         margin: 5px;
+      }
+
       &-buttonAddContainer {
          display: flex;
          justify-content: center;
          width: inherit;
          height: 10%;
-         &_button {
-            .buttonVisible();
+      }
 
-         }
+      &-buttonAddContainer_button {
+         .buttonVisible;
       }
    }
 }
@@ -132,14 +138,16 @@
    }
 
    &-buttonHide {
-      .buttonVisible()
+      .buttonVisible;
    }
 
    &-header {
       display: flex;
    }
+
    &-body {
       min-height: 30px;
+
       &-hide {
          display: none;
       }
@@ -150,17 +158,19 @@
          display: flex;
          flex-direction: row;
          justify-content: space-between;
+      }
 
-         &-name {
-            width: 20%;
-         }
-         &-arrayValue {
-            .inputArea(30%);
-            width: 80%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: baseline;
-         }
+      &_item-name {
+         width: 20%;
+      }
+
+      &_item-arrayValue {
+         .inputArea(30%);
+
+         width: 80%;
+         display: flex;
+         justify-content: flex-end;
+         align-items: baseline;
       }
    }
 
@@ -177,101 +187,100 @@
          justify-content: space-between;
          align-items: center;
          .inputCheckbox();
-         &-intensity {
-            .lightContainer();
-            &_name {
-
-            }
-         }
-         &-type {
-            width: 100%;
-            .lightContainer();
-            &_name {
-
-            }
-            &-body {
-               .border(1px);
-               width: 70%;
-               height: 20px;
-               margin: 0 3px 0 3px;
-            }
-         }
       }
 
+      &__container-type {
+         width: 100%;
+         .lightContainer();
+      }
+
+      &__container-type-body {
+         .border(1px);
+
+         width: 70%;
+         height: 20px;
+         margin: 0 3px;
+      }
+
+      &__container-intensity {
+         .lightContainer();
+      }
    }
+
    &_mesh {
       &__container {
          display: flex;
          justify-content: space-between;
          align-items: center;
-
-         &-intensity {
-            .lightContainer();
-            &_name {
-
-            }
-         }
-         &-type {
-            margin: 5px;
-            &_img {
-               width: 30px;
-               .border(1px);
-            }
-            &_color {
-               width: 30px;
-               height: 30px;
-               .border(1px);
-            }
-            &__light {
-               width: 100%;
-               .lightContainer();
-            }
-            .lightContainer();
-            &_name {
-
-            }
-            &-body {
-               .border(1px);
-               width: 70%;
-               height: 20px;
-               margin: 0 3px 0 3px;
-            }
-         }
       }
 
+      &__container-type {
+         margin: 5px;
+         .lightContainer();
+      }
+
+      &__container-type-body {
+         .border(1px);
+
+         width: 70%;
+         height: 20px;
+         margin: 0 3px;
+      }
+
+      &__container-type__light {
+         width: 100%;
+         .lightContainer();
+      }
+
+      &__container-type_color {
+         width: 30px;
+         height: 30px;
+         .border(1px);
+      }
+
+      &__container-type_img {
+         width: 30px;
+         .border(1px);
+      }
+
+      &__container-intensity {
+         .lightContainer();
+      }
    }
 }
 
 .fileReader_container {
    @marginContainer: 10px;
+
    padding: @marginContainer;
    display: flex;
    width: calc(~'100% - @{marginContainer}');
    flex-direction: column;
    align-items: center;
+
    &-header {
       display: flex;
       width: inherit;
       justify-content: flex-end;
    }
+
    &-image {
       width: inherit;
    }
-   &-test{
-      color:#8a8a8a;
+
+   &-test {
+      color: #8a8a8a;
    }
+
    &-data {
       display: flex;
       width: 100%;
       justify-content: space-between;
       margin: 5px 0;
       .inputArea(60%);
-      &_name {
-       padding-right: 10px;
-      }
-      &_body {
 
+      &_name {
+         padding-right: 10px;
       }
    }
-
 }

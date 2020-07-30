@@ -1,26 +1,30 @@
 @import "../../../variables";
 
-.container(@width){
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: @width;
+.container(@width) {
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   width: @width;
 }
 
 .controlPanel {
-  &_container {
-    background-color: @backgroundColorTheme;
-   .border(1px);
-    display: flex;
-    justify-content: space-between;
-    &-left {
-      width: 20%;
-    }
-    &-center {
-      .container(60%);
-    }
-    &-right {
-      .container(20%);
-    }
-  }
+   &_container {
+      background-color: @backgroundColorTheme;
+      .border(1px);
+
+      display: flex;
+      justify-content: space-between;
+
+      &-left {
+         width: 20%;
+      }
+
+      &-center {
+         .container(60%);
+      }
+
+      &-right {
+         .container(20%);
+      }
+   }
 }

@@ -431,6 +431,7 @@ export default class MapCreator {
         map.rotation.x = Math.PI * -.5;
         map.position.set(x, 0, z);
         map.receiveShadow = true;
+        map.name = 'mapTerrain';
         return map;
     }
 
