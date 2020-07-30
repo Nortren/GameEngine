@@ -1,72 +1,71 @@
 @import "../../../variables";
 
 .hierarchy {
-  &_container {
-    overflow: auto;
-    width: inherit;
-    display: flex;
-    flex-direction: column;
-    padding-left: 0;
-
-    &-progressBarStatus {
-      display: none;
-    }
-
-    &_containerItem {
-      list-style-type: none;
+   &_container {
+      overflow: auto;
+      width: inherit;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      padding-left: 0;
 
-      &-list {
-        display: flex;
-        flex-direction: column;
-        padding-left: 1em;
-
+      &-progressBarStatus {
+         display: none;
       }
 
-      &_view {
-        margin-top: 5px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        img {
-          margin: 0 5px 0 0;
-          width: 20px;
-          height: 20px;
-        }
-
-        &-selected {
-          background-color: #202020;
-        }
+      &_containerItem {
+         list-style-type: none;
+         display: flex;
+         flex-direction: row;
       }
 
-      &-nodeButton {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        border: 0;
-        color: @textColorTheme;
-        font-size: 0.7em;
-        background: @backgroundColorTheme;
-
-        &:focus {
-          outline: none;
-        }
-
-        &-selected {
-          background-color: #202020;
-        }
+      &_containerItem-list {
+         display: flex;
+         flex-direction: column;
+         padding-left: 1em;
       }
 
-      &_array {
-        display: none;
+      &_containerItem_view {
+         margin-top: 5px;
+         display: flex;
+         align-items: center;
+         cursor: pointer;
 
-        &-visible {
-          display: flex;
-          flex-direction: column;
-        }
+         img {
+            margin: 0 5px 0 0;
+            width: 20px;
+            height: 20px;
+         }
       }
-    }
-  }
+
+      &_containerItem_view &-selected {
+         background-color: #202020;
+      }
+
+      &_containerItem-nodeButton {
+         -webkit-appearance: none;
+         -moz-appearance: none;
+         appearance: none;
+         border: 0;
+         color: @textColorTheme;
+         font-size: 0.7em;
+         background: @backgroundColorTheme;
+      }
+
+      &_containerItem-nodeButton:focus {
+         outline: none;
+      }
+
+      &_containerItem-nodeButton-selected {
+         background-color: #202020;
+      }
+
+      &_containerItem_array {
+         display: none;
+      }
+
+      &_containerItem_array-visible {
+         display: flex;
+         flex-direction: column;
+      }
+   }
 }
