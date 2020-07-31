@@ -155,7 +155,8 @@ export default class PlayerAvatar extends PlayerMainClass {
             this.colliderPositionZ = this.colliderPositionZ + 0.1;
             reverseDirectionMove = -0.1;
         }
-        //Закоментированный блок отвечал за разворот персоонажа отталкиваясь от позиции мышки на экране (пока решили убрать и оставить четкое направление движения)
+        //TODO Закоментированный блок отвечал за разворот персоонажа отталкиваясь от позиции мышки на экране (пока решили убрать и оставить четкое направление движения)
+
         /*		if (keyPress !== 'KeyA' && keyPress !== 'KeyD') {
          if (this.mouseDirection === 'UP_LEFT') {
          this.colliderPositionX = this.colliderPositionX - reverseDirectionMove;

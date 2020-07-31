@@ -69,7 +69,9 @@ export default class Player implements BasicProperty {
     moveDirection: string;
     moveContinue: boolean;
     attackStatus: boolean;
-
+    playerAvatarSprite: object;
+    healthLine: object;
+    collaider: object;
     constructor(id: number, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
@@ -324,7 +326,7 @@ export default class Player implements BasicProperty {
 
         //рисуем героя по центру картинки
         this.playerAvatarSprite.position.x = playerServerData.colliderPositionX;
-        //TODO Для спрайта scaleY размер увеличениякартинки для правельного отображения он должен считаться так сделать по нормальному отдельный метод
+        //TODO Для спрайта scaleY размер увеличениякартинки для правильного отображения он должен считаться так сделать по нормальному отдельный метод
         this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ+this.scaleY/2;
 
         this.healthLine.position.x = this.playerAvatarSprite.position.x;
