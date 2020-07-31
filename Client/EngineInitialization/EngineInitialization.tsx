@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
+
 interface primaryEngineInitializationData {
     userID: string;
     blData: BL;
@@ -35,7 +36,20 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     private _mapCreator: MapCreator = new MapCreator();
     private _cameraControls: CameraControl = new CameraControl();
     private _enemyArray: Array<object>;
-
+    public scene: THREE.Scene;
+    public blData: BL;
+    public mouse: THREE.Vector2;
+    public direction: THREE.Vector3;
+    public far: THREE.Vector3;
+    public cameraControlStatus: boolean;
+    public selectedChangeObject: boolean;
+    public statusChangeObject: boolean;
+    public objectIsSelected: boolean;
+    public selectedObjectArray: [];
+    public playerInMaps: Player[];
+    public isThereUser: boolean;
+    public init: boolean;
+    public userID: string;
     _FPSCounter: number = 0;
 
     constructor(props: object) {
@@ -65,26 +79,13 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         document.addEventListener('mouseup', this.onMouseClick.bind(this), false);
     }
 
-    /**
-     *
-     * @param canvas
-     * @param userData
-     */
 
     onMouseMove(event) {
-
-        // calculate mouse position in normalized device coordinates
-        // (-1 to +1) for both components
-        // event.stopPropagation();
-        // event.preventDefault();
-        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
-
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
     onMouseClick(event) {
-        // calculate mouse position in normalized device coordinates
-        // (-1 to +1) for both components
         this.statusChangeObject = event.type === 'mousedown';
         if (event.type === 'mouseup') {
             this.selectedChangeObject = false;
@@ -92,20 +93,19 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
 
         this.objectIsSelected = false;
         this.selectedObjectArray = [];
-        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        this.mouse.y = -( event.clientY / window.innerHeight ) * 2 + 1;
+        this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
         if (event.type === 'mouseup') {
             this.objectIsSelected = false;
         }
-
     }
 
     /**
      * Метод создания холста на котором в дальнейшем будет рисоваться весь контент
      */
-    createCanvas() {
-        const canvas = document.getElementById('canvas');
+    createCanvas(): HTMLCanvasElement {
+        const canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.resize(canvas);
         return canvas;
     }
@@ -113,9 +113,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     /**
      * Создаём основную камеру(камеру игрока)
      * @param canvas
+     * @param userData
      * @returns {PerspectiveCamera}
      */
-    createCameraScene(canvas, userData) {
+    createCameraScene(canvas: HTMLCanvasElement, userData: Player) {
         const userStartPositionCamera = userData[0];
         const camera = this._camera.createCamera(userStartPositionCamera);
         let orbitControlObject = document.getElementById('scene');
@@ -160,8 +161,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                     room.playersInTheRoom.forEach((item, i) => {
                         this.addPlayerToRoom(scene, item);
                     });
-                }
-                else {
+                } else {
 
                     room.playersInTheRoom.forEach((item, i) => {
                         this.addPlayerToRoom(scene, item);
@@ -204,10 +204,10 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                         counter = 0;
                     }
                     data.room.enemy.forEach((enemy) => {
-                        let thisEnemy = this._enemyArray.filter((enemyClient) => {
+                        let thisEnemy = this._enemyArray.filter((enemyClient: Enemy) => {
 
                             return enemy.id === enemyClient.id
-                        })[0];
+                        })[0] as Enemy;
 
                         //TODO Если бота нет на клиенте то пересоздаём его
                         if (!this._enemyArray.length) {
@@ -278,7 +278,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
             colliderWidth, colliderHeight, colliderLength,
             sprite, collaid
         );
-        const playerData = player.createPlayer(item);
+        const playerData = player.createPlayer() as Player;
 
         const playerAvatarSprite = playerData.playerAvatarSprite;
         const healthLine = playerData.healthLine;
@@ -351,23 +351,19 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
             case 'BoxGeometry':
                 geometry = new THREE.BoxGeometry(1, 1, 1);
                 material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-                const cube = new THREE.Mesh(geometry, material);
-                return cube;
+                return new THREE.Mesh(geometry, material);
             case 'CylinderGeometry':
                 geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
-                const cylinder = new THREE.Mesh(geometry, material);
-                return cylinder;
+                return  new THREE.Mesh(geometry, material);
             case 'SphereGeometry':
                 geometry = new THREE.SphereGeometry(5, 32, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
-                const sphere = new THREE.Mesh(geometry, material);
-                return sphere;
+                return new THREE.Mesh(geometry, material);
             case 'ConeGeometry':
                 geometry = new THREE.ConeGeometry(5, 20, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
-                const cone = new THREE.Mesh(geometry, material);
-                return cone;
+                return  new THREE.Mesh(geometry, material);
             case 'ExtrudeGeometry':
                 const length = 12, width = 8;
 
@@ -395,7 +391,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
             case 'LatheGeometry':
                 const points = [];
                 for (var i = 0; i < 10; i++) {
-                    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, ( i - 5 ) * 2));
+                    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, (i - 5) * 2));
                 }
                 geometry = new THREE.LatheGeometry(points);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
@@ -444,11 +440,12 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
                 const torusKnot = new THREE.Mesh(geometry, material);
                 return torusKnot;
             case 'TubeGeometry':
+
             function CustomSinCurve(scale) {
 
                 THREE.Curve.call(this);
 
-                this.scale = ( scale === undefined ) ? 1 : scale;
+                this.scale = (scale === undefined) ? 1 : scale;
 
             }
 
@@ -687,7 +684,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
      * Обновления Canvas в зависимости от разрешения экрана (работает при первичной инициализации)
      * @param canvas
      */
-    resize(canvas: object) {
+    resize(canvas: HTMLCanvasElement) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
