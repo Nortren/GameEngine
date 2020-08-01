@@ -35,7 +35,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 5,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	123: {
 		avatarName:'TestUser_123',
@@ -71,7 +71,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 5,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	1: {
 		avatarName:'TestUser_1',
@@ -107,7 +107,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 5,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	2: {
 		avatarName:'TestUser_2',
@@ -138,7 +138,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 1,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	3: {
 		avatarName:'TestUser_3',
@@ -154,7 +154,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 1,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	4: {
 		avatarName:'TestUser_4',
@@ -170,7 +170,7 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 1,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 	5: {
 		avatarName:'TestUser_5',
@@ -186,6 +186,6 @@ export const PlayerJson = {
 		damage: 2,
 		attackDistance: 1,
 		attackSpeed: 10,
-		moveSpeed: 1
+		moveSpeed: 0.1
 	},
 };

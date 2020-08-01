@@ -78,7 +78,8 @@ class ServicesController extends Service {
 			})[0];
 
 			if (playerThatUserControls) {
-				playerThatUserControls.updateViaController(keyUserPress);
+				//Сквозная передача данных о комнате, чтоб не перегружать сущности информацией(из-за этого происходят тормоза)
+				playerThatUserControls.updateViaController(keyUserPress,room);
 			}
 
 			io.to(room.id).emit('getUserPosition', {
