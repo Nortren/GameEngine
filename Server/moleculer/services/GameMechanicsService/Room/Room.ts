@@ -21,6 +21,7 @@ export default class Room implements BasicProperty {
     numberTakePlaces: number;
     playersInTheRoom: Array<object> = [];
     map: object;
+    grid: number[];
     enemy: Array<object>;
 
     constructor(id: number, type: string, numberPlaces: number, numberTakePlaces: number, map: object, enemy: Array<object>) {
@@ -30,6 +31,7 @@ export default class Room implements BasicProperty {
         this.type = type;
         this.map = map;
         this.enemy = enemy;
+        this.grid = this.createGridMap(map);
     }
 
     getNumberPlaces() {
@@ -134,6 +136,47 @@ export default class Room implements BasicProperty {
 
     }
 
+    /**
+     * Метод создания сетки игрового поля(для определения препятствий)
+     * @param mapStaticData
+     * @returns {Array}
+     */
+    createGridMap(mapStaticData) {
+        const width = mapStaticData.width;
+        const length = mapStaticData.width;
+        const mapElementCoordinate = [];
+
+        for (let x = 0; x < width; x++) {
+            mapElementCoordinate.push([]);
+            for (let z = 0; z < width; z++) {
+                mapElementCoordinate[x][z] = -1;
+            }
+        }
+
+
+        for (let key in mapStaticData.mapElement) {
+            let mapElementObject = mapStaticData.mapElement[key];
+            let positionX = Math.ceil(mapElementObject.colliderPositionX + width / 2);
+            let positionZ = Math.ceil(mapElementObject.colliderPositionZ + length / 2);
+
+            let colliderWidth = Math.ceil(mapElementObject.colliderWidth / 2);
+            let colliderLength = Math.ceil(mapElementObject.colliderLength / 2);
+
+            for (let z = 1; z <= colliderLength; z++) {
+                for (let x = 1; x <= colliderWidth; x++) {
+                    // [positionX + x -1] [positionX + z -1] для центрирования элемента т.к 0 считаем положительным числом
+                    mapElementCoordinate[positionZ - z][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ - z][positionX - x] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX + x - 1] = -2;
+                    mapElementCoordinate[positionZ + z - 1][positionX - x] = -2;
+                }
+            }
+
+        }
+
+
+        return mapElementCoordinate;
+    }
 
 }
 

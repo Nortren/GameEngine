@@ -16,13 +16,13 @@ interface ISprite {
 export default class PlayerAvatar extends PlayerMainClass {
 
 
-    constructor(id: number,name:string, health: number, damage: number,
+    constructor(id: number, name: string, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
                 sprite: ISprite, collaid: string) {
 
-        super(id,name, health, damage,
+        super(id, name, health, damage,
             attackSpeed, moveSpeed, attackDistance,
             colliderPositionX, colliderPositionY, colliderPositionZ,
             colliderWidth, colliderHeight, colliderLength,
@@ -60,7 +60,7 @@ export default class PlayerAvatar extends PlayerMainClass {
         return this.clientSocketIOID = IOID;
     }
 
-    updateViaController(keyPress) {
+    updateViaController(keyPress, room) {
 
 
         if (keyPress.event !== "mouseMove") {
@@ -71,7 +71,7 @@ export default class PlayerAvatar extends PlayerMainClass {
         }
 
         if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp' || keyPress.nameButton) {
-            this.updatePosition(keyPress);
+            this.updatePosition(keyPress, room);
         }
 
     }
@@ -136,7 +136,8 @@ export default class PlayerAvatar extends PlayerMainClass {
     }
 
 
-    updatePosition(keyPress) {
+    updatePosition(keyPress, room) {
+
         //TODO Чтоб игрок не дёргало , не нужно каждый раз отправлять событие перерисовки с мышью пока она не вышла из квадрата отслеживания
         this.moveContinue = true;
         if (keyPress.nameButton === 'ButtonAttack') {
@@ -148,12 +149,31 @@ export default class PlayerAvatar extends PlayerMainClass {
         let reverseDirectionMove = 0;
         if (keyPress === 'KeyW') {
             reverseDirectionMove = 0.1;
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+            this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
         }
 
         if (keyPress === 'KeyS') {
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+            this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
             reverseDirectionMove = -0.1;
+        }
+
+        if (keyPress === 'KeyA') {
+            const newPositionX = this.colliderPositionX - 0.1;
+            this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
+            this.moveDirection = this.mouseDirection;
+        }
+        if (keyPress === 'KeyD') {
+            const newPositionX = this.colliderPositionX + 0.1;
+            this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
+            this.moveDirection = this.mouseDirection;
+        }
+
+        //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации
+        if (keyPress === 'keyUp') {
+            this.moveDirection = 'STOP';
+            this.moveContinue = false;
         }
         //TODO Закоментированный блок отвечал за разворот персоонажа отталкиваясь от позиции мышки на экране (пока решили убрать и оставить четкое направление движения)
 
@@ -192,21 +212,6 @@ export default class PlayerAvatar extends PlayerMainClass {
          }
 
          }*/
-
-        if (keyPress === 'KeyA') {
-            this.colliderPositionX = this.colliderPositionX - 0.1;
-            this.moveDirection = this.mouseDirection;
-        }
-        if (keyPress === 'KeyD') {
-            this.colliderPositionX = this.colliderPositionX + 0.1;
-            this.moveDirection = this.mouseDirection;
-        }
-
-        //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации
-        if (keyPress === 'keyUp') {
-            this.moveDirection = 'STOP';
-            this.moveContinue = false;
-        }
 
 
     }
@@ -290,7 +295,39 @@ export default class PlayerAvatar extends PlayerMainClass {
 
     }
 
-    move() {
+    /**
+     * Метод который переводит координаты объекта из глобальных координат в координаты матрици(сетки) используемый в алгоритме Ли
+     * Отдельно для оси Х и Z
+     * @param searchPoint
+     * @param size
+     * @returns {number}
+     */
+    findPointToLeeArray(searchPoint, size) {
+        let result = Math.ceil(searchPoint + size / 2 - 1);
+
+        return result
+    }
+
+    /**
+     * метод проверки колизии с колайдерами аватара юзера
+     * @param newPositionX
+     * @param newPositionZ
+     * @param room
+     * @returns {boolean}
+     */
+    checkMovePosition(newPositionX, newPositionZ, room) {
+        const wall = -2;
+        const gridMap = room.grid;
+        const width = room.map.width;
+        const length = room.map.length;
+        const startPointX = this.findPointToLeeArray(Math.ceil(newPositionX), width);
+        const startPointZ = this.findPointToLeeArray(Math.ceil(newPositionZ), length);
+
+        return gridMap[startPointZ][startPointX] !== wall;
+    }
+
+    move(map, gridMap) {
+
 
     }
 
