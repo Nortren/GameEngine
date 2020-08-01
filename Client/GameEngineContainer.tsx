@@ -27,9 +27,13 @@ class GameEngineContainer extends React.Component {
             editorData: null
         };
     }
+
     private thisMobileDevice: boolean;
+    private _idLoggedUser: string | number;
+
     componentDidMount() {
         this.thisMobileDevice = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
 
         let cameraControlStatus = false;
         let movingObjectStatus = false;
@@ -76,10 +80,21 @@ class GameEngineContainer extends React.Component {
         this.setState({editorData: {name: eventName, data: data || event.detail, syntheticEvent: event}});
     }
 
+    /**
+     * В этом окне есть уже залогинившийся юзер
+     * @returns {boolean}
+     */
+    checkUserLogged(userData) {
+        if (!this._idLoggedUser) {
+            this._idLoggedUser = userData;
+        }
+    }
+
     startInit() {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
+            this.checkUserLogged(this.props.userStatusAuthorization);
             return <div>
-                {this.props.userStatusAuthorization.adminRoot ? <Editor/> : ''}
+                {(this.props.userStatusAuthorization.adminRoot && this._idLoggedUser.id === this.props.userStatusAuthorization.id) ? <Editor/> : ''}
                 <GUI userName={this.props.userStatusAuthorization.name} deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
@@ -118,6 +133,7 @@ class GameEngineContainer extends React.Component {
         )
     }
 }
+
 
 const mapStateToProps = state => {
     return {
