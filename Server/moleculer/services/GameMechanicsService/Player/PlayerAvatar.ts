@@ -64,7 +64,7 @@ export default class PlayerAvatar extends PlayerMainClass {
 
 
         if (keyPress.event !== "mouseMove") {
-            this.updateTouchPosition(keyPress);
+            this.updateTouchPosition(keyPress,room);
         }
         if (keyPress.event === "mouseMove") {
             this.updateMousePosition(keyPress);
@@ -221,7 +221,7 @@ export default class PlayerAvatar extends PlayerMainClass {
      * Метод работы с управлением на TOUCH устройствах
      * @param keyPress
      */
-    updateTouchPosition(keyPress) {
+    updateTouchPosition(keyPress,room) {
         //TODO Временная функция атаки для тестирования
         this.moveContinue = true;
         if (keyPress.nameButton === 'ButtonAttack') {
@@ -245,50 +245,77 @@ export default class PlayerAvatar extends PlayerMainClass {
 
 
         if (this.touchStartPointZ < keyPress.z && (keyPress.x - 10 <= this.touchStartPointX && this.touchStartPointX <= keyPress.x + 10)) {
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+            this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
+
             this.moveDirection = 'DOWN';
 
         }
+        else if (this.touchStartPointZ > keyPress.z && (keyPress.x - 10 <= this.touchStartPointX && this.touchStartPointX <= keyPress.x + 10)) {
+            const newPositionZ = this.colliderPositionZ - 0.1;
+            this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
+            this.moveDirection = 'UP';
+        }
         else if (this.touchStartPointX < keyPress.x && (keyPress.z - 10 <= this.touchStartPointZ && this.touchStartPointZ <= keyPress.z + 10)) {
-            this.colliderPositionX = this.colliderPositionX + 0.1;
+            const newPositionX = this.colliderPositionX + 0.1;
+            this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
             this.moveDirection = 'RIGHT';
 
         }
         else if (this.touchStartPointX > keyPress.x && (keyPress.z - 10 <= this.touchStartPointZ && this.touchStartPointZ <= keyPress.z + 10)) {
-            this.colliderPositionX = this.colliderPositionX - 0.1;
+            const newPositionX = this.colliderPositionX - 0.1;
+            this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
             this.moveDirection = 'LEFT';
 
         }
 
+
+
         else if (this.touchStartPointX > keyPress.x && this.touchStartPointZ < keyPress.z) {
-            this.colliderPositionX = this.colliderPositionX - 0.1;
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
+            const newPositionX = this.colliderPositionX - 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+
+          if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+              this.colliderPositionX = newPositionX;
+              this.colliderPositionZ = newPositionZ;
+          }
+
+
             this.moveDirection = 'DOWN_LEFT';
         }
 
         else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ < keyPress.z) {
-            this.colliderPositionX = this.colliderPositionX + 0.1;
-            this.colliderPositionZ = this.colliderPositionZ + 0.1;
+            const newPositionX = this.colliderPositionX + 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+
+            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
             this.moveDirection = 'DOWN_RIGHT';
 
         }
 
 
-        else if (this.touchStartPointZ > keyPress.z && (keyPress.x - 10 <= this.touchStartPointX && this.touchStartPointX <= keyPress.x + 10)) {
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
-            this.moveDirection = 'UP';
-        }
-
-
         else if (this.touchStartPointX > keyPress.x && this.touchStartPointZ > keyPress.z) {
-            this.colliderPositionX = this.colliderPositionX - 0.1;
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
+            const newPositionX = this.colliderPositionX - 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+
+            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
             this.moveDirection = 'UP_LEFT';
         }
 
         else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ > keyPress.z) {
-            this.colliderPositionX = this.colliderPositionX + 0.1;
-            this.colliderPositionZ = this.colliderPositionZ - 0.1;
+            const newPositionX = this.colliderPositionX + 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+
+            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
             this.moveDirection = 'UP_RIGHT';
 
         }
