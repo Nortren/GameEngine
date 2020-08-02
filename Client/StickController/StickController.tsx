@@ -5,7 +5,6 @@ import BL from "../BusinessLogic";
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
-    userSpeed: number = 30;
     blData: BL;
     pressedKeys: string[];
 
@@ -26,7 +25,7 @@ export default class StickController extends React.Component {
 
     componentDidMount() {
         this.blData = new BL();
-        this.pressedKeys = []
+        this.pressedKeys = [];
         this.createCanvas("UserLeftStick", 100, 100, 45, 51, 50);
         this.createCanvas("ButtonAttack", 100, 100, 30, 51, 50);
         this.createCanvas("ButtonSkills_1", 35, 35, 15, 18, 18);
@@ -76,7 +75,7 @@ export default class StickController extends React.Component {
      * Контроллер мышки
      */
     mouseControl() {
-        document.addEventListener('mousedown', (event) => {
+        document.addEventListener('mousedown', () => {
             this.blData.setUserPosition({nameButton: 'ButtonAttack', press: true});
         });
 
@@ -90,7 +89,7 @@ export default class StickController extends React.Component {
                 windowSize: {width: window.innerWidth, height: window.innerHeight}
             });
         });
-        document.addEventListener('mouseup', (event) => {
+        document.addEventListener('mouseup', () => {
             this.blData.setUserPosition({nameButton: 'ButtonAttack', press: false});
         });
     }
@@ -123,6 +122,7 @@ export default class StickController extends React.Component {
 
     /**
      * Метод отправки данных на бл который корректно отрабатывает нажатые клавиши
+     * (Т.К нам надо знать клавиша все еще нажата или нет и в зависимости от этого оповещать сервер)
      */
     startEventPress(){
         setInterval(()=>{
