@@ -64,16 +64,18 @@ export default class PlayerAvatar extends PlayerMainClass {
 
 
         if (keyPress.event !== "mouseMove") {
-            this.updateTouchPosition(keyPress,room);
+            this.updateTouchPosition(keyPress, room);
         }
         if (keyPress.event === "mouseMove") {
             this.updateMousePosition(keyPress);
         }
 
-        if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp' || keyPress.nameButton) {
+        /*   if (keyPress === 'KeyA' || keyPress === 'KeyW' || keyPress === 'KeyS' || keyPress === 'KeyD' || keyPress === 'keyUp' || keyPress.nameButton) {
+         this.updatePosition(keyPress, room);
+         }*/
+        if (typeof keyPress === 'object' || keyPress.nameButton || keyPress === 'keyUp') {
             this.updatePosition(keyPress, room);
         }
-
     }
 
     /**
@@ -147,28 +149,88 @@ export default class PlayerAvatar extends PlayerMainClass {
             }
         }
         let reverseDirectionMove = 0;
-        if (keyPress === 'KeyW') {
+        if (keyPress.length === 1 && keyPress[0] === 'KeyW') {
             reverseDirectionMove = 0.1;
             const newPositionZ = this.colliderPositionZ - 0.1;
             this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
         }
 
-        if (keyPress === 'KeyS') {
+        if (keyPress.length === 1 && keyPress[0] === 'KeyS') {
             const newPositionZ = this.colliderPositionZ + 0.1;
             this.colliderPositionZ = this.checkMovePosition(this.colliderPositionX, newPositionZ, room) ? newPositionZ : this.colliderPositionZ;
             reverseDirectionMove = -0.1;
         }
 
-        if (keyPress === 'KeyA') {
+        if (keyPress.length === 1 && keyPress[0] === 'KeyA') {
             const newPositionX = this.colliderPositionX - 0.1;
             this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
             this.moveDirection = this.mouseDirection;
         }
-        if (keyPress === 'KeyD') {
+        if (keyPress.length === 1 && keyPress[0] === 'KeyD') {
             const newPositionX = this.colliderPositionX + 0.1;
             this.colliderPositionX = this.checkMovePosition(newPositionX, this.colliderPositionZ, room) ? newPositionX : this.colliderPositionX;
             this.moveDirection = this.mouseDirection;
         }
+
+
+
+
+        if (keyPress.length === 2 && (keyPress[0] === 'KeyW' && keyPress[1] === 'KeyA' || keyPress[0] === 'KeyA' && keyPress[1] === 'KeyW')) {
+            const newPositionX = this.colliderPositionX - 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
+            this.moveDirection = 'UP_LEFT';
+        }
+
+        if (keyPress.length === 2 && (keyPress[0] === 'KeyW' && keyPress[1] === 'KeyD' || keyPress[0] === 'KeyD' && keyPress[1] === 'KeyW')) {
+            const newPositionX = this.colliderPositionX + 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
+            this.moveDirection = 'UP_RIGHT';
+
+        }
+
+        if (keyPress.length === 2 && (keyPress[0] === 'KeyS' && keyPress[1] === 'KeyA' || keyPress[0] === 'KeyA' && keyPress[1] === 'KeyS')) {
+            const newPositionX = this.colliderPositionX - 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
+
+
+            this.moveDirection = 'DOWN_LEFT';
+        }
+
+        if (keyPress.length === 2 && (keyPress[0] === 'KeyS' && keyPress[1] === 'KeyD' || keyPress[0] === 'KeyD' && keyPress[1] === 'KeyS')) {
+            const newPositionX = this.colliderPositionX + 0.1;
+            const newPositionZ = this.colliderPositionZ + 0.1;
+
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
+            this.moveDirection = 'DOWN_RIGHT';
+
+        }
+
+
+
+
+
+
+
+
+
 
         //Если пользователь прекратил нажатия на клавишу то нужно оповестить об этом чтоб прекратить анимации
         if (keyPress === 'keyUp') {
@@ -221,7 +283,7 @@ export default class PlayerAvatar extends PlayerMainClass {
      * Метод работы с управлением на TOUCH устройствах
      * @param keyPress
      */
-    updateTouchPosition(keyPress,room) {
+    updateTouchPosition(keyPress, room) {
         //TODO Временная функция атаки для тестирования
         this.moveContinue = true;
         if (keyPress.nameButton === 'ButtonAttack') {
@@ -269,26 +331,36 @@ export default class PlayerAvatar extends PlayerMainClass {
 
         }
 
-
-
         else if (this.touchStartPointX > keyPress.x && this.touchStartPointZ < keyPress.z) {
             const newPositionX = this.colliderPositionX - 0.1;
             const newPositionZ = this.colliderPositionZ + 0.1;
 
-          if(this.checkMovePosition(newPositionX, newPositionZ, room)){
-              this.colliderPositionX = newPositionX;
-              this.colliderPositionZ = newPositionZ;
-          }
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
 
 
             this.moveDirection = 'DOWN_LEFT';
+        }
+
+        else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ > keyPress.z) {
+            const newPositionX = this.colliderPositionX + 0.1;
+            const newPositionZ = this.colliderPositionZ - 0.1;
+
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
+                this.colliderPositionX = newPositionX;
+                this.colliderPositionZ = newPositionZ;
+            }
+            this.moveDirection = 'UP_RIGHT';
+
         }
 
         else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ < keyPress.z) {
             const newPositionX = this.colliderPositionX + 0.1;
             const newPositionZ = this.colliderPositionZ + 0.1;
 
-            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
                 this.colliderPositionX = newPositionX;
                 this.colliderPositionZ = newPositionZ;
             }
@@ -301,24 +373,13 @@ export default class PlayerAvatar extends PlayerMainClass {
             const newPositionX = this.colliderPositionX - 0.1;
             const newPositionZ = this.colliderPositionZ - 0.1;
 
-            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
+            if (this.checkMovePosition(newPositionX, newPositionZ, room)) {
                 this.colliderPositionX = newPositionX;
                 this.colliderPositionZ = newPositionZ;
             }
             this.moveDirection = 'UP_LEFT';
         }
 
-        else if (this.touchStartPointX < keyPress.x && this.touchStartPointZ > keyPress.z) {
-            const newPositionX = this.colliderPositionX + 0.1;
-            const newPositionZ = this.colliderPositionZ - 0.1;
-
-            if(this.checkMovePosition(newPositionX, newPositionZ, room)){
-                this.colliderPositionX = newPositionX;
-                this.colliderPositionZ = newPositionZ;
-            }
-            this.moveDirection = 'UP_RIGHT';
-
-        }
 
     }
 

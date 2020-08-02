@@ -7,6 +7,7 @@ import BL from "../BusinessLogic";
 export default class StickController extends React.Component {
     userSpeed: number = 30;
     blData: BL;
+    pressedKeys: string[];
 
     constructor(props) {
 
@@ -25,7 +26,7 @@ export default class StickController extends React.Component {
 
     componentDidMount() {
         this.blData = new BL();
-
+        this.pressedKeys = []
         this.createCanvas("UserLeftStick", 100, 100, 45, 51, 50);
         this.createCanvas("ButtonAttack", 100, 100, 30, 51, 50);
         this.createCanvas("ButtonSkills_1", 35, 35, 15, 18, 18);
@@ -86,7 +87,8 @@ export default class StickController extends React.Component {
                 event: 'mouseMove',
                 x: this.startPositionX,
                 z: this.startPositionZ,
-                windowSize: {width: window.innerWidth, height: window.innerHeight}});
+                windowSize: {width: window.innerWidth, height: window.innerHeight}
+            });
         });
         document.addEventListener('mouseup', (event) => {
             this.blData.setUserPosition({nameButton: 'ButtonAttack', press: false});
@@ -97,13 +99,56 @@ export default class StickController extends React.Component {
      * Контроллер нажатий на клавиатуре и мыши
      */
     keyBoardControl() {
+        this.startEventPress();
         document.addEventListener('keydown', (event) => {
-            this.blData.setUserPosition(event.code);
+
+            this.checkArrayKey(event.code);
+
+            if (!this.pressedKeys.length) {
+                this.pressedKeys.push(event.code);
+            }
+
         });
         document.addEventListener('keyup', (event) => {
+
+            this.pressedKeys.forEach((key, index) => {
+                if (key === event.code) {
+                    this.pressedKeys.splice(index, 1);
+                }
+            });
+
             this.blData.setUserPosition('keyUp');
         });
     }
+
+    /**
+     * Метод отправки данных на бл который корректно отрабатывает нажатые клавиши
+     */
+    startEventPress(){
+        setInterval(()=>{
+            if(this.pressedKeys.length){
+                this.blData.setUserPosition(this.pressedKeys);
+            }
+
+        },30)
+    }
+
+    /**
+     *  Метод сбора нажатых клавишь(для проверки одновременного нажатия)
+     * @param key
+     * @returns {Array}
+     */
+
+    checkArrayKey(key) {
+        const resultCheckKey = this.pressedKeys.filter((keyCode) => {
+            return keyCode === key
+        });
+        if (!resultCheckKey.length) {
+            this.pressedKeys.push(key);
+        }
+
+    }
+
 
     /**
      * Контроллер нажатий Touch устройств (стик управление движением)
