@@ -1,5 +1,5 @@
 @import "../../../Client/variables";
-.container(@width,@height) {
+.containerDefault(@width,@height) {
    display: flex;
    justify-content: flex-end;
    align-items: flex-end;
@@ -18,7 +18,7 @@
 }
 
 .playerControls-container {
-   .container(100%, 100%);
+   .containerDefault(100%, 100%);
 
    &__playerControls {
       .controlsContainer;
@@ -26,7 +26,7 @@
 }
 
 .playerControls-containerMobile {
-   .container(35%, 50%);
+   .containerDefault(35%, 50%);
 
    &__playerControls {
       .controlsContainer;
