@@ -30,8 +30,9 @@ export default class Room implements BasicProperty {
         this.numberTakePlaces = numberTakePlaces;
         this.type = type;
         this.map = map;
+		this.grid = this.createGridMap(map);
         this.enemy = enemy;
-        this.grid = this.createGridMap(map);
+
     }
 
     getNumberPlaces() {
