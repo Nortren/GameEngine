@@ -28,7 +28,7 @@ export default class Enemy {
 	findPositionX: number;
 	findPositionZ: number;
 	permissionMove: boolean;
-
+	initFirstPosition: boolean;
 	constructor(id: string,
 				sprite: string,
 				collaid: string,
@@ -133,27 +133,46 @@ export default class Enemy {
 		if (this.permissionMove) {
 			this.enemyAnimationRotation(needPlayer);
 		}
-		if (this.countLee >= 1) {
-			//Тут мы пересчитываем сетку для динамически изменяемых позицию объектов (чтоб они при попадании на одну и туже клетку отходили друг от друга)
-			grid = this.dynamicGridObjects(roomData, grid);
-			if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
 
-				this.countMove = 0;
-
-				this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
-
-				//Запоминаем прошлую позицию цели, чтобы понимать необходимость повторного пересчета
-				this.findPositionX = findObjectX;
-				this.findPositionZ = findObjectZ;
-			}
-
-			this.countLee = 0;
+		if (!this.activationStatus(needPlayer, this.pursuitZone) && !this.initFirstPosition) {
+			this.initializingPrimaryPosition(roomData, grid);
 		}
-		if (!this.attack(needPlayer)) {
+
+
+		if (!this.attackStatusCheck(needPlayer)) {
 			this.enemyMove(this.resultSearch, mapLength, mapWidth);
+
+			if (this.countLee >= 1 && this.activationStatus(needPlayer, this.scopeRadius)) {
+				//Тут мы пересчитываем сетку для динамически изменяемых позицию объектов (чтоб они при попадании на одну и туже клетку отходили друг от друга)
+				grid = this.dynamicGridObjects(roomData, grid);
+				if (this.findPositionX !== findObjectX || this.findPositionZ !== findObjectZ) {
+
+					this.countMove = 0;
+
+					this.resultSearch = this.lee(grid, startPointX, startPointZ, findObjectX, findObjectZ, mapLength, mapWidth);
+
+					//Запоминаем прошлую позицию цели, чтобы понимать необходимость повторного пересчета
+					this.findPositionX = findObjectX;
+					this.findPositionZ = findObjectZ;
+				}
+
+				this.countLee = 0;
+			}
 		}
+
 	}
 
+	/**
+	 * Метод который расставляет ботов так чтоб они небыли вложены в друг друга
+	 * @param roomData
+	 * @param grid
+	 */
+	initializingPrimaryPosition(roomData, grid) {
+		if (!this.initFirstPosition) {
+			this.initFirstPosition = true;
+			this.dynamicGridObjects(roomData, grid);
+		}
+	}
 
 	/**
 	 * Метод который переводит координаты объекта из глобальных координат в координаты матрици(сетки) используемый в алгоритме Ли
@@ -192,6 +211,7 @@ export default class Enemy {
 
 			if (enemy.id === this.id && grid[z][x] === -2) {
 				this.correctMove();
+				this.initFirstPosition = false;
 			}
 
 
@@ -458,17 +478,30 @@ export default class Enemy {
 		}
 	}
 
-
-	attack(huntedPlayer) {
-
-		let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, this.attackDistance);
-		let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength, this.attackDistance);
-		if (CollisionZ && CollisionX) {
+	/**
+	 * Метод проверки , находится ли игрок в зоне атаки и если да то начать атаковать его
+	 * @param needPlayer
+	 */
+	attackStatusCheck(needPlayer: object): boolean {
+		if (this.activationStatus(needPlayer, this.attackDistance)) {
 			this.attackStatus = true;
-
 			return true;
 		}
 		this.attackStatus = false;
+		return false;
+	}
+
+	/**
+	 *  Метод проверки расстояния до объекта после которого он должен выполнить какой-то расчет(начать атаковать , начать преследовать и т.д)
+	 * @param huntedPlayer
+	 * @param activationParams
+	 */
+	activationStatus(huntedPlayer: object, activationParams: number): boolean {
+		let CollisionX = this.checkCollisionAxis(this.colliderPositionX, this.colliderWidth, huntedPlayer.colliderPositionX, huntedPlayer.colliderWidth, activationParams);
+		let CollisionZ = this.checkCollisionAxis(this.colliderPositionZ, this.colliderLength, huntedPlayer.colliderPositionZ, huntedPlayer.colliderLength, activationParams);
+		if (CollisionZ && CollisionX) {
+			return true;
+		}
 		return false;
 	}
 
