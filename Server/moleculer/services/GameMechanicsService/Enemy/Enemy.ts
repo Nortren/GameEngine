@@ -117,7 +117,7 @@ export default class Enemy {
 		const playersInTheRoom = roomData.playersInTheRoom;
 
 
-		let grid = this.copyGridRoom(roomData.grid);
+		let grid = this.createGridMap(map);
 
 		//TODO Нужно обсчитать по нормальному например принимая что точка в которой стоит this.Enemy свободно ,а то он упирается в нее и не может идти
 
