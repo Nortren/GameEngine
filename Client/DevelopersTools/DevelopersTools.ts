@@ -29,8 +29,7 @@ export class CameraControl {
     private _testImageMap: object;
 
 
-    constructor(options) {
-
+    constructor() {
         window.addEventListener('keydown', (event) => {
             this.moveCamera(event);
 

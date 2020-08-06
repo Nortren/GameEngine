@@ -16,19 +16,42 @@ import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
 
-interface primaryEngineInitializationData {
-    userID: string;
-    blData: BL;
-    AI: Enemy;
-    playerInMaps: Array<object>;
+interface IState{
+    moveX: number;
+    moveY: number;
+    countMove: number;
+    moveXBoll: boolean;
+    fps: number;
 }
 
+interface IProps {
+    GWState: object;
+
+    changeViewer(viewData: object): object;
+
+    editorData: IEditorData | null;
+    fps: number
+
+    fpsCounter(fps: number): number;
+
+    gameWorldState(GWState: object): object;
+
+    showElement: object;
+    viewer: []
+}
+
+interface IEditorData {
+    data: object;
+    name: string;
+    syntheticEvent: CustomEvent ;
+}
 
 /**
  * Главный контрол первичной инициализации движка
  */
-class EngineInitialization extends React.Component implements primaryEngineInitializationData {
-
+class EngineInitialization extends React.Component {
+    public props: IProps;
+    public state: IState;
     public context: CanvasRenderingContext2D;
     private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
 
@@ -47,14 +70,13 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
     public objectIsSelected: boolean;
     public selectedObjectArray: [];
     public playerInMaps: Player[];
-    public isThereUser: boolean;
+    public isThereUser: [];
     public init: boolean;
     public userID: string;
     _FPSCounter: number = 0;
 
     constructor(props: object) {
         super(props);
-        this.changePhysics = this.changePhysics.bind(this);
         this.state = {
             moveX: 0,
             moveY: 0, countMove: 0,
@@ -355,7 +377,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
             case 'CylinderGeometry':
                 geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
-                return  new THREE.Mesh(geometry, material);
+                return new THREE.Mesh(geometry, material);
             case 'SphereGeometry':
                 geometry = new THREE.SphereGeometry(5, 32, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
@@ -363,7 +385,7 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
             case 'ConeGeometry':
                 geometry = new THREE.ConeGeometry(5, 20, 32);
                 material = new THREE.MeshBasicMaterial({color: 0xffff00});
-                return  new THREE.Mesh(geometry, material);
+                return new THREE.Mesh(geometry, material);
             case 'ExtrudeGeometry':
                 const length = 12, width = 8;
 
@@ -667,17 +689,6 @@ class EngineInitialization extends React.Component implements primaryEngineIniti
         cameraProps.moveX = data.colliderPositionX;
         cameraProps.moveZ = data.colliderPositionZ;
         this._camera.updateCameraGame(camera, cameraProps);
-    }
-
-    changePhysics(result) {
-        this.props.changePhysics(result);
-    }
-
-
-    componentDidUpdate() {
-
-
-        this._animate = this.props.animations;
     }
 
     /**
