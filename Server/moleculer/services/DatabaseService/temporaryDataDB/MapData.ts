@@ -725,25 +725,25 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 25,
+                count: 15,
                 startPoint: {x: 20, y: 0, z: 20},
                 distanceBetweenEnemies: 1
             },
             {
                 typeEnemy: 'enemy2',
-                count: 25,
+                count: 15,
                 startPoint: {x: 20, y: 0, z: -20},
                 distanceBetweenEnemies: 2
             },
             {
                 typeEnemy: 'enemy3',
-                count: 20,
+                count: 15,
                 startPoint: {x: -20, y: 0, z: -20},
                 distanceBetweenEnemies: 0.5
             },
             {
                 typeEnemy: 'enemy4',
-                count: 20,
+                count: 15,
                 startPoint: {x: -20, y: 0, z: 20},
                 distanceBetweenEnemies: 0.5
             },

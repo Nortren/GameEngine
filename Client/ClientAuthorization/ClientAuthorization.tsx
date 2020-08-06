@@ -2,9 +2,15 @@ import * as React from 'react';
 import BL from "../BusinessLogic";
 import 'bootstrap/dist/css/bootstrap.css'
 import DialogPopup from "../Editor/Controls/DialogPopup/DialogPopup";
+
+interface IProps {
+    changeUserStatus(params:object): void;
+}
+
 export default class ClientAuthorization extends React.Component {
     businessLogic = new BL();
-
+    thisMobileDevice: boolean;
+    props:IProps;
     constructor(props) {
         super(props);
         this.thisMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -18,7 +24,7 @@ export default class ClientAuthorization extends React.Component {
         document.addEventListener('cancel', this.fullScreenModeOff.bind(this), false);
     }
 
-    changeUserStatus(params) {
+    changeUserStatus(params): void {
         this.props.changeUserStatus(params);
     }
 

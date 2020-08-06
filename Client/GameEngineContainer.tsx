@@ -1,15 +1,6 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import BL from "./BusinessLogic";
 
-import {
-    changeX,
-    changeZ,
-    directionOfMovement,
-    animationStatusChange,
-    clickedSkillButton
-} from './Store/UserControls/Actions';
-import {changePhysics} from './Store/Physics/Actions';
 import {changeUserStatus} from './Store/UserData/Actions';
 import EngineInitialization from "./EngineInitialization/EngineInitialization";
 import StickController from "./StickController/StickController";
@@ -20,8 +11,27 @@ import Authorization from "./ClientAuthorization/ClientAuthorization";
 import GUI from "./GUI/GUI";
 import {globalVariables} from "./GlobalVariables";
 
+interface IProps {
+    changeUserStatus(params:object): void;
+    className: string
+    userStatusAuthorization: IUserStatusAuthorization;
+}
+interface IState {
+    editorData: object;
+}
+interface IUserStatusAuthorization {
+    adminRoot: boolean;
+    id: number;
+    lastRoomType: string;
+    login: string;
+    name: string;
+    status: boolean;
+}
+
 class GameEngineContainer extends React.Component {
-    constructor(props) {
+    props:IProps;
+    state:IState;
+    constructor(props:IProps) {
         super(props);
         this.state = {
             editorData: null
@@ -29,7 +39,7 @@ class GameEngineContainer extends React.Component {
     }
 
     private thisMobileDevice: boolean;
-    private _idLoggedUser: string | number;
+    private _idLoggedUser: object;
 
     componentDidMount() {
         this.thisMobileDevice = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
@@ -98,24 +108,11 @@ class GameEngineContainer extends React.Component {
                 <GUI userName={this.props.userStatusAuthorization.name} deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
-                    moveX={this.props.moveX}
-                    moveZ={this.props.moveZ}
-                    animations={this.props.animationStatus}
-                    direction={this.props.direction}
-                    changePhysics={this.props.changePhysics}
-                    skillButton={this.props.skillButton}
                     editorData={this.state.editorData}
                 />
-                <StickController className=".container-fluid"
-                                 showMobileController={this.thisMobileDevice}
+                <StickController
+                    showMobileController={this.thisMobileDevice}
                                  showElement={this.props.userStatusAuthorization}
-                                 physicalCollision={this.props.physicalCollision}
-                                 changePhysics={this.props.changePhysics}
-                                 changeX={this.props.changeX}
-                                 changeZ={this.props.changeZ}
-                                 directionOfMovement={this.props.directionOfMovement}
-                                 animationStatusChange={this.props.animationStatusChange}
-                                 clickedSkillButton={this.props.clickedSkillButton}
                 />
             </div>;
         }
@@ -137,22 +134,10 @@ class GameEngineContainer extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        moveX: state.userControls.moveX,
-        moveZ: state.userControls.moveZ,
-        direction: state.userControls.direction,
-        animationStatus: state.userControls.animationStatus,
-        skillButton: state.userControls.skillButton,
-        physicalCollision: state.physics.physicalCollision,
         userStatusAuthorization: state.userData.authorizationStatus
     };
 };
 const mapDispatchToProps = {
-    changeX,
-    changeZ,
-    directionOfMovement,
-    animationStatusChange,
-    changePhysics,
-    clickedSkillButton,
     changeUserStatus
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GameEngineContainer);

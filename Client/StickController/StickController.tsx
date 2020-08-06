@@ -1,21 +1,24 @@
 import * as React from 'react';
 import BL from "../BusinessLogic";
 
+interface IProps {
+    showMobileController: boolean;
+}
+
 /**
  * Компонент построения графиков в режими реального времени
  */
 export default class StickController extends React.Component {
     blData: BL;
     pressedKeys: string[];
+    startPositionX: number;
+    startPositionZ: number;
+    autoMove: NodeJS.Timeout;
+    props: IProps;
 
     constructor(props) {
 
         super(props);
-        this.changeX = this.changeX.bind(this);
-        this.changeZ = this.changeZ.bind(this);
-        this.directionOfMovement = this.directionOfMovement.bind(this);
-        this.clickedSkillButton = this.clickedSkillButton.bind(this);
-        this.animationStatusChange = this.animationStatusChange.bind(this);
         this.state = {
             moveX: 0,
             moveZ: 0, countMove: 0,
@@ -44,7 +47,7 @@ export default class StickController extends React.Component {
 
 
     createCanvas(id, width, height, radius, startPositionX, startPositionY) {
-        let canvas = document.getElementById(id);
+        let canvas = document.getElementById(id) as HTMLCanvasElement;
         canvas.width = width;
         canvas.height = height;
         let context = canvas.getContext("2d");
@@ -124,13 +127,13 @@ export default class StickController extends React.Component {
      * Метод отправки данных на бл который корректно отрабатывает нажатые клавиши
      * (Т.К нам надо знать клавиша все еще нажата или нет и в зависимости от этого оповещать сервер)
      */
-    startEventPress(){
-        setInterval(()=>{
-            if(this.pressedKeys.length){
+    startEventPress() {
+        setInterval(() => {
+            if (this.pressedKeys.length) {
                 this.blData.setUserPosition(this.pressedKeys);
             }
 
-        },30)
+        }, 30)
     }
 
     /**
@@ -170,7 +173,8 @@ export default class StickController extends React.Component {
             }
         });
         evenObject.addEventListener('touchend', (event) => {
-            this.autoMove = clearInterval(this.autoMove);
+            clearInterval(this.autoMove);
+            this.autoMove = null;
             this.blData.setUserPosition({event: 'touchend'});
         });
     }
@@ -187,29 +191,6 @@ export default class StickController extends React.Component {
         evenObject.addEventListener("touchend", (event) => {
             this.blData.setUserPosition({nameButton: nameButton, press: false});
         }, false);
-    }
-
-
-    directionOfMovement(result) {
-        this.props.directionOfMovement(result);
-
-    }
-
-    clickedSkillButton(result) {
-        this.props.clickedSkillButton(result);
-    }
-
-    animationStatusChange(result) {
-        this.props.animationStatusChange(result);
-
-    }
-
-    changeX(params) {
-        this.props.changeX(params);
-    }
-
-    changeZ(params) {
-        this.props.changeZ(params);
     }
 
     render() {
