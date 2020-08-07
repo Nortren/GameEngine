@@ -2,7 +2,7 @@ import * as THREE from "three";
 import MapCreator from "../MapCreator/MapCreator";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {globalVariables} from "../GlobalVariables";
-import {Scene, Texture, Mesh, Sprite} from "three";
+import {Scene, Texture, Mesh, Sprite, Line} from "three";
 
 interface BasicPropertyEnemy {
     id: number;
@@ -43,10 +43,14 @@ export default class Enemy implements BasicPropertyEnemy {
     animation: Dynamic = new Dynamic();
     _animationTimer: number;
     fixPoint: number;
-
-
+    scopeCircleMesh: Mesh;
+    colliderMesh: Mesh;
+    persecutionRadius: Mesh | string;
     radiusOfDetection: number;
-
+    moveCountTest: number;
+    _eventCount: number;
+    enemySprite: Sprite;
+    enemyHealthLine: Line;
 
     amountOfHealth: number;
     private _attackSpeedCount: number = 0;
@@ -54,7 +58,7 @@ export default class Enemy implements BasicPropertyEnemy {
     private _mapCreator: MapCreator = new MapCreator();
 
     id: number;
-    sprite: string;
+    sprite: Sprite;
     collaid: string;
     scope: string;
     scopeRadius: number;
@@ -65,7 +69,6 @@ export default class Enemy implements BasicPropertyEnemy {
     colliderHeight: number;
     colliderLength: number;
     pursuitZone: number;
-    persecutionRadius: string;
     health: number;
     damage: number;
     attackDistance: number;
@@ -77,7 +80,7 @@ export default class Enemy implements BasicPropertyEnemy {
     constructor(id: number, sprite: string, collaid: string, scope: string, scopeRadius: number, colliderPositionX: number,
                 colliderPositionY: number, colliderPositionZ: number,
                 colliderWidth: number, colliderHeight: number, colliderLength: number,
-                pursuitZone: number, persecutionRadius: string, health: number,
+                pursuitZone: number, persecutionRadius: Mesh, health: number,
                 damage: number, attackDistance: number,
                 attackSpeed: number, moveSpeed: number) {
 
@@ -107,7 +110,7 @@ export default class Enemy implements BasicPropertyEnemy {
             y: colliderPositionY,
             z: colliderPositionZ
         }, loader);
-        this.ColliderMesh = this.createEnemyCollider(colliderWidth, colliderLength, colliderHeight, collaid, {
+        this.colliderMesh = this.createEnemyCollider(colliderWidth, colliderLength, colliderHeight, collaid, {
             x: colliderPositionX,
             y: colliderPositionY,
             z: colliderPositionZ
@@ -146,9 +149,9 @@ export default class Enemy implements BasicPropertyEnemy {
      * генерируем врага на карте
      */
     createEnemy(scene: Scene) {
-        scene.add(this.enemySprite, this.EnemyHealthLine);
+        scene.add(this.enemySprite, this.enemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
-            scene.add(this.ColliderMesh);
+            scene.add(this.colliderMesh);
         }
 
         if (globalVariables.collider.additionalData) {
@@ -191,7 +194,7 @@ export default class Enemy implements BasicPropertyEnemy {
         geometry.vertices.push(new THREE.Vector3(0, 0, 0));
         geometry.vertices.push(new THREE.Vector3(1, 0, 0));
         const line = new THREE.Line(geometry, material);
-        this.EnemyHealthLine = line;
+        this.enemyHealthLine = line;
         //Линия жизни на основе меша
         /*               const material = new THREE.MeshPhongMaterial(
          {
@@ -211,7 +214,7 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
 
-    createEnemySupportMesh(width: number, height: number, scope: Texture, position: object, loader) {
+    createEnemySupportMesh(width: number, height: number, scope: string, position: Mesh | object, loader) {
         const texture = loader.load(scope);
         const x = position.x || 0;
         const y = position.y || 0;
@@ -260,20 +263,21 @@ export default class Enemy implements BasicPropertyEnemy {
         }
         const Mesh = new THREE.Mesh(playerMeshGeo, materials);
         Mesh.rotation.x = Math.PI * -.5;
-        Mesh.position.set(x,this.calculatingCorrectHeightCollider(y,height), z);
+        Mesh.position.set(x, this.calculatingCorrectHeightCollider(y, height), z);
         if (globalVariables.shadow.materialShadow) {
             Mesh.castShadow = true;
         }
         return Mesh;
     }
+
     /**
      * Вычисляем правилный размер коллайдера относительно оси y
      * @param collaider
      * @param colliderPositionY
      * @param colliderHeight
      */
-    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
-        let yPosition = colliderPositionY+colliderHeight/2;
+    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight) {
+        let yPosition = colliderPositionY + colliderHeight / 2;
         return yPosition;
 
     }
@@ -287,7 +291,7 @@ export default class Enemy implements BasicPropertyEnemy {
     //TODO сделать нормально сейчас высчитываем положения по Z дляспрайта таким образом чтоб он нормально распологался относительно коллайда
     updateEnemVisualSpriteDate(enemyData: Mesh, enemy: Mesh) {
         enemyData.position.x = enemy.colliderPositionX;
-        enemyData.position.z = enemy.colliderPositionZ+this.scaleY/2;
+        enemyData.position.z = enemy.colliderPositionZ + this.scaleY / 2;
     }
 
     /**
@@ -298,7 +302,7 @@ export default class Enemy implements BasicPropertyEnemy {
      */
     informationAboutWorld(enemyData: object, playerInformation: object, mapData: MapCreator, scene) {
         this.updateEnemVisualDate(enemyData.scopeCircleMesh, enemyData);
-        this.updateEnemVisualDate(enemyData.ColliderMesh, enemyData);
+        this.updateEnemVisualDate(enemyData.colliderMesh, enemyData);
         this.updateEnemVisualSpriteDate(enemyData.enemySprite, enemyData);
         this.updateHealthLine(enemyData);
 
@@ -470,8 +474,7 @@ export default class Enemy implements BasicPropertyEnemy {
                 requestAnimationFrame(() => {
                     this.animationEnemyAvatarForPositionServer(enemyData, scene);
                 });
-            }
-            else {
+            } else {
                 // this._counterOfDeath = spriteData.firstFrameDeath;
                 this.death(scene, enemyData);
             }
@@ -487,9 +490,9 @@ export default class Enemy implements BasicPropertyEnemy {
 
     updateHealthLine(enemyData) {
 
-        enemyData.EnemyHealthLine.scale.x = enemyData.health / 100;
-        enemyData.EnemyHealthLine.scale.z = 2;
-        this.updateEnemVisualDate(enemyData.EnemyHealthLine, enemyData.ColliderMesh);
+        enemyData.enemyHealthLine.scale.x = enemyData.health / 100;
+        enemyData.enemyHealthLine.scale.z = 2;
+        this.updateEnemVisualDate(enemyData.enemyHealthLine, enemyData.colliderMesh);
 
     }
 
@@ -499,7 +502,7 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param playerData
      */
     persecutionObject(enemyData: object, playerData: object, mapData: MapCreator) {
-        const enemy = enemyData.ColliderMesh;
+        const enemy = enemyData.colliderMesh;
         const enemySprite = enemyData.enemySprite;
         enemy.position.x;
         this.objectAnimation(true, 20);
@@ -604,8 +607,7 @@ export default class Enemy implements BasicPropertyEnemy {
 
 
             return returnData;
-        }
-        else {
+        } else {
             //Возвращаемся к текущей позиции
             if (Math.abs(persecutionObjectPositionX) > pursuitZone || Math.abs(persecutionObjectPositionZ) > pursuitZone) {
                 if (enemyPositionAxisX.toFixed(1) > realStartPositionX) {
@@ -719,7 +721,7 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
     death(scene, enemyData) {
-        scene.remove(enemyData.scopeCircleMesh, enemyData.ColliderMesh, enemyData.persecutionRadius, enemyData.EnemyHealthLine, enemyData.enemySprite);
+        scene.remove(enemyData.scopeCircleMesh, enemyData.colliderMesh, enemyData.persecutionRadius, enemyData.enemyHealthLine, enemyData.enemySprite);
     }
 }
 
