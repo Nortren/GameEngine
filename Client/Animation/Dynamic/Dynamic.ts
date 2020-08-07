@@ -3,11 +3,12 @@ export default class Dynamic {
     _pressKey: string;
     _animationTimer: number;
     fixPoint: number;
-    animationAttackLoop: number;
+    animationAttackLoop: NodeJS.Timeout;
     player: number;
-    constructor(player) {
+    lastDirectionMove: string;
+    lastStatusAttack: number;
+    constructor(player?:number) {
         this._count = 1;
-        this.animationAttackLoop = 0;
         this.player = player;
         this._animationTimer = 0;
         this.fixPoint = 0;
@@ -85,7 +86,7 @@ export default class Dynamic {
             }
             if (!props.attackStatus) {
                 clearInterval(this.animationAttackLoop);
-                this.animationAttackLoop = 0;
+                this.animationAttackLoop = null;
             }
 
             if (props.attackStatus) {
@@ -136,9 +137,6 @@ export default class Dynamic {
         }
         userSpriteTextureFrames.offset.x = rect.x;
         userSpriteTextureFrames.offset.y = rect.y;
-
-        // return rect
-
     }
 }
 
