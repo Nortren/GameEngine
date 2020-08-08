@@ -16,7 +16,7 @@ import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
 
-interface IState{
+interface IState {
     moveX: number;
     moveY: number;
     countMove: number;
@@ -577,7 +577,9 @@ class EngineInitialization extends React.Component {
             // raycaster.set(objStart.position,objEnd.position);
             raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
             // raycaster.far = this.far.subVectors(objEnd.position, objStart.position).length();
-
+            if (raycaster.camera) {
+                raycaster.intersectObjects(scene.children);
+            }
             // const intersects = raycaster.intersectObjects(scene.children);
             raycaster;
         }
