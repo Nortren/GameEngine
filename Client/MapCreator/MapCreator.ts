@@ -22,7 +22,7 @@ export default class MapCreator {
     createGameLocation(scene, mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
-        const planeSize = 100;
+        const planeSize = 0;
 
 
         const loader = new THREE.TextureLoader();
@@ -30,8 +30,11 @@ export default class MapCreator {
         const texture = loader.load(mapStaticData.src);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
+        //Пиксель фильтр
         texture.magFilter = THREE.NearestFilter;
-
+        //Повторение текстуры через заданный шаг
+        // const repeats = planeSize / 2;
+        // texture.repeat.set(repeats, repeats);
 
         const textureStep = loader.load("./Client/image/step.png");
         textureStep.wrapS = THREE.RepeatWrapping;
@@ -57,8 +60,7 @@ export default class MapCreator {
         // light.position.set(0, 11, 0);
         // scene.add(light, light.target);
 
-        const repeats = planeSize / 2;
-        texture.repeat.set(repeats, repeats);
+
 
         const planeGeo = new THREE.PlaneBufferGeometry(planeSize, planeSize);
         // const planeAlgoritm = new THREE.PlaneBufferGeometry(planeSize, planeSize);
