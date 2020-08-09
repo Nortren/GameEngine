@@ -94,6 +94,7 @@ class EngineInitialization extends React.Component {
         this.blData = new BL();
         this.mouse = new THREE.Vector2();
         this.direction = new THREE.Vector3();
+        this.air = new THREE.Vector3();
         this.far = new THREE.Vector3();
         this.createUserRoom(this.scene, renderer, canvas);
         document.addEventListener('mousemove', this.onMouseMove.bind(this), false);
@@ -507,7 +508,6 @@ class EngineInitialization extends React.Component {
         saveEvent.dispatchEvent(loaderEvent);
         saveEvent.dispatchEvent(readFile);
         this.props.changeViewer({name: structure.type, type: 'sceneObject', fileData: structure});
-        console.log('read');
         loaderEvent.detail.status = false;
         //Выключаем лоадер
         saveEvent.dispatchEvent(loaderEvent);
@@ -570,12 +570,19 @@ class EngineInitialization extends React.Component {
 
     }
 
-    sightPlayer(raycaster, mouse, scene, direction) {
+    sightPlayer(raycaster, mouse, scene, direction,camera) {
+        raycaster.setFromCamera(mouse, camera);
         if (scene) {
-            const objStart = scene.getObjectById(12);
+
+            const thisUserData = this.playerInMaps.filter((player)=>{return player.id === this.userID})[0];
+
+            const objStart = scene.getObjectById(thisUserData.collaider.id);
             const objEnd = scene.getObjectById(13);
             // raycaster.set(objStart.position,objEnd.position);
-            raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
+            direction.x = mouse.x;
+            direction.z = mouse.y;
+            raycaster.set(objStart.position, raycaster.ray.direction);
+            // raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
             // raycaster.far = this.far.subVectors(objEnd.position, objStart.position).length();
             if (raycaster.camera) {
                 raycaster.intersectObjects(scene.children);
@@ -598,7 +605,7 @@ class EngineInitialization extends React.Component {
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse, direction): void {
 
 
-        this.sightPlayer(raycaster, mouse, scene, direction);
+        this.sightPlayer(raycaster, mouse, scene, direction,camera);
 
         if (this.statusChangeObject && this.movingObject) {
             this.getSelectedObject(raycaster, mouse, camera, scene);

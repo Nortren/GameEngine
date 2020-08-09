@@ -55,7 +55,7 @@ class GameEngineContainer extends React.Component {
             this.eventBusEditor("CreateObject", event);
         });
         document.addEventListener("movingObject", (event) => {
-            console.log(event, "movingObject");
+
 
 
             const changeMovingObjectStatus = () => {

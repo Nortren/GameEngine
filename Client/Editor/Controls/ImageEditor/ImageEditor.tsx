@@ -31,7 +31,7 @@ export default function ImageEditor() {
 
 
         const testTool = (event) => {
-            console.log(event);
+
         };
         selectedToolArray.forEach((toolName) => {
             document.addEventListener(toolName, (event) => {

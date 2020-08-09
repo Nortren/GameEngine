@@ -26,7 +26,7 @@ export default class MapCreator {
 
 
         const loader = new THREE.TextureLoader();
-        console.log(mapStaticData.src);
+
         const texture = loader.load(mapStaticData.src);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
@@ -99,9 +99,12 @@ export default class MapCreator {
 
             let mapElementObjectCollaider = mapElementObject.collaidTexture ? {map:loader.load(mapElementObject.collaidTexture)} : {color:0xED7700};
 
-            mapElementObjectCollaider.map.repeat.set(2, 2);
-            mapElementObjectCollaider.map.wrapS = THREE.RepeatWrapping;
-            mapElementObjectCollaider.map.wrapT = THREE.RepeatWrapping;
+            if(mapElementObject.collaidTexture ){
+                mapElementObjectCollaider.map.repeat.set(2, 2);
+                mapElementObjectCollaider.map.wrapS = THREE.RepeatWrapping;
+                mapElementObjectCollaider.map.wrapT = THREE.RepeatWrapping;  
+            }
+
 
             const planeCollaiderGeo = new THREE.BoxGeometry(mapElementObject.colliderWidth, mapElementObject.colliderLength, mapElementObject.colliderHeight);
             const planeCollaiderMat = new THREE.MeshPhongMaterial({

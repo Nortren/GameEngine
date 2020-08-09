@@ -38,7 +38,7 @@ function InspectorEditor() {
         </div>
         <div className="inspector_container__file-container">
             <div className="inspector_container__file-container_header">
-                <div className="inspector_container__file-container_name">{fileName}</div>
+                <div className="inspector_container__file-container_name">{`${fileName}_id=${fileData.id}`}</div>
                 <div className="inspector_container__file-container_type">{fileType}</div>
             </div>
             <div className="inspector_container__file-container_body">
