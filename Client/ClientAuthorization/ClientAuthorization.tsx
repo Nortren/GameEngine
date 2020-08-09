@@ -46,7 +46,7 @@ export default class ClientAuthorization extends React.Component {
         let userData = {login: login.value, password: password.value};
 
         this.businessLogic.checkUserAuthorization(userData, (data) => {
-            // console.log(data);
+
         });
     }
 

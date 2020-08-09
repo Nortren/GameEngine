@@ -24,7 +24,7 @@ export default function Chat() {
             const message = inputChatMessage.value;
             inputChatMessage.value = '';
             addMessageInMessageContainer(message);
-            console.log('sendMessage', message);
+
         });
         BL.getUserMessage(
             (data) => {

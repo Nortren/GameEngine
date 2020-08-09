@@ -1,7 +1,7 @@
 export const MapJSON = {
 //Числа должны быть кратны двум иначе будет построено на одну дополнительную точку больше
     map: {
-        src: "./Client/image/terrain_snow.jpg",
+        src: "./Client/image/map.jpg",
         startPositionX: 0,
         startPositionY: 0,
         width: 100,
@@ -19,8 +19,8 @@ export const MapJSON = {
                 startPositionZ: -9,
                 width: 10,
                 height: 10,
-                collaidTexture: "./Client/image/collaid.png",
-                colliderPositionX: -2,
+                // collaidTexture: "./Client/image/collaid.png",
+                colliderPositionX: -3,
                 colliderPositionY: 0,
                 colliderPositionZ: -5.5,
                 colliderWidth: 2,
@@ -35,8 +35,8 @@ export const MapJSON = {
                 startPositionZ: -9,
                 width: 10,
                 height: 10,
-                collaidTexture: "./Client/image/collaid.png",
-                colliderPositionX: -5,
+                // collaidTexture: "./Client/image/collaid.png",
+                colliderPositionX: -6,
                 colliderPositionY: 0,
                 colliderPositionZ: -5.5,
                 colliderWidth: 2,
@@ -52,8 +52,8 @@ export const MapJSON = {
                 startPositionZ: -9,
                 width: 10,
                 height: 10,
-                collaidTexture: "./Client/image/collaid.png",
-                colliderPositionX: -8,
+                // collaidTexture: "./Client/image/collaid.png",
+                colliderPositionX: -9,
                 colliderPositionY: 0,
                 colliderPositionZ: -5.5,
                 colliderWidth: 2,
@@ -61,6 +61,7 @@ export const MapJSON = {
                 colliderLength: 2,
                 zIndex: 1,
             },
+
        /*     wall_1: {
                 src: null,
                 startPositionX: 0,
