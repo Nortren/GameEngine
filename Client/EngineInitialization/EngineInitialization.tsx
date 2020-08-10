@@ -15,6 +15,8 @@ import {connect} from 'react-redux';
 import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
+import {PerspectiveCamera, Raycaster, Scene, Vector3} from "three";
+import {Vector2} from "three";
 
 interface IState {
     moveX: number;
@@ -43,7 +45,7 @@ interface IProps {
 interface IEditorData {
     data: object;
     name: string;
-    syntheticEvent: CustomEvent ;
+    syntheticEvent: CustomEvent;
 }
 
 /**
@@ -570,19 +572,29 @@ class EngineInitialization extends React.Component {
 
     }
 
-    sightPlayer(raycaster, mouse, scene, direction,camera) {
+    /**
+     * Метод манипуляции с лучем откадящим от игрока и до точки ближайщего пересечения
+     * @param raycaster
+     * @param mouse
+     * @param scene
+     * @param direction
+     * @param camera
+     */
+    sightPlayer(raycaster: Raycaster, mouse: Vector2, scene: Scene, direction: Vector3, camera: PerspectiveCamera) {
         raycaster.setFromCamera(mouse, camera);
         if (scene) {
 
-            const thisUserData = this.playerInMaps.filter((player)=>{return player.id === this.userID})[0];
+            const thisUserData = this.playerInMaps.filter((player) => {
+                return player.id === this.userID
+            })[0];
 
             const objStart = scene.getObjectById(thisUserData.collaider.id);
             const objEnd = scene.getObjectById(13);
             // raycaster.set(objStart.position,objEnd.position);
             direction.x = mouse.x;
             direction.z = mouse.y;
-            raycaster.set(objStart.position, raycaster.ray.direction);
-            // raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
+            // raycaster.set(objStart.position, raycaster.ray.direction);
+            raycaster.set(objStart.position, direction.subVectors(objEnd.position, objStart.position).normalize());
             // raycaster.far = this.far.subVectors(objEnd.position, objStart.position).length();
             if (raycaster.camera) {
                 raycaster.intersectObjects(scene.children);
@@ -605,7 +617,7 @@ class EngineInitialization extends React.Component {
     update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse, direction): void {
 
 
-        this.sightPlayer(raycaster, mouse, scene, direction,camera);
+        this.sightPlayer(raycaster, mouse, scene, direction, camera);
 
         if (this.statusChangeObject && this.movingObject) {
             this.getSelectedObject(raycaster, mouse, camera, scene);
