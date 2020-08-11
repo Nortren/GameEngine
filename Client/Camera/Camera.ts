@@ -3,12 +3,11 @@ import * as OrbitControls from "three-orbitcontrols";
 
 
 export default class Camera {
-
+    controls: OrbitControls;
+    cameraStartPositionX: number;
+    cameraPositionX: number;
     constructor() {
-        window.addEventListener('keydown', (event) => {
-            // this.moveCamera(event);
 
-        });
     }
 
     /**
@@ -23,7 +22,7 @@ export default class Camera {
         const z = userStartPositionCamera.colliderPositionZ;
         camera.position.set(x, y, z);
         camera.scale.set(1, 1, 1);
-        camera.rotateX(4.99);
+        camera.rotateX(4.7);
         return camera;
     }
 
@@ -55,40 +54,13 @@ export default class Camera {
         this.cameraControl(camera);
     }
 
-    moveCamera(event) {
-
-        const codeButton = event.code;
-
-
-        this.cameraPositionX = this.cameraStartPositionX;
-        this.cameraPositionY = this.cameraStartPositionY;
-        this.cameraPositionZ = this.cameraStartPositionZ;
-
-        if (codeButton === "Numpad8") {
-            this.cameraPositionX += 0.01;
-        }
-        if (codeButton === "Numpad2") {
-            this.cameraPositionX -= 0.01;
-        }
-        if (codeButton === "Numpad7") {
-            this.cameraPositionY += 1;
-        }
-        if (codeButton === "Numpad9") {
-            this.cameraPositionY -= 1;
-        }
-    }
-
+    /**
+     * ПРоверка перемещения камеры за игроком
+     * @param camera
+     */
     cameraControl(camera) {
-        // this.cameraStartPositionZ = camera.rotation.x;
-        // this.cameraStartPositionY = camera.rotation._y;
         this.cameraStartPositionX = camera.rotation.x;
-
-        // camera.position.z = this.cameraPositionZ ? this.cameraPositionZ : camera.position.z;
         camera.rotation.x = this.cameraPositionX ? this.cameraPositionX : camera.rotation.x;
-        // camera.rotation._y = this.cameraPositionY ? this.cameraPositionY : camera.rotation._y;
-
-
-
     }
 
 }

@@ -22,7 +22,7 @@ export default class MapCreator {
     createGameLocation(scene, mapStaticData) {
         this.collisionPoint = [];
         const mapObject = [];
-        const planeSize = 0;
+        const planeSize = 100;
 
 
         const loader = new THREE.TextureLoader();

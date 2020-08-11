@@ -15,10 +15,10 @@ export const MapJSON = {
             tree_left_top_1: {
                 src: "./Client/image/treeTest.png",
                 startPositionX: -2,
-                startPositionY: 1.5,
+				startPositionY: 0.2,
                 startPositionZ: -9,
-                width: 10,
-                height: 10,
+                width: 3,
+                height: 3,
                 // collaidTexture: "./Client/image/collaid.png",
                 colliderPositionX: -3,
                 colliderPositionY: 0,
@@ -30,14 +30,14 @@ export const MapJSON = {
             },
             tree_left_top_2: {
                 src: "./Client/image/treeTest.png",
-                startPositionX: -5,
-                startPositionY: 1.5,
+                startPositionX: -8,
+                startPositionY: 0.2,
                 startPositionZ: -9,
-                width: 10,
-                height: 10,
+                width: 3,
+                height: 3,
                 // collaidTexture: "./Client/image/collaid.png",
-                colliderPositionX: -6,
-                colliderPositionY: 0,
+                colliderPositionX: -9,
+                colliderPositionY: 0.2,
                 colliderPositionZ: -5.5,
                 colliderWidth: 2,
                 colliderHeight: 1,
@@ -47,13 +47,13 @@ export const MapJSON = {
 
             tree_left_top_3: {
                 src: "./Client/image/treeTest.png",
-                startPositionX: -8,
-                startPositionY: 1.5,
+                startPositionX: -11,
+				startPositionY: 0.2,
                 startPositionZ: -9,
-                width: 10,
-                height: 10,
+                width: 3,
+                height: 3,
                 // collaidTexture: "./Client/image/collaid.png",
-                colliderPositionX: -9,
+                colliderPositionX: -12,
                 colliderPositionY: 0,
                 colliderPositionZ: -5.5,
                 colliderWidth: 2,
@@ -743,26 +743,26 @@ export const MapJSON = {
         enemyOnMap: [
             {
                 typeEnemy: 'enemy1',
-                count: 0,
-                startPoint: {x: 20, y: 0, z: 20},
+                count: 10,
+                startPoint: {x: 20, y: 0.2, z: 20},
                 distanceBetweenEnemies: 1
             },
             {
                 typeEnemy: 'enemy2',
-                count: 0,
-                startPoint: {x: 20, y: 0, z: -20},
+                count: 10,
+                startPoint: {x: 20, y: 0.2, z: -20},
                 distanceBetweenEnemies: 2
             },
             {
                 typeEnemy: 'enemy3',
-                count: 0,
-                startPoint: {x: -20, y: 0, z: -20},
+                count: 10,
+                startPoint: {x: -20, y: 0.2, z: -20},
                 distanceBetweenEnemies: 0.5
             },
             {
                 typeEnemy: 'enemy4',
-                count: 0,
-                startPoint: {x: -20, y: 0, z: 20},
+                count: 10,
+                startPoint: {x: -20, y: 0.2, z: 20},
                 distanceBetweenEnemies: 0.5
             },
         ]
