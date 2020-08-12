@@ -5,10 +5,9 @@ export default class Dynamic {
     fixPoint: number;
     animationAttackLoop: number;
     player: number;
-    constructor(player) {
+    constructor() {
         this._count = 1;
         this.animationAttackLoop = 0;
-        this.player = player;
         this._animationTimer = 0;
         this.fixPoint = 0;
     }
