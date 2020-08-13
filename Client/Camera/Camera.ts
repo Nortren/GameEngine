@@ -15,7 +15,7 @@ export default class Camera {
      * @param userStartPositionCamera координаты пользователя в которых будет установленна камера
      * @returns {PerspectiveCamera}
      */
-    createCamera(userStartPositionCamera) {
+    createCamera(userStartPositionCamera):Camera {
         const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 100);
         const x = userStartPositionCamera.colliderPositionX;
         const y = 10; //высота до аватара игрока
