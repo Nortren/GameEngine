@@ -15,7 +15,7 @@ import {connect} from 'react-redux';
 import {fpsCounter} from '../Store/EditorStore/FPSCounter/Actions';
 import {gameWorldState} from '../Store/StoreStateGameWorld/Actions';
 import {changeViewer} from '../Store/EditorStore/Viewer/Actions';
-import {PerspectiveCamera, Raycaster, Scene, Vector3} from "three";
+import {Face3, Mesh, PerspectiveCamera, Raycaster, Scene, Vector3, WebGLRenderer} from "three";
 import {Vector2} from "three";
 
 interface IState {
@@ -31,7 +31,7 @@ interface IProps {
 
     changeViewer(viewData: object): object;
 
-    editorData: IEditorData | null;
+    editorData: IEditor | null;
     fps: number
 
     fpsCounter(fps: number): number;
@@ -43,9 +43,28 @@ interface IProps {
 }
 
 interface IEditorData {
-    data: object;
+    data: string | object;
+    item: string;
+    name: string
+    source: Mesh;
+    buttonName?: string;
+    movingObjectStatus: boolean;
+}
+
+interface IEditor {
+    data: IEditorData;
     name: string;
     syntheticEvent: CustomEvent;
+}
+
+interface ISceneData {
+    distance: number;
+    face: Face3;
+    faceIndex: number;
+    object: Mesh;
+    point: Vector3;
+    uv: Vector2;
+    id: number;
 }
 
 /**
@@ -55,7 +74,6 @@ class EngineInitialization extends React.Component {
     public props: IProps;
     public state: IState;
     public context: CanvasRenderingContext2D;
-    private _dynamicAnimation: DinamicAnimation = new DinamicAnimation(this);
 
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
@@ -66,6 +84,7 @@ class EngineInitialization extends React.Component {
     public mouse: THREE.Vector2;
     public direction: THREE.Vector3;
     public far: THREE.Vector3;
+    public air: THREE.Vector3;
     public cameraControlStatus: boolean;
     public selectedChangeObject: boolean;
     public statusChangeObject: boolean;
@@ -74,7 +93,8 @@ class EngineInitialization extends React.Component {
     public playerInMaps: Player[];
     public isThereUser: [];
     public init: boolean;
-    public userID: string;
+    public userID: string | number;
+    public movingObject: boolean;
     _FPSCounter: number = 0;
 
     constructor(props: object) {
@@ -141,7 +161,7 @@ class EngineInitialization extends React.Component {
      * @param userData
      * @returns {PerspectiveCamera}
      */
-    createCameraScene(canvas: HTMLCanvasElement, userData: Player) {
+    createCameraScene(canvas: HTMLCanvasElement, userData: []): Camera {
         const userStartPositionCamera = userData[0];
         const camera = this._camera.createCamera(userStartPositionCamera);
         let orbitControlObject = document.getElementById('scene');
@@ -155,11 +175,11 @@ class EngineInitialization extends React.Component {
      * (Нахождении в ней игроков ,монстров , игровых объектов)
      * и рендер полученных данных
      * @param scene
-     * @param renderernpm ru
-     * @param camera
+     * @param renderer
+     * @param canvas
      */
-    createUserRoom(scene, renderer, canvas) {
-        this.isThereUser = false;
+    createUserRoom(scene: Scene, renderer: WebGLRenderer, canvas: HTMLCanvasElement) {
+        this.isThereUser = [];
         this.userID = null;
         this.playerInMaps = [];
         //TODO проверка на первое подключение
@@ -183,12 +203,12 @@ class EngineInitialization extends React.Component {
             if (data.action === 'addPlayer') {
                 if (!this.isThereUser.length) {
                     this.addPlayerToRoom(scene, {userId: data.playerName, position: {x: 0, z: 0}});
-                    room.playersInTheRoom.forEach((item, i) => {
+                    room.playersInTheRoom.forEach((item) => {
                         this.addPlayerToRoom(scene, item);
                     });
                 } else {
 
-                    room.playersInTheRoom.forEach((item, i) => {
+                    room.playersInTheRoom.forEach((item) => {
                         this.addPlayerToRoom(scene, item);
                     });
                 }
@@ -334,7 +354,6 @@ class EngineInitialization extends React.Component {
             const collaid = enemy.collaid;
             const scope = enemy.scope;
             const scopeRadius = enemy.scopeRadius;
-            const colliderPosition = enemy.colliderPosition;
             const colliderWidth = enemy.colliderWidth;
             const colliderHeight = enemy.colliderHeight;
             const colliderLength = enemy.colliderLength;
@@ -412,7 +431,7 @@ class EngineInitialization extends React.Component {
                 geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 material = new THREE.MeshBasicMaterial({color: 0x00ff00});
                 const extrude = new THREE.Mesh(geometry, material);
-                return extrude;
+                return new THREE.Mesh(geometry, material);
             case 'LatheGeometry':
                 const points = [];
                 for (var i = 0; i < 10; i++) {
@@ -535,7 +554,7 @@ class EngineInitialization extends React.Component {
         });
 
 
-        intersects.forEach((sceneData) => {
+        intersects.forEach((sceneData: ISceneData) => {
 
             this.selectedObjectArray.forEach((id) => {
                 const data = this.scene.getObjectById(id);
@@ -560,7 +579,7 @@ class EngineInitialization extends React.Component {
         });
 
         if (!this.objectIsSelected) {
-            intersects.forEach((sceneData) => {
+            intersects.forEach((sceneData: ISceneData) => {
                 //Проверка на то что двигаем не helper сетки сегментов и не основной терэйн карты
                 if (sceneData.object.name !== 'mapTerrain' && sceneData.object.type !== 'LineSegments') {
                     this.selectedObjectArray.push(sceneData.object.id);
@@ -611,10 +630,14 @@ class EngineInitialization extends React.Component {
      * @param renderer
      * @param scene
      * @param camera
-     * @param map
-     * @param user
+     * @param playerInMaps
+     * @param enemyArray
+     * @param timeStart
+     * @param raycaster
+     * @param mouse
+     * @param direction
      */
-    update(renderer, scene, camera, playerInMaps, enemyArray, timeStart, raycaster, mouse, direction): void {
+    update(renderer: WebGLRenderer, scene: Scene, camera: Camera, playerInMaps: [], enemyArray: [], timeStart: number, raycaster: Raycaster, mouse: Vector2, direction: Vector3): void {
 
 
         this.sightPlayer(raycaster, mouse, scene, direction, camera);
