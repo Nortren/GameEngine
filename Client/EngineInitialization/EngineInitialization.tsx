@@ -1,5 +1,4 @@
 import * as React from 'react';
-import DinamicAnimation from "../Animation/Dynamic/Dynamic";
 import MapCreator from "../MapCreator/MapCreator";
 import Enemy from "../AI/Enemy";
 import * as THREE from "three";
@@ -8,7 +7,7 @@ import Player from "../Player/Player"
 import Camera from "../Camera/Camera";
 import {globalVariables} from "../GlobalVariables";
 import BL from "../BusinessLogic";
-import {CameraControl} from "../DevelopersTools/DevelopersTools"
+
 import {connect} from 'react-redux';
 
 
@@ -77,7 +76,6 @@ class EngineInitialization extends React.Component {
 
     private _camera: Camera = new Camera();
     private _mapCreator: MapCreator = new MapCreator();
-    private _cameraControls: CameraControl = new CameraControl();
     private _enemyArray: Array<object>;
     public scene: THREE.Scene;
     public blData: BL;
@@ -161,11 +159,11 @@ class EngineInitialization extends React.Component {
      * @param userData
      * @returns {PerspectiveCamera}
      */
-    createCameraScene(canvas: HTMLCanvasElement, userData: []): Camera {
+    createCameraScene(canvas: HTMLCanvasElement, userData: []): PerspectiveCamera {
         const userStartPositionCamera = userData[0];
         const camera = this._camera.createCamera(userStartPositionCamera);
         let orbitControlObject = document.getElementById('scene');
-        this._camera.сameraON(this.cameraControlStatus, camera, orbitControlObject);
+        this._camera.cameraON(this.cameraControlStatus, camera, orbitControlObject);
         return camera;
     }
 
@@ -637,7 +635,7 @@ class EngineInitialization extends React.Component {
      * @param mouse
      * @param direction
      */
-    update(renderer: WebGLRenderer, scene: Scene, camera: Camera, playerInMaps: [], enemyArray: [], timeStart: number, raycaster: Raycaster, mouse: Vector2, direction: Vector3): void {
+    update(renderer: WebGLRenderer, scene: Scene, camera: PerspectiveCamera, playerInMaps: [], enemyArray: [], timeStart: number, raycaster: Raycaster, mouse: Vector2, direction: Vector3): void {
 
 
         this.sightPlayer(raycaster, mouse, scene, direction, camera);
@@ -653,7 +651,7 @@ class EngineInitialization extends React.Component {
             if (this.props.editorData.name === "CameraControl") {
                 let orbitControlObject = document.getElementById('scene');
                 this.cameraControlStatus = this.props.editorData.data.cameraControlStatus;
-                this._camera.сameraON(this.cameraControlStatus, camera, orbitControlObject);
+                this._camera.cameraON(this.cameraControlStatus, camera, orbitControlObject);
             }
 
             if (this.props.editorData.name === "EditorEventBus") {
@@ -729,7 +727,6 @@ class EngineInitialization extends React.Component {
      * @param data
      */
     updateCameraClientPosition(camera, i, cameraProps, data) {
-        this._cameraControls.cameraControl(camera);
         cameraProps.moveX = data.colliderPositionX;
         cameraProps.moveZ = data.colliderPositionZ;
         this._camera.updateCameraGame(camera, cameraProps);

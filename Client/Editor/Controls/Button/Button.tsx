@@ -55,6 +55,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import * as fontAwesome from '@fortawesome/free-solid-svg-icons'
+import {SizeProp} from "@fortawesome/fontawesome-svg-core";
 
 
 interface IProps {
@@ -67,7 +68,7 @@ interface IState {
 
 interface IButtonOptions {
     componentArray: object[];
-    iconSize: string;
+    iconSize: SizeProp;
     iconType: string;
     id: number;
     name: string;

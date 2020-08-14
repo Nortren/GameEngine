@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import * as OrbitControls from "three-orbitcontrols";
+import {PerspectiveCamera} from "three";
 
-
+/**
+ * Класс отвечающий за манипуляции проводимые со статической и динамической камерой
+ */
 export default class Camera {
     controls: OrbitControls;
     cameraStartPositionX: number;
@@ -15,7 +18,7 @@ export default class Camera {
      * @param userStartPositionCamera координаты пользователя в которых будет установленна камера
      * @returns {PerspectiveCamera}
      */
-    createCamera(userStartPositionCamera):Camera {
+    createCamera(userStartPositionCamera): PerspectiveCamera {
         const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 1, 100);
         const x = userStartPositionCamera.colliderPositionX;
         const y = 10; //высота до аватара игрока
@@ -26,7 +29,13 @@ export default class Camera {
         return camera;
     }
 
-    сameraON(turnCamera, camera, canvas) {
+    /**
+     * Метод подключения управляемой камеры
+     * @param turnCamera
+     * @param camera
+     * @param canvas
+     */
+    cameraON(turnCamera, camera, canvas) {
         if(!this.controls && turnCamera) {
             this.controls = new OrbitControls(camera, canvas);
             this.controls.saveState();

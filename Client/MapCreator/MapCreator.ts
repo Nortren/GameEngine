@@ -468,34 +468,6 @@ export default class MapCreator {
             });
         }
     }
-
-    checkCollision(Xmove: number, Zmove: number, Xwidth: number, Zheight: number, direction: string) {
-
-        for (let key in this.collisionPoint) {
-            let checkX = false;
-            let checkZ = false;
-            let collision = this.collisionPoint[key];
-            let collisionZ = collision.z;
-            let collisionX = collision.x;
-
-
-            let drawObjectRealWidth = collision.width;
-            let drawObjectRealHeight = collision.height;
-            let PlayerRealWidth = Xwidth;
-            let PlayerRealHeight = Zheight;
-            if ((Xmove + PlayerRealWidth >= collisionX - drawObjectRealWidth) && (Xmove - PlayerRealWidth <= collisionX + drawObjectRealWidth)) {
-                checkX = true;
-            }
-            if ((Zmove + PlayerRealHeight >= collisionZ - drawObjectRealHeight ) && (Zmove - PlayerRealHeight <= collisionZ + drawObjectRealHeight)) {
-                checkZ = true;
-            }
-
-            if (checkX && checkZ) {
-                return direction;
-            }
-        }
-        return false;
-    }
 }
 
 
