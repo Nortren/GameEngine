@@ -337,7 +337,7 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
     /**
-     * Анимация врагов
+     * Анимация врагов по данным с сервера(разворот в необходимую сторону, движение)
      * @param enemyData
      * @param scene
      */

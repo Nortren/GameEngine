@@ -1,7 +1,31 @@
 import * as THREE from "three";
 import {globalVariables} from "../GlobalVariables";
 import Dynamic from "../Animation/Dynamic/Dynamic";
-import {Texture} from "three";
+import {Line, Mesh, Sprite, Texture} from "three";
+
+
+interface IPlayerServerData {
+    attackDistance: number;
+    attackSpeed: number;
+    clientSocketIOID: string
+    collaid: string
+    colliderHeight: number;
+    colliderLength: number;
+    colliderPositionX: number;
+    colliderPositionY: number;
+    colliderPositionZ: number;
+    colliderWidth: number;
+    attackStatus?: boolean;
+    damage: number;
+    health: number;
+    id: number;
+    mouseDirection: string
+    moveContinue: true
+    moveDirection: string
+    moveSpeed: number;
+    name: string
+    sprite: Sprite;
+}
 
 interface BasicProperty {
     id: number;
@@ -69,9 +93,12 @@ export default class Player implements BasicProperty {
     moveDirection: string;
     moveContinue: boolean;
     attackStatus: boolean;
-    playerAvatarSprite: object;
-    healthLine: object;
-    collaider: object;
+    playerAvatarSprite: Sprite;
+    healthLine: Line;
+    collaider: Mesh;
+    scaleX: number;
+    scaleY: number;
+
     constructor(id: number, health: number, damage: number,
                 attackSpeed: number, moveSpeed: number, attackDistance: number,
                 colliderPositionX: number, colliderPositionY: number, colliderPositionZ: number,
@@ -85,7 +112,7 @@ export default class Player implements BasicProperty {
         this.attackSpeed = attackSpeed;
         this.moveSpeed = moveSpeed;
         this.attackDistance = attackDistance;
-        this.animation = new Dynamic(this);
+        this.animation = new Dynamic();
         this.colliderPositionX = colliderPositionX;
         this.colliderPositionY = colliderPositionY;
         this.colliderPositionZ = colliderPositionZ;
@@ -133,8 +160,8 @@ export default class Player implements BasicProperty {
 
     /**
      * Метод создания спрайта пользователя
-     * @param userData
-     * @param userImg
+     * @param playerImg
+     * @param position
      */
     createEngineUserObject(playerImg: Texture, position) {
         //Зеркально отражение
@@ -155,7 +182,7 @@ export default class Player implements BasicProperty {
         });
         playerAvatarSprite = new THREE.Sprite(heroTexture);
         playerAvatarSprite.scale.set(3, 3, 1.0);
-        playerAvatarSprite.position.set(position.x,position.y, position.z);
+        playerAvatarSprite.position.set(position.x, position.y, position.z);
         playerAvatarSprite.center.y = 0;
         this.playerAvatarSprite = playerAvatarSprite;
     }
@@ -183,16 +210,16 @@ export default class Player implements BasicProperty {
                 //делаем каждую сторону своего цвета
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // левая сторона
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // правая сторона
-                new THREE.MeshBasicMaterial({map: playerColliderImg,}), //зaдняя сторона
+                new THREE.MeshBasicMaterial({map: playerColliderImg}), //зaдняя сторона
                 new THREE.MeshBasicMaterial({color: 0xED7700}), // лицевая сторона
-                new THREE.MeshBasicMaterial({map: playerColliderImg,}), // верх
+                new THREE.MeshBasicMaterial({map: playerColliderImg}), // верх
                 new THREE.MeshBasicMaterial({transparent: true, opacity: 0}) // низ
             ];
         }
 
         const playerCollaider = new THREE.Mesh(playerCollaiderGeo, materials);
         playerCollaider.rotation.x = Math.PI * -.5;
-        playerCollaider.position.set(position.x, this.calculatingCorrectHeightCollider(this.colliderPositionY,this.colliderHeight), position.z);
+        playerCollaider.position.set(position.x, this.calculatingCorrectHeightCollider(this.colliderPositionY, this.colliderHeight), position.z);
         this.collaider = playerCollaider;
         if (globalVariables.shadow.materialShadow) {
             playerCollaider.castShadow = true;
@@ -205,8 +232,8 @@ export default class Player implements BasicProperty {
      * @param colliderPositionY
      * @param colliderHeight
      */
-    calculatingCorrectHeightCollider(colliderPositionY,colliderHeight){
-        let yPosition = colliderPositionY+colliderHeight/2;
+    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight) {
+        let yPosition = colliderPositionY + colliderHeight / 2;
         return yPosition;
 
     }
@@ -293,11 +320,10 @@ export default class Player implements BasicProperty {
 
     /**
      * Обновление состояния игрока
-     * @param playerData
-     * @param props
-     * @param rect
+     * @param playerServerData
+     * @param enemyArray
      */
-    update(playerServerData: Object, enemyArray) {
+    update(playerServerData: IPlayerServerData, enemyArray): void {
         //Текстура спрайта по которой нам нужно отрисовывать Frame
         const userSpriteTextureFrames = this.playerAvatarSprite.material.map;
         this.moveDirection = playerServerData.moveDirection;
@@ -319,15 +345,13 @@ export default class Player implements BasicProperty {
         positionHealthLine.y = 0;
 
 
-
-
-        this.collaider.position.x =  playerServerData.colliderPositionX;
-        this.collaider.position.z =  playerServerData.colliderPositionZ;
+        this.collaider.position.x = playerServerData.colliderPositionX;
+        this.collaider.position.z = playerServerData.colliderPositionZ;
 
         //рисуем героя по центру картинки
         this.playerAvatarSprite.position.x = playerServerData.colliderPositionX;
         //TODO Для спрайта scaleY размер увеличениякартинки для правильного отображения он должен считаться так сделать по нормальному отдельный метод
-        this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ+this.scaleY/2;
+        this.playerAvatarSprite.position.z = playerServerData.colliderPositionZ + this.scaleY / 2;
 
         this.healthLine.position.x = this.playerAvatarSprite.position.x;
         this.healthLine.position.z = this.playerAvatarSprite.position.z;

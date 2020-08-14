@@ -1,8 +1,7 @@
 import * as React from 'react';
-import {useDispatch, useSelector, useEffect} from 'react-redux';
-import {connect} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
-    changeCodeEditor, changeCodeEditorStatus
+     changeCodeEditorStatus
 } from '../../../Store/EditorStore/CodeEditor/Actions';
 import Button from "../Button/Button";
 /**
@@ -19,7 +18,7 @@ export default function CodeEditor(props) {
     props.statusVisible(codeEditorStatus);
 
     React.useEffect(() => {
-        document.addEventListener("off", (event) => {
+        document.addEventListener("off", () => {
             dispatch(changeCodeEditorStatus(false));
         });
 
@@ -147,7 +146,7 @@ function CodeEditorArea(props) {
             return <div className="codeEditor-wrapper_container">
                 <div className="codeEditor-leftContainer">
                     <div className="codeEditor-lineNumber">{index}</div>
-                    <div className="codeEditor-auxiliaryData"></div>
+                    <span className="codeEditor-auxiliaryData"/>
                 </div>
                 <pre className="codeEditor-line">
                      {item.split(/([\u00200]|\;|\'|\)|\()/).map((item) => {
@@ -155,9 +154,6 @@ function CodeEditorArea(props) {
                          statusType = parseVariable ? parseVariable.statusType : '';
                          return parseVariable ? parseVariable.template : '';
                      })}
-                    {/*  <span>
-                     {item}
-                     </span>*/}
                    </pre>
             </div>
 
