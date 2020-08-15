@@ -2,7 +2,13 @@ import * as THREE from "three";
 import MapCreator from "../MapCreator/MapCreator";
 import Dynamic from "../Animation/Dynamic/Dynamic";
 import {globalVariables} from "../GlobalVariables";
-import {Scene, Texture, Mesh, Sprite, Line} from "three";
+import {Scene, Texture, Mesh, Sprite, Line, TextureLoader} from "three";
+
+interface IPosition {
+    x: number;
+    y: number;
+    z: number;
+}
 
 interface BasicPropertyEnemy {
     id: number;
@@ -159,7 +165,7 @@ export default class Enemy implements BasicPropertyEnemy {
 
     }
 
-    createEnemySprite(position, sprite, loader) {
+    createEnemySprite(position: object, sprite:IEnemySpriteData, loader:TextureLoader): void {
         const enemyImg = loader.load(sprite.src);
         enemyImg.wrapS = enemyImg.wrapT = THREE.MirroredRepeatWrapping;
         enemyImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
