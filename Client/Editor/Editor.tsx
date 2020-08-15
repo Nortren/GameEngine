@@ -33,8 +33,8 @@ export default class Editor extends React.Component {
 
     componentDidMount() {
         this.resizeWindows();
-        this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width);
-        this._startHeight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height);
+        this._startWidth = parseInt(window.getComputedStyle(document.getElementById('inspector')).width,10);
+        this._startHeight = parseInt(window.getComputedStyle(document.getElementById('editorFooter')).height,10);
 
         document.addEventListener("Hide screen scene", (event) => {
             this.hideEditorToolbar();
