@@ -25,7 +25,14 @@ export default class StickController extends React.Component {
             moveXBoll: true
         };
     }
-
+    componentWillUnmount(){
+        document.removeEventListener('mousedown');
+        document.removeEventListener('mousemove');
+        document.removeEventListener('mouseup');
+        this.blData = null;
+        this.autoMove = null;
+        this.pressedKeys = null;
+    }
     componentDidMount() {
         this.blData = new BL();
         this.pressedKeys = [];

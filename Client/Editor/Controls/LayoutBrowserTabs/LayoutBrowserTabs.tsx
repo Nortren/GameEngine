@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DropDownButton from "../DropDownButton/DropDownButton";
 import Button from "../Button/Button";
+import {Hierarchy} from "../../Tools/Tools";
 
 interface ILayoutBrowserTabsOptions {
     id: string | number;
@@ -16,6 +17,13 @@ interface IProps {
 interface IState {
     style: object;
     button: object[];
+}
+
+interface IComponents {
+    componentArray: object[];
+    componentName: React.Component;
+    id: number;
+    style: {maxHeight: string};
 }
 
 export default class LayoutBrowserTabs extends React.Component {
@@ -44,6 +52,13 @@ export default class LayoutBrowserTabs extends React.Component {
         this.tabAreaClassName = 'tab_container-tabArea tabcontent';
     }
 
+    componentWillUnmount(){
+        this._tab.forEach((el) => {
+            el.removeEventListener("click", this.openTabs);
+        });
+        document.removeEventListener("Add Tab");
+    }
+
     componentDidMount() {
         this.updateTabStatus();
         this._tab.forEach((el) => {
@@ -63,8 +78,7 @@ export default class LayoutBrowserTabs extends React.Component {
      * Метод который рендерит переданные в наш компонент сторонние компоненты
      * @returns {any}
      */
-    getComponents(component) {
-
+    getComponents(component: IComponents[]): IComponents[] {
         return (
             component.map(Component => (
                 <Component.componentName className="scroll_container_component"
@@ -75,10 +89,10 @@ export default class LayoutBrowserTabs extends React.Component {
     }
 
     /**
-     * Метод который рендерит новых табы
-     * @returns {any}
+     *  Метод который рендерит новых табы
+     * @returns {[any,any,any,any,any]}
      */
-    addTab() {
+    addTab(): IComponents[]  {
         return (
             this.state.button.map(element => (
                 <button key={'button_' + element.id}
@@ -96,10 +110,9 @@ export default class LayoutBrowserTabs extends React.Component {
 
     /**
      * Метод который рендерит новых табы
-     * @returns {any}
+     * @returns {[any,any,any,any,any]}
      */
-    addTabArea() {
-        let res = null;
+    addTabArea(): IComponents[] {
         return (
             this.state.button.map(element => (
                 <div key={this.props.options.id} className={this.tabAreaClassName} id={this.props.options.id}
@@ -116,10 +129,11 @@ export default class LayoutBrowserTabs extends React.Component {
     }
 
     /**
-     * Метод выбора таба
+     *  Метод выбора таба
      * @param nameComponent
+     * @returns {Object[]}
      */
-    selectComponent(nameComponent: string) {
+    selectComponent(nameComponent: string): object[] {
         return this.props.options.componentArray.filter((component) => {
             return component.componentName.name === nameComponent
         })
@@ -168,7 +182,6 @@ export default class LayoutBrowserTabs extends React.Component {
 
         document.querySelector('[data-idtab=' + this.specialIdentificationClass + '_' + id + ']').classList.add("active");
         document.querySelector('[data-idtab=' + this.specialIdentificationClassArea + '_' + id + ']').classList.add("active");
-
     }
 
 
