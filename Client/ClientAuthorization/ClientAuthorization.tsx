@@ -23,6 +23,12 @@ export default class ClientAuthorization extends React.Component {
         document.addEventListener('ok', this.fullScreenModeOn.bind(this), false);
         document.addEventListener('cancel', this.fullScreenModeOff.bind(this), false);
     }
+    componentWillUnmount(){
+        document.removeEventListener('ok', this.fullScreenModeOn.bind(this), false);
+        document.removeEventListener('cancel', this.fullScreenModeOff.bind(this), false);
+        this.businessLogic = null;
+        this.thisMobileDevice = null;
+    }
 
     changeUserStatus(params): void {
         this.props.changeUserStatus(params);
