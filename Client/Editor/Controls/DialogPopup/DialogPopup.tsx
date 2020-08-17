@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Button from "../../Controls/Button/Button";
+
 interface IDialogPopup {
     textMessage: string;
     mobile: boolean;
@@ -15,6 +16,7 @@ export default function DialogPopup(props: IDialogPopup) {
     const mobile = props.mobile;
     return <DialogPopupContainer textMessage={textMessage} mobile={mobile}/>
 }
+
 /**
  * Компонент контейнер пользовательского меню
  * @param props
@@ -23,47 +25,34 @@ export default function DialogPopup(props: IDialogPopup) {
 function DialogPopupContainer(props) {
     const [display, setDisplay] = React.useState<string>('flex');
     const textMessage = props.textMessage;
+    const deviceType = props.mobile ? 'dialogPopup-containerMobile' : 'dialogPopup-container';
     const clickButton = (data) => {
         let getData = new CustomEvent(data, {bubbles: true, cancelable: true, detail: {options: {}}});
         document.dispatchEvent(getData);
         setDisplay('none');
     };
 
-    const template = <div className="dialogPopup-container" style={{display}}>
-        <div className="dialogPopup-container__dialogPopup">
-            <div className="dialogPopup-container__dialogPopup-textMessage">
+    const template = <div className="dialogPopup-containerMobile" style={{display}}>
+        <div className={`${deviceType}__dialogPopup`}>
+            <div className={`${deviceType}__dialogPopup-textMessage`}>
                 {textMessage}
             </div>
-            <div className="dialogPopup-container__dialogPopup-buttonContainer">
-                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
-                        onClick={ () =>{clickButton('ok')}}>
+            <div className={`${deviceType}__dialogPopup-buttonContainer`}>
+                <button className={`${deviceType}__dialogPopup-buttonContainer-button`}
+                        onClick={() => {
+                            clickButton('ok')
+                        }}>
                     Ok
                 </button>
-                <button className="dialogPopup-container__dialogPopup-buttonContainer-button"
-                        onClick={() =>{clickButton('cancel')}}>
+                <button className={`${deviceType}__dialogPopup-buttonContainer-button`}
+                        onClick={() => {
+                            clickButton('cancel')
+                        }}>
                     Cancel
                 </button>
             </div>
         </div>
     </div>;
 
-    const mobileTemplate = <div className="dialogPopup-containerMobile" style={{display}}>
-        <div className="dialogPopup-containerMobile__dialogPopup">
-            <div className="dialogPopup-containerMobile__dialogPopup-textMessage">
-                {textMessage}
-            </div>
-            <div className="dialogPopup-containerMobile__dialogPopup-buttonContainer">
-                <button className="dialogPopup-containerMobile__dialogPopup-buttonContainer-button"
-                        onClick={ () =>{clickButton('ok')}}>
-                    Ok
-                </button>
-                <button className="dialogPopup-containerMobile__dialogPopup-buttonContainer-button"
-                        onClick={() =>{clickButton('cancel')}}>
-                    Cancel
-                </button>
-            </div>
-        </div>
-    </div>;
-
-    return props.mobile ? mobileTemplate : template;
+    return template;
 }
