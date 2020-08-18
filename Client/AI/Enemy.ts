@@ -10,6 +10,11 @@ interface IPosition {
     z: number;
 }
 
+interface ISpritePosition {
+    x: number;
+    y: number;
+}
+
 interface BasicPropertyEnemy {
     id: number;
     health: number;
@@ -26,8 +31,8 @@ interface BasicPropertyEnemy {
     collaid: string;
     directionMove: string;
     attackStatus: boolean;
-
-    death(scene: Scene, enemyData: Enemy): void;
+    move(spriteData: IEnemySpriteData, frameToX: number, frameToY: number): ISpritePosition
+    death(spriteData, delay, enemyData, scene, frameToX, frameToY): void;
 }
 
 interface IEnemySpriteData {
@@ -151,9 +156,10 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
     /**
-     * генерируем врага на карте
+     * Метод Генерации врага на карте
+     * @param scene
      */
-    createEnemy(scene: Scene) {
+    createEnemy(scene: Scene): void {
         scene.add(this.enemySprite, this.enemyHealthLine);
         if (globalVariables.collider.showColliderDynamick) {
             scene.add(this.colliderMesh);
@@ -165,7 +171,7 @@ export default class Enemy implements BasicPropertyEnemy {
 
     }
 
-    createEnemySprite(position: object, sprite:IEnemySpriteData, loader:TextureLoader): void {
+    createEnemySprite(position: IPosition, sprite: IEnemySpriteData, loader: TextureLoader): void {
         const enemyImg = loader.load(sprite.src);
         enemyImg.wrapS = enemyImg.wrapT = THREE.MirroredRepeatWrapping;
         enemyImg.repeat.set(1 / this.sprite.numberOfFramesX, 1 / this.sprite.numberOfFramesY);
@@ -190,7 +196,7 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
 
-    createEnemyHealthLine() {
+    createEnemyHealthLine(): void {
         const material = new THREE.LineBasicMaterial({
             color: 0xff0000,
             linewidth: 10,
@@ -219,7 +225,7 @@ export default class Enemy implements BasicPropertyEnemy {
     }
 
 
-    createEnemySupportMesh(width: number, height: number, scope: Texture, position: IPosition, loader) {
+    createEnemySupportMesh(width: number, height: number, scope: Texture, position: IPosition, loader): Mesh {
         const texture = loader.load(scope);
         const x = position.x || 0;
         const y = position.y || 0;
@@ -238,7 +244,7 @@ export default class Enemy implements BasicPropertyEnemy {
         return Mesh;
     }
 
-    createEnemyCollider(width: number, length: number, height: number, collaid: string, position: IPosition, loader) {
+    createEnemyCollider(width: number, length: number, height: number, collaid: string, position: IPosition, loader): Mesh {
         const texture = loader.load(collaid);
         const x = position.x || 0;
         const y = position.y || 0;
@@ -280,19 +286,22 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param colliderPositionY
      * @param colliderHeight
      */
-    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight) {
+    calculatingCorrectHeightCollider(colliderPositionY, colliderHeight): number {
         return colliderPositionY + colliderHeight / 2;
-
     }
 
-    //Метод который обновляет позицию item привязанных к боту
-    updateEnemyVisualDate(enemyData: Mesh, enemy: Enemy) {
+    /**
+     * Метод обновления позицию item привязанных к боту
+     * @param enemyData
+     * @param enemy
+     */
+    updateEnemyVisualDate(enemyData: Mesh, enemy: Enemy): void {
         enemyData.position.x = enemy.colliderPositionX;
         enemyData.position.z = enemy.colliderPositionZ;
     }
 
     //TODO сделать нормально сейчас высчитываем положения по Z дляспрайта таким образом чтоб он нормально распологался относительно коллайда
-    updateEnemyVisualSpriteDate(enemySprite: Sprite, enemy: Enemy) {
+    updateEnemyVisualSpriteDate(enemySprite: Sprite, enemy: Enemy): void {
         enemySprite.position.x = enemy.colliderPositionX;
         enemySprite.position.z = enemy.colliderPositionZ + this.scaleY / 2;
     }
@@ -304,18 +313,15 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param mapData
      * @param scene
      */
-    informationAboutWorld(enemyData: Enemy, playerInformation: object, mapData: MapCreator, scene) {
+    informationAboutWorld(enemyData: Enemy, playerInformation: object, mapData: MapCreator, scene): void {
         this.updateEnemyVisualDate(enemyData.scopeCircleMesh, enemyData);
         this.updateEnemyVisualDate(enemyData.colliderMesh, enemyData);
         this.updateEnemyVisualSpriteDate(enemyData.enemySprite, enemyData);
         this.updateHealthLine(enemyData);
-
-
         this.animationEnemyAvatarForPositionServer(enemyData, scene);
-
     }
 
-    animationSpriteMove(titleCountX, titleCountY, numberOfFrames) {
+    animationSpriteMove(titleCountX: number, titleCountY: number, numberOfFrames: number): ISpritePosition {
         let spriteOffsets = [];
         let xPosition = numberOfFrames * titleCountX;
         let yPosition = numberOfFrames * titleCountY;
@@ -324,7 +330,7 @@ export default class Enemy implements BasicPropertyEnemy {
         return spriteOffsets[0];
     }
 
-    animationSpriteAttack(titleCountX, titleCountY, numberOfFrames) {
+    animationSpriteAttack(titleCountX: number, titleCountY: number, numberOfFrames: number): ISpritePosition {
         let spriteOffsets = [];
         let xPosition = numberOfFrames * titleCountX;
         let yPosition = (numberOfFrames) * titleCountY;
@@ -333,7 +339,7 @@ export default class Enemy implements BasicPropertyEnemy {
         return spriteOffsets[0];
     }
 
-    animationSpriteDeath(titleCountX, titleCountY, numberOfFrames) {
+    animationSpriteDeath(titleCountX: number, titleCountY: number, numberOfFrames: number): ISpritePosition {
         let spriteOffsets = [];
         let xPosition = numberOfFrames * titleCountX;
         let yPosition = (numberOfFrames) * titleCountY;
@@ -347,25 +353,22 @@ export default class Enemy implements BasicPropertyEnemy {
      * @param enemyData
      * @param scene
      */
-    animationEnemyAvatarForPositionServer(enemyData, scene) {
-
+    animationEnemyAvatarForPositionServer(enemyData:Enemy, scene: Scene): void {
         //Шаг фрэйма по оси X и Y
         const spriteData = enemyData.sprite;
         const frameToX = 1 / spriteData.numberOfFramesX;
         const frameToY = 1 / spriteData.numberOfFramesY;
-
+        let rect;
         //Задержка анимации в данном случае используем ее чтоб красиво отобразить анимацию смерти бота
         let delay = 2;
+
+        this._animationTimer++;
+        this._count++;
 
         //TODO В данном случаи цифра три показывает что последние 3 кадра будут выполняться с гигантской задержкой(Надо чтоб это значение было указанно на сервере)
         if (spriteData.lastFrameDeathX - 3 <= this._counterOfDeath) {
             delay = 5;
         }
-
-        this._animationTimer++;
-        this._count++;
-
-        let rect = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
 
 
         if (this.attackStatus && this._count > spriteData.lastFrameAttack) {
@@ -376,60 +379,12 @@ export default class Enemy implements BasicPropertyEnemy {
         }
 
         if (this.attackStatus) {
-            rect = this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
-
+            this.animationSpriteAttack(frameToX * this.lastStatusAttack, frameToY, this._count);
         }
 
-        if (this.directionMove === "LEFT") {
-            this.lastStatusAttack = spriteData.frameMoveLeft;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveLeft, frameToY, this._count);
-        }
-        if (this.directionMove === "RIGHT") {
-            this.lastStatusAttack = spriteData.frameMoveRight;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
-        }
-        if (this.directionMove === "UP") {
-            this.lastStatusAttack = spriteData.frameMoveUp;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUp, frameToY, this._count);
-        }
-        if (this.directionMove === "UP_LEFT") {
-            this.lastStatusAttack = spriteData.frameMoveUpLeft;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUpLeft, frameToY, this._count);
-        }
-        if (this.directionMove === "UP_RIGHT") {
-            this.lastStatusAttack = spriteData.frameMoveUpRight;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveUpRight, frameToY, this._count);
-        }
-        if (this.directionMove === "DOWN") {
-            this.lastStatusAttack = spriteData.frameMoveDown;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDown, frameToY, this._count);
-        }
-        if (this.directionMove === "DOWN_LEFT") {
-            this.lastStatusAttack = spriteData.frameMoveDownLeft;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownLeft, frameToY, this._count);
-        }
-        if (this.directionMove === "DOWN_RIGHT") {
-            this.lastStatusAttack = spriteData.frameMoveDownRight;
-            rect = this.animationSpriteMove(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
-        }
-
-
+        rect = this.move(spriteData, frameToX, frameToY);
         if (this.health <= 0) {
-
-            if (this._counterOfDeath < spriteData.lastFrameDeathX) {
-                //Мы инкрементируем счетчик смерти если выполняется условие(т.е соответствие с указанной задержкой)
-                if (this._animationTimer % delay === 0) {
-                    this._counterOfDeath++;
-                }
-                requestAnimationFrame(() => {
-                    this.animationEnemyAvatarForPositionServer(enemyData, scene);
-                });
-            } else {
-                this.death(scene, enemyData);
-            }
-
-            rect = this.animationSpriteDeath(frameToX, frameToY * spriteData.firstFrameDeath, this._counterOfDeath);
-
+            rect = this.death(spriteData, delay, enemyData, scene, frameToX, frameToY);
         }
 
         enemyData.enemySprite.material.map.offset.x = rect.x;
@@ -437,17 +392,84 @@ export default class Enemy implements BasicPropertyEnemy {
 
     }
 
-    updateHealthLine(enemyData) {
+    /**
+     * Метод отвечающий за правильное позиционирования спрайта врага
+     * @param spriteData
+     * @param frameToX
+     * @param frameToY
+     */
+    move(spriteData: IEnemySpriteData, frameToX: number, frameToY: number): ISpritePosition {
 
+        switch (this.directionMove) {
+
+            case "LEFT":
+                this.lastStatusAttack = spriteData.frameMoveLeft;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveLeft, frameToY, this._count);
+
+            case "RIGHT":
+                this.lastStatusAttack = spriteData.frameMoveRight;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveRight, frameToY, this._count);
+
+            case "UP":
+                this.lastStatusAttack = spriteData.frameMoveUp;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveUp, frameToY, this._count);
+
+            case  "UP_LEFT":
+                this.lastStatusAttack = spriteData.frameMoveUpLeft;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveUpLeft, frameToY, this._count);
+
+            case  "UP_RIGHT":
+                this.lastStatusAttack = spriteData.frameMoveUpRight;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveUpRight, frameToY, this._count);
+
+            case  "DOWN":
+                this.lastStatusAttack = spriteData.frameMoveDown;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveDown, frameToY, this._count);
+
+            case "DOWN_LEFT":
+                this.lastStatusAttack = spriteData.frameMoveDownLeft;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveDownLeft, frameToY, this._count);
+
+            case "DOWN_RIGHT":
+                this.lastStatusAttack = spriteData.frameMoveDownRight;
+                return this.animationSpriteMove(frameToX * spriteData.frameMoveDownRight, frameToY, this._count);
+
+        }
+    }
+
+    /**
+     * Метод анимации смерти противника,а также последующее удаление связанных объектов со сцены
+     * @param spriteData
+     * @param delay
+     * @param enemyData
+     * @param scene
+     * @param frameToX
+     * @param frameToY
+     */
+    death(spriteData: IEnemySpriteData, delay: number, enemyData: Enemy, scene: Scene, frameToX: number, frameToY: number): ISpritePosition {
+        if (this._counterOfDeath < spriteData.lastFrameDeathX) {
+            //Мы инкрементируем счетчик смерти если выполняется условие(т.е соответствие с указанной задержкой)
+            if (this._animationTimer % delay === 0) {
+                this._counterOfDeath++;
+            }
+            requestAnimationFrame(() => {
+                this.animationEnemyAvatarForPositionServer(enemyData, scene);
+            });
+        } else {
+            scene.remove(enemyData.scopeCircleMesh, enemyData.colliderMesh, enemyData.persecutionRadius, enemyData.enemyHealthLine, enemyData.enemySprite);
+        }
+
+        return this.animationSpriteDeath(frameToX, frameToY * spriteData.firstFrameDeath, this._counterOfDeath);
+    }
+
+    /**
+     * Метод обновления полоски жизни у врагов
+     * @param enemyData
+     */
+    updateHealthLine(enemyData): void {
         enemyData.enemyHealthLine.scale.x = enemyData.health / 100;
         enemyData.enemyHealthLine.scale.z = 2;
         this.updateEnemyVisualDate(enemyData.enemyHealthLine, enemyData.colliderMesh);
-
-    }
-
-
-    death(scene: Scene, enemyData: Enemy): void {
-        scene.remove(enemyData.scopeCircleMesh, enemyData.colliderMesh, enemyData.persecutionRadius, enemyData.enemyHealthLine, enemyData.enemySprite);
     }
 }
 
