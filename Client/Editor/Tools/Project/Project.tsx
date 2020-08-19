@@ -6,6 +6,7 @@ import FileLoad from '../../Controls/Loader/Loader'
 import {
     changeViewer
 } from '../../../Store/EditorStore/Viewer/Actions';
+import {MemoExoticComponent} from "react";
 
 
 interface IDirectoryProject {
@@ -13,6 +14,7 @@ interface IDirectoryProject {
     type: string;
     arrayOfStructures: IDirectoryProject[];
 }
+
 interface ISelectedStructure {
     extension: string,
     name: string,
@@ -23,14 +25,19 @@ interface ISelectedStructure {
 
 interface IStructureSelectedFolder {
     clickOnElement(structure: object, event: Event): void;
+
     directoryProject: IDirectoryProject;
 
 }
+
 interface IStructure {
     clickOnElement(structure: object, event: Event): void;
+
     data: IDirectoryProject[];
+
     showContents(event: Event, name: string): void;
 }
+
 /**
  * Компонент визуализации древовидной структуры проекта (перемещения по папкам и выбор файлов)
  * @returns {any}
@@ -104,8 +111,7 @@ export default function Project() {
         directoryProject.forEach((currentItem) => {
             if (currentItem.name === nameDirectoryShare) {
                 findElementArray.push(currentItem);
-            }
-            else {
+            } else {
                 if (currentItem.type === 'directory' && currentItem.arrayOfStructures) {
                     return getShareDirectory(currentItem.arrayOfStructures, nameDirectoryShare, findElementArray) || '';
                 }
@@ -125,7 +131,7 @@ export default function Project() {
      */
     const getInfo = (structure: ISelectedStructure, event) => {
         const readFile = new CustomEvent('ReadFile', {
-            bubbles: true,
+            bubbles: false,
             cancelable: true,
             detail: {structure}
         });
@@ -154,8 +160,7 @@ export default function Project() {
 
         if (structure.type === 'directory') {
             showContents(null, structure.name);
-        }
-        else if (structure.type === 'file' && !checkStore(structure.name)) {
+        } else if (structure.type === 'file' && !checkStore(structure.name)) {
             const elementStructure = BusinessLogic.getInfoAboutStructure(structure);
             elementStructure.then(response => response.json())
                 .then(result => {
@@ -174,7 +179,6 @@ export default function Project() {
     };
 
 
-
     return (
         <div className="project">   {loadData ? showProject() : <FileLoad/>}</div>
     )
@@ -191,7 +195,7 @@ function ShowDirectoryStructureSelectedFolder(options: IStructureSelectedFolder)
     if (options.directoryProject && options.directoryProject.type === 'directory') {
         {
             options.directoryProject.arrayOfStructures.sort((a, b) => a.type === 'directory' ? -1 : 1);
-            return React.useMemo(()=> options.directoryProject.arrayOfStructures.map((directoryItem, index) => {
+            return React.useMemo(() => options.directoryProject.arrayOfStructures.map((directoryItem, index) => {
                 const image = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
@@ -207,10 +211,11 @@ function ShowDirectoryStructureSelectedFolder(options: IStructureSelectedFolder)
                             className="project_container-elementContainer_element-text">{directoryItem.name}</div>
                     </div>
                 );
-            }),options.directoryProject.arrayOfStructures)
+            }), options.directoryProject.arrayOfStructures)
         }
     }
 }
+
 /**
  * Компонент отображения файловой структуры проекта
  * @param options
@@ -230,8 +235,7 @@ function CreateStructure(options: IStructure) {
                     item.classList.add('project_container-list_container_array-visible');
                 }
             });
-        }
-        else {
+        } else {
             event.target.innerHTML = "&#9658;";
             event.target.parentElement.parentElement.childNodes.forEach((item) => {
                 if (item.classList.contains('project_container-list_container_array-visible')) {
@@ -240,9 +244,50 @@ function CreateStructure(options: IStructure) {
             });
         }
     };
-    if (options.data) {
+
+    /**
+     * Метод создания типа структуры(файловая директория или файл)
+     * @param directoryItem
+     * @param imageDirectory
+     */
+    const createTypesStructure = (directoryItem: IDirectoryProject, imageDirectory: string) => {
+
+        return <div className="project_container-list_container_view">
+            {directoryItem.type === 'directory' ?
+                <button className="project_container-list_container_nodeButton" type="button"
+                        onClick={expandHeirs}>&#9658;</button> : ''}
+            <div className="project_container-list_container_view-directoryNaming"
+                 data-directoryname={directoryItem.name}
+                 onClick={options.showContents}>
+                <img src={imageDirectory}
+                     className="project_container-list_container_img" alt=""/>
+                <div className="project_container-list_name">
+                    {directoryItem.name}
+                </div>
+            </div>
+        </div>
+
+    };
+
+    /**
+     * Метод рекурсивного прохода по вложеннным элементам и создание новых структур
+     * @param directoryItem
+     * @param keyIndexStructure
+     */
+    const recursiveRepetition = (directoryItem: IDirectoryProject, keyIndexStructure: string) => {
+        return <div className="project_container-list_container_array">
+            {directoryItem.arrayOfStructures ?
+                <CreateStructure
+                    key={keyIndexStructure}
+                    data={directoryItem.arrayOfStructures}
+                    clickOnElement={options.clickOnElement}
+                    showContents={options.showContents}/> : ''}
+        </div>
+    };
+
+     if (options.data) {
         {
-            return React.useMemo(()=>  options.data.map((directoryItem, index) => {
+            return React.useMemo(() => options.data.map((directoryItem, index) => {
                 const imageDirectory = directoryItem.type === 'directory' ?
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/directory.png" :
                     "/Client/Editor/Tools/Project/DirectoryItem/icon/file.png";
@@ -256,32 +301,12 @@ function CreateStructure(options: IStructure) {
                     >
                         <li key={keyIndexLi} className="project_container-list_container"
                             onClick={options.clickOnElement.bind(null, directoryItem)}>
-                            <div className="project_container-list_container_view">
-                                {directoryItem.type === 'directory' ?
-                                    <button className="project_container-list_container_nodeButton" type="button"
-                                            onClick={expandHeirs}>&#9658;</button> : ''}
-                                <div className="project_container-list_container_view-directoryNaming"
-                                     data-directoryname={directoryItem.name}
-                                     onClick={options.showContents}>
-                                    <img src={imageDirectory}
-                                         className="project_container-list_container_img" alt=""/>
-                                    <div className="project_container-list_name">
-                                        {directoryItem.name}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="project_container-list_container_array">
-                                {directoryItem.arrayOfStructures ?
-                                    <CreateStructure
-                                        key={keyIndexStructure}
-                                        data={directoryItem.arrayOfStructures}
-                                        clickOnElement={options.clickOnElement}
-                                        showContents={options.showContents}/> : ''}
-                            </div>
+                            {createTypesStructure(directoryItem, imageDirectory)}
+                            {recursiveRepetition(directoryItem, keyIndexStructure)}
                         </li>
                     </ul>
                 );
-            }),options.data)
+            }), options.data)
         }
     }
 }
