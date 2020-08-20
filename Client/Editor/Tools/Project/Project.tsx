@@ -130,6 +130,8 @@ export default function Project() {
      * @param event
      */
     const getInfo = (structure: ISelectedStructure, event) => {
+        //Останавливаем всплытие иначе не будет переключение директорий
+        event.stopPropagation();
         const readFile = new CustomEvent('ReadFile', {
             bubbles: false,
             cancelable: true,
@@ -285,7 +287,8 @@ function CreateStructure(options: IStructure) {
         </div>
     };
 
-     if (options.data) {
+
+    if (options.data) {
         {
             return React.useMemo(() => options.data.map((directoryItem, index) => {
                 const imageDirectory = directoryItem.type === 'directory' ?
