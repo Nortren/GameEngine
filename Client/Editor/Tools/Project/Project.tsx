@@ -124,6 +124,7 @@ export default function Project() {
      * @param event
      */
     const getInfo = (structure: ISelectedStructure, event) => {
+        event.stopPropagation();
         const readFile = new CustomEvent('ReadFile', {
             bubbles: true,
             cancelable: true,
