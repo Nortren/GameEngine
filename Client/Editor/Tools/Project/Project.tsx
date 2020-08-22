@@ -133,7 +133,7 @@ export default function Project() {
         //Останавливаем всплытие иначе не будет переключение директорий
         event.stopPropagation();
         const readFile = new CustomEvent('ReadFile', {
-            bubbles: false,
+            bubbles: true,
             cancelable: true,
             detail: {structure}
         });
