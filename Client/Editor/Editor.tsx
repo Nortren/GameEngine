@@ -294,7 +294,7 @@ export default class Editor extends React.Component {
         const tabSceneObject = {
             componentName: LayoutBrowserTabs,
             id: 1,
-            componentArray: [ToolHierarch, ToolInspector, ToolProject, ToolMapCreator],
+            componentArray: [ToolMapCreator,ToolHierarch, ToolInspector, ToolProject],
             style: {maxHeight: '58vh'}
         };
         const tabInspector = {
