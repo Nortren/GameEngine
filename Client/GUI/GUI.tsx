@@ -4,7 +4,7 @@ import Chat from "./Chat/Chat";
 import Map from "./Map/Map";
 import AvatarInfo from "./AvatarInfo/AvatarInfo";
 import PlayerControls from "./PlayerControls/PlayerControls";
-
+import {globalVariables} from "../GlobalVariables";
 interface IGUI {
     userName: string,
     deviceType?: boolean,
@@ -19,7 +19,8 @@ interface IGUI {
 export default function GUI(props: IGUI) {
     const [userName, setUserName] = React.useState('');
     if (!userName) {
-        setUserName(props.userName);
+        const userName = globalVariables.disableAuthorization ? 'Developer' : props.userName;
+        setUserName(userName);
     }
     return props.deviceType ? <MobileGrid userName={userName}/> : <PCGrid userName={userName}/>;
 }
