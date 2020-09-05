@@ -104,7 +104,7 @@ class GameEngineContainer extends React.Component {
         if (this.props.userStatusAuthorization || globalVariables.disableAuthorization) {
             this.checkUserLogged(this.props.userStatusAuthorization);
             return <div>
-                {(this.props.userStatusAuthorization.adminRoot && this._idLoggedUser.id === this.props.userStatusAuthorization.id) ? <Editor/> : ''}
+                {(this.props.userStatusAuthorization.adminRoot && this._idLoggedUser.id === this.props.userStatusAuthorization.id) || globalVariables.enableEditor ? <Editor/> : ''}
                 <GUI userName={this.props.userStatusAuthorization.name} deviceType={this.thisMobileDevice}/>
                 <EngineInitialization
                     showElement={this.props.userStatusAuthorization}
