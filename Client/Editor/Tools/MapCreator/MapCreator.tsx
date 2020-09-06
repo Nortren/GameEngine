@@ -16,6 +16,10 @@ interface IDirectoryProject {
 
 
 export default function MapCreator() {
+
+
+
+
     return <div className="mapCreator-container"><TileList/><ToolsList/></div>
 }
 
@@ -56,7 +60,51 @@ function TileList() {
  */
 
 function ToolsList() {
+
+    const canvasInit = ()=>{
+        const canvas = document.getElementById("canvasImageCut")  as HTMLCanvasElement;
+        if (canvas) {
+            let drawStatus = false;
+            const img = new Image();
+            img.src = "Client/image/tille.png";
+            //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
+            const bodySize = document.getElementsByClassName('imageEditor_container-body')[0] as HTMLCanvasElement;
+            const bodySizeWidth = bodySize.offsetWidth * 0.8;
+            const bodySizeHeight = bodySize.offsetHeight * 0.8;
+            canvas.setAttribute('width', bodySizeWidth.toString());
+            canvas.setAttribute('height', bodySizeHeight.toString());
+
+            const context = canvas.getContext("2d");
+
+            img.onload = () => {
+                //	оператор try..catch используем для обработки ошибок, например если холст не найден
+                //	в некоторых случах было замечено ошибочный вызов исключений при получении холста
+                try {
+                    //	получаем контент холста
+
+                    //TODO расчитать правильный размер
+                    const compressionRatioX = (bodySizeWidth / img.width) * 0.9;
+                    const compressionRatioY = (bodySizeHeight / img.height) * 0.9;
+                    const finishCompression = compressionRatioX > compressionRatioY ? compressionRatioY : compressionRatioX;
+                    const imgWidth = finishCompression * img.width;
+                    const imgHeight = finishCompression * img.height;
+                    const imageCenterPositionX = bodySizeWidth / 2 - imgWidth / 2;
+                    const imageCenterPositionY = bodySizeHeight / 2 - imgHeight / 2;
+                    context.drawImage(img, imageCenterPositionX, imageCenterPositionY, imgWidth, imgHeight);
+
+                }
+                catch (err) {
+                    //	выводит необходимую ошибку
+                    console.log(err, '_Ошибка');
+                }
+            };
+
+        }
+    }
+
+
     const template = <div className="toolsList-container">
+        <canvas id="canvasImageCut" onLoad={canvasInit()} />
         <div className="tileList-container__item">1</div>
         <div className="tileList-container__item">2</div>
         <div className="tileList-container__item">3</div>
