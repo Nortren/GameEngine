@@ -1,15 +1,20 @@
 # GameEngine
-Проект игрового движка со встроенным редактором и сервером
+
+Game engine project with built-in editor and server
 ___
 ![](readme/GameEngine.gif)
 ___
-Редактор включает в себя набор UI kit
+The editor includes a UI kit
+At the moment is in the mode of constant refinement and expansion of functionality
 
-Редактор кода:
+###Code editor:
 ![](readme/codeEditor.gif)
-Редактор изображений:
+___
+###Image editor:
 ![](readme/ImageEditor.gif)
-Возможность создания и манипуляции с 3d и 2d сущностями:
+___
+###Ability to create and manipulate 3d and 2d entities:
 ![](readme/createAndDragAndDropObject.gif)
-Механизм включения и управления камерой:
+___
+###Camera activation and control mechanism:
 ![](readme/Camera.gif)
