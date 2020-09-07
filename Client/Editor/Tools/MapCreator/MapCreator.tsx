@@ -18,8 +18,6 @@ interface IDirectoryProject {
 export default function MapCreator() {
 
 
-
-
     return <div className="mapCreator-container"><TileList/><ToolsList/></div>
 }
 
@@ -53,6 +51,7 @@ function TileList() {
     </div>;
     return template;
 }
+
 /**
  * Метод визуализации инструментов при работе с редактором карт
  * @returns {any}
@@ -61,16 +60,20 @@ function TileList() {
 
 function ToolsList() {
 
-    const canvasInit = ()=>{
-        const canvas = document.getElementById("canvasImageCut")  as HTMLCanvasElement;
+    const clickTest = (event) => {
+       console.log('Canvas Add');
+}
+
+    const canvasInit = () => {
+        const canvas = document.getElementById("canvasImageCut") as HTMLCanvasElement;
         if (canvas) {
             let drawStatus = false;
             const img = new Image();
             img.src = "Client/image/tille.png";
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
-            const bodySize = document.getElementsByClassName('imageEditor_container-body')[0] as HTMLCanvasElement;
-            const bodySizeWidth = bodySize.offsetWidth * 0.8;
-            const bodySizeHeight = bodySize.offsetHeight * 0.8;
+            const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
+            const bodySizeWidth = bodySize.offsetWidth;
+            const bodySizeHeight = bodySize.offsetHeight;
             canvas.setAttribute('width', bodySizeWidth.toString());
             canvas.setAttribute('height', bodySizeHeight.toString());
 
@@ -83,28 +86,32 @@ function ToolsList() {
                     //	получаем контент холста
 
                     //TODO расчитать правильный размер
-                    const compressionRatioX = (bodySizeWidth / img.width) * 0.9;
-                    const compressionRatioY = (bodySizeHeight / img.height) * 0.9;
+                    const compressionRatioX = (bodySizeWidth / img.width);
+                    const compressionRatioY = (bodySizeHeight / img.height);
                     const finishCompression = compressionRatioX > compressionRatioY ? compressionRatioY : compressionRatioX;
                     const imgWidth = finishCompression * img.width;
                     const imgHeight = finishCompression * img.height;
                     const imageCenterPositionX = bodySizeWidth / 2 - imgWidth / 2;
                     const imageCenterPositionY = bodySizeHeight / 2 - imgHeight / 2;
-                    context.drawImage(img, imageCenterPositionX, imageCenterPositionY, imgWidth, imgHeight);
+                    context.drawImage(img, imageCenterPositionX, imageCenterPositionY, img.width, img.height);
 
-                }
-                catch (err) {
+                } catch (err) {
                     //	выводит необходимую ошибку
                     console.log(err, '_Ошибка');
                 }
             };
 
         }
-    }
+    };
 
+
+    React.useEffect(() => {
+        canvasInit();
+    }, []);
 
     const template = <div className="toolsList-container">
-        <canvas id="canvasImageCut" onLoad={canvasInit()} />
+        <button className="tileList-container__buttonClick" onClick={clickTest}>click</button>
+        <canvas id="canvasImageCut"/>
         <div className="tileList-container__item">1</div>
         <div className="tileList-container__item">2</div>
         <div className="tileList-container__item">3</div>
