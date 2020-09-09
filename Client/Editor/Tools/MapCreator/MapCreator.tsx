@@ -61,15 +61,24 @@ function TileList() {
 function ToolsList() {
 
     const clickTest = (event) => {
-       console.log('Canvas Add');
-}
+        console.log('Canvas Add');
+    };
+
+    const imgData = {
+        name: 'TestTitle',
+        src: 'Client/image/tille.png',
+        xCount: 19,
+        yCount: 20,
+        startCount: 19,
+        endCount: 380
+    };
 
     const canvasInit = () => {
         const canvas = document.getElementById("canvasImageCut") as HTMLCanvasElement;
         if (canvas) {
             let drawStatus = false;
             const img = new Image();
-            img.src = "Client/image/tille.png";
+            img.src = imgData.src;
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
             const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
             const bodySizeWidth = bodySize.offsetWidth;
