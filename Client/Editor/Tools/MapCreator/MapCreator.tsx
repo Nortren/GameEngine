@@ -72,9 +72,10 @@ function ToolsList() {
         startCount: 19,
         endCount: 380
     };
-
+    const testImageContainer = null;
     const canvasInit = () => {
         const canvas = document.getElementById("canvasImageCut") as HTMLCanvasElement;
+
         if (canvas) {
             let drawStatus = false;
             const img = new Image();
@@ -103,6 +104,7 @@ function ToolsList() {
                     const imageCenterPositionX = bodySizeWidth / 2 - imgWidth / 2;
                     const imageCenterPositionY = bodySizeHeight / 2 - imgHeight / 2;
                     context.drawImage(img, imageCenterPositionX, imageCenterPositionY, img.width, img.height);
+                    testImageContainer = canvas.toDataURL();
 
                 } catch (err) {
                     //	выводит необходимую ошибку
@@ -113,15 +115,23 @@ function ToolsList() {
         }
     };
 
+    let testStyle = {backgroundImage: `url(${imgData.src})`, backgroundSize: 'cover'};
 
     React.useEffect(() => {
         canvasInit();
     }, []);
 
+    React.useEffect(() => {
+        if (testImageContainer) {
+            testStyle = {backgroundImage: `url(${this.testImageContainer })`, backgroundSize: 'cover'};
+        }
+
+    }, [testImageContainer]);
+
     const template = <div className="toolsList-container">
         <button className="tileList-container__buttonClick" onClick={clickTest}>click</button>
         <canvas id="canvasImageCut"/>
-        <div className="tileList-container__item">1</div>
+        <div className="tileList-container__item" style={testStyle}>1</div>
         <div className="tileList-container__item">2</div>
         <div className="tileList-container__item">3</div>
         <div className="tileList-container__item">4</div>
