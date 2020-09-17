@@ -7,6 +7,12 @@ import {
     changeViewer
 } from '../../../Store/EditorStore/Viewer/Actions';
 
+interface IImageFromAtlas {
+    width: number;
+    height: number;
+    positionX: number;
+    positionY: number;
+}
 
 interface IDirectoryProject {
     name: string;
@@ -60,9 +66,13 @@ function TileList() {
 
 function ToolsList() {
 
-    const clickTest = (event) => {
-        console.log('Canvas Add');
-    };
+    const countTile = 364;
+    const countX = 19;
+    const countY = 20;
+
+
+    const tileURLArray = [];
+
 
     const imgData = {
         name: 'TestTitle',
@@ -80,14 +90,15 @@ function ToolsList() {
             let drawStatus = false;
             const img = new Image();
             img.src = imgData.src;
+
             //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
             const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
             const bodySizeWidth = bodySize.offsetWidth;
             const bodySizeHeight = bodySize.offsetHeight;
-            canvas.setAttribute('width', bodySizeWidth.toString());
-            canvas.setAttribute('height', bodySizeHeight.toString());
+
 
             const context = canvas.getContext("2d");
+
 
             img.onload = () => {
                 //	оператор try..catch используем для обработки ошибок, например если холст не найден
@@ -95,17 +106,26 @@ function ToolsList() {
                 try {
                     //	получаем контент холста
 
-                    //TODO расчитать правильный размер
-                    const compressionRatioX = (bodySizeWidth / img.width);
-                    const compressionRatioY = (bodySizeHeight / img.height);
-                    const finishCompression = compressionRatioX > compressionRatioY ? compressionRatioY : compressionRatioX;
-                    const imgWidth = finishCompression * img.width;
-                    const imgHeight = finishCompression * img.height;
-                    const imageCenterPositionX = bodySizeWidth / 2 - imgWidth / 2;
-                    const imageCenterPositionY = bodySizeHeight / 2 - imgHeight / 2;
-                    context.drawImage(img, imageCenterPositionX, imageCenterPositionY, img.width, img.height);
-                    testImageContainer = canvas.toDataURL();
+                    let countingX = 0;
+                    let countingY = 0;
 
+                    for (let i = 0; i < countTile; i++) {
+
+                        if (countingX === countX) {
+                            countingX = 0;
+                            countingY++;
+                        }
+                        countingX++;
+
+                        const imageFromAtlas = parseTextureAtlas(img, 19, 20, countingX, countingY);
+                        canvas.setAttribute('width', (imageFromAtlas.width).toString());
+                        canvas.setAttribute('height', (imageFromAtlas.height).toString());
+                        context.drawImage(img, imageFromAtlas.positionX, imageFromAtlas.positionY, imageFromAtlas.width, imageFromAtlas.height, 0, 0, imageFromAtlas.width, imageFromAtlas.height);
+
+                        tileURLArray.push(canvas.toDataURL());
+                    }
+
+                    return tileURLArray;
                 } catch (err) {
                     //	выводит необходимую ошибку
                     console.log(err, '_Ошибка');
@@ -114,6 +134,29 @@ function ToolsList() {
 
         }
     };
+
+    /**
+     *
+     * Метод вычисляющий размер тайла знаяих количество в кадре
+     * просто создовая сетку равносторонних прямоугольников
+     * @param image
+     * @param countX количество кадров по оси X
+     * @param countY количество кадров по оси Y
+     * @param startX с какого кадра начинаем строить по X
+     * @param startY с какого кадра начинаем строить по Y
+     */
+    const parseTextureAtlas = (image: ImageData, countX: number, countY: number, startX: number, startY: number): IImageFromAtlas => {
+
+        const imageFromAtlas = {width: 0, height: 0, positionX: 0, positionY: 0};
+
+        imageFromAtlas.width = image.width / countX;
+        imageFromAtlas.height = image.height / countY;
+        imageFromAtlas.positionX = imageFromAtlas.width * startX;
+        imageFromAtlas.positionY = imageFromAtlas.height * startY;
+
+        return imageFromAtlas;
+    };
+
 
     let testStyle = {backgroundImage: `url(${imgData.src})`, backgroundSize: 'cover'};
 
@@ -128,14 +171,28 @@ function ToolsList() {
 
     }, [testImageContainer]);
 
+
+    React.useEffect(() => {
+        {tileURLArray.forEach((tile)=>{
+
+            console.log(tile);
+
+
+        })}
+
+    }, [tileURLArray]);
+
+
     const template = <div className="toolsList-container">
-        <button className="tileList-container__buttonClick" onClick={clickTest}>click</button>
+        {/*<button className="tileList-container__buttonClick" onClick={clickTest}>click</button>*/}
         <canvas id="canvasImageCut"/>
-        <div className="tileList-container__item" style={testStyle}>1</div>
-        <div className="tileList-container__item">2</div>
-        <div className="tileList-container__item">3</div>
-        <div className="tileList-container__item">4</div>
-        <div className="tileList-container__item">5</div>
+        {/*        <div className="tileList-container__item" style={testStyle}>1</div>
+         <div className="tileList-container__item">2</div>
+         <div className="tileList-container__item">3</div>
+         <div className="tileList-container__item">4</div>
+         <div className="tileList-container__item">5</div>*/}
+
+        {/*<div className="tileList-container__item" style={testStyle}>1</div>*/}
     </div>;
     return template;
 
