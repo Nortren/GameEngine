@@ -65,15 +65,7 @@ function TileList() {
  */
 
 function ToolsList() {
-
-    const countTile = 364;
-    const countX = 19;
-    const countY = 20;
-
-
-    const tileURLArray = [];
-
-
+    const [toolsImg, setToolsImg] = React.useState<string[]>([]);
     const imgData = {
         name: 'TestTitle',
         src: 'Client/image/tille.png',
@@ -82,22 +74,77 @@ function ToolsList() {
         startCount: 19,
         endCount: 380
     };
-    const testImageContainer = null;
-    const canvasInit = () => {
-        const canvas = document.getElementById("canvasImageCut") as HTMLCanvasElement;
 
-        if (canvas) {
-            let drawStatus = false;
-            const img = new Image();
-            img.src = imgData.src;
+    React.useEffect(() => {
+        canvasInit(imgData).then((imgUrlArray) => {
+            setToolsImg(imgUrlArray);
+        })
+    }, []);
 
-            //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
-            const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
-            const bodySizeWidth = bodySize.offsetWidth;
-            const bodySizeHeight = bodySize.offsetHeight;
+    const template = <div className="toolsList-container">
+        <canvas id="canvasImageCut"/>
+        {toolsImg.map((item) => {
+            const tileContainerStyle = {backgroundImage: `url(${item})`, backgroundSize: 'cover'};
+            return <button className="toolsList-container_imageContainer" style={tileContainerStyle}></button>
+        })}
+    </div>;
+    return template;
 
 
-            const context = canvas.getContext("2d");
+}
+/**
+ *
+ * Метод вычисляющий размер тайла знаяих количество в кадре
+ * просто создовая сетку равносторонних прямоугольников
+ * @param image
+ * @param countX количество кадров по оси X
+ * @param countY количество кадров по оси Y
+ * @param startX с какого кадра начинаем строить по X
+ * @param startY с какого кадра начинаем строить по Y
+ */
+const parseTextureAtlas = (image: ImageData, countX: number, countY: number, startX: number, startY: number): IImageFromAtlas => {
+
+    const imageFromAtlas = {width: 0, height: 0, positionX: 0, positionY: 0};
+
+    imageFromAtlas.width = image.width / countX;
+    imageFromAtlas.height = image.height / countY;
+    imageFromAtlas.positionX = imageFromAtlas.width * startX;
+    imageFromAtlas.positionY = imageFromAtlas.height * startY;
+
+    return imageFromAtlas;
+};
+
+
+/**
+ * Метод инициализации и отрисовки canvas по заданным параметрам
+ * @param imgData
+ * @returns {Array}
+ */
+const canvasInit = (imgData) => {
+
+    const countX = 19;
+    const countY = 20;
+    const startPosition = 16;
+    const endPosition = 1;
+    const countTile = (countX*countY) - startPosition - endPosition; // Вычесляем сколько элементов нам нужно показать (общее количество за вычетов стартовой позиции и конечной позиции)
+
+
+    const tileURLArray = [];
+    const canvas = document.getElementById("canvasImageCut") as HTMLCanvasElement;
+
+    if (canvas) {
+        const img = new Image();
+        img.src = imgData.src;
+
+        //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
+        const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
+        const bodySizeWidth = bodySize.offsetWidth;
+        const bodySizeHeight = bodySize.offsetHeight;
+
+
+        const context = canvas.getContext("2d");
+
+        return new Promise((resolve) => {
 
 
             img.onload = () => {
@@ -106,16 +153,15 @@ function ToolsList() {
                 try {
                     //	получаем контент холста
 
-                    let countingX = 0;
+                    let countingX = startPosition;
                     let countingY = 0;
-
                     for (let i = 0; i < countTile; i++) {
 
                         if (countingX === countX) {
                             countingX = 0;
                             countingY++;
                         }
-                        countingX++;
+
 
                         const imageFromAtlas = parseTextureAtlas(img, 19, 20, countingX, countingY);
                         canvas.setAttribute('width', (imageFromAtlas.width).toString());
@@ -123,78 +169,15 @@ function ToolsList() {
                         context.drawImage(img, imageFromAtlas.positionX, imageFromAtlas.positionY, imageFromAtlas.width, imageFromAtlas.height, 0, 0, imageFromAtlas.width, imageFromAtlas.height);
 
                         tileURLArray.push(canvas.toDataURL());
+                        countingX++;
                     }
+                    resolve(tileURLArray);
 
-                    return tileURLArray;
                 } catch (err) {
                     //	выводит необходимую ошибку
                     console.log(err, '_Ошибка');
                 }
             };
-
-        }
-    };
-
-    /**
-     *
-     * Метод вычисляющий размер тайла знаяих количество в кадре
-     * просто создовая сетку равносторонних прямоугольников
-     * @param image
-     * @param countX количество кадров по оси X
-     * @param countY количество кадров по оси Y
-     * @param startX с какого кадра начинаем строить по X
-     * @param startY с какого кадра начинаем строить по Y
-     */
-    const parseTextureAtlas = (image: ImageData, countX: number, countY: number, startX: number, startY: number): IImageFromAtlas => {
-
-        const imageFromAtlas = {width: 0, height: 0, positionX: 0, positionY: 0};
-
-        imageFromAtlas.width = image.width / countX;
-        imageFromAtlas.height = image.height / countY;
-        imageFromAtlas.positionX = imageFromAtlas.width * startX;
-        imageFromAtlas.positionY = imageFromAtlas.height * startY;
-
-        return imageFromAtlas;
-    };
-
-
-    let testStyle = {backgroundImage: `url(${imgData.src})`, backgroundSize: 'cover'};
-
-    React.useEffect(() => {
-        canvasInit();
-    }, []);
-
-    React.useEffect(() => {
-        if (testImageContainer) {
-            testStyle = {backgroundImage: `url(${this.testImageContainer })`, backgroundSize: 'cover'};
-        }
-
-    }, [testImageContainer]);
-
-
-    React.useEffect(() => {
-        {tileURLArray.forEach((tile)=>{
-
-            console.log(tile);
-
-
-        })}
-
-    }, [tileURLArray]);
-
-
-    const template = <div className="toolsList-container">
-        {/*<button className="tileList-container__buttonClick" onClick={clickTest}>click</button>*/}
-        <canvas id="canvasImageCut"/>
-        {/*        <div className="tileList-container__item" style={testStyle}>1</div>
-         <div className="tileList-container__item">2</div>
-         <div className="tileList-container__item">3</div>
-         <div className="tileList-container__item">4</div>
-         <div className="tileList-container__item">5</div>*/}
-
-        {/*<div className="tileList-container__item" style={testStyle}>1</div>*/}
-    </div>;
-    return template;
-
-
-}
+        })
+    }
+};

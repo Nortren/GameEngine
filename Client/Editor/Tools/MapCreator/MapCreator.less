@@ -28,9 +28,14 @@
    justify-content: center;
    display: flex;
    flex-wrap: wrap;
-   border: 1px solid #595959;
    margin: 5px;
    overflow: auto;
+   &_imageContainer {
+      border: 1px solid #595959;
+      width: 3em;
+      height: 3em;
+      margin: 0.2em;
+   }
 
    &__item {
       border: 1px solid #595959;
@@ -39,7 +44,9 @@
       margin: 0.2em;
    }
 }
-#canvasImageCut{
+
+#canvasImageCut {
    border: 1px solid #840000;
    margin: 0.2em;
+   display: none;
 }
