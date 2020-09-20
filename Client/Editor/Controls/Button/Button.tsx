@@ -64,6 +64,7 @@ interface IProps {
 
 interface IState {
     style: IButtonOptionsStyle;
+    border: string;
 }
 
 interface IButtonOptions {
@@ -73,6 +74,7 @@ interface IButtonOptions {
     id: number;
     name: string;
     style: IButtonOptionsStyle;
+    border: string;
     type: string;
 }
 
@@ -95,6 +97,7 @@ export default class Button extends React.Component {
         super(props);
         this.id = props.options.id;
         this.state = {
+            border: props.options.border === 'none' ? {border: 0} : {},
             style: {
                 width: props.options.style ? props.options.style.width : '',
                 height: props.options.style ? props.options.style.height : '',
@@ -174,7 +177,7 @@ export default class Button extends React.Component {
             </div>
         } else {
             return <div className="button_container" style={this.state.style}>
-                <button className="button_container-button"
+                <button className="button_container-button" style={this.state.border}
                         onClick={this.clickButton.bind(this, this.props.options.name)}>
                     {this.props.options.iconType ? <FontAwesomeIcon
                         icon={fontAwesome[fontAwesomeArray[this.props.options.iconType]]}
