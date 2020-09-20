@@ -2,10 +2,7 @@ import * as React from 'react';
 import BusinessLogic from '../../BusinessLogic'
 import {useDispatch, useSelector, useEffect} from 'react-redux';
 import {connect} from 'react-redux';
-import FileLoad from '../../Controls/Loader/Loader'
-import {
-    changeViewer
-} from '../../../Store/EditorStore/Viewer/Actions';
+import Button from "../../Controls/Button/Button";
 
 interface IImageFromAtlas {
     width: number;
@@ -20,11 +17,19 @@ interface IDirectoryProject {
     arrayOfStructures: IDirectoryProject[];
 }
 
+interface IImageData{
+    name: string;
+    src: string;
+    startPosition: number
+    endPosition: number
+    xCount: number
+    yCount: number
+}
 
 export default function MapCreator() {
 
 
-    return <div className="mapCreator-container"><TileList/><ToolsList/></div>
+    return <div className="mapCreator-container"><ToolsList/><TileList/></div>
 }
 
 /**
@@ -32,28 +37,41 @@ export default function MapCreator() {
  * @returns {any}
  * @constructor
  */
-function TileList() {
-    const template = <div className="tileList-container">
-        <div className="tileList-container__item">1</div>
-        <div className="tileList-container__item">2</div>
-        <div className="tileList-container__item">3</div>
-        <div className="tileList-container__item">4</div>
-        <div className="tileList-container__item">5</div>
-        <div className="tileList-container__item">6</div>
-        <div className="tileList-container__item">7</div>
-        <div className="tileList-container__item">8</div>
-        <div className="tileList-container__item">9</div>
-        <div className="tileList-container__item">10</div>
-        <div className="tileList-container__item">11</div>
-        <div className="tileList-container__item">12</div>
-        <div className="tileList-container__item">13</div>
-        <div className="tileList-container__item">14</div>
-        <div className="tileList-container__item">15</div>
-        <div className="tileList-container__item">16</div>
-        <div className="tileList-container__item">17</div>
-        <div className="tileList-container__item">18</div>
-        <div className="tileList-container__item">19</div>
-        <div className="tileList-container__item">20</div>
+function ToolsList() {
+    const toolsButtonArray = [
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'Paperclip'},
+        ];
+
+    const template = <div className="toolsList-container">
+
+        {toolsButtonArray.map((button)=>{
+            return    <div className="toolsList-container__item">
+                <Button options={{
+                    name: button.name,
+                    iconType: button.iconType,
+                    iconSize: '3x',
+                    id: 1,
+                    componentArray: []
+                }}/>
+            </div>
+        })}
+
+
     </div>;
     return template;
 }
@@ -64,15 +82,15 @@ function TileList() {
  * @constructor
  */
 
-function ToolsList() {
+function TileList() {
     const [toolsImg, setToolsImg] = React.useState<string[]>([]);
     const imgData = {
         name: 'TestTitle',
         src: 'Client/image/tille.png',
         xCount: 19,
         yCount: 20,
-        startCount: 19,
-        endCount: 380
+        startPosition: 16,
+        endPosition: 379
     };
 
     React.useEffect(() => {
@@ -81,7 +99,7 @@ function ToolsList() {
         })
     }, []);
 
-    const template = <div className="toolsList-container">
+    const template = <div className="tileList-container">
         <canvas id="canvasImageCut"/>
         {toolsImg.map((item) => {
             const tileContainerStyle = {backgroundImage: `url(${item})`, backgroundSize: 'cover'};
@@ -120,13 +138,13 @@ const parseTextureAtlas = (image: ImageData, countX: number, countY: number, sta
  * @param imgData
  * @returns {Array}
  */
-const canvasInit = (imgData) => {
+const canvasInit = (imgData:IImageData): Promise<string[]> => {
 
-    const countX = 19;
-    const countY = 20;
-    const startPosition = 16;
-    const endPosition = 1;
-    const countTile = (countX*countY) - startPosition - endPosition; // Вычесляем сколько элементов нам нужно показать (общее количество за вычетов стартовой позиции и конечной позиции)
+    const countX = imgData.xCount;
+    const countY = imgData.yCount;
+    const startPosition = imgData.startPosition;
+    const endPosition = imgData.endPosition;
+    const countTile = (countX * countY) - startPosition - (countX * countY - endPosition); // Вычесляем сколько элементов нам нужно показать (общее количество за вычетов стартовой позиции и конечной позиции)
 
 
     const tileURLArray = [];
@@ -135,24 +153,10 @@ const canvasInit = (imgData) => {
     if (canvas) {
         const img = new Image();
         img.src = imgData.src;
-
-        //Тут мы узнаем текущий размер окна где распологается график чтоб отрисовать размеры canvas
-        const bodySize = document.getElementsByClassName('toolsList-container')[0] as HTMLCanvasElement;
-        const bodySizeWidth = bodySize.offsetWidth;
-        const bodySizeHeight = bodySize.offsetHeight;
-
-
         const context = canvas.getContext("2d");
-
         return new Promise((resolve) => {
-
-
             img.onload = () => {
-                //	оператор try..catch используем для обработки ошибок, например если холст не найден
-                //	в некоторых случах было замечено ошибочный вызов исключений при получении холста
                 try {
-                    //	получаем контент холста
-
                     let countingX = startPosition;
                     let countingY = 0;
                     for (let i = 0; i < countTile; i++) {
@@ -161,7 +165,6 @@ const canvasInit = (imgData) => {
                             countingX = 0;
                             countingY++;
                         }
-
 
                         const imageFromAtlas = parseTextureAtlas(img, 19, 20, countingX, countingY);
                         canvas.setAttribute('width', (imageFromAtlas.width).toString());
