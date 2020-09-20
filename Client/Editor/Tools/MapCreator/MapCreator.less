@@ -6,28 +6,12 @@
    justify-content: center;
 }
 
-.tileList-container {
-   height: 50%;
-   justify-content: center;
-   display: flex;
-   flex-wrap: wrap;
-   border: 1px solid #595959;
-   margin: 5px;
-   overflow: auto;
-
-   &__item {
-      border: 1px solid #595959;
-      width: 3em;
-      height: 3em;
-      margin: 0.2em;
-   }
-}
-
 .toolsList-container {
    height: 50%;
    justify-content: center;
    display: flex;
    flex-wrap: wrap;
+   border: 1px solid #595959;
    margin: 5px;
    overflow: auto;
    &_imageContainer {
@@ -36,6 +20,24 @@
       height: 3em;
       margin: 0.2em;
    }
+   &__item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #595959;
+      width: 3em;
+      height: 3em;
+      margin: 0.2em;
+   }
+}
+
+.tileList-container {
+   height: 50%;
+   justify-content: center;
+   display: flex;
+   flex-wrap: wrap;
+   margin: 5px;
+   overflow: auto;
 
    &__item {
       border: 1px solid #595959;
