@@ -39,22 +39,24 @@ export default function MapCreator() {
  */
 function ToolsList() {
     const toolsButtonArray = [
+        {name: 'mouse', iconType:'MousePointer'},
+        {name: 'brush', iconType:'faPaintBrush'},
+        {name: 'dropper', iconType:'Bold'},
+        {name: 'dropper', iconType:'ExpandAlt'},
+        {name: 'dropper', iconType:'ExpandArrowsAlt'},
+        {name: 'dropper', iconType:'Wrench'},
+        {name: 'dropper', iconType:'Cut'},
+        {name: 'dropper', iconType:'Save'},
+        {name: 'dropper', iconType:'Map'},
+        {name: 'dropper', iconType:'HandRock'},
+        {name: 'dropper', iconType:'SlidersH'},
+        {name: 'dropper', iconType:'Tint'},
         {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
-        {name: 'dropper', iconType:'Paperclip'},
+        {name: 'dropper', iconType:'PencilAlt'},
+        {name: 'dropper', iconType:'PhotoVideo'},
+        {name: 'dropper', iconType:'Hammer'},
+        {name: 'dropper', iconType:'FolderPlus'},
+        {name: 'dropper', iconType:'ObjectUngroup'},
         ];
 
     const template = <div className="toolsList-container">
@@ -66,7 +68,7 @@ function ToolsList() {
                     iconType: button.iconType,
                     iconSize: '3x',
                     id: 1,
-                    componentArray: []
+                    border: 'none'
                 }}/>
             </div>
         })}
